@@ -1,2 +1,2 @@
 # crypto
-All my crypto stuff
+My crypto alerts and trading bot
