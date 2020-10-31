@@ -1,0 +1,1 @@
+web: gunicorn app:trading-bot/webapp/app

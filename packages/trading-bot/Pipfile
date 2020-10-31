@@ -15,6 +15,7 @@ numpy = "*"
 websocket_client = "*"
 Flask = "*"
 python-dotenv = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
