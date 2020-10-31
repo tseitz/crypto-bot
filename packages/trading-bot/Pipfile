@@ -13,6 +13,8 @@ python-binance = "*"
 TA-Lib = "*"
 numpy = "*"
 websocket_client = "*"
+Flask = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"
