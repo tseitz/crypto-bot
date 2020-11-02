@@ -6,8 +6,8 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/webhooks", (req, res) => {
-  res.send("Hello World!");
+app.post("/webhooks", (req, res) => {
+  res.send(req);
 });
 
 app.listen(process.env.PORT || 5000);
