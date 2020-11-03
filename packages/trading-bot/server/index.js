@@ -2,7 +2,9 @@ const express = require("express");
 var https = require("https");
 var bodyParser = require("body-parser");
 const Binance = require("node-binance-api");
-const KrakenClient = require("kraken-api");
+// const KrakenClient = require("./modules/kraken");
+const Kraken = require('kraken-wrapper');
+
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -11,11 +13,12 @@ const binance = new Binance().options({
   APIKEY: process.env.BINANCE_API_KEY,
   APISECRET: process.env.BINANCE_SECRET_KEY,
 });
-const kraken = new KrakenClient(
+const kraken = new Kraken(
   process.env.KRAKEN_API_KEY,
   process.env.KRAKEN_SECRET_KEY
 );
-console.log(kraken)
+const kraken_url = "https://api.kraken.com";
+
 
 // create application/json parser
 var jsonParser = bodyParser.json();
@@ -33,13 +36,14 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   }
   console.log("Ayyyyy, we got a trade alert!");
 
-  // Display user's balance
-  console.log(await kraken.api("Time"));
-  
-  // Get Ticker Info
-  // console.log(await kraken.api("Ticker", { pair: "XBTUSD" }));
-
-  res.send(req.body);
+  kraken
+    .getTrades({ pair: "ETHUSD" })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 app.listen(process.env.PORT || 3000, () => {
