@@ -3,7 +3,7 @@ var https = require("https");
 var bodyParser = require("body-parser");
 const Binance = require("node-binance-api");
 // const KrakenClient = require("./modules/kraken");
-const Kraken = require('kraken-wrapper');
+const Kraken = require("kraken-wrapper");
 
 const PORT = process.env.PORT || 3000;
 
@@ -19,10 +19,9 @@ const kraken = new Kraken(
 );
 const kraken_url = "https://api.kraken.com";
 
-
 // create application/json parser
 var jsonParser = bodyParser.json();
-app.use(jsonParser)
+app.use(jsonParser);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -39,21 +38,32 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   kraken.getTradableAssetPairs({ pair }).then((response) => {
     const orderMin = response.result[pair]["ordermin"];
-    
+
     kraken
       .getTickerInformation({ pair: "XBTUSD" })
       .then((response) => {
+        // grab current btc price (used for usd/btc conversions atm)
         const btcPrice = response.result["XXBTZUSD"]["c"][0];
         console.log(`BTC Price: ${btcPrice}`);
 
+        // grab data from the body
         const action = req.body.strategy.order_action;
         const price = req.body.strategy.order_price; // price of asset
-        const priceInDollar = btcPrice * price; // convert btc price to dollar price
+
+        // if btc pair, convert to dollar (to pay $10 for now)
+        // if usdt pair, keep dollar price
+        const btcPair = /XBT$/.test(pair); // bitcoin pair, not XBTUSDT
+        const priceInDollar = btcPair ? btcPrice * price : price; // convert btc price to dollar price
+
+        // either use $10 or lowest order value (sometimes coins are > $10 equivilant min order)
         let volume = (10 / priceInDollar).toFixed(3); // we want $10
         volume = volume > orderMin ? volume : orderMin;
+
         const usdValue = (priceInDollar * volume).toFixed(2); // total value bought
         console.log(
-          `${action} ${volume} ${pair} at ${price} BTC ($${priceInDollar.toFixed(2)}) for $${usdValue}`
+          `${action} ${volume} ${pair} at ${price} BTC ($${priceInDollar.toFixed(
+            2
+          )}) for $${usdValue}`
         );
 
         kraken
@@ -62,7 +72,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
             type: action,
             ordertype: "market",
             volume,
-            // validate: true,
+            validate: true,
           })
           .then((response) => {
             console.log(response);

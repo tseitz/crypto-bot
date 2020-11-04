@@ -1,4 +1,4 @@
-  {
+{
   "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
   "time": "2020-11-04T01:55:21Z",
   "exchange": "KRAKEN",
@@ -21,30 +21,5 @@
     "market_position_size": 0,
     "prev_market_position": "long",
     "prev_market_position_size": 1331
-  }
-}
-{
-  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
-  "time": "2020-11-04T02:40:57Z",
-  "exchange": "BINANCE",
-  "ticker": "KSMXBT",
-  "bar": {
-    "time": "2020-11-04T02:39:00Z",
-    "open": 0.002079,
-    "high": 0.002081,
-    "low": 0.002079,
-    "close": 0.002081,
-    "volume": 0.154
-  },
-  "strategy": {
-    "position_size": 343,
-    "order_action": "buy",
-    "order_contracts": 689,
-    "order_price": 0.002077,
-    "order_id": "LONG",
-    "market_position": "long",
-    "market_position_size": 343,
-    "prev_market_position": "short",
-    "prev_market_position_size": 346
   }
 }
