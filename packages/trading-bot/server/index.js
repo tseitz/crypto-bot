@@ -16,7 +16,6 @@ const kraken = new Kraken(
   process.env.KRAKEN_API_KEY,
   process.env.KRAKEN_SECRET_KEY
 );
-const kraken_url = "https://api.kraken.com";
 
 // create application/json parser
 var jsonParser = bodyParser.json();
@@ -42,22 +41,29 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   const assetPrice = body.strategy.order_price; // price of asset in usd or btc
 
   // get pair data (used for orderMin)
-  const { error: pairError, result: pairResult } = await kraken.getTradableAssetPairs({ pair });
+  const {
+    error: pairError,
+    result: pairResult,
+  } = await kraken.getTradableAssetPairs({ pair });
 
   if (pairError.length > 0) {
     console.log(`Pair data for ${pair} not available on Kraken`);
     res.sendStatus(401);
     return;
   }
-  const orderMin = pairResult[pair]["ordermin"];
+  // fancy way picking out the first object. Sometimes the kraken name is not what I receive from TV
+  const krakenPair = Object.keys(pairResult)[0];
+  const orderMin = pairResult[krakenPair]["ordermin"];
+  const base = pairResult[krakenPair]["base"];
 
   // if btc pair, convert to dollar (to pay $10 for now)
   // if usdt pair, keep dollar price
   const btcPair = /XBT$/.test(pair); // bitcoin pair, not XBTUSDT
   let assetPriceInDollar;
   if (btcPair) {
-    const { result } = await kraken.getTickerInformation({ pair: "XBTUSD" })
-    const btcPrice = result["XXBTZUSD"]["c"][0];
+    // TODO: doesn't handle ETHXBT
+    const { result } = await kraken.getTickerInformation({ pair: "XBTUSDT" });
+    const btcPrice = result["XBTUSDT"]["c"][0];
     console.log(`Current BTC Price: ${btcPrice}`);
     assetPriceInDollar = btcPrice * assetPrice;
   } else {
@@ -70,20 +76,19 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   const usdOrderValue = (assetPriceInDollar * volume).toFixed(2); // total value bought
   console.log(
-    `${action} ${volume} ${pair} at ${assetPrice} BTC ($${assetPriceInDollar.toFixed(
+    `${pair} ${action.toUpperCase()} ${volume} ${base} at ${assetPrice} : $${usdOrderValue} at $${assetPriceInDollar.toFixed(
       2
-    )}) for $${usdOrderValue}`
+    )}`
   );
 
-  const order = await kraken
-    .setAddOrder({
-      pair,
-      type: action,
-      ordertype: "market",
-      volume,
-      validate: true,
-    })
-  
+  const order = await kraken.setAddOrder({
+    pair,
+    type: action,
+    ordertype: "market",
+    volume,
+    validate: true,
+  });
+
   res.send(order);
 });
 

@@ -1,0 +1,25 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-04T20:21:37Z",
+  "exchange": "KRAKEN",
+  "ticker": "ETHXBT",
+  "bar": {
+    "time": "2020-11-04T20:19:00Z",
+    "open": 402,
+    "high": 402,
+    "low": 399.82,
+    "close": 399.82,
+    "volume": 23.66898534
+  },
+  "strategy": {
+    "position_size": -0.0034,
+    "order_action": "sell",
+    "order_contracts": 0.0034,
+    "order_price": 398.61,
+    "order_id": "short",
+    "market_position": "short",
+    "market_position_size": 0.0034,
+    "prev_market_position": "flat",
+    "prev_market_position_size": 0
+  }
+}
