@@ -28,13 +28,15 @@ app.get("/", (req, res) => {
 });
 
 app.post("/webhook/trading-view", jsonParser, async (req, res) => {
-  if (req.body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
+  // force body to be JSON. I haven't tested raw data from TV so not taking the risk
+  const body = JSON.parse(JSON.stringify(req.body));
+  if (body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log("Hey buddy, get out of here");
     res.sendStatus(401);
     return;
   }
   console.log("Ayyyyy, we got a trade alert!");
-  const pair = req.body.ticker;
+  const pair = body.ticker;
 
   kraken.getTradableAssetPairs({ pair }).then((response) => {
     const orderMin = response.result[pair]["ordermin"];
