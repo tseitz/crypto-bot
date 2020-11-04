@@ -1,8 +1,7 @@
 const express = require("express");
 var https = require("https");
 var bodyParser = require("body-parser");
-const Binance = require("node-binance-api");
-// const KrakenClient = require("./modules/kraken");
+// const Binance = require("node-binance-api");
 const Kraken = require("kraken-wrapper");
 
 const PORT = process.env.PORT || 3000;
