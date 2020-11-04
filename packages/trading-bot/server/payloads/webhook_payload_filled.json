@@ -1,25 +1,50 @@
-{
-  "passphrase": "supersecretpassphrase",
-  "time": "2020-09-06T01:44:17Z",
-  "exchange": "BINANCE",
-  "ticker": "ETHUSDT",
+  {
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-04T01:55:21Z",
+  "exchange": "KRAKEN",
+  "ticker": "LINKXBT",
   "bar": {
-    "time": "2020-09-06T01:43:00Z",
-    "open": 0.002748,
-    "high": 0.0027486,
-    "low": 0.002748,
-    "close": 0.0027486,
-    "volume": 150177
+    "time": "2020-11-04T01:54:00Z",
+    "open": 0.00074185,
+    "high": 0.00074185,
+    "low": 0.00074185,
+    "close": 0.00074185,
+    "volume": 31.4
   },
   "strategy": {
-    "position_size": 10000,
+    "position_size": 0,
+    "order_action": "sell",
+    "order_contracts": 1331,
+    "order_price": 0.0007415,
+    "order_id": "Close entry(s) order LONG",
+    "market_position": "flat",
+    "market_position_size": 0,
+    "prev_market_position": "long",
+    "prev_market_position_size": 1331
+  }
+}
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-04T02:40:57Z",
+  "exchange": "BINANCE",
+  "ticker": "KSMXBT",
+  "bar": {
+    "time": "2020-11-04T02:39:00Z",
+    "open": 0.002079,
+    "high": 0.002081,
+    "low": 0.002079,
+    "close": 0.002081,
+    "volume": 0.154
+  },
+  "strategy": {
+    "position_size": 343,
     "order_action": "buy",
-    "order_contracts": 10000,
-    "order_price": 0.0027451,
-    "order_id": "doge door",
+    "order_contracts": 689,
+    "order_price": 0.002077,
+    "order_id": "LONG",
     "market_position": "long",
-    "market_position_size": 10000,
-    "prev_market_position": "flat",
-    "prev_market_position_size": 0
+    "market_position_size": 343,
+    "prev_market_position": "short",
+    "prev_market_position_size": 346
   }
 }

@@ -35,15 +35,47 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     return;
   }
   console.log("Ayyyyy, we got a trade alert!");
+  const pair = req.body.ticker;
 
-  kraken
-    .getTrades({ pair: "ETHUSD" })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  kraken.getTradableAssetPairs({ pair }).then((response) => {
+    const orderMin = response.result[pair]["ordermin"];
+    
+    kraken
+      .getTickerInformation({ pair: "XBTUSD" })
+      .then((response) => {
+        const btcPrice = response.result["XXBTZUSD"]["c"][0];
+        console.log(`BTC Price: ${btcPrice}`);
+
+        const action = req.body.strategy.order_action;
+        const price = req.body.strategy.order_price; // price of asset
+        const priceInDollar = btcPrice * price; // convert btc price to dollar price
+        let volume = (10 / priceInDollar).toFixed(3); // we want $10
+        volume = volume > orderMin ? volume : orderMin;
+        const usdValue = (priceInDollar * volume).toFixed(2); // total value bought
+        console.log(
+          `${action} ${volume} ${pair} at ${price} BTC ($${priceInDollar.toFixed(2)}) for $${usdValue}`
+        );
+
+        kraken
+          .setAddOrder({
+            pair,
+            type: action,
+            ordertype: "market",
+            volume,
+            // validate: true,
+          })
+          .then((response) => {
+            console.log(response);
+            res.send(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
 });
 
 app.listen(process.env.PORT || 3000, () => {
