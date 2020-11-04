@@ -8,10 +8,10 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-const binance = new Binance().options({
-  APIKEY: process.env.BINANCE_API_KEY,
-  APISECRET: process.env.BINANCE_SECRET_KEY,
-});
+// const binance = new Binance().options({
+//   APIKEY: process.env.BINANCE_API_KEY,
+//   APISECRET: process.env.BINANCE_SECRET_KEY,
+// });
 const kraken = new Kraken(
   process.env.KRAKEN_API_KEY,
   process.env.KRAKEN_SECRET_KEY
