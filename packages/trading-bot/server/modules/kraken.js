@@ -49,21 +49,11 @@ const methods = {
 const defaults = {
   url: "https://api.kraken.com",
   version: 0,
-  // timeout: 5000,
+  timeout: 5000,
 };
 
 // Create a signature for a request
 const getMessageSignature = (path, request, secret, nonce) => {
-  // postdata = urllib.parse.urlencode(data)
-
-  //       # Unicode-objects must be encoded before hashing
-  //       encoded = (str(data['nonce']) + postdata).encode()
-  //       message = urlpath.encode() + hashlib.sha256(encoded).digest()
-
-  //       signature = hmac.new(base64.b64decode(self.secret),
-  //                            message, hashlib.sha512)
-  //       sigdigest = base64.b64encode(signature.digest())
-
   const message = qs.stringify(request);
   const secret_buffer = new Buffer.from(secret, "base64");
   const hash = new crypto.createHash("sha256");
@@ -75,31 +65,6 @@ const getMessageSignature = (path, request, secret, nonce) => {
 
   return hmac_digest;
 };
-
-// // Send an API request
-// const rawRequest = async (url, headers, body, timeout) => {
-//   const options = {
-//     method: "post",
-//     // body: qs.stringify(data),
-//     responseType: "json",
-//   };
-
-//   const { data } = await axios(url, options);
-
-//   if (data.error && data.error.length) {
-//     const error = data.error
-//       .filter((e) => e.startsWith("E"))
-//       .map((e) => e.substr(1));
-
-//     if (!error.length) {
-//       throw new Error("Kraken API returned an unknown error");
-//     }
-
-//     throw new Error(error.join(", "));
-//   }
-
-//   return data.result;
-// };
 
 // Send an API request
 const rawRequest = async (url, headers, body, timeout) => {
@@ -116,7 +81,7 @@ const rawRequest = async (url, headers, body, timeout) => {
   });
 
   // const { data } = await axios(url, options);
-  const data = await axios(options);
+  const response = await axios(options);
 
   if (response.error && response.error.length) {
     const error = response.error

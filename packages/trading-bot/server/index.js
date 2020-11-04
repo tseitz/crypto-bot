@@ -36,58 +36,56 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     return;
   }
   console.log("Ayyyyy, we got a trade alert!");
+
+  // grab data from the body
   const pair = body.ticker;
+  const action = body.strategy.order_action;
+  const assetPrice = body.strategy.order_price; // price of asset in usd or btc
 
-  kraken.getTradableAssetPairs({ pair }).then((response) => {
-    const orderMin = response.result[pair]["ordermin"];
+  // get pair data (used for orderMin)
+  const { error: pairError, result: pairResult } = await kraken.getTradableAssetPairs({ pair });
 
-    kraken
-      .getTickerInformation({ pair: "XBTUSD" })
-      .then((response) => {
-        // grab current btc price (used for usd/btc conversions atm)
-        const btcPrice = response.result["XXBTZUSD"]["c"][0];
-        console.log(`BTC Price: ${btcPrice}`);
+  if (pairError.length > 0) {
+    console.log(`Pair data for ${pair} not available on Kraken`);
+    res.sendStatus(401);
+    return;
+  }
+  const orderMin = pairResult[pair]["ordermin"];
 
-        // grab data from the body
-        const action = req.body.strategy.order_action;
-        const price = req.body.strategy.order_price; // price of asset
+  // if btc pair, convert to dollar (to pay $10 for now)
+  // if usdt pair, keep dollar price
+  const btcPair = /XBT$/.test(pair); // bitcoin pair, not XBTUSDT
+  let assetPriceInDollar;
+  if (btcPair) {
+    const { result } = await kraken.getTickerInformation({ pair: "XBTUSD" })
+    const btcPrice = result["XXBTZUSD"]["c"][0];
+    console.log(`Current BTC Price: ${btcPrice}`);
+    assetPriceInDollar = btcPrice * assetPrice;
+  } else {
+    assetPriceInDollar = assetPrice;
+  }
 
-        // if btc pair, convert to dollar (to pay $10 for now)
-        // if usdt pair, keep dollar price
-        const btcPair = /XBT$/.test(pair); // bitcoin pair, not XBTUSDT
-        const priceInDollar = btcPair ? btcPrice * price : price; // convert btc price to dollar price
+  // either use $10 or lowest order value (sometimes coins are > $10 equivilant min order)
+  let volume = (10 / assetPriceInDollar).toFixed(3);
+  volume = volume > orderMin ? volume : orderMin;
 
-        // either use $10 or lowest order value (sometimes coins are > $10 equivilant min order)
-        let volume = (10 / priceInDollar).toFixed(3); // we want $10
-        volume = volume > orderMin ? volume : orderMin;
+  const usdOrderValue = (assetPriceInDollar * volume).toFixed(2); // total value bought
+  console.log(
+    `${action} ${volume} ${pair} at ${assetPrice} BTC ($${assetPriceInDollar.toFixed(
+      2
+    )}) for $${usdOrderValue}`
+  );
 
-        const usdValue = (priceInDollar * volume).toFixed(2); // total value bought
-        console.log(
-          `${action} ${volume} ${pair} at ${price} BTC ($${priceInDollar.toFixed(
-            2
-          )}) for $${usdValue}`
-        );
-
-        kraken
-          .setAddOrder({
-            pair,
-            type: action,
-            ordertype: "market",
-            volume,
-            validate: true,
-          })
-          .then((response) => {
-            console.log(response);
-            res.send(response);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  });
+  const order = await kraken
+    .setAddOrder({
+      pair,
+      type: action,
+      ordertype: "market",
+      volume,
+      validate: true,
+    })
+  
+  res.send(order);
 });
 
 app.listen(process.env.PORT || 3000, () => {
