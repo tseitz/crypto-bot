@@ -100,3 +100,8 @@ app.listen(process.env.PORT || 3000, () => {
     console.log(`Hi Heroku`);
   }
 });
+
+const strategy = {
+  pair: string,
+  type: long | short,
+};
