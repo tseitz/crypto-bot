@@ -40,6 +40,11 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   const action = body.strategy.order_action;
   const assetPrice = body.strategy.order_price; // price of asset in usd or btc
 
+  if (pair === "ETHXBT") {
+    xethStrategy(pair, action, assetPrice);
+    return;
+  }
+
   // get pair data (used for orderMin)
   const {
     error: pairError,
@@ -101,7 +106,27 @@ app.listen(process.env.PORT || 3000, () => {
   }
 });
 
-const strategy = {
-  pair: string,
-  type: long | short,
-};
+async function xethStrategy(pair, action, assetPrice) {
+  const { result } = await kraken.getTickerInformation({ pair: "XBTUSDT" });
+  const btcPrice = result["XBTUSDT"]["c"][0];
+  console.log(`Current BTC Price: ${btcPrice}`);
+  assetPriceInDollar = btcPrice * assetPrice;
+  console.log(assetPrice);
+  console.log(assetPriceInDollar);
+
+  let volume;
+  if (action == "buy") {
+    volume = (50 / assetPriceInDollar).toFixed(3);
+  } else {
+    volume = (100 / assetPriceInDollar).toFixed(3);
+  }
+  console.log(volume);
+
+  const order = await kraken.setAddOrder({
+    pair,
+    type: action,
+    ordertype: "market",
+    volume,
+    validate: true,
+  });
+}

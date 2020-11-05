@@ -1,6 +1,6 @@
-import Strategy from "./Strategy";
+// import Strategy from "./Strategy";
 
-interface XETHXBTC extends Strategy {
-  type: "XETHBTC";
-  tradeVolume: { volume: 50 };
-}
+// interface XETHXBTC extends Strategy {
+//   type: "XETHBTC";
+//   tradeVolume: { volume: 50 };
+// }
