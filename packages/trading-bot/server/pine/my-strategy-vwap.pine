@@ -20,15 +20,13 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 
 // let's be responsible
-longLossPerc = input(3.0, title='Long Stop Loss %', type=input.float) / 100
-shortLossPerc = input(3.0, title='Short Stop Loss %', type=input.float) / 100
-longTakeProfPerc = input(15.0, title='Long Take Profit %', type=input.float) / 100
-shortTakeProfPerc = input(15.0, title='Short Take Profit %', type=input.float) / 100
+longLossPerc = input(1.69, title='Long Stop Loss %', type=input.float) / 100
+shortLossPerc = input(1.69, title='Short Stop Loss %', type=input.float) / 100
+// longTakeProfPerc = input(15.0, title='Long Take Profit %', type=input.float) / 100
+// shortTakeProfPerc = input(15.0, title='Short Take Profit %', type=input.float) / 100
 
 longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
-longTakeProfPrice = strategy.position_avg_price * (1 - longTakeProfPerc)
-shortTakeProfPrice = strategy.position_avg_price * (1 + shortTakeProfPerc)
 
 
 // don't worry about doji's within margin of error
@@ -39,6 +37,8 @@ bgcolor(color=doji ? color.yellow : na)
 
 // plot the vwap
 vwapClose = vwap(close)
+vwapCloseHigh = vwap(close + close * .001)
+vwapCloseLow = vwap(close - close * .001)
 vwapLow = vwap(low - low * .01)
 vwapHigh = vwap(high + high * .01)
 // averageVol = sma(volume, averageLen)
@@ -46,6 +46,8 @@ vwapHigh = vwap(high + high * .01)
 plot(series=vwapClose, color=color.teal, linewidth=2)
 plot(series=vwapLow, color=color.orange, linewidth=1)
 plot(series=vwapHigh, color=color.orange, linewidth=1)
+plot(series=vwapCloseHigh, color=color.white, linewidth=1)
+plot(series=vwapCloseLow, color=color.white, linewidth=1)
 
 // where we at?
 var isLong = false
@@ -53,7 +55,7 @@ var isShort = false
 
 // Look for 2 green candles to long
 // greenCandle = (ha_close > ha_open) and not doji
-greenCandle = (close > open) and not doji
+greenCandle = (close > open)  and not doji
 bgcolor(color=greenCandle ? color.green : na)
 
 // look for 2 red candles to short
@@ -61,11 +63,15 @@ bgcolor(color=greenCandle ? color.green : na)
 redCandle = (close < open) and not doji
 bgcolor(color=redCandle ? color.red : na)
 
-dontLong = isShort and greenCandle and close <= vwapHigh
-dontShort = isLong and redCandle and close >= vwapLow
+// vwapLong = isShort and greenCandle and open < vwapLow and close > vwapLow
+vwapLong = greenCandle and (open >= vwapCloseHigh or high >= vwapHigh) //  or crossover(high, vwapCloseHigh))
+// longCrossesVwap = greenCandle and crossover(high, vwapCloseHigh)
+vwapShort = redCandle and (open <= vwapCloseLow or low >= vwapHigh) // or crossover(low, vwapCloseLow))
+// shortCrossesVwap = redCandle and crossover(low, vwapCloseLow)
+// dontShort = isLong and redCandle and close > vwapLow
 
-long = not isLong and greenCandle and not dontLong
-short = not isShort and redCandle and not dontShort
+long = not isLong and vwapLong
+short = not isShort and vwapShort
 
 if long
     isLong := true
@@ -75,30 +81,31 @@ if short
     isLong := false
     isShort := true
 
-closeLong = isLong and not short and redCandle and low[1] < vwapLow
-closeShort = isShort and not long and greenCandle and high[1] > vwapHigh // TODO: check if it crosses way above
+// closeLong = isLong and not short and redCandle and low < vwapCloseHigh
+// closeShort = isShort and not long and greenCandle and high > vwapCloseLow
+// closeShort = isShort and not long and greenCandle and high[1] > vwapHigh // TODO: check if it crosses way above
 
 
 // plot the plays
 plotshape(long, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(longCrossesVwap, title="long", text="long", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+// plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
-plotshape(closeShort, title="close short", text="close short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
-
-// plotshape(shortCheck, title="short check", text="don't short", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
-// plotshape(longCheck, title="long check", text="don't long", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
 // set up alert conditions
 alertcondition(long, title="heiki go!", message="ha_green")
 alertcondition(short, title="heiki chillllll", message="ha_red")
 
+// alertcondition(, title="heiki chillllll", message="ha_red")
+
 
 // strategy
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.close("long", when=(closeLong or short) and isWithinTimeBounds)
+strategy.close("long", when=short and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
+strategy.close("short", when=long and isWithinTimeBounds)
 
 
 if (strategy.position_size > 0)

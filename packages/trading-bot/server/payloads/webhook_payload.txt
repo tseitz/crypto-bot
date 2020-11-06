@@ -3,6 +3,7 @@
     "time": "{{timenow}}",
     "exchange": "{{exchange}}",
     "ticker": "{{ticker}}",
+    "interval": "{{interval}}"
     "bar": {
         "time": "{{time}}",
         "open": {{open}},

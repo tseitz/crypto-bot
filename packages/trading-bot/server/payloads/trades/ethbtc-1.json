@@ -1,0 +1,38 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-06T14:40:03Z",
+  "exchange": "BINANCE",
+  "ticker": "MKRBTC",
+  "interval": "5",
+  "bar": {
+    "time": "2020-11-06T14:35:00Z",
+    "open": 0.034844862773281,
+    "high": 0.034878,
+    "low": 0.034398,
+    "close": 0.03464875,
+    "volume": 5.6659999999999995
+  },
+  "strategy": {
+    "action": "short"
+  }
+}
+
+
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-06T15:05:09Z",
+  "exchange": "BINANCE",
+  "ticker": "MKRBTC",
+  "interval": "5",
+  "bar": {
+  "time": "2020-11-06T15:00:00Z",
+  "open": 0.034488441024165,
+  "high": 0.034577,
+  "low": 0.034488441024165,
+  "close": 0.0345345,
+  "volume": 3.44
+  },
+  "strategy": {
+  "action": "long"
+  }
+  }
