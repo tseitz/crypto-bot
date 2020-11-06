@@ -20,8 +20,8 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 
 // let's be responsible
-longLossPerc = input(1.69, title='Long Stop Loss %', type=input.float) / 100
-shortLossPerc = input(1.69, title='Short Stop Loss %', type=input.float) / 100
+// longLossPerc = input(1.69, title='Long Stop Loss %', type=input.float) / 100
+// shortLossPerc = input(1.69, title='Short Stop Loss %', type=input.float) / 100
 // longTakeProfPerc = input(15.0, title='Long Take Profit %', type=input.float) / 100
 // shortTakeProfPerc = input(15.0, title='Short Take Profit %', type=input.float) / 100
 
@@ -41,6 +41,8 @@ vwapCloseHigh = vwap(close + close * .001)
 vwapCloseLow = vwap(close - close * .001)
 vwapLow = vwap(low - low * .01)
 vwapHigh = vwap(high + high * .01)
+smallVwapHigh = vwap(high + high * .008)
+smallVwapLow = vwap(low + low * .008)
 // averageVol = sma(volume, averageLen)
 
 plot(series=vwapClose, color=color.teal, linewidth=2)
@@ -64,9 +66,9 @@ redCandle = (close < open) and not doji
 bgcolor(color=redCandle ? color.red : na)
 
 // vwapLong = isShort and greenCandle and open < vwapLow and close > vwapLow
-vwapLong = greenCandle and (open >= vwapCloseHigh or high >= vwapHigh) //  or crossover(high, vwapCloseHigh))
+vwapLong = greenCandle and (open >= vwapCloseHigh or high >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
 // longCrossesVwap = greenCandle and crossover(high, vwapCloseHigh)
-vwapShort = redCandle and (open <= vwapCloseLow or low >= vwapHigh) // or crossover(low, vwapCloseLow))
+vwapShort = redCandle and (open <= vwapCloseLow or low <=smallVwapLow) // or crossover(low, vwapCloseLow))
 // shortCrossesVwap = redCandle and crossover(low, vwapCloseLow)
 // dontShort = isLong and redCandle and close > vwapLow
 
