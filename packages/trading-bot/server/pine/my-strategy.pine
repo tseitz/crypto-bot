@@ -1,5 +1,6 @@
 //@version=4
-strategy("Example 6.1")
+strategy("SlimScript")
+// set up heikin
 ha_t = heikinashi(syminfo.tickerid)
 ha_open = security(ha_t, timeframe.period, open)
 ha_high = security(ha_t, timeframe.period, high)
@@ -8,21 +9,24 @@ ha_close = security(ha_t, timeframe.period, close)
 palette = ha_close >= ha_open ? color.green : color.red
 plotcandle(ha_open, ha_high, ha_low, ha_close, color=palette)
 
+// don't worry about doji's within margin of error
+Precision = input(0.25, minval=0.0001, title="Precision")
+doji = abs(open - close) <= (high - low) * Precision
+bgcolor(color=doji ? color.yellow : na)
 
 // Look for 2 green candles to long
-twoGreenCandles = (close[1] > open[1]) and (close > open)
+twoGreenCandles = (close > open) and not doji
 bgcolor(color=twoGreenCandles ? color.green : na)
 
-
 // look for 2 red candles to short
-twoRedCandles = (close[1] < open[1]) and (close < open)
-bgcolor(color=twoGreenCandles ? color.red : na)
+twoRedCandles = (close < open) and not doji
+bgcolor(color=twoRedCandles ? color.red : na)
 
 var isLong = false
 var isShort = false
 
-long = not isLong and ((close[1] > open[1]) and (close > open)) and (close != open)
-short = not isShort and ((close[1] < open[1]) and (close < open)) and (close != open)
+long = not isLong and twoGreenCandles
+short = not isShort and twoRedCandles
 
 if long
     isLong := true
@@ -32,18 +36,10 @@ if short
     isLong := false
     isShort := true
 
-openLong = isShort and (close[1] > open[1]) and (close > open) and (close != open)
-closeLong = isLong and (close[1] < open[1]) and (close < open) and (close != open)
-openShort = isLong and (close[1] < open[1]) and (close < open) and (close != open)
-closeShort = isShort and (close[1] > open[1]) and (close > open) and (close != open)
-
+// plot the plays
 plotshape(long, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
-// strategy.entry("LONG", long=true, when=openLong)
-// strategy.close("LONG", when=closeLong)
-// strategy.entry("short", long=false, when=openShort)
-// strategy.close("short", when=closeShort)
-
-alertcondition(openLong,  "ha_green",  "ha_green")
-alertcondition(openShort,    "ha_red",    "ha_red")
+// set up alert conditions
+alertcondition(long, title="heiki go!", message="ha_green")
+alertcondition(short, title="heiki chillllll", message="ha_red")
