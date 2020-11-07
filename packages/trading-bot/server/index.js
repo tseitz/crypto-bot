@@ -39,11 +39,12 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   const pair = body.ticker;
   const action = body.strategy.order_action;
   const assetPrice = body.strategy.order_price; // price of asset in usd or btc
+  const leverage = 2 || body.strategy.leverage;
 
-  if (pair === "ETHXBT") {
-    xethStrategy(pair, action, assetPrice);
-    return;
-  }
+  // if (pair === "ETHXBT") {
+  //   xethStrategy(pair, action, assetPrice);
+  //   return;
+  // }
 
   // get pair data (used for orderMin)
   const {
@@ -81,7 +82,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   const usdOrderValue = (assetPriceInDollar * volume).toFixed(2); // total value bought
   console.log(
-    `${pair} ${action.toUpperCase()} ${volume} ${base} at ${assetPrice} : $${usdOrderValue} at $${assetPriceInDollar.toFixed(
+    `${pair} ${action.toUpperCase()} ${volume * leverage} ${base} at ${assetPrice} : $${usdOrderValue * leverage} at $${assetPriceInDollar.toFixed(
       2
     )}`
   );
@@ -91,8 +92,10 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     type: action,
     ordertype: "market",
     volume,
+    leverage,
     validate: true,
   });
+  console.log(order);
 
   res.send(order);
 });

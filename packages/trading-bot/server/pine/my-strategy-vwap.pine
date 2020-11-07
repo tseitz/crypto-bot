@@ -20,8 +20,8 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 
 // let's be responsible
-// longLossPerc = input(1.69, title='Long Stop Loss %', type=input.float) / 100
-// shortLossPerc = input(1.69, title='Short Stop Loss %', type=input.float) / 100
+longLossPerc = input(3.69, title='Long Stop Loss %', type=input.float) / 100
+shortLossPerc = input(3.69, title='Short Stop Loss %', type=input.float) / 100
 // longTakeProfPerc = input(15.0, title='Long Take Profit %', type=input.float) / 100
 // shortTakeProfPerc = input(15.0, title='Short Take Profit %', type=input.float) / 100
 
@@ -42,7 +42,7 @@ vwapCloseLow = vwap(close - close * .001)
 vwapLow = vwap(low - low * .01)
 vwapHigh = vwap(high + high * .01)
 smallVwapHigh = vwap(high + high * .008)
-smallVwapLow = vwap(low + low * .008)
+smallVwapLow = vwap(low - low * .008)
 // averageVol = sma(volume, averageLen)
 
 plot(series=vwapClose, color=color.teal, linewidth=2)
@@ -56,21 +56,23 @@ var isLong = false
 var isShort = false
 
 // Look for 2 green candles to long
-// greenCandle = (ha_close > ha_open) and not doji
-greenCandle = (close > open)  and not doji
-bgcolor(color=greenCandle ? color.green : na)
+// greenNoDoji = (ha_close > ha_open) and not doji
+greenCandle = (close > open)
+greenNoDoji = (close > open)  and not doji
+bgcolor(color=greenNoDoji ? color.green : na)
 
 // look for 2 red candles to short
-// redCandle = (ha_close < ha_open) and not doji
-redCandle = (close < open) and not doji
-bgcolor(color=redCandle ? color.red : na)
+// redNoDoji = (ha_close < ha_open) and not doji
+redCandle = (close < open)
+redNoDoji = (close < open) and not doji
+bgcolor(color=redNoDoji ? color.red : na)
 
-// vwapLong = isShort and greenCandle and open < vwapLow and close > vwapLow
-vwapLong = greenCandle and (open >= vwapCloseHigh or high >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
-// longCrossesVwap = greenCandle and crossover(high, vwapCloseHigh)
-vwapShort = redCandle and (open <= vwapCloseLow or low <=smallVwapLow) // or crossover(low, vwapCloseLow))
-// shortCrossesVwap = redCandle and crossover(low, vwapCloseLow)
-// dontShort = isLong and redCandle and close > vwapLow
+// vwapLong = isShort and greenNoDoji and open < vwapLow and close > vwapLow
+vwapLong = greenNoDoji and (open >= vwapCloseHigh or close >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
+// longCrossesVwap = greenNoDoji and crossover(high, vwapCloseHigh)
+vwapShort = redNoDoji and (open <= vwapCloseLow or close <= smallVwapLow) // or crossover(low, vwapCloseLow))
+// shortCrossesVwap = redNoDoji and crossover(low, vwapCloseLow)
+// dontShort = isLong and redNoDoji and close > vwapLow
 
 long = not isLong and vwapLong
 short = not isShort and vwapShort
@@ -83,9 +85,9 @@ if short
     isLong := false
     isShort := true
 
-// closeLong = isLong and not short and redCandle and low < vwapCloseHigh
-// closeShort = isShort and not long and greenCandle and high > vwapCloseLow
-// closeShort = isShort and not long and greenCandle and high[1] > vwapHigh // TODO: check if it crosses way above
+// closeLong = isLong and not short and redNoDoji and low < vwapCloseHigh
+// closeShort = isShort and not long and greenNoDoji and high > vwapCloseLow
+// closeShort = isShort and not long and greenNoDoji and high[1] > vwapHigh // TODO: check if it crosses way above
 
 
 // plot the plays
@@ -96,10 +98,8 @@ plotshape(long, title="long", text="long", style=shape.labelup, location=locatio
 plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
 // set up alert conditions
-alertcondition(long, title="heiki go!", message="ha_green")
-alertcondition(short, title="heiki chillllll", message="ha_red")
-
-// alertcondition(, title="heiki chillllll", message="ha_red")
+// alertcondition(long, title="heiki go!", message="ha_green")
+// alertcondition(short, title="heiki chillllll", message="ha_red")
 
 
 // strategy
