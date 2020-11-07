@@ -13,6 +13,7 @@
     "volume": 0.0117188
   },
   "strategy": {
-    "action": "long"
+    "action": "buy",
+    "stop": "hi"
   }
 }

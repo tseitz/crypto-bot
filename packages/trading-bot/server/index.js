@@ -37,9 +37,12 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   // grab data from the body
   let action = body.strategy.action;
+  let oppositeAction = action === 'buy' ? 'sell' : 'buy';
   const stop = body.strategy.stop;
   const assetPrice = body.strategy.price || body.bar.close; // price of asset in usd or btc
-  const leverage = 1 || body.strategy.leverage;
+  const stopLoss = action === 'buy' ? (assetPrice - (assetPrice * .05)) : (assetPrice + (assetPrice * .05));
+  console.log(stopLoss)
+  const leverage = 2 || body.strategy.leverage;
   let pair = body.ticker;
 
   const switchPair = /BTC$/.test(pair);
@@ -50,7 +53,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   //   return;
   // }
 
-  if (stop.includes("stop")) {
+  if (stop && stop.includes("stop")) {
     if (stop.includes("buy")) {
       action = "sell";
     } else {
@@ -102,14 +105,27 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   );
 
   // console.log(leverage);
-  var { error, result } = await kraken.setAddOrder({
+  var { error, result: closeOut } = await kraken.setAddOrder({
+    pair,
+    type: oppositeAction,
+    ordertype: "settle-position",
+    volume: 0,
+    leverage,
+    validate: true
+  });
+  console.log(closeOut)
+
+  var { error, result: newOrder } = await kraken.setAddOrder({
     pair,
     type: action,
-    ordertype: "market",
+    ordertype: "stop-loss",
+    price: stopLoss.toFixed(1),
     volume,
-    // leverage,
-    validate: true,
+    leverage,
+    validate: true
   });
+  console.log(error)
+  console.log(newOrder)
 
   // if (error.length > 0 && error[0].includes("leverage")) {
   //   var { error, result } = await kraken.setAddOrder({
@@ -123,8 +139,8 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   //   res.send(result); // idk we'll figure out a better way
   // }
 
-  res.send(result);
-};);
+  res.send(newOrder);
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${PORT}`);
@@ -157,5 +173,6 @@ async function xethStrategy(pair, action, assetPrice) {
     ordertype: "market",
     volume,
     validate: true,
+    order: ['stop-loss', '5%']
   });
 }
