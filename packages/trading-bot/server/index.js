@@ -37,8 +37,8 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   // grab data from the body
   let action = body.strategy.action;
-  const orderId = body.strategy.order_id; // for stops
-  const assetPrice = body.strategy.order_price || body.bar.close; // price of asset in usd or btc
+  const stop = body.strategy.stop;
+  const assetPrice = body.strategy.price || body.bar.close; // price of asset in usd or btc
   const leverage = 1 || body.strategy.leverage;
   let pair = body.ticker;
 
@@ -50,11 +50,11 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   //   return;
   // }
 
-  if (orderId.includes('stop')) {
-    if (orderId.includes('buy')) {
-      action = 'sell'
+  if (stop.includes("stop")) {
+    if (stop.includes("buy")) {
+      action = "sell";
     } else {
-      action = 'buy'
+      action = "buy";
     }
   }
 
@@ -124,7 +124,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   // }
 
   res.send(result);
-});
+};);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${PORT}`);

@@ -1,0 +1,20 @@
+{
+  "passphrase": "supersecretpassphrase",
+  "time": "{{timenow}}",
+  "exchange": "{{exchange}}",
+  "ticker": "{{ticker}}",
+  "interval": "{{interval}}",
+  "bar": {
+      "time": "{{time}}",
+      "open": {{open}},
+      "high": {{high}},
+      "low": {{low}},
+      "close": {{close}},
+      "volume": {{volume}}
+  },
+  "strategy": {
+      "action": "{{strategy.order.action}}",
+      "price": {{strategy.order.price}},
+      "stop": "{{strategy.order.id}}"
+  }
+}
