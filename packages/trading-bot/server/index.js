@@ -36,7 +36,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   console.log("Ayyyyy, we got a trade alert!");
 
   // grab data from the body
-  const action = body.strategy.order_action;
+  const action = body.strategy.action;
   const assetPrice = body.strategy.order_price; // price of asset in usd or btc
   const leverage = 2 || body.strategy.leverage;
   let pair = body.ticker;
