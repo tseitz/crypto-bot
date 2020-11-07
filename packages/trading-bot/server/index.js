@@ -36,10 +36,13 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   console.log("Ayyyyy, we got a trade alert!");
 
   // grab data from the body
-  const pair = body.ticker;
   const action = body.strategy.order_action;
   const assetPrice = body.strategy.order_price; // price of asset in usd or btc
   const leverage = 2 || body.strategy.leverage;
+  let pair = body.ticker;
+
+  const switchPair = /BTC$/.test(pair);
+  pair = switchPair ? pair.replace("BTC", "XBT") : pair;
 
   // if (pair === "ETHXBT") {
   //   xethStrategy(pair, action, assetPrice);
@@ -82,12 +85,15 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   const usdOrderValue = (assetPriceInDollar * volume).toFixed(2); // total value bought
   console.log(
-    `${pair} ${action.toUpperCase()} ${volume * leverage} ${base} at ${assetPrice} : $${usdOrderValue * leverage} at $${assetPriceInDollar.toFixed(
-      2
-    )}`
+    `${pair} ${action.toUpperCase()} ${
+      volume * leverage
+    } ${base} at ${assetPrice} : $${
+      usdOrderValue * leverage
+    } at $${assetPriceInDollar.toFixed(2)}`
   );
 
-  const order = await kraken.setAddOrder({
+  console.log(leverage);
+  var { error, result } = await kraken.setAddOrder({
     pair,
     type: action,
     ordertype: "market",
@@ -95,9 +101,20 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     leverage,
     validate: true,
   });
-  console.log(order);
+  
+  if (error.length > 0 && error[0].includes("leverage")) {
+    var { error, result } = await kraken.setAddOrder({
+      pair,
+      type: action,
+      ordertype: "market",
+      volume,
+      validate: true,
+    });
+    
+    res.send(result); // idk we'll figure out a better way
+  }
 
-  res.send(order);
+  res.send(result);
 });
 
 app.listen(process.env.PORT || 3000, () => {
