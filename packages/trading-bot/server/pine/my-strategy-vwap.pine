@@ -20,8 +20,8 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 
 // let's be responsible
-longLossPerc = input(3.69, title='Long Stop Loss %', type=input.float) / 100
-shortLossPerc = input(3.69, title='Short Stop Loss %', type=input.float) / 100
+longLossPerc = input(8.0, title='Long Stop Loss %', type=input.float) / 100
+shortLossPerc = input(8.0, title='Short Stop Loss %', type=input.float) / 100
 // longTakeProfPerc = input(15.0, title='Long Take Profit %', type=input.float) / 100
 // shortTakeProfPerc = input(15.0, title='Short Take Profit %', type=input.float) / 100
 
@@ -85,7 +85,6 @@ if short
     isLong := false
     isShort := true
 
-// closeLong = isLong and not short and redNoDoji and low < vwapCloseHigh
 // closeShort = isShort and not long and greenNoDoji and high > vwapCloseLow
 // closeShort = isShort and not long and greenNoDoji and high[1] > vwapHigh // TODO: check if it crosses way above
 
@@ -111,7 +110,7 @@ strategy.close("short", when=long and isWithinTimeBounds)
 
 
 if (strategy.position_size > 0)
-    strategy.exit(id="XL STP", stop=longStopPrice)
+    strategy.exit(id="stop buy", stop=longStopPrice)
 
 if (strategy.position_size < 0)
-    strategy.exit(id="XS STP", stop=shortStopPrice)
+    strategy.exit(id="stop sell", stop=shortStopPrice)

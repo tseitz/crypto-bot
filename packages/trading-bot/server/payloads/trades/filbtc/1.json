@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T11:00:03Z",
+  "exchange": "BINANCE",
+  "ticker": "FILBTC",
+  "interval": "60",
+  "bar": {
+    "time": "2020-11-07T10:00:00Z",
+    "open": 0.0020873,
+    "high": 0.0020933,
+    "low": 0.0020782,
+    "close": 0.0020786,
+    "volume": 4022.2000000000035
+  },
+  "strategy": {
+    "action": "sell"
+  }
+}

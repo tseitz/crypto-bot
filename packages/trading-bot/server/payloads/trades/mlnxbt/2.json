@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T10:10:42Z",
+  "exchange": "KRAKEN",
+  "ticker": "MLNXBT",
+  "interval": "5",
+  "bar": {
+    "time": "2020-11-07T10:05:00Z",
+    "open": 0.001432,
+    "high": 0.001462,
+    "low": 0.001432,
+    "close": 0.001462,
+    "volume": 68.39945
+  },
+  "strategy": {
+    "action": "buy"
+  }
+}

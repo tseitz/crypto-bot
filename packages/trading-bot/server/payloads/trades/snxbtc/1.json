@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T06:04:33Z",
+  "exchange": "BINANCE",
+  "ticker": "SNXBTC",
+  "interval": "15",
+  "bar": {
+    "time": "2020-11-07T05:45:00Z",
+    "open": 0.0002349,
+    "high": 0.0002396,
+    "low": 0.0002344,
+    "close": 0.0002396,
+    "volume": 9096.21000000001
+  },
+  "strategy": {
+    "action": "buy"
+  }
+}

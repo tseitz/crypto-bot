@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T09:40:16Z",
+  "exchange": "BINANCE",
+  "ticker": "KSMBTC",
+  "interval": "5",
+  "bar": {
+    "time": "2020-11-07T09:35:00Z",
+    "open": 0.002156,
+    "high": 0.002159,
+    "low": 0.002156,
+    "close": 0.002159,
+    "volume": 11.732000000000003
+  },
+  "strategy": {
+    "action": "buy"
+  }
+}

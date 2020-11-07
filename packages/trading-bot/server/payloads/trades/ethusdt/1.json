@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T12:30:01Z",
+  "exchange": "BINANCE",
+  "ticker": "ETHUSDT",
+  "interval": "15",
+  "bar": {
+    "time": "2020-11-07T12:15:00Z",
+    "open": 463.24,
+    "high": 465.16,
+    "low": 462.64,
+    "close": 464.29,
+    "volume": 15933.118890000005
+  },
+  "strategy": {
+    "action": "buy"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T15:30:40Z",
+  "exchange": "BINANCE",
+  "ticker": "YFIBTC",
+  "interval": "15",
+  "bar": {
+    "time": "2020-11-07T15:15:00Z",
+    "open": 0.92708,
+    "high": 0.94849,
+    "low": 0.90631,
+    "close": 0.9461,
+    "volume": 71.15389999999988
+  },
+  "strategy": {
+    "action": "buy"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T08:47:49Z",
+  "exchange": "KRAKEN",
+  "ticker": "YFIXBT",
+  "interval": "5",
+  "bar": {
+    "time": "2020-11-07T08:40:00Z",
+    "open": 0.956,
+    "high": 0.9562,
+    "low": 0.956,
+    "close": 0.9562,
+    "volume": 0.5
+  },
+  "strategy": {
+    "action": "buy"
+  }
+}

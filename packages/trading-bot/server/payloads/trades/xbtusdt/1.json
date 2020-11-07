@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T02:40:14Z",
+  "exchange": "KRAKEN",
+  "ticker": "XBTUSDT",
+  "interval": "5",
+  "bar": {
+    "time": "2020-11-07T02:35:00Z",
+    "open": 15589.8,
+    "high": 15589.8,
+    "low": 15581.5,
+    "close": 15581.5,
+    "volume": 0.0117188
+  },
+  "strategy": {
+    "action": "long"
+  }
+}

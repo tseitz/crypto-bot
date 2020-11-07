@@ -1,0 +1,18 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-07T06:00:03Z",
+  "exchange": "BINANCE",
+  "ticker": "XMRBTC",
+  "interval": "60",
+  "bar": {
+    "time": "2020-11-07T05:00:00Z",
+    "open": 0.00784,
+    "high": 0.007864,
+    "low": 0.007812,
+    "close": 0.007862,
+    "volume": 1676.7010000000002
+  },
+  "strategy": {
+    "action": "buy"
+  }
+}

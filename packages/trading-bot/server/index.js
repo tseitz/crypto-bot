@@ -36,9 +36,10 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   console.log("Ayyyyy, we got a trade alert!");
 
   // grab data from the body
-  const action = body.strategy.action;
-  const assetPrice = body.strategy.order_price; // price of asset in usd or btc
-  const leverage = 2 || body.strategy.leverage;
+  let action = body.strategy.action;
+  const orderId = body.strategy.order_id; // for stops
+  const assetPrice = body.strategy.order_price || body.bar.close; // price of asset in usd or btc
+  const leverage = 1 || body.strategy.leverage;
   let pair = body.ticker;
 
   const switchPair = /BTC$/.test(pair);
@@ -48,6 +49,14 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   //   xethStrategy(pair, action, assetPrice);
   //   return;
   // }
+
+  if (orderId.includes('stop')) {
+    if (orderId.includes('buy')) {
+      action = 'sell'
+    } else {
+      action = 'buy'
+    }
+  }
 
   // get pair data (used for orderMin)
   const {
@@ -92,27 +101,27 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     } at $${assetPriceInDollar.toFixed(2)}`
   );
 
-  console.log(leverage);
+  // console.log(leverage);
   var { error, result } = await kraken.setAddOrder({
     pair,
     type: action,
     ordertype: "market",
     volume,
-    leverage,
+    // leverage,
     validate: true,
   });
-  
-  if (error.length > 0 && error[0].includes("leverage")) {
-    var { error, result } = await kraken.setAddOrder({
-      pair,
-      type: action,
-      ordertype: "market",
-      volume,
-      validate: true,
-    });
-    
-    res.send(result); // idk we'll figure out a better way
-  }
+
+  // if (error.length > 0 && error[0].includes("leverage")) {
+  //   var { error, result } = await kraken.setAddOrder({
+  //     pair,
+  //     type: action,
+  //     ordertype: "market",
+  //     volume,
+  //     validate: true,
+  //   });
+
+  //   res.send(result); // idk we'll figure out a better way
+  // }
 
   res.send(result);
 });
