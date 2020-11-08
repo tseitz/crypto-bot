@@ -111,18 +111,17 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     ordertype: "settle-position",
     volume: 0,
     leverage,
-    validate: true
+    // validate: true,
   });
-  console.log(closeOut)
 
   var { error, result: newOrder } = await kraken.setAddOrder({
     pair,
     type: action,
     ordertype: "stop-loss",
-    price: stopLoss.toFixed(1),
+    price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
     volume,
     leverage,
-    validate: true
+    // validate: true,
   });
   console.log(error)
   console.log(newOrder)
@@ -150,6 +149,18 @@ app.listen(process.env.PORT || 3000, () => {
     console.log(`Hi Heroku`);
   }
 });
+
+async function closePosition() {
+  var { error, result: closeOut } = await kraken.setAddOrder({
+    pair,
+    type: oppositeAction,
+    ordertype: "settle-position",
+    volume: 0,
+    leverage,
+    // validate: true
+  });
+  console.log(closeOut);
+}
 
 async function xethStrategy(pair, action, assetPrice) {
   const { result } = await kraken.getTickerInformation({ pair: "XBTUSDT" });

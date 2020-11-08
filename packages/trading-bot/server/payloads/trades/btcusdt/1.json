@@ -1,0 +1,20 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "2020-11-08T00:45:00Z",
+  "exchange": "BINANCE",
+  "ticker": "BTCUSDT",
+  "interval": "15",
+  "bar": {
+    "time": "2020-11-08T00:30:00Z",
+    "open": 14827.25,
+    "high": 14886.87,
+    "low": 14824,
+    "close": 14879.66,
+    "volume": 640.0202950000062
+  },
+  "strategy": {
+    "action": "buy",
+    "price": 14879.67,
+    "stop": "long"
+  }
+}
