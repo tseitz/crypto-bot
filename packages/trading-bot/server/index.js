@@ -33,18 +33,15 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     res.sendStatus(401);
     return;
   }
-  console.log("Ayyyyy, we got a trade alert!");
 
   // grab data from the body
   let action = body.strategy.action;
-  let oppositeAction = action === "buy" ? "sell" : "buy";
-  const stop = body.strategy.stop;
+  const description = body.strategy.description;
   const assetPrice = body.strategy.price || body.bar.close; // price of asset in usd or btc
-  const stopLoss =
-    action === "buy"
-      ? assetPrice - assetPrice * 0.01
-      : assetPrice + assetPrice * 0.01;
-  console.log(stopLoss);
+  // const stopLoss =
+  //   action === "buy"
+  //     ? assetPrice - assetPrice * 0.01
+  //     : assetPrice + assetPrice * 0.01;
   const leverage = 2 || body.strategy.leverage;
   let pair = body.ticker;
   const validate = body.strategy.validate;
@@ -56,14 +53,6 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   //   xethStrategy(pair, action, assetPrice);
   //   return;
   // }
-
-  if (stop && stop.includes("stop")) {
-    if (stop.includes("buy")) {
-      action = "sell";
-    } else {
-      action = "buy";
-    }
-  }
 
   // get pair data (used for orderMin)
   const {
@@ -108,44 +97,47 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     } at $${assetPriceInDollar.toFixed(2)}`
   );
 
-  // console.log(leverage);
-  if (stop && stop.includes("Close")) {
-    var { error, result: closeOut } = await kraken.setAddOrder({
+  // stopped out
+  if (description && description.includes("stop")) {
+    const orderType = description.split(' ')[1];
+    let { error, result } = await kraken.setAddOrder({
       pair,
-      type: oppositeAction,
+      type: orderType,
       ordertype: "settle-position",
       volume: 0,
       leverage,
       // validate,
     });
-    console.log(closeOut);
+    res.send({ error, result });
+    return;
   }
 
-  var { error, result: newOrder } = await kraken.setAddOrder({
+  let { error, result } = await kraken.setAddOrder({
     pair,
     type: action,
-    ordertype: "stop-loss",
-    price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
+    ordertype: "market",
+    // price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
     volume,
     leverage,
     // validate,
   });
-  console.log(newOrder)
+  console.log({ error, result });
 
   if (error.length > 0 && error[0].includes("leverage")) {
-    var { error, result } = await kraken.setAddOrder({
+    let { error, result } = await kraken.setAddOrder({
       pair,
       type: action,
-      ordertype: "stop-loss",
-      price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
+      ordertype: "market",
+      // price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
       volume,
       // validate,
     });
 
-    res.send({ closeOut, result }); // idk we'll figure out a better way
+    res.send({ error, result }); // idk we'll figure out a better way
+    return;
   }
 
-  res.send({ closeOut, newOrder });
+  res.send({ error, result });
 });
 
 app.listen(process.env.PORT || 3000, () => {

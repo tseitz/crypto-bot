@@ -14,9 +14,9 @@
   },
   "strategy": {
       "action": "{{strategy.order.action}}",
-      "price": {{strategy.order.price}},
-      "stop": "{{strategy.order.id}}",
+      "description": "{{strategy.order.id}}",
       "market_position": "{{strategy.market_position}}",
-      "prev_market_position": "{{strategy.prev_market_position}}"
+      "prev_market_position": "{{strategy.prev_market_position}}",
+      "price": {{strategy.order.price}}
   }
 }
