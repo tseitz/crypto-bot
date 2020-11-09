@@ -43,6 +43,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   //     ? assetPrice - assetPrice * 0.01
   //     : assetPrice + assetPrice * 0.01;
   const leverage = 2 || body.strategy.leverage;
+  const oppositeAction = action === "buy" ? "sell" : "buy";
   let pair = body.ticker;
   const validate = body.strategy.validate;
 
@@ -97,18 +98,18 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     } at $${assetPriceInDollar.toFixed(2)}`
   );
 
-  // stopped out
+  let { error: closeError, result: closeOrder } = await kraken.setAddOrder({
+    pair,
+    type: oppositeAction,
+    ordertype: "settle-position",
+    volume: 0,
+    leverage,
+    // validate,
+  });
+  console.log({ closeError, closeOrder });
+
+  // stopped out, don't do anything else
   if (description && description.includes("stop")) {
-    const orderType = description.split(' ')[1];
-    let { error, result } = await kraken.setAddOrder({
-      pair,
-      type: orderType,
-      ordertype: "settle-position",
-      volume: 0,
-      leverage,
-      // validate,
-    });
-    res.send({ error, result });
     return;
   }
 
