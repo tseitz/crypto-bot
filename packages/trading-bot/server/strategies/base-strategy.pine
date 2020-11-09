@@ -1,13 +1,12 @@
 //@version=4
-// Notes here
-strategy("SlimScript", initial_capital=100, default_qty_value=10, calc_on_every_tick=true, currency=currency.USD)
+strategy("LINKBTC Binance 3h", initial_capital=100, default_qty_value=10, calc_on_every_tick=false, currency=currency.USD)
 
 // plot stuff
 palette = close >= open ? color.green : color.red
 plotcandle(open, high, low, close, color=palette)
 
 // days to test
-daysBackMax = input(defval = 60, title = "Max Days Back to Test", minval = 0)
+daysBackMax = input(defval = 30, title = "Max Days Back to Test", minval = 0)
 daysBackMin = input(defval = 0, title = "Min Days Back to Test", minval = 0)
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
@@ -22,7 +21,7 @@ shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
 useMassive = input(title="Check for massive reversals?", type=input.bool, defval=false)
 
 // don't worry about doji's within margin of error
-Precision = input(0.5, minval=0.0001, title="Precision", step=0.1)
+Precision = input(0.4, minval=0.0001, title="Precision", step=0.1)
 doji = abs(open - close) <= (high - low) * Precision
 bgcolor(color=doji ? color.yellow : na)
 
@@ -61,9 +60,9 @@ massiveRed = useMassive and massive and redCandle
 massiveGreen = useMassive and massive and greenCandle
 
 // vwapLong = isShort and greenNoDoji and open < vwapLow and close > vwapLow
-vwapLong = greenNoDoji and (open >= vwapCloseHigh or close >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
+vwapLong = greenNoDoji and (open >= vwapCloseHigh or high >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
 // longCrossesVwap = greenNoDoji and crossover(high, vwapCloseHigh)
-vwapShort = redNoDoji and (open <= vwapCloseLow or close <= smallVwapLow) // or crossover(low, vwapCloseLow))
+vwapShort = redNoDoji and (open <= vwapCloseLow or low <= smallVwapLow) // or crossover(low, vwapCloseLow))
 // shortCrossesVwap = redNoDoji and crossover(low, vwapCloseLow)
 // dontShort = isLong and redNoDoji and close > vwapLow
 
@@ -97,6 +96,7 @@ plotshape(short, title="short", text="short", style=shape.labeldown, location=lo
 
 // strategy
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.close("long", when=(short or (useMassive and massiveRed)) and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)

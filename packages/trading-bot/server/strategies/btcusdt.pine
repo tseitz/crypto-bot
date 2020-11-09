@@ -1,41 +1,31 @@
 //@version=4
-// study("SlimScript")
-strategy("SlimScript", initial_capital=100, default_qty_value=10)
+strategy("BTCUSDT Binance 5m", initial_capital=100, default_qty_value=10, calc_on_every_tick=false, currency=currency.USD)
 
-// set up heikin
-// ha_t = heikinashi(syminfo.tickerid)
-// ha_open = security(ha_t, timeframe.period, open)
-// ha_high = security(ha_t, timeframe.period, high)
-// ha_low = security(ha_t, timeframe.period, low)
-// ha_close = security(ha_t, timeframe.period, close)
-// palette = ha_close >= ha_open ? color.green : color.red
+// plot stuff
 palette = close >= open ? color.green : color.red
-// plotcandle(ha_open, ha_high, ha_low, ha_close, color=palette)
 plotcandle(open, high, low, close, color=palette)
 
 // days to test
-daysBackMax = input(defval = 60, title = "Max Days Back to Test", minval = 0)
+daysBackMax = input(defval = 30, title = "Max Days Back to Test", minval = 0)
 daysBackMin = input(defval = 0, title = "Min Days Back to Test", minval = 0)
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 
 // let's be responsible
-longLossPerc = input(3.0, title='Long Stop Loss %', type=input.float, step=1) / 100
-shortLossPerc = input(3.0, title='Short Stop Loss %', type=input.float, step=1) / 100
-// longTakeProfPerc = input(15.0, title='Long Take Profit %', type=input.float) / 100
-// shortTakeProfPerc = input(15.0, title='Short Take Profit %', type=input.float) / 100
-
+longLossPerc = input(0.69, title='Long Stop Loss %', type=input.float, step=1) / 100
+shortLossPerc = input(0.49, title='Short Stop Loss %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
 
+// extra inputs
+useMassive = input(title="Check for massive reversals?", type=input.bool, defval=false)
 
 // don't worry about doji's within margin of error
-Precision = input(0.6, minval=0.1, title="Precision", step=0.1)
-// doji = abs(ha_open - ha_close) <= (ha_high - ha_low) * Precision
+Precision = input(0.1, minval=0.0001, title="Precision", step=0.1)
 doji = abs(open - close) <= (high - low) * Precision
 bgcolor(color=doji ? color.yellow : na)
 
-// plot the vwap
+// plot the vwap. I like a gap high and low of the close to be more conservative
 vwapClose = vwap(close)
 vwapCloseHigh = vwap(close + close * .001)
 vwapCloseLow = vwap(close - close * .001)
@@ -43,7 +33,6 @@ vwapLow = vwap(low - low * .01)
 vwapHigh = vwap(high + high * .01)
 smallVwapHigh = vwap(high + high * .008)
 smallVwapLow = vwap(low - low * .008)
-// averageVol = sma(volume, averageLen)
 
 plot(series=vwapClose, color=color.teal, linewidth=2)
 plot(series=vwapLow, color=color.orange, linewidth=1)
@@ -55,22 +44,25 @@ plot(series=vwapCloseLow, color=color.white, linewidth=1)
 var isLong = false
 var isShort = false
 
-// Look for 2 green candles to long
-// greenNoDoji = (ha_close > ha_open) and not doji
+// look for green candles
 greenCandle = (close > open)
 greenNoDoji = (close > open)  and not doji
 bgcolor(color=greenNoDoji ? color.green : na)
 
-// look for 2 red candles to short
-// redNoDoji = (ha_close < ha_open) and not doji
+// look for red candles
 redCandle = (close < open)
 redNoDoji = (close < open) and not doji
 bgcolor(color=redNoDoji ? color.red : na)
 
+// look for massive ones
+massive = useMassive and abs(high - low) > (abs(high[1] - low[1]) + abs(high[2] - low[2]) + abs(high[3] - low[3])) and abs(open - close) > (abs(open[1] - close[1]) + abs(high[2] - low[2]))
+massiveRed = useMassive and massive and redCandle
+massiveGreen = useMassive and massive and greenCandle
+
 // vwapLong = isShort and greenNoDoji and open < vwapLow and close > vwapLow
-vwapLong = greenNoDoji and (open >= vwapCloseHigh or close >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
+vwapLong = greenNoDoji and (open >= vwapCloseHigh or high >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
 // longCrossesVwap = greenNoDoji and crossover(high, vwapCloseHigh)
-vwapShort = redNoDoji and (open <= vwapCloseLow or close <= smallVwapLow) // or crossover(low, vwapCloseLow))
+vwapShort = redNoDoji and (open <= vwapCloseLow or low <= smallVwapLow) // or crossover(low, vwapCloseLow))
 // shortCrossesVwap = redNoDoji and crossover(low, vwapCloseLow)
 // dontShort = isLong and redNoDoji and close > vwapLow
 
@@ -91,6 +83,7 @@ if short
 
 // plot the plays
 plotshape(long, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+plotshape(massive, title="massive", text="massive", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 // plotshape(longCrossesVwap, title="long", text="long", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 // plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 // plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
@@ -103,10 +96,11 @@ plotshape(short, title="short", text="short", style=shape.labeldown, location=lo
 
 // strategy
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.close("long", when=short and isWithinTimeBounds)
+strategy.close("long", when=(short or (useMassive and massiveRed)) and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.close("short", when=long and isWithinTimeBounds)
+strategy.close("short", when=(long or (useMassive and massiveGreen)) and isWithinTimeBounds)
 
 
 if (strategy.position_size > 0)

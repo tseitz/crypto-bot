@@ -42,14 +42,14 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   const assetPrice = body.strategy.price || body.bar.close; // price of asset in usd or btc
   const stopLoss =
     action === "buy"
-      ? assetPrice - assetPrice * 0.05
-      : assetPrice + assetPrice * 0.05;
+      ? assetPrice - assetPrice * 0.01
+      : assetPrice + assetPrice * 0.01;
   console.log(stopLoss);
   const leverage = 2 || body.strategy.leverage;
   let pair = body.ticker;
   const validate = body.strategy.validate;
 
-  const switchPair = /BTC$/.test(pair);
+  const switchPair = /BTC/.test(pair);
   pair = switchPair ? pair.replace("BTC", "XBT") : pair;
 
   // if (pair === "ETHXBT") {
@@ -109,14 +109,14 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   );
 
   // console.log(leverage);
-  if (body.strategy.stop.includes('Close')) {
+  if (stop && stop.includes("Close")) {
     var { error, result: closeOut } = await kraken.setAddOrder({
       pair,
       type: oppositeAction,
       ordertype: "settle-position",
       volume: 0,
       leverage,
-      validate: true,
+      // validate,
     });
     console.log(closeOut);
   }
@@ -128,9 +128,8 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
     volume,
     leverage,
-    validate: true,
+    // validate,
   });
-  console.log(error)
   console.log(newOrder)
 
   if (error.length > 0 && error[0].includes("leverage")) {
@@ -140,13 +139,13 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       ordertype: "stop-loss",
       price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
       volume,
-      validate: true,
+      // validate,
     });
 
-    res.send(result); // idk we'll figure out a better way
+    res.send({ closeOut, result }); // idk we'll figure out a better way
   }
 
-  res.send(newOrder);
+  res.send({ closeOut, newOrder });
 });
 
 app.listen(process.env.PORT || 3000, () => {

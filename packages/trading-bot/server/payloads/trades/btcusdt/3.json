@@ -3,7 +3,7 @@
   "time": "2020-11-08T10:00:00Z",
   "exchange": "BINANCE",
   "ticker": "BTCUSDT",
-  "interval": "15",
+  "interval": "5",
   "bar": {
     "time": "2020-11-08T09:45:00Z",
     "open": 14977.69,
@@ -13,8 +13,7 @@
     "volume": 390.17561900000305
   },
   "strategy": {
-    "action": "buy",
-    "price": 15026.95,
-    "stop": "long"
+    "action": "sell",
+    "price": 15026.95
   }
 }
