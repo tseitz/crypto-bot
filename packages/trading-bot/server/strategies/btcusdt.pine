@@ -1,5 +1,5 @@
 //@version=4
-strategy("BTCUSDT Binance 5m", initial_capital=100, default_qty_value=10, calc_on_every_tick=false, currency=currency.USD)
+strategy("BTCUSDT Binance 5m", overlay=true, initial_capital=100, default_qty_value=10, calc_on_every_tick=false, currency=currency.USD)
 
 // plot stuff
 palette = close >= open ? color.green : color.red
