@@ -49,6 +49,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   const switchPair = /BTC/.test(pair);
   pair = switchPair ? pair.replace("BTC", "XBT") : pair;
+  console.log(`${pair} Trade`);
 
   // if (pair === "ETHXBT") {
   //   xethStrategy(pair, action, assetPrice);
