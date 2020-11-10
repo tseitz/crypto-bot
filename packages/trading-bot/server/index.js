@@ -106,7 +106,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     // leverage,
     // validate,
   });
-  console.log({ closeError, closeOrder });
+  console.log("Closing Request: ", closeError, closeOrder);
 
   // stopped out, don't do anything else
   if (description && description.includes("stop")) {
@@ -122,7 +122,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     // leverage,
     // validate,
   });
-  console.log({ error, result });
+  console.log("Set Order Request: ", error, result);
 
   if (error.length > 0 && error[0].includes("leverage")) {
     let { error, result } = await kraken.setAddOrder({
