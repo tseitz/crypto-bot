@@ -19,4 +19,12 @@ module.exports = {
     longStop: 2.5,
     shortStop: 2,
   },
+  DOTXBT: {
+    longStop: 2,
+    shortStop: 3,
+  },
+  LINKXBT: {
+    longStop: 2,
+    shortStop: 3,
+  },
 };

@@ -1,5 +1,5 @@
 //@version=4
-strategy("ETH USDT Binance 1m", overlay=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("LINK BTC Binance 2m", overlay=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=90, title="Max Days Back to Test", minval=0)
@@ -9,8 +9,8 @@ msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 // let's be responsible
-longStopPerc = input(defval=2.5, title='Long Stop Loss %', type=input.float, step=1) / 100
-shortStopPerc = input(defval=2, title='Short Stop Loss %', type=input.float, step=1) / 100
+longStopPerc = input(defval=2, title='Long Stop Loss %', type=input.float, step=1) / 100
+shortStopPerc = input(defval=3, title='Short Stop Loss %', type=input.float, step=1) / 100
 // longTakePerc = input(defval=1, title='Long Take Profit %', type=input.float, step=0.1) / 100
 // shortTakePerc = input(defval=1, title='Short Take Profit %', type=input.float, step=0.1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
@@ -27,8 +27,8 @@ allowDoubleShorts = input(title="Allow double shorts?", type=input.bool, defval=
 // bgcolor(color=doji ? color.yellow : na, transp=95)
 
 // plot the vwap. I like a gap high and low of the close to be more conservative
-vwapHighPerc = input(defval=.014, title='VWAP High %', type=input.float, step=.001)
-vwapLowPerc = input(defval=.017, title='VWAP Low %', type=input.float, step=.001)
+vwapHighPerc = input(defval=.01, title='VWAP High %', type=input.float, step=.001)
+vwapLowPerc = input(defval=.014, title='VWAP Low %', type=input.float, step=.001)
 vwapClose = vwap(close)
 vwapLow = vwap(low - low * vwapLowPerc)
 vwapHigh = vwap(high + high * vwapHighPerc)
@@ -58,8 +58,8 @@ redCandle = (close < open)
 
 openShort = not isShort and open < vwapLow // and redNoDoji
 openLong = not isLong and open > vwapHigh // and greenNoDoji
-closeShort = isShort and open > vwapClose // and greenNoDoji
-closeLong = isLong and open < vwapClose // and redNoDoji
+closeShort = isShort and open >= vwapClose // and greenNoDoji
+closeLong = isLong and open <= vwapClose // and redNoDoji
 
 
 var addLongAvailable = false
