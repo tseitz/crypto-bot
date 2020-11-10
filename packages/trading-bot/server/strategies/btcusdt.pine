@@ -1,21 +1,23 @@
 //@version=4
-strategy("BTCUSDT Binance 5m", overlay=true, initial_capital=10000, default_qty_value=10, calc_on_every_tick=true, currency=currency.USD)
+strategy("BTCUSDT Binance 5m", overlay=true, initial_capital=10000, default_qty_value=10, calc_on_every_tick=true, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
-daysBackMax = input(defval = 60, title = "Max Days Back to Test", minval = 0)
-daysBackMin = input(defval = 0, title = "Min Days Back to Test", minval = 0)
+daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+var longTakePrice = 0.0
+var shortTakePrice = 0.0
 
 // let's be responsible
-longLossPerc = input(8, title='Long Stop Loss %', type=input.float, step=0.1) / 100
-shortLossPerc = input(8, title='Short Stop Loss %', type=input.float, step=0.1) / 100
-longTakePerc = input(1, title='Long Take Profit %', type=input.float, step=0.1) / 100
-shortTakePerc = input(1, title='Short Take Profit %', type=input.float, step=0.1) / 100
-longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
-shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
-longTakePrice = strategy.position_avg_price * (1 + longTakePerc)
-shortTakePrice = strategy.position_avg_price * (1 - shortTakePerc)
+longStopPerc = input(defval=8, title='Long Stop Loss %', type=input.float, step=0.1) / 100
+shortStopPerc = input(defval=8, title='Short Stop Loss %', type=input.float, step=0.1) / 100
+longTakePerc = input(defval=1, title='Long Take Profit %', type=input.float, step=0.1) / 100
+shortTakePerc = input(defval=1, title='Short Take Profit %', type=input.float, step=0.1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
+shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 // extra inputs
 useMassive = input(title="Check for massive reversals?", type=input.bool, defval=false)
@@ -27,20 +29,20 @@ bgcolor(color=doji ? color.yellow : na, transp=95)
 
 // plot the vwap. I like a gap high and low of the close to be more conservative
 vwapClose = vwap(close)
-vwapCloseHigh = vwap(close + close * .001)
-vwapCloseLow = vwap(close - close * .001)
+// vwapCloseHigh = vwap(close + close * .0005)
+// vwapClose = vwap(close - close * .0005)
 vwapLow = vwap(low - low * .01)
 vwapHigh = vwap(high + high * .01)
 // vwapSuperLow = vwap(low - low * .025)
 // vwapSuperHigh = vwap(high + high * .025)
-smallVwapHigh = vwap(high + high * .008)
-smallVwapLow = vwap(low - low * .008)
+smallVwapHigh = vwap(high + high * .0085)
+smallVwapLow = vwap(low - low * .0085)
 
 plot(series=vwapClose, color=color.teal, linewidth=2)
 plot(series=vwapLow, color=color.orange, linewidth=1)
 plot(series=vwapHigh, color=color.orange, linewidth=1)
-plot(series=vwapCloseHigh, color=color.white, linewidth=1)
-plot(series=vwapCloseLow, color=color.white, linewidth=1)
+// plot(series=vwapCloseHigh, color=color.white, linewidth=1)
+// plot(series=vwapClose, color=color.white, linewidth=1)
 // plot(series=vwapSuperLow, color=color.red, linewidth=1)
 // plot(series=vwapSuperHigh, color=color.red, linewidth=1)
 
@@ -64,24 +66,43 @@ massiveRed = useMassive and massive and redCandle
 massiveGreen = useMassive and massive and greenCandle
 
 // vwapLong = isShort and greenNoDoji and open < vwapLow and close > vwapLow
-vwapLong = greenNoDoji and (open >= vwapCloseHigh or close >= smallVwapHigh) //  or crossover(high, vwapCloseHigh))
-// longCrossesVwap = greenNoDoji and crossover(high, vwapCloseHigh)
-vwapShort = redNoDoji and (open <= vwapCloseLow or close <= smallVwapLow) // or crossover(low, vwapCloseLow))
-// shortCrossesVwap = redNoDoji and crossover(low, vwapCloseLow)
+vwapLong = greenNoDoji and (open >= vwapClose) // or close >= smallVwapHigh) //  or crossover(high, vwapClose))
+// longCrossesVwap = greenNoDoji and crossover(high, vwapClose)
+vwapShort = redNoDoji and (open <= vwapClose) // or close <= smallVwapLow) // or crossover(low, vwapClose))
+// shortCrossesVwap = redNoDoji and crossover(low, vwapClose)
 // dontShort = isLong and redNoDoji and close > vwapLow
 
 long = not isLong and vwapLong
 short = not isShort and vwapShort
 
+var closeLongAvailable = true
+var vwapCloseLong = false
+var closeShortAvailable = true
+var vwapCloseShort = false
 if long
     isLong := true
     isShort := false
+    closeShortAvailable := true
+
+if closeLongAvailable
+    vwapCloseLong := high >= vwapHigh
+
+if isLong and closeLongAvailable and high >= vwapHigh
+    // strategy.close("long")
+    strategy.order("long", long=true, stop=longStopPrice, when=isWithinTimeBounds)
+    closeLongAvailable := false
+    
+if isShort and closeShortAvailable and low >= vwapHigh
+    strategy.order("short", long=false, stop=shortStopPrice, when=isWithinTimeBounds)
+    closeShortAvailable := false
 
 if short
     isLong := false
     isShort := true
+    closeLongAvailable := true
+    shortTakePrice := strategy.position_avg_price * (1 - shortTakePerc)
 
-// closeShort = isShort and not long and greenNoDoji and high > vwapCloseLow
+// closeShort = isShort and not long and greenNoDoji and high > vwapClose
 // closeShort = isShort and not long and greenNoDoji and high[1] > vwapHigh // TODO: check if it crosses way above
 
 
@@ -89,7 +110,7 @@ if short
 // plotshape(long, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 plotshape(massive, title="massive", text="massive", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 // plotshape(longCrossesVwap, title="long", text="long", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-// plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(vwapCloseLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 // plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 // plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
@@ -99,8 +120,6 @@ plotshape(massive, title="massive", text="massive", style=shape.cross, location=
 
 
 // strategy
-isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
-
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.close("long", when=(short or (useMassive and massiveRed)) and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
@@ -108,7 +127,7 @@ strategy.close("short", when=(long or (useMassive and massiveGreen)) and isWithi
 
 
 if (strategy.position_size > 0)
-    strategy.exit(id="stop buy", stop=longStopPrice, profit=longTakePrice)
+    strategy.exit(id="stop buy", stop=longStopPrice)
 
 if (strategy.position_size < 0)
-    strategy.exit(id="stop sell", stop=shortStopPrice, profit=shortTakePrice)
+    strategy.exit(id="stop sell", stop=shortStopPrice)
