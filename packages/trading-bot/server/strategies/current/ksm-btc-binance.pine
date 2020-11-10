@@ -1,5 +1,5 @@
 //@version=4
-strategy("UNI BTC Binance 1m", overlay=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("KSM BTC Binance 1m", overlay=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=90, title="Max Days Back to Test", minval=0)

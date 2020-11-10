@@ -3,6 +3,7 @@ var https = require("https");
 var bodyParser = require("body-parser");
 // const Binance = require("node-binance-api");
 const Kraken = require("kraken-wrapper");
+const config = require("./config");
 
 const PORT = process.env.PORT || 3000;
 
@@ -38,10 +39,6 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   let action = body.strategy.action;
   const description = body.strategy.description;
   const assetPrice = body.strategy.price || body.bar.close; // price of asset in usd or btc
-  // const stopLoss =
-  //   action === "buy"
-  //     ? assetPrice - assetPrice * 0.01
-  //     : assetPrice + assetPrice * 0.01;
   const leverage = 2 || body.strategy.leverage;
   const oppositeAction = action === "buy" ? "sell" : "buy";
   let pair = body.ticker;
@@ -50,6 +47,11 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   const switchPair = /BTC/.test(pair);
   pair = switchPair ? pair.replace("BTC", "XBT") : pair;
   console.log(`${pair} Trade`);
+
+  // stopped out. this is handled by config currently
+  // if (description && description.includes("stop")) {
+  //   return;
+  // }
 
   // if (pair === "ETHXBT") {
   //   xethStrategy(pair, action, assetPrice);
@@ -75,13 +77,17 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   // if btc pair, convert to dollar (to pay $10 for now)
   // if usdt pair, keep dollar price
   const btcPair = /XBT$/.test(pair); // bitcoin pair, not XBTUSDT
+  const { result: priceInfo } = await kraken.getTickerInformation({ pair: krakenPair });
+  const bid = priceInfo[krakenPair]["b"][0]; 
+  // const currentPrice = priceInfo[krakenPair]["c"][0];
+
   let assetPriceInDollar;
   if (btcPair) {
     // TODO: doesn't handle ETHXBT
     const { result } = await kraken.getTickerInformation({ pair: "XBTUSDT" });
     const btcPrice = result["XBTUSDT"]["c"][0];
     console.log(`Current BTC Price: ${btcPrice}`);
-    assetPriceInDollar = btcPrice * assetPrice;
+    assetPriceInDollar = btcPrice * bid;
   } else {
     assetPriceInDollar = assetPrice;
   }
@@ -99,26 +105,29 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     } at $${assetPriceInDollar.toFixed(2)}`
   );
 
-  let { error: closeError, result: closeOrder } = await kraken.setAddOrder({
-    pair,
-    type: oppositeAction,
-    ordertype: "settle-position",
-    volume: 0,
-    // leverage,
-    // validate,
-  });
-  console.log("Closing Request: ", closeError, closeOrder);
-
-  // stopped out, don't do anything else
-  if (description && description.includes("stop")) {
-    return;
+  if (description.includes('Close')) {
+    let { error, result } = await kraken.setAddOrder({
+      pair,
+      type: oppositeAction,
+      ordertype: "settle-position",
+      volume: 0,
+      // leverage,
+      // validate,
+    });
+    console.log("Closing Request: ", closeError, closeOrder);
+    return res.send({ error, result})
   }
 
+  const stopLoss =
+    action === "buy"
+      ? bid * (1 - (config[krakenPair].longStop / 100))
+      : bid * (1 + (config[krakenPair].shortStop / 100));
   let { error, result } = await kraken.setAddOrder({
     pair,
     type: action,
-    ordertype: "market",
-    // price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
+    ordertype: "stop-loss-limit",
+    price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
+    price2: bid,
     volume,
     // leverage,
     // validate,
@@ -135,8 +144,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       // validate,
     });
 
-    res.send({ error, result }); // idk we'll figure out a better way
-    return;
+    return res.send({ error, result }); // idk we'll figure out a better way
   }
 
   res.send({ error, result });
