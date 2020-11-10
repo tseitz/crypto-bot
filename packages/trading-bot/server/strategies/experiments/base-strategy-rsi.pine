@@ -20,31 +20,25 @@ longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 // extra inputs
+allowDoubleLongs = input(title="Allow double longs?", type=input.bool, defval=true)
+allowDoubleShorts = input(title="Allow double shorts?", type=input.bool, defval=true)
 useMassive = input(title="Check for massive reversals?", type=input.bool, defval=false)
 
 // don't worry about doji's within margin of error
-Precision = input(0.1, minval=0.0001, title="Precision", step=0.1)
+Precision = input(0.01, minval=0.0001, title="Precision", step=0.1)
 doji = abs(open - close) <= (high - low) * Precision
 bgcolor(color=doji ? color.yellow : na, transp=95)
 
 // plot the vwap. I like a gap high and low of the close to be more conservative
 vwapClose = vwap(close)
-// vwapCloseHigh = vwap(close + close * .0005)
-// vwapClose = vwap(close - close * .0005)
 vwapLow = vwap(low - low * .01)
 vwapHigh = vwap(high + high * .01)
-// vwapSuperLow = vwap(low - low * .025)
-// vwapSuperHigh = vwap(high + high * .025)
-smallVwapHigh = vwap(high + high * .0085)
-smallVwapLow = vwap(low - low * .0085)
+vwapSmallHigh = vwap(high + high * .008)
+vwapSmallLow = vwap(low - low * .008)
 
-plot(series=vwapClose, color=color.teal, linewidth=2)
+plot(series=vwapClose, color=color.blue, linewidth=2)
 plot(series=vwapLow, color=color.orange, linewidth=1)
 plot(series=vwapHigh, color=color.orange, linewidth=1)
-// plot(series=vwapCloseHigh, color=color.white, linewidth=1)
-// plot(series=vwapClose, color=color.white, linewidth=1)
-// plot(series=vwapSuperLow, color=color.red, linewidth=1)
-// plot(series=vwapSuperHigh, color=color.red, linewidth=1)
 
 // where we at?
 var isLong = false
@@ -52,7 +46,7 @@ var isShort = false
 
 // look for green candles
 greenCandle = (close > open)
-greenNoDoji = (close > open)  and not doji
+greenNoDoji = (close > open) and not doji
 bgcolor(color=greenNoDoji ? color.green : na, transp=95)
 
 // look for red candles
@@ -65,12 +59,8 @@ massive = useMassive and abs(high - low) > (abs(high[1] - low[1]) + abs(high[2] 
 massiveRed = useMassive and massive and redCandle
 massiveGreen = useMassive and massive and greenCandle
 
-// vwapLong = isShort and greenNoDoji and open < vwapLow and close > vwapLow
-vwapLong = greenNoDoji and (open >= vwapClose) // or close >= smallVwapHigh) //  or crossover(high, vwapClose))
-// longCrossesVwap = greenNoDoji and crossover(high, vwapClose)
-vwapShort = redNoDoji and (open <= vwapClose) // or close <= smallVwapLow) // or crossover(low, vwapClose))
-// shortCrossesVwap = redNoDoji and crossover(low, vwapClose)
-// dontShort = isLong and redNoDoji and close > vwapLow
+vwapLong = greenNoDoji and (high >= vwapSmallHigh)
+vwapShort = redNoDoji and (low <= vwapSmallLow)
 
 long = not isLong and vwapLong
 short = not isShort and vwapShort
@@ -85,25 +75,23 @@ if long
     closeShortAvailable := true
 
 if closeLongAvailable
-    vwapCloseLong := high >= vwapHigh
-
-if isLong and closeLongAvailable and high >= vwapHigh
-    // strategy.close("long")
-    strategy.order("long", long=true, stop=longStopPrice, when=isWithinTimeBounds)
-    closeLongAvailable := false
-    
-if isShort and closeShortAvailable and low >= vwapHigh
-    strategy.order("short", long=false, stop=shortStopPrice, when=isWithinTimeBounds)
-    closeShortAvailable := false
+    vwapCloseLong := high >= vwapSmallHigh
 
 if short
     isLong := false
     isShort := true
     closeLongAvailable := true
-    shortTakePrice := strategy.position_avg_price * (1 - shortTakePerc)
 
-// closeShort = isShort and not long and greenNoDoji and high > vwapClose
-// closeShort = isShort and not long and greenNoDoji and high[1] > vwapHigh // TODO: check if it crosses way above
+if closeShortAvailable
+    vwapCloseShort := low <= vwapSmallLow
+
+if isLong and closeLongAvailable and high >= vwapSmallHigh
+    strategy.order("long", long=true, stop=longStopPrice, when=isWithinTimeBounds and allowDoubleLongs)
+    closeLongAvailable := false
+    
+if isShort and closeShortAvailable and low <= vwapSmallLow
+    strategy.order("short", long=false, stop=shortStopPrice, when=isWithinTimeBounds and allowDoubleShorts)
+    closeShortAvailable := false
 
 
 // plot the plays
@@ -114,10 +102,6 @@ plotshape(massive, title="massive", text="massive", style=shape.cross, location=
 // plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 // plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
-// set up alert conditions
-// alertcondition(long, title="heiki go!", message="ha_green")
-// alertcondition(short, title="heiki chillllll", message="ha_red")
-
 
 // strategy
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
@@ -125,9 +109,8 @@ strategy.close("long", when=(short or (useMassive and massiveRed)) and isWithinT
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 strategy.close("short", when=(long or (useMassive and massiveGreen)) and isWithinTimeBounds)
 
-
 if (strategy.position_size > 0)
-    strategy.exit(id="stop buy", stop=longStopPrice)
+    strategy.exit(id="stop", stop=longStopPrice)
 
 if (strategy.position_size < 0)
-    strategy.exit(id="stop sell", stop=shortStopPrice)
+    strategy.exit(id="stop", stop=shortStopPrice)

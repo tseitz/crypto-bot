@@ -1,0 +1,123 @@
+//@version=4
+strategy("YFI XBT Binance 1m", overlay=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval=90, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+// let's be responsible
+longStopPerc = input(defval=3, title='Long Stop Loss %', type=input.float, step=1) / 100
+shortStopPerc = input(defval=3, title='Short Stop Loss %', type=input.float, step=1) / 100
+// longTakePerc = input(defval=1, title='Long Take Profit %', type=input.float, step=0.1) / 100
+// shortTakePerc = input(defval=1, title='Short Take Profit %', type=input.float, step=0.1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
+shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
+
+// extra inputs
+allowDoubleLongs = input(title="Allow double longs?", type=input.bool, defval=true)
+allowDoubleShorts = input(title="Allow double shorts?", type=input.bool, defval=true)
+// useMassive = input(title="Check for massive reversals?", type=input.bool, defval=false)
+
+// don't worry about doji's within margin of error
+// Precision = input(0.01, minval=0.0001, title="Precision", step=0.01)
+// doji = abs(open - close) <= (high - low) * Precision
+// bgcolor(color=doji ? color.yellow : na, transp=95)
+
+// plot the vwap. I like a gap high and low of the close to be more conservative
+vwapHighPerc = input(defval=.016, title='VWAP High %', type=input.float, step=.001)
+vwapLowPerc = input(defval=.019, title='VWAP Low %', type=input.float, step=.001)
+vwapClose = vwap(close)
+vwapLow = vwap(low - low * vwapLowPerc)
+vwapHigh = vwap(high + high * vwapHighPerc)
+
+plot(series=vwapClose, color=color.blue, linewidth=2)
+plot(series=vwapLow, color=color.orange, linewidth=1)
+plot(series=vwapHigh, color=color.orange, linewidth=1)
+
+// where we at?
+var isLong = false
+var isShort = false
+
+// look for green candles
+greenCandle = (close > open)
+// greenNoDoji = (close > open) and not doji
+// bgcolor(color=greenNoDoji ? color.green : na, transp=95)
+
+// look for red candles
+redCandle = (close < open)
+// redNoDoji = (close < open) and not doji
+// bgcolor(color=redNoDoji ? color.red : na, transp=95)
+
+// look for massive ones
+// massive = useMassive and abs(high - low) > (abs(high[1] - low[1]) + abs(high[2] - low[2]) + abs(high[3] - low[3])) and abs(open - close) > (abs(open[1] - close[1]) + abs(high[2] - low[2]))
+// massiveRed = useMassive and massive and redCandle
+// massiveGreen = useMassive and massive and greenCandle
+
+openShort = not isShort and open < vwapLow // and redNoDoji
+openLong = not isLong and open > vwapHigh // and greenNoDoji
+closeShort = isShort and open > vwapClose // and greenNoDoji
+closeLong = isLong and open < vwapClose // and redNoDoji
+
+
+var addLongAvailable = false
+var vwapCloseLong = false
+var addShortAvailable = false
+var vwapCloseShort = false
+if openLong
+    isLong := true
+    isShort := false
+    addShortAvailable := false
+
+if closeLong
+    isLong := false
+    isShort := false
+    addShortAvailable := false
+
+if openShort
+    isLong := false
+    isShort := true
+    addLongAvailable := false
+
+if closeShort
+    isLong := false
+    isShort := false
+    addLongAvailable := false
+
+if isLong and close < vwapHigh
+    addLongAvailable := true
+
+if isShort and close > vwapLow
+    addShortAvailable := true
+
+if allowDoubleLongs and isLong and addLongAvailable and open > vwapHigh
+    strategy.order("long", long=true, stop=longStopPrice, when=isWithinTimeBounds)
+    addLongAvailable := false
+    
+if allowDoubleShorts and isShort and addShortAvailable and open < vwapLow
+    strategy.order("short", long=false, stop=shortStopPrice, when=isWithinTimeBounds)
+    addShortAvailable := false
+
+
+// plot the plays
+// plotshape(openLong, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+// plotshape(massive, title="massive", text="massive", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+// plotshape(longCrossesVwap, title="long", text="long", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+// plotshape(vwapCloseLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+
+
+// strategy
+strategy.entry("long", long=true, when=openLong and isWithinTimeBounds)
+strategy.close("long", when=closeLong and isWithinTimeBounds)
+strategy.entry("short", long=false, when=openShort and isWithinTimeBounds)
+strategy.close("short", when=closeShort and isWithinTimeBounds)
+
+if (strategy.position_size > 0)
+    strategy.exit(id="stop", stop=longStopPrice)
+
+if (strategy.position_size < 0)
+    strategy.exit(id="stop", stop=shortStopPrice)
