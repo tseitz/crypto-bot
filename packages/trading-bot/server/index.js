@@ -103,7 +103,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     type: oppositeAction,
     ordertype: "settle-position",
     volume: 0,
-    leverage,
+    // leverage,
     // validate,
   });
   console.log({ closeError, closeOrder });
@@ -119,7 +119,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     ordertype: "market",
     // price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
     volume,
-    leverage,
+    // leverage,
     // validate,
   });
   console.log({ error, result });
@@ -156,7 +156,7 @@ async function closePosition() {
     type: oppositeAction,
     ordertype: "settle-position",
     volume: 0,
-    leverage,
+    // leverage,
     // validate: true
   });
   console.log(closeOut);
