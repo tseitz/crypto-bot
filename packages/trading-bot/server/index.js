@@ -113,7 +113,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
         type: oppositeAction,
         ordertype: "market",
         volume: balanceResult[baseOfPair],
-        validate: true,
+        // validate: true,
       });
     } else {
       var { error, result } = await kraken.setAddOrder({
