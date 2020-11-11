@@ -34,5 +34,5 @@ module.exports = {
   OMGXBT: {
     longStop: 1.4,
     shortStop: 1.3,
-  },,
+  },
 };
