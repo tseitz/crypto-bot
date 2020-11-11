@@ -105,21 +105,29 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       } = await kraken.getBalance();
       console.log(balanceResult[baseOfPair]);
       // no selling, so can't settle buy. if it's a sell we'll just sell all for now
-      if (oppositeAction == "buy") {
+      if (oppositeAction == "sell") {
         return res.send(200);
       }
       var { error, result } = await kraken.setAddOrder({
         pair: krakenPair,
-        type: oppositeAction,
+        type: action,
         ordertype: "market",
         volume: balanceResult[baseOfPair],
         // validate: true,
       });
     } else {
+      console.log({
+        pair: krakenPair,
+        type: action,
+        ordertype: "market",
+        volume: 0,
+        leverage,
+        // validate: true,
+      });
       var { error, result } = await kraken.setAddOrder({
         pair: krakenPair,
-        type: oppositeAction,
-        ordertype: "settle-position",
+        type: action,
+        ordertype: "market",
         volume: 0,
         leverage,
         // validate: true,
