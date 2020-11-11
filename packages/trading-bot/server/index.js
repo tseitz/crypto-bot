@@ -36,136 +36,127 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   }
 
   // grab data from the body
-  let action = body.strategy.action;
-  const description = body.strategy.description;
-  const assetPrice = body.strategy.price || body.bar.close; // price of asset in usd or btc
-  const leverage = 2 || body.strategy.leverage;
+  let { action, description, leverage } = body.strategy;
   const oppositeAction = action === "buy" ? "sell" : "buy";
-  let pair = body.ticker;
-  const validate = body.strategy.validate;
+  const tradingViewTicker = body.ticker;
+  leverage = leverage || 2;
 
-  const switchPair = /BTC/.test(pair);
-  pair = switchPair ? pair.replace("BTC", "XBT") : pair;
+  // Kraken uses XBT instead of BTC
+  const switchPair = /BTC/.test(tradingViewTicker);
+  const krakenTicker = switchPair ? tradingViewTicker.replace("BTC", "XBT") : tradingViewTicker;
 
   // stopped out. this is handled by config currently
   if (description && description.includes("stop")) {
     console.log("Stopped out handled by Kraken now");
-    return;
+    return res.sendStatus(200);
   }
 
-  // if (pair === "ETHXBT") {
-  //   xethStrategy(pair, action, assetPrice);
-  //   return;
-  // }
-
-  // get pair data (used for orderMin)
+  // get pair data (used for orderMin, decimal info)
   const {
-    error: pairError,
-    result: pairResult,
-  } = await kraken.getTradableAssetPairs({ pair });
+    error: krakenPairError,
+    result: krakenPairResult,
+  } = await kraken.getTradableAssetPairs({ pair: krakenTicker });
 
-  if (pairError.length > 0) {
-    console.log(`Pair data for ${pair} not available on Kraken`);
+  if (krakenPairError.length > 0) {
+    console.log(`Pair data for ${krakenPair} not available on Kraken`);
     res.sendStatus(401);
     return;
   }
-  // fancy way picking out the first object. Sometimes the kraken name is not what I receive from TV
-  const krakenPair = Object.keys(pairResult)[0];
-  const orderMin = pairResult[krakenPair]["ordermin"];
-  const base = pairResult[krakenPair]["base"];
+
+  // Sometimes the kraken name is not what I receive from TradingView
+  const krakenPair = Object.keys(krakenPairResult)[0];
+  const orderMin = krakenPairResult[krakenPair]["ordermin"];
+  const baseOfPair = krakenPairResult[krakenPair]["base"];
+  const levarageAvailable = krakenPairResult[krakenPair]["leverage_buy"].length > 0;
+  const decimals = krakenPairResult[krakenPair]["pair_decimals"];
+
+  const { result: priceInfo } = await kraken.getTickerInformation({ pair: krakenPair });
+  const currentBid = priceInfo[krakenPair]["b"][0]; 
+  // const currentPrice = priceInfo[krakenPair]["c"][0];
 
   // if btc pair, convert to dollar (to pay $10 for now)
   // if usdt pair, keep dollar price
-  const btcPair = /XBT$/.test(pair); // bitcoin pair, not XBTUSDT
-  const { result: priceInfo } = await kraken.getTickerInformation({ pair: krakenPair });
-  const bid = priceInfo[krakenPair]["b"][0]; 
-  // const currentPrice = priceInfo[krakenPair]["c"][0];
-
-  let assetPriceInDollar;
+  const btcPair = /XBT$/.test(krakenPair); // bitcoin pair, not XBTUSDT
+  let myBidPriceInDollar;
   if (btcPair) {
     // TODO: doesn't handle ETHXBT
     const { result } = await kraken.getTickerInformation({ pair: "XBTUSDT" });
     const btcPrice = result["XBTUSDT"]["c"][0];
     console.log(`Current BTC Price: ${btcPrice}`);
-    assetPriceInDollar = btcPrice * bid;
+    myBidPriceInDollar = btcPrice * currentBid;
   } else {
-    assetPriceInDollar = assetPrice;
+    myBidPriceInDollar = currentBid;
   }
 
   // either use $10 or lowest order value (sometimes coins are > $10 equivilant min order)
-  let volume = (10 / assetPriceInDollar).toFixed(3);
+  let volume = (10 / myBidPriceInDollar).toFixed(3);
   volume = volume > orderMin ? volume : orderMin;
 
-  const usdOrderValue = (assetPriceInDollar * volume).toFixed(2); // total value bought
+  const usdOrderValue = (myBidPriceInDollar * volume).toFixed(2); // total value bought
   console.log(
-    `${pair} ${action.toUpperCase()} ${
-      volume * leverage
-    } ${base} at ${assetPrice} : $${
-      usdOrderValue * leverage
-    } at $${assetPriceInDollar.toFixed(2)}`
+    `${krakenPair} ${action.toUpperCase()} ${volume} ${baseOfPair} at ${currentBid} : $${usdOrderValue} at $${myBidPriceInDollar.toFixed(
+      2
+    )}`
   );
 
   if (description.includes('Close')) {
-    if (pairResult[krakenPair].leverage_buy.length === 0) {
-      let { error, result } = await kraken.setAddOrder({
-        pair,
+    if (!levarageAvailable) {
+      var { error, result } = await kraken.setAddOrder({
+        pair: krakenPair,
         type: oppositeAction,
         ordertype: "settle-position",
         volume: 0,
         // validate,
       });
-
-      console.log("Closing Request: ", error, result);
-      return res.send({ error, result });
+    } else {
+      var { error, result } = await kraken.setAddOrder({
+        pair: krakenPair,
+        type: oppositeAction,
+        ordertype: "settle-position",
+        volume: 0,
+        leverage,
+        // validate,
+      });
     }
-
-    let { error, result } = await kraken.setAddOrder({
-      pair,
-      type: oppositeAction,
-      ordertype: "settle-position",
-      volume: 0,
-      leverage,
-      // validate,
-    });
+    
     console.log("Closing Request: ", error, result);
     return res.send({ error, result})
   }
 
   const stopLoss =
     action === "buy"
-      ? bid * (1 - (config[krakenPair].longStop / 100))
-      : bid * (1 + (config[krakenPair].shortStop / 100));
+      ? currentBid * (1 - (config[krakenPair].longStop / 100))
+      : currentBid * (1 + (config[krakenPair].shortStop / 100));
 
-  if (pairResult[krakenPair].leverage_buy.length === 0) {
-    let { error, result } = await kraken.setAddOrder({
-      pair,
+  if (!levarageAvailable) {
+    var { error, result } = await kraken.setAddOrder({
+      pair: krakenPair,
       type: action,
       ordertype: "stop-loss",
       price: btcPair
-        ? stopLoss.toFixed(pairResult[krakenPair].pair_decimals)
+        ? stopLoss.toFixed(decimals)
         : stopLoss.toFixed(1),
-      // price2: bid,
+      // price2: currentBid,
       volume,
-      // validate,
+      // validate: true,
     });
-    console.log("Set Order Request: ", error, result);
-    return res.send({ error, result });
   } else {
-    let { error, result } = await kraken.setAddOrder({
-      pair,
+    var { error, result } = await kraken.setAddOrder({
+      pair: krakenPair,
       type: action,
       ordertype: "stop-loss",
       price: btcPair
-        ? stopLoss.toFixed(pairResult[krakenPair].pair_decimals)
+        ? stopLoss.toFixed(decimals)
         : stopLoss.toFixed(1),
-      // price2: bid,
+      // price2: currentBid,
       volume,
       leverage,
-      // validate,
+      // validate: true,
     });
-    console.log("Set Order Request: ", error, result);
-    return res.send({ error, result }); // idk we'll figure out a better way
   }
+  
+  console.log("Set Order Request: ", error, result);
+  return res.send({ error, result }); // idk we'll figure out a better way
 });
 
 app.listen(process.env.PORT || 3000, () => {
