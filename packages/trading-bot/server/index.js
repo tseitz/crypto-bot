@@ -140,7 +140,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     let { error, result } = await kraken.setAddOrder({
       pair,
       type: action,
-      ordertype: "stop-loss-limit",
+      ordertype: "stop-loss-and-limit",
       price: btcPair
         ? stopLoss.toFixed(pairResult[krakenPair].pair_decimals)
         : stopLoss.toFixed(1),
@@ -154,7 +154,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     let { error, result } = await kraken.setAddOrder({
       pair,
       type: action,
-      ordertype: "stop-loss-limit",
+      ordertype: "stop-loss-and-limit",
       price: btcPair
         ? stopLoss.toFixed(pairResult[krakenPair].pair_decimals)
         : stopLoss.toFixed(1),
