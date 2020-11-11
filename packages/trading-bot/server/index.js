@@ -142,7 +142,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       type: action,
       ordertype: "stop-loss-limit",
       price: btcPair
-        ? stopLoss.toFixed(pairResult.pair_decimals)
+        ? stopLoss.toFixed(pairResult[krakenPair].pair_decimals)
         : stopLoss.toFixed(1),
       price2: bid,
       volume,
@@ -156,7 +156,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       type: action,
       ordertype: "stop-loss-limit",
       price: btcPair
-        ? stopLoss.toFixed(pairResult.pair_decimals)
+        ? stopLoss.toFixed(pairResult[krakenPair].pair_decimals)
         : stopLoss.toFixed(1),
       price2: bid,
       volume,
