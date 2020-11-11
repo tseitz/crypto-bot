@@ -21,15 +21,15 @@ module.exports = {
   },
   DOTXBT: {
     longStop: 2,
-    shortStop: 3,
+    shortStop: 2.5,
   },
   LINKXBT: {
-    longStop: 7,
-    shortStop: 3,
+    longStop: 2.5,
+    shortStop: 2.5,
   },
   YFIXBT: {
-    longStop: 3,
-    shortStop: 3,
+    longStop: 2.5,
+    shortStop: 2.5,
   },
   OMGXBT: {
     longStop: 1.4,
