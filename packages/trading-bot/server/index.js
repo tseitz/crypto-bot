@@ -94,9 +94,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   const usdOrderValue = (myBidPriceInDollar * volume).toFixed(2); // total value bought
   console.log(
-    `${krakenPair} ${action.toUpperCase()} ${volume} ${baseOfPair} at ${currentBid} : $${usdOrderValue} at $${myBidPriceInDollar.toFixed(
-      2
-    )}`
+    `${krakenPair} ${action.toUpperCase()} ${volume} ${baseOfPair} at ${currentBid} : $${usdOrderValue} at $${myBidPriceInDollar}`
   );
 
   if (description.includes('Close')) {
