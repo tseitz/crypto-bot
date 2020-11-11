@@ -1,7 +1,7 @@
 module.exports = {
   KSMXBT: {
-    longStop: 1,
-    shortStop: 2,
+    longStop: 1.4,
+    shortStop: 1.3,
   },
   UNIXBT: {
     longStop: 1.69,
@@ -31,4 +31,8 @@ module.exports = {
     longStop: 3,
     shortStop: 3,
   },
+  OMGXBT: {
+    longStop: 1.4,
+    shortStop: 1.3,
+  },,
 };
