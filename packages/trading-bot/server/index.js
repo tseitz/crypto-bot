@@ -106,6 +106,19 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   );
 
   if (description.includes('Close')) {
+    if (pairResult[krakenPair].leverage_buy.length === 0) {
+      let { error, result } = await kraken.setAddOrder({
+        pair,
+        type: oppositeAction,
+        ordertype: "settle-position",
+        volume: 0,
+        // validate,
+      });
+
+      console.log("Closing Request: ", error, result);
+      return res.send({ error, result });
+    }
+
     let { error, result } = await kraken.setAddOrder({
       pair,
       type: oppositeAction,
@@ -131,7 +144,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       : stopLoss.toFixed(1),
     price2: bid,
     volume,
-    // leverage,
+    leverage,
     // validate,
   });
   console.log("Set Order Request: ", error, result);
@@ -140,8 +153,11 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     let { error, result } = await kraken.setAddOrder({
       pair,
       type: action,
-      ordertype: "market",
-      // price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
+      ordertype: "stop-loss-limit",
+      price: btcPair
+        ? stopLoss.toFixed(pairResult.pair_decimals)
+        : stopLoss.toFixed(1),
+      price2: bid,
       volume,
       // validate,
     });
