@@ -24,7 +24,11 @@ module.exports = {
     shortStop: 3,
   },
   LINKXBT: {
-    longStop: 2,
+    longStop: 7,
     shortStop: 3,
   },
+  YFIXBT: {
+    longStop: 3,
+    shortStop: 3,
+  },,
 };

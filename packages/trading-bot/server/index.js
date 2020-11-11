@@ -111,10 +111,10 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       type: oppositeAction,
       ordertype: "settle-position",
       volume: 0,
-      // leverage,
+      leverage,
       // validate,
     });
-    console.log("Closing Request: ", closeError, closeOrder);
+    console.log("Closing Request: ", error, result);
     return res.send({ error, result})
   }
 
