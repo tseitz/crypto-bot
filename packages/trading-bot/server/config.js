@@ -4,7 +4,7 @@ module.exports = {
     shortStop: 2,
   },
   UNIXBT: {
-    longStop: 1,
+    longStop: 1.69,
     shortStop: 2,
   },
   CRVXBT: {
@@ -17,7 +17,7 @@ module.exports = {
   },
   ETHUSDT: {
     longStop: 2.5,
-    shortStop: 2,
+    shortStop: 1.4,
   },
   DOTXBT: {
     longStop: 2,

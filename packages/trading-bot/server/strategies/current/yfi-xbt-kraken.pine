@@ -2,7 +2,7 @@
 strategy("YFI XBT Binance 1m", overlay=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
-daysBackMax = input(defval=90, title="Max Days Back to Test", minval=0)
+daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
 daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
@@ -19,6 +19,8 @@ shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 // extra inputs
 allowDoubleLongs = input(title="Allow double longs?", type=input.bool, defval=true)
 allowDoubleShorts = input(title="Allow double shorts?", type=input.bool, defval=true)
+longGreenCandlesOnly = input(title="Only long green candles?", type=input.bool, defval=true)
+shortRedCandlesOnly = input(title="Only long green candles?", type=input.bool, defval=true)
 // useMassive = input(title="Check for massive reversals?", type=input.bool, defval=false)
 
 // don't worry about doji's within margin of error
@@ -27,7 +29,7 @@ allowDoubleShorts = input(title="Allow double shorts?", type=input.bool, defval=
 // bgcolor(color=doji ? color.yellow : na, transp=95)
 
 // plot the vwap. I like a gap high and low of the close to be more conservative
-vwapHighPerc = input(defval=.016, title='VWAP High %', type=input.float, step=.001)
+vwapHighPerc = input(defval=.017, title='VWAP High %', type=input.float, step=.001)
 vwapLowPerc = input(defval=.019, title='VWAP Low %', type=input.float, step=.001)
 vwapClose = vwap(close)
 vwapLow = vwap(low - low * vwapLowPerc)
@@ -56,8 +58,8 @@ redCandle = (close < open)
 // massiveRed = useMassive and massive and redCandle
 // massiveGreen = useMassive and massive and greenCandle
 
-openShort = not isShort and open < vwapLow // and redNoDoji
-openLong = not isLong and open > vwapHigh // and greenNoDoji
+openShort = shortRedCandlesOnly ? not isShort and open < vwapLow and redCandle : not isShort and open < vwapLow
+openLong = longGreenCandlesOnly ? not isLong and open > vwapHigh and greenCandle : not isLong and open > vwapHigh
 closeShort = isShort and open > vwapClose // and greenNoDoji
 closeLong = isLong and open < vwapClose // and redNoDoji
 
