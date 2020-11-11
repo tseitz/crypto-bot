@@ -149,6 +149,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       // validate,
     });
     console.log("Set Order Request: ", error, result);
+    return res.send({ error, result });
   } else {
     let { error, result } = await kraken.setAddOrder({
       pair,
@@ -163,25 +164,8 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       // validate,
     });
     console.log("Set Order Request: ", error, result);
-  }
-
-  if (error.length > 0 && error[0].includes("leverage")) {
-    let { error, result } = await kraken.setAddOrder({
-      pair,
-      type: action,
-      ordertype: "stop-loss-limit",
-      price: btcPair
-        ? stopLoss.toFixed(pairResult.pair_decimals)
-        : stopLoss.toFixed(1),
-      price2: bid,
-      volume,
-      // validate,
-    });
-
     return res.send({ error, result }); // idk we'll figure out a better way
   }
-
-  res.send({ error, result });
 });
 
 app.listen(process.env.PORT || 3000, () => {
