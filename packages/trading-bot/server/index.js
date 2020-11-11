@@ -126,7 +126,9 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     pair,
     type: action,
     ordertype: "stop-loss-limit",
-    price: btcPair ? stopLoss.toFixed(5) : stopLoss.toFixed(1),
+    price: btcPair
+      ? stopLoss.toFixed(pairResult.pair_decimals)
+      : stopLoss.toFixed(1),
     price2: bid,
     volume,
     // leverage,

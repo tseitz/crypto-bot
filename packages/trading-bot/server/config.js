@@ -30,5 +30,5 @@ module.exports = {
   YFIXBT: {
     longStop: 3,
     shortStop: 3,
-  },,
+  },
 };
