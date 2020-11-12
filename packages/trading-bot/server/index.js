@@ -164,7 +164,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   console.log("Set Order Request: ", error, result);
   return res.send({ error, result }); // idk we'll figure out a better way
-};);
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${PORT}`);
