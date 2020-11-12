@@ -70,6 +70,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   const leverageSellAmount = leverageSell[0]; // leverageSell.length - 1
   const leverageAmount = action === 'sell' ? leverageSellAmount : leverageBuyAmount;
   const decimals = krakenPairResult[krakenPair]['pair_decimals'];
+  const lot_decimals = krakenPairResult[krakenPair]['lot_decimals'];
 
   const { result: priceInfo } = await kraken.getTickerInformation({
     pair: krakenPair,
@@ -91,7 +92,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   }
 
   // let's risk $40 for now
-  let volume = Number.parseFloat((40 / myBidPriceInDollar).toFixed(parseInt(decimals)));
+  let volume = Number.parseFloat((40 / myBidPriceInDollar).toFixed(parseInt(lot_decimals)));
   volume = volume > orderMin ? volume : orderMin;
 
   const usdOrderValue = (myBidPriceInDollar * volume).toFixed(2); // total value bought
@@ -102,7 +103,13 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   );
 
   if (description.includes('Close')) {
-    const closeOrderResult = await closeOrder(krakenPair, baseOfPair, action, leverageAmount);
+    const closeOrderResult = await closeOrder(
+      krakenPair,
+      baseOfPair,
+      action,
+      decimals,
+      leverageAmount
+    );
     return res.send(closeOrderResult);
   }
 
@@ -201,12 +208,20 @@ async function handleNonLeveragedOrder(pair, baseOfPair, action, volume, current
   }
 }
 
-async function closeOrder(krakenPair, baseOfPair, action, leverageAmount) {
+async function closeOrder(krakenPair, baseOfPair, action, decimals, leverageAmount) {
   let result;
   if (!leverageAmount) {
     result = await handleNonLeveragedOrder(krakenPair, baseOfPair, action);
   } else {
-    result = await handleLeveragedOrder(krakenPair, action, true, leverageAmount);
+    result = await handleLeveragedOrder(
+      krakenPair,
+      action,
+      true,
+      null,
+      null,
+      decimals,
+      leverageAmount
+    );
   }
 
   console.log('Closing Request: ', result);
