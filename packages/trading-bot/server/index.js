@@ -62,7 +62,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
 
   // Sometimes the kraken name is not what I receive from TradingView
   const krakenPair = Object.keys(krakenPairResult)[0];
-  const orderMin = krakenPairResult[krakenPair]['ordermin'];
+  const orderMin = parseInt(krakenPairResult[krakenPair]['ordermin']);
   const baseOfPair = krakenPairResult[krakenPair]['base'];
   const leverageBuy = krakenPairResult[krakenPair]['leverage_buy'];
   const leverageSell = krakenPairResult[krakenPair]['leverage_sell'];
@@ -91,7 +91,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   }
 
   // let's risk $40 for now
-  let volume = (40 / myBidPriceInDollar).toFixed(decimals);
+  let volume = Number.parseFloat((40 / myBidPriceInDollar).toFixed(parseInt(decimals)));
   volume = volume > orderMin ? volume : orderMin;
 
   const usdOrderValue = (myBidPriceInDollar * volume).toFixed(2); // total value bought
