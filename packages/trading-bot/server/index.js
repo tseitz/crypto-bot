@@ -142,6 +142,7 @@ async function handleLeveragedOrder(pair, action, settle, volume, currentBid, de
           pair,
           'buy',
           true,
+          0,
           currentBid,
           decimals,
           leverage
