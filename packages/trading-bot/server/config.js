@@ -1,4 +1,8 @@
 module.exports = {
+  ETHUSDT: {
+    longStop: 3,
+    shortStop: 4,
+  },
   KSMXBT: {
     longStop: 1.4,
     shortStop: 1.3,
@@ -15,13 +19,9 @@ module.exports = {
     longStop: 2,
     shortStop: 1,
   },
-  ETHUSDT: {
-    longStop: 2.5,
-    shortStop: 1.4,
-  },
   DOTXBT: {
-    longStop: 2,
-    shortStop: 2.5,
+    longStop: 10,
+    shortStop: 10,
   },
   LINKXBT: {
     longStop: 2.5,

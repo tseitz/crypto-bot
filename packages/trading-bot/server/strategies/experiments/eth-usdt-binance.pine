@@ -40,14 +40,17 @@ var longFromShort = false
 greenCandle = (close > open) and not doji
 redCandle = (close < open) and not doji
 
-openLong = not isLong and greenCandle and open > vwapClose
-longWin = isLong and high > vwapHigh
-longLoss = isLong and low < vwapClose
-openShort = not isShort and redCandle and open < vwapClose
-shortWin = isShort and low < vwapLow
-shortLoss = isShort and high > vwapClose
-shortFromLongWin = shortFromLong and low < vwapClose
-longFromShortWin = longFromShort and high > vwapClose
+openLong = not isLong and greenCandle and open < vwapLow
+openShort = not isShort and redCandle and open > vwapHigh
+closeLong = isLong and high > vwapClose
+closeShort = isShort and low < vwapClose
+
+// longWin = isLong and high > vwapHigh
+// longLoss = isLong and low < vwapClose
+// shortWin = isShort and low < vwapLow
+// shortLoss = isShort and high > vwapClose
+// shortFromLongWin = shortFromLong and low < vwapClose
+// longFromShortWin = longFromShort and high > vwapClose
 
 if openLong
     isLong := true
@@ -56,46 +59,55 @@ if openLong
 if openShort
     isLong := false
     isShort := true
-
-if shortLoss
-    isLong := false
+  
+if closeShort
     isShort := false
 
-if longLoss
+if closeLong
     isLong := false
-    isShort := false
 
-if longWin
-    isShort := true
-    shortFromLong := true
-    strategy.entry("short", long=false, stop=shortStopPrice, when=isWithinTimeBounds)
+// if shortLoss
+//     isLong := false
+//     isShort := false
 
-if shortFromLong and shortFromLongWin
-    isLong := false
-    isShort := false
-    shortFromLong := false
-    strategy.close("short", when=isWithinTimeBounds)
+// if longLoss
+//     isLong := false
+//     isShort := false
 
-if shortWin
-    isLong := true
-    longFromShort := true
-    strategy.entry("long", long=true, stop=longStopPrice, when=isWithinTimeBounds)
+// if longWin
+//     isShort := true
+//     shortFromLong := true
+//     strategy.entry("short", long=false, stop=shortStopPrice, when=isWithinTimeBounds)
 
-if longFromShort and longFromShortWin
-    isLong := false
-    isShort := false
-    longFromShort := false
-    strategy.close("long", when=isWithinTimeBounds)
+// if shortFromLong and shortFromLongWin
+//     isLong := false
+//     isShort := false
+//     shortFromLong := false
+//     strategy.close("short", when=isWithinTimeBounds)
+
+// if shortWin
+//     isLong := true
+//     longFromShort := true
+//     strategy.entry("long", long=true, stop=longStopPrice, when=isWithinTimeBounds)
+
+// if longFromShort and longFromShortWin
+//     isLong := false
+//     isShort := false
+//     longFromShort := false
+//     strategy.close("long", when=isWithinTimeBounds)
 
 
 // plot the plays
 // plotshape(openLong, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
 // strategy
-strategy.entry("long", long=true, when=openLong and not shortFromLong and isWithinTimeBounds)
-strategy.close("long", when=(longWin or longLoss) and not longFromShort and isWithinTimeBounds)
-strategy.entry("short", long=false, when=openShort and not longFromShort and isWithinTimeBounds)
-strategy.close("short", when=(shortWin or shortLoss) and not shortFromLong and isWithinTimeBounds)
+strategy.entry("long", long=true, when=openLong and isWithinTimeBounds)
+strategy.close("long", when=closeLong and isWithinTimeBounds)
+strategy.entry("short", long=false, when=openShort and isWithinTimeBounds)
+strategy.close("short", when=closeShort and isWithinTimeBounds)
 
-// if (strategy.position_size < 0)
-//     strategy.exit(id="stop", stop=shortStopPrice)
+if (strategy.position_size < 0)
+    strategy.exit(id="stop", stop=shortStopPrice)
+
+if (strategy.position_size > 0)
+    strategy.exit(id="stop", stop=longStopPrice)

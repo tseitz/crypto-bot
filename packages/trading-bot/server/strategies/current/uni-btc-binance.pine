@@ -43,83 +43,45 @@ plot(series=vwapHigh, color=color.orange, linewidth=1)
 var isLong = false
 var isShort = false
 
-// look for green candles
 greenCandle = (close > open)
-// greenNoDoji = (close > open) and not doji
-// bgcolor(color=greenNoDoji ? color.green : na, transp=95)
-
-// look for red candles
 redCandle = (close < open)
-// redNoDoji = (close < open) and not doji
-// bgcolor(color=redNoDoji ? color.red : na, transp=95)
 
-// look for massive ones
-// massive = useMassive and abs(high - low) > (abs(high[1] - low[1]) + abs(high[2] - low[2]) + abs(high[3] - low[3])) and abs(open - close) > (abs(open[1] - close[1]) + abs(high[2] - low[2]))
-// massiveRed = useMassive and massive and redCandle
-// massiveGreen = useMassive and massive and greenCandle
+openLong = not isLong and greenCandle and open > vwapClose
+longWin = isLong and high > vwapHigh
+longLoss = isLong and low < vwapClose
+openShort = not isShort and redCandle and open < vwapClose
+shortWin = isShort and low < vwapLow
+shortLoss = isShort and high > vwapClose
 
-openShort = shortRedCandlesOnly ? not isShort and open < vwapLow and redCandle : not isShort and open < vwapLow
-openLong = longGreenCandlesOnly ? not isLong and open > vwapHigh and greenCandle : not isLong and open > vwapHigh
-closeShort = isShort and open > vwapClose // and greenNoDoji
-closeLong = isLong and open < vwapClose // and redNoDoji
-
-
-var addLongAvailable = false
-var vwapCloseLong = false
-var addShortAvailable = false
-var vwapCloseShort = false
 if openLong
     isLong := true
     isShort := false
-    addShortAvailable := false
-
-if closeLong
-    isLong := false
-    isShort := false
-    addShortAvailable := false
 
 if openShort
     isLong := false
     isShort := true
-    addLongAvailable := false
 
-if closeShort
+if shortLoss
     isLong := false
     isShort := false
-    addLongAvailable := false
-
-if isLong and close < vwapHigh
-    addLongAvailable := true
-
-if isShort and close > vwapLow
-    addShortAvailable := true
-
-if allowDoubleLongs and isLong and addLongAvailable and open > vwapHigh
-    strategy.order("long", long=true, stop=longStopPrice, when=isWithinTimeBounds)
-    addLongAvailable := false
-    
-if allowDoubleShorts and isShort and addShortAvailable and open < vwapLow
-    strategy.order("short", long=false, stop=shortStopPrice, when=isWithinTimeBounds)
-    addShortAvailable := false
+  
+if longLoss
+    isLong := false
+    isShort := false
 
 
 // plot the plays
 // plotshape(openLong, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 // plotshape(massive, title="massive", text="massive", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-// plotshape(longCrossesVwap, title="long", text="long", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-// plotshape(vwapCloseLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
-// plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
-// plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
-
 
 // strategy
 strategy.entry("long", long=true, when=openLong and isWithinTimeBounds)
-strategy.close("long", when=closeLong and isWithinTimeBounds)
+strategy.close("long", when=longWin or longLoss and isWithinTimeBounds)
 strategy.entry("short", long=false, when=openShort and isWithinTimeBounds)
-strategy.close("short", when=closeShort and isWithinTimeBounds)
+strategy.close("short", when=shortWin or shortLoss and isWithinTimeBounds)
 
-if (strategy.position_size > 0)
-    strategy.exit(id="stop", stop=longStopPrice)
+// if (strategy.position_size > 0)
+//     strategy.exit(id="stop", stop=longStopPrice)
 
-if (strategy.position_size < 0)
-    strategy.exit(id="stop", stop=shortStopPrice)
+// if (strategy.position_size < 0)
+//     strategy.exit(id="stop", stop=shortStopPrice)

@@ -43,7 +43,9 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
 
   // Kraken uses XBT instead of BTC
   const switchPair = /BTC/.test(tradingViewTicker);
-  const krakenTicker = switchPair ? tradingViewTicker.replace("BTC", "XBT") : tradingViewTicker;
+  const krakenTicker = switchPair
+    ? tradingViewTicker.replace("BTC", "XBT")
+    : tradingViewTicker;
 
   // stopped out. this is handled by config currently
   if (description && description.includes("stop")) {
@@ -67,11 +69,14 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
   const krakenPair = Object.keys(krakenPairResult)[0];
   const orderMin = krakenPairResult[krakenPair]["ordermin"];
   const baseOfPair = krakenPairResult[krakenPair]["base"];
-  const levarageAvailable = krakenPairResult[krakenPair]["leverage_buy"].length > 0;
+  const levarageAvailable =
+    krakenPairResult[krakenPair]["leverage_buy"].length > 0;
   const decimals = krakenPairResult[krakenPair]["pair_decimals"];
 
-  const { result: priceInfo } = await kraken.getTickerInformation({ pair: krakenPair });
-  const currentBid = priceInfo[krakenPair]["b"][0]; 
+  const { result: priceInfo } = await kraken.getTickerInformation({
+    pair: krakenPair,
+  });
+  const currentBid = priceInfo[krakenPair]["b"][0];
   // const currentPrice = priceInfo[krakenPair]["c"][0];
 
   // if btc pair, convert to dollar (to pay $10 for now)
@@ -97,7 +102,7 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
     `${krakenPair} ${action.toUpperCase()} ${volume} ${baseOfPair} at ${currentBid} : $${usdOrderValue} at $${myBidPriceInDollar}`
   );
 
-  if (description.includes('Close')) {
+  if (description.includes("Close")) {
     if (!levarageAvailable) {
       const {
         error: balanceError,
@@ -124,24 +129,22 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
         // validate: true,
       });
     }
-    
+
     console.log("Closing Request: ", error, result);
-    return res.send({ error, result})
+    return res.send({ error, result });
   }
 
   const stopLoss =
     action === "buy"
-      ? currentBid * (1 - (config[krakenPair].longStop / 100))
-      : currentBid * (1 + (config[krakenPair].shortStop / 100));
+      ? currentBid * (1 - 12 / 100)
+      : currentBid * (1 + 12 / 100); // config[krakenPair].longStop
 
   if (!levarageAvailable) {
     var { error, result } = await kraken.setAddOrder({
       pair: krakenPair,
       type: action,
       ordertype: "stop-loss",
-      price: btcPair
-        ? stopLoss.toFixed(decimals)
-        : stopLoss.toFixed(1),
+      price: btcPair ? stopLoss.toFixed(decimals) : stopLoss.toFixed(1),
       // price2: currentBid,
       volume,
       // validate: true,
@@ -151,19 +154,17 @@ app.post("/webhook/trading-view", jsonParser, async (req, res) => {
       pair: krakenPair,
       type: action,
       ordertype: "stop-loss",
-      price: btcPair
-        ? stopLoss.toFixed(decimals)
-        : stopLoss.toFixed(1),
+      price: btcPair ? stopLoss.toFixed(decimals) : stopLoss.toFixed(1),
       // price2: currentBid,
       volume,
       leverage,
       // validate: true,
     });
   }
-  
+
   console.log("Set Order Request: ", error, result);
   return res.send({ error, result }); // idk we'll figure out a better way
-});
+};);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${PORT}`);
