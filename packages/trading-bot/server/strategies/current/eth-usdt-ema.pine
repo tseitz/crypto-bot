@@ -1,12 +1,12 @@
 //@version=4
-strategy("EMA Cross Strategy", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("ETHUSDT EMA Cross Strategy", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // let's be responsible
 // longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 120
 // shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
 // longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 // shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
-emaLength = input(defval=12, title="EMA Length", minval=0, step=1)
+emaLength = input(defval=28, title="EMA Length", minval=0, step=1)
 
 var isLong = false
 var isShort = false
