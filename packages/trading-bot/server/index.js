@@ -102,11 +102,11 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   );
 
   if (description.includes('Close')) {
-    const closeOrder = await closeOrder(krakenPair, baseOfPair, action, leverageAmount);
-    res.send(closeOrder);
+    const closeOrderResult = await closeOrder(krakenPair, baseOfPair, action, leverageAmount);
+    return res.send(closeOrderResult);
   }
 
-  const addOrder = await openOrder(
+  const addOrderResult = await openOrder(
     krakenPair,
     baseOfPair,
     action,
@@ -115,7 +115,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
     decimals,
     leverageAmount
   );
-  return res.send(addOrder);
+  return res.send(addOrderResult);
 });
 
 app.listen(process.env.PORT || 3000, () => {

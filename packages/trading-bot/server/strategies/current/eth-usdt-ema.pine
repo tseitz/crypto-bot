@@ -18,19 +18,11 @@ ema = ema(close, emaLength)
 
 plot(ema, linewidth=1, color=color.orange)
 
-long = not isLong and open > ema and greenCandle
-short = not isShort and open < ema and redCandle
+long = open > ema and greenCandle
+short = open < ema and redCandle
 
 bgcolor(color=long ? color.green : na)
 bgcolor(color=short ? color.red : na)
-
-if long
-    isLong := true
-    isShort := false
-
-if short
-    isLong := false
-    isShort := true
 
 strategy.entry("long", long=true, when=long)
 strategy.close("long", when=short)
