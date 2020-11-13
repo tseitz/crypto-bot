@@ -14,7 +14,7 @@ export interface KrakenTradeablePair {
     lot_multiplier: number;
     margin_call: number;
     margin_stop: number;
-    ordermin: string | number; // comes as string but is float
+    ordermin: number | string; // comes as string but is float
     pair_decimals: number;
     quote: string;
     wsname: string;
