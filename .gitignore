@@ -1,5 +1,6 @@
 # editor
-.vscode
+.vscode/*
+!.vscode/launch.json
 
 # python
 **/.venv
