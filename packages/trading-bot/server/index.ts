@@ -1,6 +1,4 @@
 import express from 'express';
-// import bodyParser from 'body-parser';
-// const Kraken = require('kraken-wrapper');
 import Kraken from 'kraken-wrapper';
 import Order from './models/Order';
 // const Binance = require("node-binance-api");
@@ -121,6 +119,7 @@ async function handleLeveragedOrder(order: Order, closeOpenPositions = true, set
       validate: true,
     });
   } else {
+    // TODO: pass this along in the request body. Sometimes we don't want to close positions first
     if (closeOpenPositions) {
       const { error, result: openPositions } = await kraken.getOpenPositions();
 
