@@ -66,8 +66,8 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   const baseOfPair = krakenPairResult[krakenPair]['base'];
   const leverageBuy = krakenPairResult[krakenPair]['leverage_buy'];
   const leverageSell = krakenPairResult[krakenPair]['leverage_sell'];
-  const leverageBuyAmount = leverageBuy[0]; // leverageBuy.length - 1
-  const leverageSellAmount = leverageSell[0]; // leverageSell.length - 1
+  const leverageBuyAmount = leverageBuy[leverageBuy.length - 1];
+  const leverageSellAmount = leverageSell[leverageSell.length - 1];
   const leverageAmount = action === 'sell' ? leverageSellAmount : leverageBuyAmount;
   const decimals = krakenPairResult[krakenPair]['pair_decimals'];
   const lot_decimals = krakenPairResult[krakenPair]['lot_decimals'];
