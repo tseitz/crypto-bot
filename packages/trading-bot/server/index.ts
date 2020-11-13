@@ -1,5 +1,5 @@
-const express = require('express');
-var bodyParser = require('body-parser');
+import express from 'express';
+// import bodyParser from 'body-parser';
 const Kraken = require('kraken-wrapper');
 // const Binance = require("node-binance-api");
 // const config = require("./config");
@@ -18,7 +18,7 @@ const kraken = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_
 const stopPerc = 12; // for now
 
 // create application/json parser
-const jsonParser = bodyParser.json();
+const jsonParser = express.json();
 app.use(jsonParser);
 
 app.get('/', (req, res) => {

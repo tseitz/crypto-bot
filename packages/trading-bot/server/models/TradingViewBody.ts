@@ -1,9 +1,9 @@
-interface TradingViewBody {
+export interface TradingViewBody {
   ticker: string;
   strategy: TradingViewStrategyBody;
 }
 
-interface TradingViewStrategyBody {
+export interface TradingViewStrategyBody {
   action: string;
   description: string;
 }

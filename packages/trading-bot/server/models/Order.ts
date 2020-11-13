@@ -1,12 +1,12 @@
-import { TradingViewBody } from "./TradingViewBody";
-import { KrakenTradeablePair } from "./KrakenTradeablePair";
+import { TradingViewBody } from './TradingViewBody';
+import { KrakenTradeablePair } from './KrakenTradeablePair';
 
 class Order {
   tradingViewTicker: string;
   krakenTicker: string;
   orderAction: string;
   close: boolean;
-  orderMin: number;
+  orderMin: string | number;
   baseOfPair: string;
   leverageBuyAmounts: number[];
   leverageSellAmounts: number[];
@@ -24,9 +24,10 @@ class Order {
     this.baseOfPair = krakenTradeablePair[this.krakenTicker]['base'];
     this.leverageBuyAmounts = krakenTradeablePair[this.krakenTicker]['leverage_buy'];
     this.leverageSellAmounts = krakenTradeablePair[this.krakenTicker]['leverage_sell'];
-    this.leverageBuyAmount = this.leverageBuyAmounts[0]; // leverageBuy.length - 1
-    this.leverageSellAmount = this.leverageSellAmounts[0]; // leverageSell.length - 1
-    this.orderLeverageAmount = this.orderAction === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
+    this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
+    this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1];
+    this.orderLeverageAmount =
+      this.orderAction === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
     this.decimals = krakenTradeablePair[this.krakenTicker]['pair_decimals'];
   }
 }
