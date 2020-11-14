@@ -116,7 +116,7 @@ async function handleLeveragedOrder(order: Order, closeOpenPositions = true, set
       price: order.currentAsk,
       volume: 0,
       leverage: order.leverageAmount,
-      validate: true,
+      // validate: true,
     });
   } else {
     // TODO: pass this along in the request body. Sometimes we don't want to close positions first
@@ -141,7 +141,7 @@ async function handleLeveragedOrder(order: Order, closeOpenPositions = true, set
       // price2: currentBid,
       volume: order.volume,
       leverage: order.leverageAmount,
-      validate: true,
+      // validate: true,
     });
   }
 }
@@ -156,7 +156,7 @@ async function handleNonLeveragedOrder(order: Order) {
       ordertype: 'limit',
       volume: balanceResult[order.baseOfPair],
       price: order.currentAsk,
-      validate: true,
+      // validate: true,
     });
   } else {
     return await kraken.setAddOrder({
@@ -166,7 +166,7 @@ async function handleNonLeveragedOrder(order: Order) {
       price: order.stopLoss,
       // price2: currentBid,
       volume: order.volume,
-      validate: true,
+      // validate: true,
     });
   }
 }
