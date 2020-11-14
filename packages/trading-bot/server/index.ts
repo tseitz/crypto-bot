@@ -1,5 +1,6 @@
 import express from 'express';
-import Kraken from 'kraken-wrapper';
+// import Kraken from 'kraken-wrapper';
+const Kraken = require('kraken-wrapper');
 import Order from './models/Order';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
