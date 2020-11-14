@@ -7,7 +7,8 @@ export default class Order {
   tradingViewTicker: string;
   krakenTicker: string;
   action: string;
-  close: boolean;
+  oppositeAction: string;
+  // close: boolean;
   minVolume: number;
   baseOfPair: string;
   btcPair: boolean;
@@ -38,7 +39,8 @@ export default class Order {
     this.tradingViewTicker = body.ticker;
     this.krakenTicker = Object.keys(krakenTradeablePair)[0];
     this.action = body.strategy.action;
-    this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
+    this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
+    // this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
     this.minVolume = Number.parseFloat(
       krakenTradeablePair[this.krakenTicker]['ordermin'].toString()
     );

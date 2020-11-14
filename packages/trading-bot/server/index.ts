@@ -1,6 +1,7 @@
 import express from 'express';
 import Kraken from 'kraken-wrapper';
 import Order from './models/Order';
+import { KrakenOpenPosition } from './models/KrakenOpenPosition';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -31,6 +32,11 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
     return res.sendStatus(401);
   }
 
+  // ignore close signal for now. We will handle this ourselves in one order
+  if (body.strategy.description.toLowerCase().includes('close')) {
+    return res.sendStatus(200);
+  }
+
   // Kraken uses XBT instead of BTC. I use binance for most webhooks since there is more volume
   const tradingViewTicker = body.ticker;
   const switchPair = /BTC/.test(tradingViewTicker);
@@ -43,8 +49,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
 
   if (krakenPairError.length > 0) {
     console.log(`Pair data for ${krakenTicker} not available on Kraken`);
-    res.sendStatus(401);
-    return;
+    return res.sendStatus(404);
   }
 
   // get pair price info for order
@@ -65,10 +70,10 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   );
 
   // close or open new order
-  if (order.close) {
-    const closeOrderResult = await closeOrder(order);
-    return res.send(closeOrderResult);
-  }
+  // if (order.close) {
+  //   const closeOrderResult = await closeOrder(order);
+  //   return res.send(closeOrderResult);
+  // }
 
   const addOrderResult = await openOrder(order);
   return res.send(addOrderResult);
@@ -95,66 +100,69 @@ async function openOrder(order: Order) {
   return result;
 }
 
-async function closeOrder(order: Order) {
-  let result;
-  if (typeof order.leverageAmount === 'undefined') {
-    result = await handleNonLeveragedOrder(order);
-  } else {
-    result = await handleLeveragedOrder(order, true, true);
-  }
+// async function closeOrder(order: Order) {
+//   let result;
+//   if (typeof order.leverageAmount === 'undefined') {
+//     result = await handleNonLeveragedOrder(order);
+//   } else {
+//     result = await settleLeveragedOrder(order);
+//   }
 
-  console.log('Closing Request: ', result);
-  return result;
+//   console.log('Closing Request: ', result);
+//   return result;
+// }
+
+async function settleLeveragedOrder(order: Order, position: KrakenOpenPosition) {
+  const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+  return await kraken.setAddOrder({
+    pair: order.krakenTicker,
+    type: closeAction,
+    ordertype: 'limit',
+    price: order.currentAsk,
+    volume: 0,
+    leverage: order.leverageAmount,
+    // validate: true,
+  });
 }
 
-async function handleLeveragedOrder(order: Order, closeOpenPositions = true, settle?: boolean) {
-  if (settle) {
-    return await kraken.setAddOrder({
-      pair: order.krakenTicker,
-      type: order.action,
-      ordertype: 'limit',
-      price: order.currentAsk,
-      volume: 0,
-      leverage: order.leverageAmount,
-      // validate: true,
-    });
-  } else {
-    // TODO: pass this along in the request body. Sometimes we don't want to close positions first
-    if (closeOpenPositions) {
-      const { error, result: openPositions } = await kraken.getOpenPositions();
+async function handleLeveragedOrder(order: Order, closeOpenPositions = true) {
+  // TODO: pass this along in the request body. Sometimes we don't want to close positions first
+  if (closeOpenPositions) {
+    const { error, result: openPositions } = await kraken.getOpenPositions();
 
-      // close out positons first
-      for (const key in openPositions) {
-        if (openPositions[key].pair === order.krakenTicker) {
-          const { result } = await handleLeveragedOrder(order, true, true);
-          console.log(result);
-          break; // settles all so ignore the rest
-        }
+    // close out positons first
+    for (const key in openPositions) {
+      const position = openPositions[key];
+      if (position.pair === order.krakenTicker) {
+        const { result } = await settleLeveragedOrder(order, position);
+        console.log(result);
       }
     }
-
-    return await kraken.setAddOrder({
-      pair: order.krakenTicker,
-      type: order.action,
-      ordertype: 'stop-loss',
-      price: order.stopLoss,
-      // price2: currentBid,
-      volume: order.volume,
-      leverage: order.leverageAmount,
-      // validate: true,
-    });
   }
+
+  return await kraken.setAddOrder({
+    pair: order.krakenTicker,
+    type: order.action,
+    ordertype: 'stop-loss',
+    price: order.stopLoss,
+    // price2: currentBid,
+    volume: order.volume,
+    leverage: order.leverageAmount,
+    // validate: true,
+  });
 }
 
 async function handleNonLeveragedOrder(order: Order) {
   const { error: balanceError, result: balanceResult } = await kraken.getBalance();
+  const pairBalance = balanceResult[order.baseOfPair];
 
   if (order.action === 'sell') {
+    // sell off current balance, we cannot short so stop there
     return await kraken.setAddOrder({
       pair: order.krakenTicker,
       type: order.action,
       ordertype: 'limit',
-      volume: balanceResult[order.baseOfPair],
+      volume: pairBalance,
       price: order.currentAsk,
       // validate: true,
     });
