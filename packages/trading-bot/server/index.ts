@@ -1,5 +1,5 @@
 import express from 'express';
-import Kraken from 'kraken-wrapper';
+const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
 import Order from './models/Order';
 import { KrakenOpenPosition } from './models/KrakenOpenPosition';
 // const Binance = require("node-binance-api");
