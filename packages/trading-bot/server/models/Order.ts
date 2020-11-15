@@ -48,8 +48,8 @@ export default class Order {
     this.btcPair = /XBT$/.test(this.krakenTicker);
     this.leverageBuyAmounts = krakenTradeablePair[this.krakenTicker]['leverage_buy'];
     this.leverageSellAmounts = krakenTradeablePair[this.krakenTicker]['leverage_sell'];
-    this.leverageBuyAmount = this.leverageBuyAmounts[0]; // [this.leverageBuyAmounts.length - 1];
-    this.leverageSellAmount = this.leverageSellAmounts[0]; // [this.leverageSellAmounts.length - 1];
+    this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
+    this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1];
     this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
     this.decimals = krakenTradeablePair[this.krakenTicker]['pair_decimals'];
     this.currentPrice = Number.parseFloat(pairPriceInfo[this.krakenTicker]['c'][0]);
@@ -65,7 +65,7 @@ export default class Order {
 
   private getVolume(): number {
     // let's risk $50 for now
-    const volume = Number.parseFloat((50 / this.bidPriceInDollar).toFixed(this.decimals));
+    const volume = Number.parseFloat((40 / this.bidPriceInDollar).toFixed(this.decimals));
     return volume > this.minVolume ? volume : this.minVolume;
   }
 
