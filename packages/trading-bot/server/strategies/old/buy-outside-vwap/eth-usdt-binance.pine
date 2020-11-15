@@ -1,5 +1,5 @@
 //@version=4
-strategy("ETHUSDT Binance 3m", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("ETHUSDT Binance 3m", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)

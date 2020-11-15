@@ -1,5 +1,5 @@
 //@version=4
-strategy("EOSBTC EMA Cross Strategy", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("EOSBTC EMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // let's be responsible
 // longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 120

@@ -1,5 +1,5 @@
 //@version=4
-strategy("BTCUSDT Binance 5m", overlay=true, initial_capital=10000, default_qty_value=10, calc_on_every_tick=true, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("BTCUSDT Binance 5m", overlay=true, initial_capital=10000, default_qty_value=10, calc_on_every_tick=false, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)

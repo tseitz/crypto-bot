@@ -119,7 +119,7 @@ async function settleLeveragedOrder(order: Order, position: KrakenOpenPosition) 
     type: closeAction,
     ordertype: 'limit',
     price: order.currentAsk,
-    volume: 0,
+    volume: position.vol, // only close current volume. 0 for close all
     leverage: order.leverageAmount,
     // validate: true,
   });
