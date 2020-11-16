@@ -2,6 +2,46 @@
   "ADABTC": {
     "name": "ADABTC EMA Cross Strategy",
     "emaLength": 19,
-    "daysBack": 60
+    "timeframe": "4h"
+  },
+  "LTCBTC": {
+    "name": "LTCBTC EMA Cross Strategy",
+    "emaLength": 36,
+    "timeframe": "2h"
+  },
+  "REPBTC": {
+    "name": "REPBTC EMA Cross Strategy",
+    "emaLength": 23,
+    "timeframe": "3h"
+  },
+  "TRXBTC": {
+    "name": "TRXBTC EMA Cross Strategy",
+    "emaLength": 21,
+    "timeframe": "2h"
+  },
+  "XLMBTC": {
+    "name": "XLMBTC EMA Cross Strategy",
+    "emaLength": 41,
+    "timeframe": "3h"
+  },
+  "XMRBTC": {
+    "name": "XMRBTC EMA Cross Strategy",
+    "emaLength": 36,
+    "timeframe": "3h"
+  },
+  "XRPBTC": {
+    "name": "XRPBTC EMA Cross Strategy",
+    "emaLength": 22,
+    "timeframe": "3h"
+  },
+  "XTZBTC": {
+    "name": "XTZBTC EMA Cross Strategy",
+    "emaLength": 36,
+    "timeframe": "3h"
+  },
+  "ZECBTC": {
+    "name": "ZECBTC EMA Cross Strategy",
+    "emaLength": 33,
+    "timeframe": "3h"
   }
 }

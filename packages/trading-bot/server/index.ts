@@ -121,7 +121,7 @@ async function settleLeveragedOrder(order: Order) {
 
   // close out positons first
   for (const key in openPositions) {
-    const position = openPositions[key];
+    const position: KrakenOpenPosition = openPositions[key];
     if (position.pair === order.krakenTicker) {
       const closeAction = position.type === 'sell' ? 'buy' : 'sell';
       const result = await kraken.setAddOrder({

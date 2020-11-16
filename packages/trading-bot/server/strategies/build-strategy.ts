@@ -5,6 +5,9 @@ import { ConfigPair } from './types';
 
 const myArgs = process.argv.slice(2);
 
+/*
+I built this so I could make a change in the base file, and automatically build the other available strategies
+*/
 try {
   const pair = myArgs[0];
   const fileName = myArgs[1];
