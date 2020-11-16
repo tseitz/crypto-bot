@@ -43,5 +43,10 @@
     "name": "ZECBTC EMA Cross Strategy",
     "emaLength": 33,
     "timeframe": "3h"
+  },
+  "LINKETH": {
+    "name": "LINKETH EMA Cross Strategy",
+    "emaLength": 27,
+    "timeframe": "3h"
   }
 }

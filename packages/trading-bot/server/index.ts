@@ -42,10 +42,16 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
     return res.sendStatus(200);
   }
 
-  // Kraken uses XBT instead of BTC. I use binance for most webhooks since there is more volume
+  // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
+  // I use binance/uniswap for most webhooks since there is more volume
   const tradingViewTicker = body.ticker;
-  const switchPair = /BTC/.test(tradingViewTicker);
-  const krakenTicker = switchPair ? tradingViewTicker.replace('BTC', 'XBT') : tradingViewTicker;
+  const switchPair = /BTC/.test(tradingViewTicker) || /WETH$/.test(tradingViewTicker);
+
+  let krakenTicker = tradingViewTicker;
+  if (switchPair) {
+    krakenTicker = tradingViewTicker.replace('BTC', 'XBT');
+    krakenTicker = tradingViewTicker.replace('WETH', 'ETH');
+  }
 
   // get pair data (used for orderMin, decimal info)
   const { error: krakenPairError, result: krakenPairResult } = await kraken.getTradableAssetPairs({
