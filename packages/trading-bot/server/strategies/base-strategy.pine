@@ -1,12 +1,19 @@
 //@version=4
-strategy("ATOMBTC EMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("{{config.name}}", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval={{config.daysBack}}, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 // let's be responsible
 // longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 120
 // shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
 // longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 // shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
-emaLength = input(defval=19, title="EMA Length", minval=0, step=1)
+emaLength = input(defval={{config.emaLength}}, title="EMA Length", minval=0, step=1)
 
 var isLong = false
 var isShort = false
@@ -32,10 +39,10 @@ if short
     isLong := false
     isShort := true
 
-strategy.entry("long", long=true, when=long)
-strategy.close("long", when=short)
-strategy.entry("short", long=false, when=short)
-strategy.close("short", when=long)
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+strategy.close("long", when=short and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+strategy.close("short", when=long and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     strategy.exit(id="stop buy", stop=longStopPrice)

@@ -33,7 +33,12 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   }
 
   // ignore close signal for now. We will handle this ourselves in one order
-  if (body.strategy.description.toLowerCase().includes('close')) {
+  // close or open new order
+  const description = body.strategy.description;
+  if (
+    description.toLowerCase().includes('close') &&
+    !description.toLowerCase().includes('close only')
+  ) {
     return res.sendStatus(200);
   }
 
@@ -69,11 +74,10 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
     } : $${order.usdOrderValue} at $${order.bidPriceInDollar.toFixed(2)}`
   );
 
-  // close or open new order
-  // if (order.close) {
-  //   const closeOrderResult = await closeOrder(order);
-  //   return res.send(closeOrderResult);
-  // }
+  if (order.closeOnly) {
+    const closeOrderResult = await handleLeveragedOrder(order, true, true);
+    return res.send(closeOrderResult);
+  }
 
   const addOrderResult = await openOrder(order);
   return res.send(addOrderResult);
@@ -112,32 +116,38 @@ async function openOrder(order: Order) {
 //   return result;
 // }
 
-async function settleLeveragedOrder(order: Order, position: KrakenOpenPosition) {
-  const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-  return await kraken.setAddOrder({
-    pair: order.krakenTicker,
-    type: closeAction,
-    ordertype: 'limit',
-    price: order.currentAsk,
-    volume: position.vol, // only close current volume. 0 for close all
-    leverage: order.leverageAmount,
-    // validate: true,
-  });
+async function settleLeveragedOrder(order: Order) {
+  const { error, result: openPositions } = await kraken.getOpenPositions();
+
+  // close out positons first
+  for (const key in openPositions) {
+    const position = openPositions[key];
+    if (position.pair === order.krakenTicker) {
+      const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+      const result = await kraken.setAddOrder({
+        pair: order.krakenTicker,
+        type: closeAction,
+        ordertype: 'limit',
+        price: order.currentAsk,
+        volume: position.vol, // only close current volume. 0 for close all
+        leverage: order.leverageAmount,
+        // validate: true,
+      });
+      console.log(result);
+    }
+  }
 }
 
-async function handleLeveragedOrder(order: Order, closeOpenPositions = true) {
+async function handleLeveragedOrder(
+  order: Order,
+  closeOpenPositions = true,
+  onlyCloseOpenPositions = false
+) {
   // TODO: pass this along in the request body. Sometimes we don't want to close positions first
   if (closeOpenPositions) {
-    const { error, result: openPositions } = await kraken.getOpenPositions();
+    await settleLeveragedOrder(order);
 
-    // close out positons first
-    for (const key in openPositions) {
-      const position = openPositions[key];
-      if (position.pair === order.krakenTicker) {
-        const { result } = await settleLeveragedOrder(order, position);
-        console.log(result);
-      }
-    }
+    if (onlyCloseOpenPositions) return;
   }
 
   return await kraken.setAddOrder({

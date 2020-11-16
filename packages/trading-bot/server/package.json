@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -x ts-node index.ts",
+    "build-strategy": "ts-node ./strategies/build-strategy.ts $1 $2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

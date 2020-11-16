@@ -1,0 +1,7 @@
+{
+  "ADABTC": {
+    "name": "ADABTC EMA Cross Strategy",
+    "emaLength": 19,
+    "daysBack": 60
+  }
+}
