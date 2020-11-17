@@ -1,5 +1,9 @@
 import Order from '../models/Order';
-import { KrakenPriceInfoResult, KrakenTradeablePairResult } from '../models/KrakenResult';
+import {
+  KrakenPriceInfoResult,
+  KrakenTradeablePairResult,
+  KrakenOrderResult,
+} from '../models/KrakenResult';
 import { KrakenOpenPosition } from '../models/KrakenOpenPosition';
 
 export class KrakenService {
@@ -31,7 +35,7 @@ export class KrakenService {
     return { priceError, priceData };
   }
 
-  async openOrder(order: Order) {
+  async openOrder(order: Order): Promise<KrakenOrderResult> {
     let result;
     if (typeof order.leverageAmount === 'undefined') {
       result = await this.handleNonLeveragedOrder(order);
@@ -54,19 +58,19 @@ export class KrakenService {
   //   return result;
   // }
 
-  async settleLeveragedOrder(order: Order) {
+  async settleLeveragedOrder(order: Order): Promise<KrakenOrderResult> {
     const {
       error: openPositionError,
       result: openPositions,
     } = await this.kraken.getOpenPositions();
 
     // close out positons first
-    const closedPositions = [];
+    let latestResult;
     for (const key in openPositions) {
       const position: KrakenOpenPosition = openPositions[key];
       if (position.pair === order.krakenTicker) {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-        const result = await this.kraken.setAddOrder({
+        latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
           ordertype: 'limit',
@@ -75,19 +79,18 @@ export class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-        closedPositions.push(result);
+        console.log('Settled Position: ', latestResult);
       }
     }
 
-    console.log('Settled Positions: ', closedPositions);
-    return closedPositions;
+    return latestResult;
   }
 
   async handleLeveragedOrder(
     order: Order,
     closeOpenPositions = true,
     onlyCloseOpenPositions = false
-  ) {
+  ): Promise<KrakenOrderResult> {
     // TODO: pass this along in the request body. Sometimes we don't want to close positions first
     if (closeOpenPositions) {
       const result = await this.settleLeveragedOrder(order);
@@ -110,7 +113,7 @@ export class KrakenService {
     return result;
   }
 
-  async handleNonLeveragedOrder(order: Order) {
+  async handleNonLeveragedOrder(order: Order): Promise<KrakenOrderResult> {
     const { error: balanceError, result: balanceResult } = await this.kraken.getBalance();
     const pairBalance = balanceResult[order.baseOfPair];
 

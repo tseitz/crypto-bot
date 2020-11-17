@@ -1,4 +1,5 @@
 export interface TradingViewBody {
+  passphrase: string;
   ticker: string;
   strategy: TradingViewStrategyBody;
 }
