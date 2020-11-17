@@ -45,7 +45,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
   // I use binance/uniswap for most webhooks since there is more volume
   const tradingViewTicker = body.ticker;
-  const switchPair = /BTC/.test(tradingViewTicker) || /WETH$/.test(tradingViewTicker);
+  const switchPair = /BTC/.test(tradingViewTicker) || /WETH/.test(tradingViewTicker);
 
   let krakenTicker = tradingViewTicker;
   if (switchPair) {
