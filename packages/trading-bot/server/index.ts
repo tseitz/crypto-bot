@@ -50,7 +50,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   let krakenTicker = tradingViewTicker;
   if (switchPair) {
     krakenTicker = tradingViewTicker.replace('BTC', 'XBT');
-    krakenTicker = tradingViewTicker.replace('WETH', 'ETH');
+    krakenTicker = krakenTicker.replace('WETH', 'ETH');
   }
 
   // get pair data (used for orderMin, decimal info)

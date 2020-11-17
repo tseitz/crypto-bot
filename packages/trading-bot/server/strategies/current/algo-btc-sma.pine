@@ -1,5 +1,5 @@
 //@version=4
-strategy("ADABTC EMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("ALGOBTC SMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=120, title="Max Days Back to Test", minval=0)
@@ -13,7 +13,7 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 // shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
 // longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 // shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
-emaLength = input(defval=30, title="EMA Length", minval=0, step=3)
+smaLength = input(defval=45, title="SMA Length", minval=0, step=3)
 
 var isLong = false
 var isShort = false
@@ -21,12 +21,12 @@ var isShort = false
 greenCandle = (close > open)
 redCandle = (close < open)
 
-ema = ema(close, emaLength)
+sma = sma(close, smaLength)
 
-plot(ema, linewidth=1, color=color.orange)
+plot(sma, linewidth=1, color=color.orange)
 
-long = not isLong and open > ema and greenCandle
-short = not isShort and open < ema and redCandle
+long = not isLong and open > sma and greenCandle
+short = not isShort and open < sma and redCandle
 
 bgcolor(color=long ? color.green : na)
 bgcolor(color=short ? color.red : na)
