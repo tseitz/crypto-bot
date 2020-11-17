@@ -104,7 +104,8 @@
   "REPBTC": {
     "name": "REPBTC SMA Cross Strategy",
     "smaLength": 23,
-    "timeframe": "3h"
+    "timeframe": "4h",
+    "latestResult": 7.8
   },
   "SNXBTC": {
     "name": "SNX SMA Cross Strategy",
@@ -114,8 +115,9 @@
   },
   "TRXBTC": {
     "name": "TRXBTC SMA Cross Strategy",
-    "smaLength": 21,
-    "timeframe": "2h"
+    "smaLength": 28,
+    "timeframe": "2h",
+    "latestResult": 14.84
   },
   "UNIBTC": {
     "name": "UNIBTC SMA Cross Strategy",
@@ -125,23 +127,27 @@
   },
   "XLMBTC": {
     "name": "XLMBTC SMA Cross Strategy",
-    "smaLength": 41,
-    "timeframe": "3h"
+    "smaLength": 65,
+    "timeframe": "1h",
+    "latestResult": 4.52
   },
   "XMRBTC": {
     "name": "XMRBTC SMA Cross Strategy",
-    "smaLength": 36,
-    "timeframe": "3h"
+    "smaLength": 3,
+    "timeframe": "30m",
+    "latestResults": 11.31
   },
   "XRPBTC": {
     "name": "XRPBTC SMA Cross Strategy",
-    "smaLength": 22,
-    "timeframe": "3h"
+    "smaLength": 27,
+    "timeframe": "1h",
+    "latestResult": 7.11
   },
   "XTZBTC": {
     "name": "XTZBTC SMA Cross Strategy",
     "smaLength": 36,
-    "timeframe": "3h"
+    "timeframe": "3h",
+    "latestResult": 6.58
   },
   "YFIBTC": {
     "name": "YFIBTC SMA Cross Strategy",
@@ -151,8 +157,9 @@
   },
   "ZECBTC": {
     "name": "ZECBTC SMA Cross Strategy",
-    "smaLength": 33,
-    "timeframe": "3h"
+    "smaLength": 14,
+    "timeframe": "3h",
+    "latestResult": 9.33
   },
   "LINKWETH": {
     "name": "LINKWETH SMA Cross Strategy",
