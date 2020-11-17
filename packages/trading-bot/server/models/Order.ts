@@ -42,7 +42,7 @@ export default class Order {
     this.closeOnly = body.strategy.description.toLowerCase().includes('close only') ? true : false;
     this.minVolume = Number.parseFloat(pairData[this.krakenTicker]['ordermin'].toString());
     this.baseOfPair = pairData[this.krakenTicker]['base'];
-    this.usdPair = !/XBT$|WETH$/.test(this.krakenTicker);
+    this.usdPair = !/XBT$|ETH$/.test(this.krakenTicker);
     this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'];
     this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
     this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
