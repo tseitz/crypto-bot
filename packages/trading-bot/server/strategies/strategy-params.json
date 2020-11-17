@@ -1,52 +1,82 @@
 {
+  "BTCUSDT": {
+    "name": "BTCUSDT SMA Cross Strategy",
+    "smaLength": 4,
+    "timeframe": "4h"
+  },
+  "ETHUSDT": {
+    "name": "ETHUSDT SMA Cross Strategy",
+    "smaLength": 3,
+    "timeframe": "4h"
+  },
   "ADABTC": {
     "name": "ADABTC EMA Cross Strategy",
-    "emaLength": 19,
+    "smaLength": 19,
     "timeframe": "4h"
+  },
+  "ETHBTC": {
+    "name": "ETHBTC SMA Cross Strategy",
+    "smaLength": 9,
+    "timeframe": "4h"
+  },
+  "KAVABTC": {
+    "name": "KAVABTC EMA Cross Strategy",
+    "smaLength": 26,
+    "timeframe": "3h"
+  },
+  "LINKBTC": {
+    "name": "LINKBTC SMA Cross Strategy",
+    "smaLength": 33,
+    "timeframe": "1h"
   },
   "LTCBTC": {
     "name": "LTCBTC EMA Cross Strategy",
-    "emaLength": 36,
+    "smaLength": 36,
     "timeframe": "2h"
+  },
+  "MLNBTC": {
+    "name": "MLNBTC EMA Cross Strategy",
+    "smaLength": 21,
+    "timeframe": "4h"
   },
   "REPBTC": {
     "name": "REPBTC EMA Cross Strategy",
-    "emaLength": 23,
+    "smaLength": 23,
     "timeframe": "3h"
   },
   "TRXBTC": {
     "name": "TRXBTC EMA Cross Strategy",
-    "emaLength": 21,
+    "smaLength": 21,
     "timeframe": "2h"
   },
   "XLMBTC": {
     "name": "XLMBTC EMA Cross Strategy",
-    "emaLength": 41,
+    "smaLength": 41,
     "timeframe": "3h"
   },
   "XMRBTC": {
     "name": "XMRBTC EMA Cross Strategy",
-    "emaLength": 36,
+    "smaLength": 36,
     "timeframe": "3h"
   },
   "XRPBTC": {
     "name": "XRPBTC EMA Cross Strategy",
-    "emaLength": 22,
+    "smaLength": 22,
     "timeframe": "3h"
   },
   "XTZBTC": {
     "name": "XTZBTC EMA Cross Strategy",
-    "emaLength": 36,
+    "smaLength": 36,
     "timeframe": "3h"
   },
   "ZECBTC": {
     "name": "ZECBTC EMA Cross Strategy",
-    "emaLength": 33,
+    "smaLength": 33,
     "timeframe": "3h"
   },
   "LINKETH": {
     "name": "LINKETH EMA Cross Strategy",
-    "emaLength": 27,
+    "smaLength": 27,
     "timeframe": "3h"
   }
 }
