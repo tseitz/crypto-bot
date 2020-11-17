@@ -67,9 +67,9 @@
   },
   "KAVABTC": {
     "name": "KAVABTC SMA Cross Strategy",
-    "smaLength": 36,
-    "timeframe": "3h",
-    "latestResult": 9.76
+    "smaLength": 62,
+    "timeframe": "30m",
+    "latestResult": 11.13
   },
   "KSMBTC": {
     "name": "KSMBTC SMA Cross Strategy",

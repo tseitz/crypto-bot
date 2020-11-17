@@ -13,7 +13,7 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 // shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
 // longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 // shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
-smaLength = input(defval=36, title="SMA Length", minval=0, step=3)
+smaLength = input(defval=62, title="SMA Length", minval=0, step=3)
 
 var isLong = false
 var isShort = false

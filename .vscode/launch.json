@@ -10,7 +10,7 @@
       "request": "launch",
       "runtimeExecutable": "node",
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
-      "args": ["${workspaceFolder}/packages/trading-bot/server/index.ts"],
+      "args": ["${workspaceFolder}/packages/trading-bot/server/app.ts"],
       "cwd": "${workspaceRoot}/packages/trading-bot/server",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**", "node_modules/**"],

@@ -3,15 +3,15 @@ import { KrakenTradeablePair } from './KrakenTradeablePair';
 import { KrakenPriceInfo } from './KrakenPriceInfo';
 
 export default class Order {
-  krakenApi: any;
   tradingViewTicker: string;
   krakenTicker: string;
+  assetClassTicker: string;
   action: string;
   oppositeAction: string;
   closeOnly: boolean;
   minVolume: number;
   baseOfPair: string;
-  btcPair: boolean;
+  usdPair: boolean;
   leverageBuyAmounts: number[];
   leverageSellAmounts: number[];
   leverageBuyAmount: number | undefined;
@@ -22,50 +22,49 @@ export default class Order {
   currentPrice: number;
   currentBid: number;
   currentAsk: number;
-  btcPrice: number;
-  bidPriceInDollar: number;
+  assetClassPrice: number;
+  assetClassPriceInDollar: number;
   usdOrderValue: number;
   stopLoss: number;
   stopPercent: number;
 
   constructor(
-    kraken: any,
     body: TradingViewBody,
-    krakenTradeablePair: KrakenTradeablePair,
+    pairData: KrakenTradeablePair,
     pairPriceInfo: KrakenPriceInfo,
-    btcPriceInfo: KrakenPriceInfo
+    assetClassPriceInfo: KrakenPriceInfo
   ) {
-    this.krakenApi = kraken;
     this.tradingViewTicker = body.ticker;
-    this.krakenTicker = Object.keys(krakenTradeablePair)[0];
+    this.krakenTicker = Object.keys(pairData)[0];
+    this.assetClassTicker = Object.keys(assetClassPriceInfo)[0];
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.closeOnly = body.strategy.description.toLowerCase().includes('close only') ? true : false;
-    this.minVolume = Number.parseFloat(
-      krakenTradeablePair[this.krakenTicker]['ordermin'].toString()
-    );
-    this.baseOfPair = krakenTradeablePair[this.krakenTicker]['base'];
-    this.btcPair = /XBT$/.test(this.krakenTicker);
-    this.leverageBuyAmounts = krakenTradeablePair[this.krakenTicker]['leverage_buy'];
-    this.leverageSellAmounts = krakenTradeablePair[this.krakenTicker]['leverage_sell'];
+    this.minVolume = Number.parseFloat(pairData[this.krakenTicker]['ordermin'].toString());
+    this.baseOfPair = pairData[this.krakenTicker]['base'];
+    this.usdPair = !/XBT$|WETH$/.test(this.krakenTicker);
+    this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'];
+    this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
     this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
     this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1];
     this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
-    this.decimals = krakenTradeablePair[this.krakenTicker]['pair_decimals'];
+    this.decimals = pairData[this.krakenTicker]['pair_decimals'];
     this.currentPrice = Number.parseFloat(pairPriceInfo[this.krakenTicker]['c'][0]);
     this.currentBid = Number.parseFloat(pairPriceInfo[this.krakenTicker]['b'][0]);
     this.currentAsk = Number.parseFloat(pairPriceInfo[this.krakenTicker]['a'][0]);
-    this.btcPrice = Number.parseFloat(btcPriceInfo['XBTUSDT']['c'][0]);
-    this.bidPriceInDollar = this.btcPair ? this.btcPrice * this.currentBid : this.currentBid;
+    this.assetClassPrice = Number.parseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
+    this.assetClassPriceInDollar = this.usdPair
+      ? this.currentBid
+      : this.assetClassPrice * this.currentBid;
     this.volume = this.getVolume();
-    this.usdOrderValue = Number.parseFloat((this.bidPriceInDollar * this.volume).toFixed(2)); // total value bought
+    this.usdOrderValue = Number.parseFloat((this.assetClassPriceInDollar * this.volume).toFixed(2)); // total value bought
     this.stopPercent = 12;
     this.stopLoss = this.getStopLoss();
   }
 
   private getVolume(): number {
-    // let's risk $50 for now
-    const volume = Number.parseFloat((75 / this.bidPriceInDollar).toFixed(this.decimals));
+    // let's risk $75 for now
+    const volume = Number.parseFloat((75 / this.assetClassPriceInDollar).toFixed(this.decimals));
     return volume > this.minVolume ? volume : this.minVolume;
   }
 
