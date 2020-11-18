@@ -64,7 +64,7 @@ export default class Order {
 
   private getVolume(): number {
     // let's risk $75 for now
-    const volume = Number.parseFloat((75 / this.assetClassPriceInDollar).toFixed(this.decimals));
+    const volume = Number.parseFloat((120 / this.assetClassPriceInDollar).toFixed(this.decimals));
     return volume > this.minVolume ? volume : this.minVolume;
   }
 
