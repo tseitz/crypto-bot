@@ -28,7 +28,6 @@ export default class Order {
   currentAsk: number;
   assetClassPrice: number;
   assetClassPriceInDollar: number;
-  usdOrderValue: number;
   stopLoss: number;
   stopPercent: number;
   strategyParams: StrategyParams;
@@ -68,7 +67,6 @@ export default class Order {
       : this.assetClassPrice * this.currentBid;
     this.balanceInDollar = this.balance * this.assetClassPrice;
     this.volume = this.getVolume();
-    this.usdOrderValue = Number.parseFloat((this.assetClassPriceInDollar * this.volume).toFixed(2)); // total value bought
     this.stopPercent = 12;
     this.stopLoss = this.getStopLoss();
   }

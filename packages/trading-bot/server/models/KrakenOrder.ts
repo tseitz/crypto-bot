@@ -1,4 +1,4 @@
-export interface KrakenOrderInfo {
+export interface KrakenOrder {
   descr: KrakenOrderDescription;
   txid: string[];
 }
