@@ -102,7 +102,7 @@ export default class Order {
       );
     } else {
       // let's risk $120 for now
-      volume = Number.parseFloat((120 / this.usdValueOfBase).toFixed(this.volumeDecimals));
+      volume = Number.parseFloat((100 / this.usdValueOfBase).toFixed(this.volumeDecimals));
     }
     return volume > this.minVolume ? volume : this.minVolume;
   }
