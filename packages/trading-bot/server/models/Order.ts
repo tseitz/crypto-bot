@@ -23,7 +23,8 @@ export default class Order {
   leverageBuyAmount: number | undefined;
   leverageSellAmount: number | undefined;
   leverageAmount: number | undefined;
-  decimals: number;
+  priceDecimals: number;
+  volumeDecimals: number;
   tradeVolume: number;
   currentPrice: number;
   currentBid: number;
@@ -64,7 +65,8 @@ export default class Order {
     // pair info
     this.minVolume = Number.parseFloat(pairData[this.krakenTicker]['ordermin'].toString());
     this.usdPair = !/XBT$|ETH$/.test(this.krakenTicker);
-    this.decimals = pairData[this.krakenTicker]['pair_decimals'];
+    this.priceDecimals = pairData[this.krakenTicker]['pair_decimals'];
+    this.volumeDecimals = pairData[this.krakenTicker]['lot_decimals'];
 
     // leverage info
     this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'];
@@ -96,11 +98,11 @@ export default class Order {
     let volume = 0;
     if (this.positionSize) {
       volume = Number.parseFloat(
-        ((this.positionSize / 100) * this.tradeBalanceInDollar).toFixed(this.decimals)
+        ((this.positionSize / 100) * this.tradeBalanceInDollar).toFixed(this.volumeDecimals)
       );
     } else {
       // let's risk $120 for now
-      volume = Number.parseFloat((120 / this.usdValueOfBase).toFixed(this.decimals));
+      volume = Number.parseFloat((120 / this.usdValueOfBase).toFixed(this.volumeDecimals));
     }
     return volume > this.minVolume ? volume : this.minVolume;
   }
@@ -110,7 +112,7 @@ export default class Order {
       this.action === 'sell'
         ? this.currentBid * (1 + this.stopPercent / 100)
         : this.currentBid * (1 - this.stopPercent / 100);
-    return Number.parseFloat(stop.toFixed(this.decimals));
+    return Number.parseFloat(stop.toFixed(this.priceDecimals));
   }
 
   convertBaseToDollar(base: number, usd: number): number {
