@@ -56,7 +56,7 @@ export default class Order {
 
     // setup params
     this.strategyParams = strategyParams[this.tradingViewTicker];
-    this.positionSize = body.strategy.positionSize || this.strategyParams.positionSize || undefined;
+    this.positionSize = undefined;
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.closeOnly = body.strategy.description.toLowerCase().includes('close only') ? true : false;
