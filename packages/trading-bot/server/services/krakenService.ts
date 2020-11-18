@@ -1,9 +1,9 @@
 import Order from '../models/Order';
 import {
-  KrakenPriceInfoResult,
+  KrakenPriceResult,
   KrakenTradeablePairResult,
   KrakenOrderResult,
-  KrakenBalanceInfoResult,
+  KrakenBalanceResult,
 } from '../models/KrakenResult';
 import { KrakenOpenPosition } from '../models/KrakenOpenPosition';
 
@@ -29,7 +29,7 @@ export class KrakenService {
     const {
       error: priceError,
       result: priceData,
-    }: KrakenPriceInfoResult = await this.kraken.getTickerInformation({
+    }: KrakenPriceResult = await this.kraken.getTickerInformation({
       pair: krakenTicker,
     });
 
@@ -40,7 +40,7 @@ export class KrakenService {
     const {
       error: balanceError,
       result: balanceData,
-    }: KrakenBalanceInfoResult = await this.kraken.getBalance();
+    }: KrakenBalanceResult = await this.kraken.getBalance();
 
     return { balanceError, balanceData };
   }
@@ -101,7 +101,7 @@ export class KrakenService {
       type: order.action,
       ordertype: 'stop-loss',
       price: order.stopLoss,
-      volume: order.volume,
+      volume: order.tradeVolume,
       leverage: order.leverageAmount,
       // validate: true,
     });
@@ -131,7 +131,7 @@ export class KrakenService {
         type: order.action,
         ordertype: 'stop-loss',
         price: order.stopLoss,
-        volume: order.volume,
+        volume: order.tradeVolume,
         // validate: true,
       });
     }

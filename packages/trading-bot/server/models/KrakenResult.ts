@@ -18,7 +18,7 @@ export interface KrakenOrderResult {
   result: KrakenOrder;
 }
 
-export interface KrakenBalanceInfoResult {
+export interface KrakenBalanceResult {
   error: string[];
   result: KrakenBalance;
 }

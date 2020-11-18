@@ -7,4 +7,5 @@ export interface TradingViewBody {
 export interface TradingViewStrategyBody {
   action: string;
   description: string;
+  positionSize?: number;
 }
