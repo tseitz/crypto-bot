@@ -15,6 +15,7 @@ export default class Order {
   closeOnly: boolean;
   minVolume: number;
   baseOfPair: string;
+  quoteOfPair: string;
   usdPair: boolean;
   leverageBuyAmounts: number[];
   leverageSellAmounts: number[];
@@ -50,13 +51,17 @@ export default class Order {
     this.closeOnly = body.strategy.description.toLowerCase().includes('close only') ? true : false;
     this.minVolume = Number.parseFloat(pairData[this.krakenTicker]['ordermin'].toString());
     this.baseOfPair = pairData[this.krakenTicker]['base'];
-    this.balance = Number.parseFloat(myBalanceInfo[this.baseOfPair]);
+    this.quoteOfPair = pairData[this.krakenTicker]['quote'];
     this.usdPair = !/XBT$|ETH$/.test(this.krakenTicker);
     this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'];
     this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
     this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
     this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1];
     this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
+    this.balance =
+      this.action === 'sell'
+        ? Number.parseFloat(myBalanceInfo[this.baseOfPair])
+        : Number.parseFloat(myBalanceInfo[this.quoteOfPair]);
     this.decimals = pairData[this.krakenTicker]['pair_decimals'];
     this.currentPrice = Number.parseFloat(pairPriceInfo[this.krakenTicker]['c'][0]);
     this.currentBid = Number.parseFloat(pairPriceInfo[this.krakenTicker]['b'][0]);
@@ -65,7 +70,8 @@ export default class Order {
     this.assetClassPriceInDollar = this.usdPair
       ? this.currentBid
       : this.assetClassPrice * this.currentBid;
-    this.balanceInDollar = this.balance * this.assetClassPrice;
+    this.balanceInDollar =
+      this.quoteOfPair === 'USDT' ? this.balance : this.balance * this.assetClassPrice;
     this.volume = this.getVolume();
     this.stopPercent = 12;
     this.stopLoss = this.getStopLoss();
