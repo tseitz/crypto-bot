@@ -4,7 +4,7 @@
     "smaLength": 4,
     "timeframe": "4h",
     "latestResult": 4.58,
-    "positionSize": 40
+    "positionSize": 75
   },
   "DASHUSDT": {
     "name": "DASHUSDT SMA Cross Strategy",
@@ -17,7 +17,7 @@
     "smaLength": 3,
     "timeframe": "4h",
     "latestResult": 9.18,
-    "positionSize": 40
+    "positionSize": 75
   },
   "ALGOBTC": {
     "name": "ALGOBTC SMA Cross Strategy",
