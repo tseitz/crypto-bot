@@ -3,7 +3,8 @@
     "name": "BTCUSDT SMA Cross Strategy",
     "smaLength": 4,
     "timeframe": "4h",
-    "latestResult": 4.58
+    "latestResult": 4.58,
+    "positionSize": 40
   },
   "DASHUSDT": {
     "name": "DASHUSDT SMA Cross Strategy",
@@ -15,7 +16,8 @@
     "name": "ETHUSDT SMA Cross Strategy",
     "smaLength": 3,
     "timeframe": "4h",
-    "latestResult": 9.18
+    "latestResult": 9.18,
+    "positionSize": 40
   },
   "ALGOBTC": {
     "name": "ALGOBTC SMA Cross Strategy",

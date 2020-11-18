@@ -1,18 +1,24 @@
-import { KrakenPriceInfo } from './KrakenPriceInfo';
+import { KrakenPrice } from './KrakenPrice';
 import { KrakenTradeablePair } from './KrakenTradeablePair';
-import { KrakenOrderInfo } from './KrakenOrderInfo';
+import { KrakenOrder } from './KrakenOrder';
+import { KrakenBalance } from './KrakenBalance';
 
 export interface KrakenTradeablePairResult {
   error: string[];
   result: KrakenTradeablePair;
 }
 
-export interface KrakenPriceInfoResult {
+export interface KrakenPriceResult {
   error: string[];
-  result: KrakenPriceInfo;
+  result: KrakenPrice;
 }
 
 export interface KrakenOrderResult {
   error: string[];
-  result: KrakenOrderInfo;
+  result: KrakenOrder;
+}
+
+export interface KrakenBalanceInfoResult {
+  error: string[];
+  result: KrakenBalance;
 }

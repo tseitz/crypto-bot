@@ -1,5 +1,5 @@
 // TODO: make these fixed length arrays
-export interface KrakenPriceInfo {
+export interface KrakenPrice {
   [index: string]: {
     a: string[];
     b: string[];

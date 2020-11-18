@@ -69,8 +69,14 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
     return res.sendStatus(404);
   }
 
+  const { balanceError, balanceData } = await kraken.getBalance(krakenTicker);
+  if (balanceError.length > 0) {
+    console.log(`Could not find balance info for ${krakenTicker} on Kraken`);
+    return res.sendStatus(404);
+  }
+
   // set up the order
-  const order = new Order(requestBody, pairData, priceData, assetClassData);
+  const order = new Order(requestBody, pairData, priceData, assetClassData, balanceData);
 
   // execute the order
   if (order.closeOnly) {

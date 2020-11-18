@@ -3,11 +3,12 @@ import {
   KrakenPriceInfoResult,
   KrakenTradeablePairResult,
   KrakenOrderResult,
+  KrakenBalanceInfoResult,
 } from '../models/KrakenResult';
 import { KrakenOpenPosition } from '../models/KrakenOpenPosition';
 
 export class KrakenService {
-  kraken: any;
+  kraken: any; // krakenApi
 
   constructor(kraken: any) {
     this.kraken = kraken;
@@ -35,6 +36,15 @@ export class KrakenService {
     return { priceError, priceData };
   }
 
+  async getBalance(krakenTicker: string) {
+    const {
+      error: balanceError,
+      result: balanceData,
+    }: KrakenBalanceInfoResult = await this.kraken.getBalance();
+
+    return { balanceError, balanceData };
+  }
+
   async openOrder(order: Order): Promise<KrakenOrderResult> {
     let result;
     if (typeof order.leverageAmount === 'undefined') {
@@ -45,18 +55,6 @@ export class KrakenService {
 
     return result;
   }
-
-  // async closeOrder(order: Order) {
-  //   let result;
-  //   if (typeof order.leverageAmount === 'undefined') {
-  //     result = await handleNonLeveragedOrder(order);
-  //   } else {
-  //     result = await settleLeveragedOrder(order);
-  //   }
-
-  //   console.log('Closing Request: ', result);
-  //   return result;
-  // }
 
   async settleLeveragedOrder(order: Order): Promise<KrakenOrderResult> {
     const {
@@ -103,7 +101,6 @@ export class KrakenService {
       type: order.action,
       ordertype: 'stop-loss',
       price: order.stopLoss,
-      // price2: currentBid,
       volume: order.volume,
       leverage: order.leverageAmount,
       // validate: true,
@@ -134,7 +131,6 @@ export class KrakenService {
         type: order.action,
         ordertype: 'stop-loss',
         price: order.stopLoss,
-        // price2: currentBid,
         volume: order.volume,
         // validate: true,
       });
