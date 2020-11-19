@@ -101,7 +101,7 @@ export default class Order {
         ((this.positionSize / 100) * this.tradeBalanceInDollar).toFixed(this.volumeDecimals)
       );
     } else {
-      // let's risk $120 for now
+      // let's risk $100 for now
       volume = Number.parseFloat((100 / this.usdValueOfBase).toFixed(this.volumeDecimals));
     }
     return volume > this.minVolume ? volume : this.minVolume;
