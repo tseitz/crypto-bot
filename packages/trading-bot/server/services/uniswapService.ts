@@ -28,18 +28,12 @@ const provider = ethers.getDefaultProvider(network, {
     projectId: process.env.INFURA_PROJECT_ID,
     projectSecret: process.env.INFURA_PROJECT_SECRET,
   },
-  alchemy: process.env.ALCHEMY_API_KEY,
-  // pocket: YOUR_POCKET_APPLICATION_KEY,
-  // Or if using an application secret key:
-  // pocket: {
-  //   applicationId: ,
-  //   applicationSecretKey:
-  // }
 });
 
+console.log(process.env);
 console.log(provider);
 
-export async function getToken(tokenAddress: string) {
+export async function getToken(tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F') {
   const TOKEN: Token = await Fetcher.fetchTokenData(
     chainId,
     tokenAddress,
@@ -52,15 +46,16 @@ export async function getToken(tokenAddress: string) {
 }
 
 export async function getPair(): Promise<Pair> {
-  const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId]);
+  const WETHID = WETH[DAI.chainId];
+  const pair = await Fetcher.fetchPairData(DAI, WETHID);
 
-  const route = new Route([pair], WETH[DAI.chainId]);
+  const route = new Route([pair], WETHID);
   console.log(route.midPrice.toSignificant(6));
   console.log(route.midPrice.invert().toSignificant(6));
 
   const trade = new Trade(
     route,
-    new TokenAmount(WETH[DAI.chainId], '1000000000000000000'),
+    new TokenAmount(WETHID, '1000000000000000000'),
     TradeType.EXACT_INPUT
   );
 
@@ -70,7 +65,7 @@ export async function getPair(): Promise<Pair> {
   const slippageTolerance = new Percent('50', '10000'); // 50 bips, or 0.50%
 
   const amountOutMin = trade.minimumAmountOut(slippageTolerance).raw; // worst case scenario
-  const path = [WETH[DAI.chainId].address, DAI.address];
+  const path = [WETHID.address, DAI.address];
   const to = ''; // my address
   const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
   const value = trade.inputAmount.raw; // needs to be converted to e.g. hex

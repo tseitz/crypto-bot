@@ -11,6 +11,7 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
       "args": ["${workspaceFolder}/packages/trading-bot/server/app.ts"],
+      "envFile": "${workspaceFolder}/packages/trading-bot/server/.env",
       "cwd": "${workspaceRoot}/packages/trading-bot/server",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**", "node_modules/**"],
