@@ -1,0 +1,44 @@
+//@version=4
+strategy("LINKBTC EMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// let's be responsible
+// longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 120
+// shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
+// longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
+// shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
+emaLength = input(defval=21, title="EMA Length", minval=0, step=1)
+
+var isLong = false
+var isShort = false
+
+greenCandle = (close > open)
+redCandle = (close < open)
+
+ema = ema(close, emaLength)
+
+plot(ema, linewidth=1, color=color.orange)
+
+long = not isLong and open > ema and greenCandle
+short = not isShort and open < ema and redCandle
+
+bgcolor(color=long ? color.green : na)
+bgcolor(color=short ? color.red : na)
+
+if long
+    isLong := true
+    isShort := false
+
+if short
+    isLong := false
+    isShort := true
+
+strategy.entry("long", long=true, when=long)
+strategy.close("long", when=short)
+strategy.entry("short", long=false, when=short)
+strategy.close("short", when=long)
+
+// if (strategy.position_size > 0)
+//     strategy.exit(id="stop buy", stop=longStopPrice)
+
+// if (strategy.position_size < 0)
+//     strategy.exit(id="stop sell", stop=shortStopPrice)

@@ -1,0 +1,108 @@
+//@version=4
+// study("SlimScript")
+strategy("SlimScript", initial_capital=100, default_qty_value=10)
+
+// set up heikin
+// ha_t = heikinashi(syminfo.tickerid)
+// ha_open = security(ha_t, timeframe.period, open)
+// ha_high = security(ha_t, timeframe.period, high)
+// ha_low = security(ha_t, timeframe.period, low)
+// ha_close = security(ha_t, timeframe.period, close)
+// palette = ha_close >= ha_open ? color.green : color.red
+palette = close >= open ? color.green : color.red
+// plotcandle(ha_open, ha_high, ha_low, ha_close, color=palette)
+plotcandle(open, high, low, close, color=palette)
+
+// days to test
+daysBackMax = input(defval = 60, title = "Max Days Back to Test", minval = 0)
+daysBackMin = input(defval = 0, title = "Min Days Back to Test", minval = 0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+
+// let's be responsible
+longLossPerc = input(3.0, title='Long Stop Loss %', type=input.float) / 100
+shortLossPerc = input(3.0, title='Short Stop Loss %', type=input.float) / 100
+longTakeProfPerc = input(15.0, title='Long Take Profit %', type=input.float) / 100
+shortTakeProfPerc = input(15.0, title='Short Take Profit %', type=input.float) / 100
+
+longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
+shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
+longTakeProfPrice = strategy.position_avg_price * (1 - longTakeProfPerc)
+shortTakeProfPrice = strategy.position_avg_price * (1 + shortTakeProfPerc)
+
+
+// don't worry about doji's within margin of error
+Precision = input(0.4, minval=0.0001, title="Precision")
+// doji = abs(ha_open - ha_close) <= (ha_high - ha_low) * Precision
+doji = abs(open - close) <= (high - low) * Precision
+bgcolor(color=doji ? color.yellow : na)
+
+// plot the vwap
+vwapClose = vwap(close)
+vwapLow = vwap(low - low * .01)
+vwapHigh = vwap(high + high * .01)
+// averageVol = sma(volume, averageLen)
+
+plot(series=vwapClose, color=color.teal, linewidth=2)
+plot(series=vwapLow, color=color.orange, linewidth=1)
+plot(series=vwapHigh, color=color.orange, linewidth=1)
+
+// where we at?
+var isLong = false
+var isShort = false
+
+// Look for 2 green candles to long
+// greenCandle = (ha_close > ha_open) and not doji
+greenCandle = (close > open) and not doji
+bgcolor(color=greenCandle ? color.green : na)
+
+// look for 2 red candles to short
+// redCandle = (ha_close < ha_open) and not doji
+redCandle = (close < open) and not doji
+bgcolor(color=redCandle ? color.red : na)
+
+dontLong = isShort and greenCandle and close <= vwapHigh
+dontShort = isLong and redCandle and close >= vwapLow
+
+long = not isLong and greenCandle and not dontLong
+short = not isShort and redCandle and not dontShort
+
+if long
+    isLong := true
+    isShort := false
+
+if short
+    isLong := false
+    isShort := true
+
+closeLong = isLong and not short and redCandle and low[1] < vwapLow
+closeShort = isShort and not long and greenCandle and high[1] > vwapHigh // TODO: check if it crosses way above
+
+
+// plot the plays
+plotshape(long, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+plotshape(closeLong, title="close long", text="close long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+plotshape(short, title="short", text="short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+plotshape(closeShort, title="close short", text="close short", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+
+// plotshape(shortCheck, title="short check", text="don't short", style=shape.cross, location=location.belowbar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(longCheck, title="long check", text="don't long", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+
+// set up alert conditions
+alertcondition(long, title="heiki go!", message="ha_green")
+alertcondition(short, title="heiki chillllll", message="ha_red")
+
+
+// strategy
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+strategy.close("long", when=(closeLong or short) and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
+
+
+if (strategy.position_size > 0)
+    strategy.exit(id="XL STP", stop=longStopPrice)
+
+if (strategy.position_size < 0)
+    strategy.exit(id="XS STP", stop=shortStopPrice)

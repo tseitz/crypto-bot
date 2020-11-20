@@ -1,0 +1,22 @@
+{
+  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "time": "{{timenow}}",
+  "exchange": "{{exchange}}",
+  "ticker": "{{ticker}}",
+  "interval": "{{interval}}",
+  "bar": {
+      "time": "{{time}}",
+      "open": {{open}},
+      "high": {{high}},
+      "low": {{low}},
+      "close": {{close}},
+      "volume": {{volume}}
+  },
+  "strategy": {
+      "action": "{{strategy.order.action}}",
+      "description": "{{strategy.order.id}}",
+      "market_position": "{{strategy.market_position}}",
+      "prev_market_position": "{{strategy.prev_market_position}}",
+      "price": {{strategy.order.price}}
+  }
+}

@@ -1,0 +1,63 @@
+//@version=4
+strategy("LINKBTC Binance 3m", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+// plot the vwap. I like a gap high and low of the close to be more conservative
+vwapHighPerc = input(defval=.018, title='VWAP High %', type=input.float, step=.001)
+vwapLowPerc = input(defval=.021, title='VWAP Low %', type=input.float, step=.001)
+vwapClose = vwap(close)
+vwapLow = vwap(low - low * vwapLowPerc)
+vwapHigh = vwap(high + high * vwapHighPerc)
+
+plot(series=vwapClose, color=color.blue, linewidth=2)
+plot(series=vwapLow, color=color.orange, linewidth=1)
+plot(series=vwapHigh, color=color.orange, linewidth=1)
+
+// where we at?
+var isLong = false
+var isShort = false
+
+greenCandle = (close > open)
+redCandle = (close < open)
+
+openLong = not isLong and greenCandle and open > vwapClose
+longWin = isLong and high > vwapHigh
+longLoss = isLong and low < vwapClose
+openShort = not isShort and redCandle and open < vwapClose
+shortWin = isShort and low < vwapLow
+shortLoss = isShort and high > vwapClose
+
+if openLong
+    isLong := true
+    isShort := false
+
+if openShort
+    isLong := false
+    isShort := true
+
+if shortLoss
+    isLong := false
+    isShort := false
+  
+if longLoss
+    isLong := false
+    isShort := false
+
+
+// plot the plays
+// plotshape(openLong, title="long", text="long", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+
+// strategy
+strategy.entry("long", long=true, when=openLong and isWithinTimeBounds)
+strategy.close("long", when=longWin or longLoss and isWithinTimeBounds)
+strategy.entry("short", long=false, when=openShort and isWithinTimeBounds)
+strategy.close("short", when=shortWin or shortLoss and isWithinTimeBounds)
+
+// if (strategy.position_size < 0)
+//     strategy.exit(id="stop", stop=shortStopPrice)
