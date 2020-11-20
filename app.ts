@@ -88,10 +88,10 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   return res.send(await kraken.openOrder(order));
 });
 
-// app.get('/webhook/uniswap', async (req, res) => {
-//   const pair = await getPair();
-//   res.send('Hi Uniswap');
-// });
+app.get('/webhook/uniswap', async (req, res) => {
+  const pair = await getPair();
+  res.send('Hi Uniswap');
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${PORT}`);
