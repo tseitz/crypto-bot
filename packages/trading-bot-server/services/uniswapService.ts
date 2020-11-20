@@ -11,6 +11,7 @@ import {
   TradeType,
 } from '@uniswap/sdk';
 import { ethers } from 'ethers';
+import { abis } from '@slim-crypto/ethereum';
 
 const chainId = ChainId.MAINNET;
 // const tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'; // dai
@@ -18,6 +19,7 @@ const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d
 
 // Use the mainnet
 const network = 'homestead';
+const uniswaapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 
 // Specify your own API keys
 // Each is optional, and if you omit it the default
@@ -35,6 +37,7 @@ console.log(provider);
 
 const wallet = new ethers.Wallet(process.env.ETH_WALLET_PRIVATE_KEY || '');
 const account = wallet.connect(provider);
+const uniswap = new ethers.Contract(uniswaapRouterAddress, abis.router02, account);
 
 export async function getToken(tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F') {
   const TOKEN: Token = await Fetcher.fetchTokenData(

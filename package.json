@@ -1,8 +1,17 @@
 {
   "name": "@slim-crypto/monorepo",
+  "version": "1.0.0",
+  "keywords": [
+    "uniswap",
+    "kraken",
+    "ethereum",
+    "workspaces",
+    "yarn"
+  ],
   "dependencies": {
     "eslint": "^7.13.0"
   },
+  "private": true,
   "scripts": {
     "server:start": "yarn workspace @slim-crypto/trading-bot-server start",
     "server:build-strategy": "yarn workspace @slim-crypto/trading-bot-server build-strategy"
