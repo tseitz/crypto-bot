@@ -15,18 +15,34 @@ import axios from 'axios';
 import { toWei } from 'web3-utils';
 import abis from '../abis/abis';
 
-const chainId = ChainId.ROPSTEN;
-// const tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'; // dai
-// const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18);
-const DAI = new Token(
-  ChainId.ROPSTEN,
-  utils.getAddress('0xad6d458402f60fd3bd25163575031acdce07538d'),
-  18
-);
+const chainId = ChainId.MAINNET;
+
+interface TokenList {
+  [index: string]: string;
+}
+
+interface TokensByNetwork {
+  [index: string]: TokenList;
+}
+
+const tokensByNetwork: TokensByNetwork = {
+  ROPSTEN: {
+    DAI: '0xad6d458402f60fd3bd25163575031acdce07538d',
+    XOR: '0x087457fae2d66fd1d466f3fd880a99b6c28566e5',
+  },
+  MAINNET: {
+    DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    XOR: '0x40fd72257597aa14c7231a7b1aaa29fce868f677',
+  },
+};
 
 // Use the mainnet
-const network = 'ropsten';
-const uniswapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+const network = 'mainnet';
+const tokens = tokensByNetwork[network.toUpperCase()];
+const uniswapRouterAddress = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'; // mainnet
+// const uniswapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'; // ropsten
+
+const DAI = new Token(ChainId.MAINNET, utils.getAddress(tokens['DAI']), 18);
 
 // Specify your own API keys
 // Each is optional, and if you omit it the default
@@ -39,51 +55,51 @@ const provider = ethers.getDefaultProvider(network, {
   },
 });
 
-console.log(abis);
 const wallet = new ethers.Wallet(process.env.ETH_WALLET_PRIVATE_KEY || '', provider);
 const uniswap = new ethers.Contract(uniswapRouterAddress, abis.router02, wallet);
-console.log(uniswap);
 
-export async function getToken(tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F') {
+export async function getToken(tokenAddress: string): Promise<Token> {
   const TOKEN: Token = await Fetcher.fetchTokenData(
     chainId,
-    tokenAddress,
+    utils.getAddress(tokenAddress), // checksum it
     provider
     // 'DAI',
     // 'Dai Stablecoin'
   ); // get token details
-  console.log(TOKEN);
   return TOKEN;
 }
 
-export async function getPair(): Promise<Pair> {
+export async function tradeToken(token: string): Promise<Pair> {
   const WETHID = WETH[DAI.chainId];
-  const pair = await Fetcher.fetchPairData(DAI, WETHID);
+  const ethPricePair = await Fetcher.fetchPairData(DAI, WETHID);
+  const tradeableToken = await getToken(tokens[token]);
+  const tradeablePair = await Fetcher.fetchPairData(tradeableToken, WETHID);
 
-  const route = new Route([pair], WETHID);
-  const tradeValue = 50 / parseInt(route.midPrice.toSignificant(6)); // risk $50
-  console.log(route.midPrice.toSignificant(6));
-  // console.log(route.midPrice.invert().toSignificant(6)); // amount in dai
-  console.log(tradeValue);
+  const ethPriceRoute = new Route([ethPricePair], WETHID);
+  const route = new Route([tradeablePair], WETHID);
+  // const tradeValue2 = 50 / parseInt(route.midPrice.toSignificant(6)); // risk $50
+  console.log(`Price in ${token}: `, route.midPrice.toSignificant(6));
+  console.log(`Price in ETH: `, route.midPrice.invert().toSignificant(6));
+  const tradeValue = 50 / parseInt(ethPriceRoute.midPrice.toSignificant(6)); // risk $50
+  console.log('Trade Value: ', tradeValue);
 
   const trade = new Trade(
     route,
-    new TokenAmount(WETHID, '1000000000000000000'),
+    new TokenAmount(WETHID, toWei(`${tradeValue}`, 'ether')),
     TradeType.EXACT_INPUT
   );
 
-  // console.log(trade.executionPrice.toSignificant(6));
-  // console.log(trade.nextMidPrice.toSignificant(6)); // we can see what price we'll get after the trade
+  console.log('Execute Price: ', trade.executionPrice.toSignificant(6));
+  console.log('Price After: ', trade.nextMidPrice.toSignificant(6)); // we can see what price we'll get after the trade
 
   const slippageTolerance = new Percent('50', '10000'); // 50 bips, or 0.50%
 
-  const amountOutMin = trade.minimumAmountOut(slippageTolerance).raw; // worst case scenario
-  const path = [WETHID.address, DAI.address];
+  const amountOutMin = BigNumber.from(trade.minimumAmountOut(slippageTolerance).raw.toString()); // worst case scenario
+  const path = [WETHID.address, tradeableToken.address];
   const to = utils.getAddress('0x266d6Bc2262Cc2690Ef5C0313e7330995C15eEDb'); // my address
   const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
-  // const value = trade.inputAmount.raw; // needs to be converted to e.g. hex
-  const value = BigNumber.from(toWei('1', 'ether'));
-  // const value = utils.hexlify(50000000000000000); // 0.05ETH
+  const value = BigNumber.from(trade.inputAmount.raw.toString()); // needs to be converted to e.g. hex
+  // const value = BigNumber.from(toWei('1', 'ether'));
   const gasPrice = await getGasPrice();
   console.log(gasPrice);
   console.log(value);
@@ -95,16 +111,16 @@ export async function getPair(): Promise<Pair> {
   //   { "internalType": "address", "name": "to", "type": "address" },
   //   { "internalType": "uint256", "name": "deadline", "type": "uint256" }
   // ],
-  const tx = await uniswap.swapExactETHForTokens(value, path, to, deadline, {
-    value,
-    gasPrice,
-  });
-  console.log(`Transaction Hash: ${tx.hash}`);
+  // const tx = await uniswap.swapExactETHForTokens(amountOutMin, path, to, deadline, {
+  //   value,
+  //   gasPrice,
+  // });
+  // console.log(`Transaction Hash: ${tx.hash}`);
 
-  const receipt = await tx.wait();
-  console.log(`Transaction was minded in block ${receipt.blockNumber}`);
+  // const receipt = await tx.wait();
+  // console.log(`Transaction was minded in block ${receipt.blockNumber}`);
 
-  return pair;
+  return tradeablePair;
 }
 
 // async function getDecimals(chainId: ChainId, tokenAddress: string): Promise<number> {
