@@ -13,13 +13,14 @@ import {
 import { ethers } from 'ethers';
 import abis from '../abis/abis';
 
-const chainId = ChainId.MAINNET;
+const chainId = ChainId.ROPSTEN;
 // const tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'; // dai
-const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18);
+// const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18);
+const DAI = new Token(ChainId.ROPSTEN, '0xad6d458402f60fd3bd25163575031acdce07538d', 18);
 
 // Use the mainnet
-const network = 'homestead';
-const uniswaapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+const network = 'ropsten';
+const uniswapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 
 // Specify your own API keys
 // Each is optional, and if you omit it the default
@@ -34,7 +35,7 @@ const provider = ethers.getDefaultProvider(network, {
 
 console.log(abis);
 const wallet = new ethers.Wallet(process.env.ETH_WALLET_PRIVATE_KEY || '', provider);
-const uniswap = new ethers.Contract(uniswaapRouterAddress, abis.router02, wallet);
+const uniswap = new ethers.Contract(uniswapRouterAddress, abis.router02, wallet);
 console.log(uniswap);
 
 export async function getToken(tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F') {
@@ -70,11 +71,26 @@ export async function getPair(): Promise<Pair> {
 
   const amountOutMin = trade.minimumAmountOut(slippageTolerance).raw; // worst case scenario
   const path = [WETHID.address, DAI.address];
-  const to = ''; // my address
+  const to = '0x266d6Bc2262Cc2690Ef5C0313e7330995C15eEDb'; // my address
   const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
   const value = trade.inputAmount.raw; // needs to be converted to e.g. hex
+  console.log(value);
 
   // call a contract with order details
+  // "inputs": [
+  //   { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
+  //   { "internalType": "address[]", "name": "path", "type": "address[]" },
+  //   { "internalType": "address", "name": "to", "type": "address" },
+  //   { "internalType": "uint256", "name": "deadline", "type": "uint256" }
+  // ],
+  const tx = await uniswap.swapExactETHForTokens(amountOutMin, path, to, deadline, {
+    value,
+    gasPrice: 20e9,
+  });
+  console.log(`Transaction Hash: ${tx.hash}`);
+
+  const receipt = await tx.wait();
+  console.log(`Transaction was minded in block ${receipt.blockNumber}`);
 
   return pair;
 }

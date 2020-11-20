@@ -89,7 +89,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
 });
 
 app.get('/webhook/uniswap', async (req, res) => {
-  const pair = await getToken();
+  const pair = await getPair();
   res.send('Hi Uniswap');
 });
 
