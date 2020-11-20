@@ -98,11 +98,11 @@ export default class Order {
     let volume = 0;
     if (this.positionSize) {
       volume = Number.parseFloat(
-        ((this.positionSize / 100) * this.tradeBalanceInDollar).toFixed(this.volumeDecimals)
+        ((this.positionSize / 120) * this.tradeBalanceInDollar).toFixed(this.volumeDecimals)
       );
     } else {
-      // let's risk $100 for now
-      volume = Number.parseFloat((100 / this.usdValueOfBase).toFixed(this.volumeDecimals));
+      // let's risk $120 for now
+      volume = Number.parseFloat((120 / this.usdValueOfBase).toFixed(this.volumeDecimals));
     }
     return volume > this.minVolume ? volume : this.minVolume;
   }
