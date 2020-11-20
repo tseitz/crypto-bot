@@ -127,6 +127,12 @@
     "timeframe": "1h",
     "latestResult": 24.1
   },
+  "WAVESBTC": {
+    "name": "WAVESBTC SMA Cross Strategy",
+    "smaLength": 22,
+    "timeframe": "4h",
+    "latestResult": 19.76
+  },
   "XLMBTC": {
     "name": "XLMBTC SMA Cross Strategy",
     "smaLength": 65,
