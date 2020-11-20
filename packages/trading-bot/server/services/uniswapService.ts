@@ -33,6 +33,9 @@ const provider = ethers.getDefaultProvider(network, {
 console.log(process.env);
 console.log(provider);
 
+const wallet = new ethers.Wallet(process.env.ETH_WALLET_PRIVATE_KEY || '');
+const account = wallet.connect(provider);
+
 export async function getToken(tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F') {
   const TOKEN: Token = await Fetcher.fetchTokenData(
     chainId,

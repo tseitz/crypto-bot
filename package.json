@@ -1,5 +1,15 @@
 {
+  "name": "@slim-crypto/monorepo",
   "dependencies": {
     "eslint": "^7.13.0"
+  },
+  "scripts": {
+    "server:start": "yarn workspace @slim-crypto/trading-bot-server start",
+    "server:build-strategy": "yarn workspace @slim-crypto/trading-bot-server build-strategy"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
   }
 }

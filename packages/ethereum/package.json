@@ -1,5 +1,5 @@
 {
-  "name": "ethereum",
+  "name": "@slim-crypto/ethereum",
   "version": "0.0.1",
   "description": "Ethereum Back-end for crypto package",
   "main": "truffle-config.js",
