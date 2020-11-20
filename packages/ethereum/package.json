@@ -2,7 +2,7 @@
   "name": "@slim-crypto/ethereum",
   "version": "1.0.0",
   "description": "Ethereum Back-end for crypto package",
-  "main": "truffle-config.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },

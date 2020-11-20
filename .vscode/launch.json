@@ -12,7 +12,7 @@
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
       "args": ["${workspaceFolder}/packages/trading-bot-server/app.ts"],
       "envFile": "${workspaceFolder}/packages/trading-bot-server/.env",
-      "cwd": "${workspaceRoot}/packages/trading-bot-server",
+      "cwd": "${workspaceRoot}/packages",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**", "node_modules/**"],
       // ignore typescript sourcemap https://github.com/microsoft/vscode/issues/102042#issuecomment-656402933
@@ -23,3 +23,28 @@
     }
   ]
 }
+
+// I need to figure out monorepo
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "name": "Run TS Node",
+//       "type": "node",
+//       "request": "launch",
+//       "runtimeExecutable": "node",
+//       // "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+//       // "args": ["${workspaceFolder}/packages/trading-bot-server/app.ts"],
+//       "preLaunchTask": "tsc: build - tsconfig.json",
+//       // "envFile": "${workspaceFolder}/packages/trading-bot-server/.env",
+//       "cwd": "${workspaceRoot}/packages",
+//       "internalConsoleOptions": "openOnSessionStart",
+//       "skipFiles": ["<node_internals>/**", "node_modules/**"],
+//       // ignore typescript sourcemap https://github.com/microsoft/vscode/issues/102042#issuecomment-656402933
+//       "resolveSourceMapLocations": [
+//         "${workspaceFolder}/**",
+//         "!**/node_modules/**"
+//       ],
+//     }
+//   ]
+// }
