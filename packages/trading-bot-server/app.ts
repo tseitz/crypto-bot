@@ -2,7 +2,7 @@ import express from 'express';
 const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
 import Order from './models/Order';
 import { KrakenService } from './services/krakenService';
-// import { getPair } from './services/uniswapService';
+import { getPair, getToken } from './services/uniswapService';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -89,7 +89,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
 });
 
 app.get('/webhook/uniswap', async (req, res) => {
-  // const pair = await getPair();
+  const pair = await getPair();
   res.send('Hi Uniswap');
 });
 
