@@ -1,0 +1,89 @@
+//@version=4
+strategy("MACD Cross 2", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval=45, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+// let's be responsible
+longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 100
+shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
+shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
+
+var isLong = false
+var isShort = false
+
+// MACD
+fast = 12, slow = 26
+fastMA = ema(close, fast)
+slowMA = ema(close, slow)
+macd = fastMA - slowMA
+
+getMACD(index) =>
+    thisFastMA = ema(close[index], fast)
+    thisSlowMA = ema(close[index], slow)
+    thisMacd = thisFastMA - thisSlowMA
+
+macd0 = getMACD(0)
+macd1 = getMACD(1)
+macd2 = getMACD(2)
+macd3 = getMACD(3)
+// macd4 = getMACD(4)
+
+macdUp = macd0 > macd1 and macd1 > macd2 and macd2 > macd3 and macd < 0
+macdDown = macd0 < macd1 and macd1 < macd2 and macd0 > 0
+signal = sma(macd, 9)
+
+// macdLength = close / abs(macd)
+// markMacd = macdDesc and macdLength < 20 and isLong
+// macdDirUp = macd > signal
+// macdDirDown = macd < signal
+
+
+// smaLength = input(defval=3, title="SMA Length", minval=0, step=2)
+
+
+greenCandle = (close > open)
+redCandle = (close < open)
+
+// sma = sma(close, smaLength)
+
+// plot(sma, linewidth=1, color=color.orange)
+// plot(macd, color=color.blue)
+// plot(signal, color=color.orange)
+
+long = not isLong and macdUp and greenCandle
+short = not isShort and macdDown and redCandle
+
+// plotshape(long, title="Mark", text="Mark", style=shape.labelup, location=location.belowbar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+// plotshape(short, title="Mark", text="Mark", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+
+// long = not isLong and greenCandle and macdDirUp
+// short = not isShort and redCandle and macdDirDown
+
+// bgcolor(color=long ? color.green : na)
+// bgcolor(color=short ? color.red : na)
+
+if long
+    isLong := true
+    isShort := false
+
+if short
+    isLong := false
+    isShort := true
+
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+strategy.close("long", when=short and isWithinTimeBounds)
+// // strategy.close("long", when=short and isWithinTimeBounds)
+// // strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// // strategy.close("short", when=long and isWithinTimeBounds)
+
+// if (strategy.position_size > 0)
+//     strategy.exit(id="stop long", stop=longStopPrice)
+
+// if (strategy.position_size < 0)
+//     strategy.exit(id="stop short", stop=shortStopPrice)

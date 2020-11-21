@@ -9,12 +9,13 @@ msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 // let's be responsible
-// longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 100
-// shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
-// longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
-// shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
+longLossPerc = input(8.0, title='Long Stop Loss %', type=input.float, step=1) / 100
+shortLossPerc = input(8.0, title='Short Stop Loss %', type=input.float, step=1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
+shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
 
 smaLength = input(defval={{config.smaLength}}, title="SMA Length", minval=0, step=2)
+allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
 
 var isLong = false
 var isShort = false
@@ -36,17 +37,17 @@ if long
     isLong := true
     isShort := false
 
-if short
+if short or (allowShorts and longStopPrice)
     isLong := false
     isShort := true
 
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.close("long", when=short and isWithinTimeBounds)
-strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.close("short", when=long and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds and allowShorts)
+strategy.close("short", when=long and isWithinTimeBounds and allowShorts)
 
-// if (strategy.position_size > 0)
-//     strategy.exit(id="stop buy", stop=longStopPrice)
+if (strategy.position_size > 0)
+    strategy.exit(id="stop buy", stop=longStopPrice)
 
-// if (strategy.position_size < 0)
-//     strategy.exit(id="stop sell", stop=shortStopPrice)
+if (strategy.position_size < 0)
+    strategy.exit(id="stop sell", stop=shortStopPrice)
