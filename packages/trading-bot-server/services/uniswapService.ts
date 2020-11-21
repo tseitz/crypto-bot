@@ -33,6 +33,7 @@ const tokensByNetwork: TokensByNetwork = {
   MAINNET: {
     DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
     XOR: '0x40fd72257597aa14c7231a7b1aaa29fce868f677',
+    AUDIO: '0x18aaa7115705e8be94bffebde57af9bfc265b998',
   },
 };
 
@@ -70,62 +71,57 @@ export async function getToken(tokenAddress: string): Promise<Token> {
 }
 
 export async function tradeToken(token: string): Promise<Pair> {
+  // get pair and price info
   const WETHID = WETH[DAI.chainId];
   const ethPricePair = await Fetcher.fetchPairData(DAI, WETHID);
   const tradeableToken = await getToken(tokens[token]);
   const tradeablePair = await Fetcher.fetchPairData(tradeableToken, WETHID);
 
+  // set up routes
   const ethPriceRoute = new Route([ethPricePair], WETHID);
   const route = new Route([tradeablePair], WETHID);
-  // const tradeValue2 = 50 / parseInt(route.midPrice.toSignificant(6)); // risk $50
+  const tradeValue = 50 / parseInt(ethPriceRoute.midPrice.toSignificant(6)); // risk $50
   console.log(`Price in ${token}: `, route.midPrice.toSignificant(6));
   console.log(`Price in ETH: `, route.midPrice.invert().toSignificant(6));
-  const tradeValue = 50 / parseInt(ethPriceRoute.midPrice.toSignificant(6)); // risk $50
   console.log('Trade Value: ', tradeValue);
 
+  // set up trade
   const trade = new Trade(
     route,
     new TokenAmount(WETHID, toWei(`${tradeValue}`, 'ether')),
     TradeType.EXACT_INPUT
   );
-
+  const slippageTolerance = new Percent('50', '10000'); // 50 bips, or 0.50%
   console.log('Execute Price: ', trade.executionPrice.toSignificant(6));
   console.log('Price After: ', trade.nextMidPrice.toSignificant(6)); // we can see what price we'll get after the trade
 
-  const slippageTolerance = new Percent('50', '10000'); // 50 bips, or 0.50%
-
+  // set up order details
   const amountOutMin = BigNumber.from(trade.minimumAmountOut(slippageTolerance).raw.toString()); // worst case scenario
   const path = [WETHID.address, tradeableToken.address];
   const to = utils.getAddress('0x266d6Bc2262Cc2690Ef5C0313e7330995C15eEDb'); // my address
   const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
   const value = BigNumber.from(trade.inputAmount.raw.toString()); // needs to be converted to e.g. hex
-  // const value = BigNumber.from(toWei('1', 'ether'));
   const gasPrice = await getGasPrice();
+
+  if (gasPrice > 29000000000) {
+    console.log(`Nah it's too expensive`);
+  }
   console.log(gasPrice);
   console.log(value);
 
   // call a contract with order details
-  // "inputs": [
-  //   { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
-  //   { "internalType": "address[]", "name": "path", "type": "address[]" },
-  //   { "internalType": "address", "name": "to", "type": "address" },
-  //   { "internalType": "uint256", "name": "deadline", "type": "uint256" }
-  // ],
   // const tx = await uniswap.swapExactETHForTokens(amountOutMin, path, to, deadline, {
   //   value,
   //   gasPrice,
   // });
   // console.log(`Transaction Hash: ${tx.hash}`);
 
+  // wait and profit
   // const receipt = await tx.wait();
   // console.log(`Transaction was minded in block ${receipt.blockNumber}`);
 
   return tradeablePair;
 }
-
-// async function getDecimals(chainId: ChainId, tokenAddress: string): Promise<number> {
-//   // implementation details
-// }
 
 export async function getGasPrice(speed = 'average') {
   // , maxWait?: number = 100) {
