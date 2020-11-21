@@ -174,5 +174,11 @@
     "smaLength": 68,
     "timeframe": "2h",
     "latestResult": 9.18
+  },
+  "RPLWETH": {
+    "name": "RPLWETH Uniswap MACD Strategy",
+    "longTakeProfPerc": 42,
+    "timeframe": "4h",
+    "latestResult": 128.2
   }
 }

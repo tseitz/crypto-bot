@@ -2,7 +2,8 @@ import express from 'express';
 const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
 import Order from './models/Order';
 import { KrakenService } from './services/krakenService';
-import { tradeToken } from './services/uniswapService';
+import { handleUniswapOrder } from './services/uniswapService';
+import { TradingViewBody } from './models/TradingViewBody';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -90,14 +91,13 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
 
 app.post('/webhook/uniswap', jsonParser, async (req, res) => {
   // force body to be JSON
-  const requestBody = JSON.parse(JSON.stringify(req.body));
+  const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log('Hey buddy, get out of here');
     return res.sendStatus(401);
   }
-  const token = requestBody.ticker.slice(0, requestBody.ticker.indexOf('WETH'));
 
-  const pair = await tradeToken(token);
+  const pair = await handleUniswapOrder(requestBody);
   return res.send(pair);
 });
 
