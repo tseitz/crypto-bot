@@ -29,7 +29,7 @@ interface TokensByNetwork {
 const tokensByNetwork: TokensByNetwork = {
   ROPSTEN: {
     DAI: '0xad6d458402f60fd3bd25163575031acdce07538d',
-    XOR: '0x087457fae2d66fd1d466f3fd880a99b6c28566e5',
+    // XOR: '0x087457fae2d66fd1d466f3fd880a99b6c28566e5',
   },
   MAINNET: {
     DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
