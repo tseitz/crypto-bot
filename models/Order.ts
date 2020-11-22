@@ -103,7 +103,7 @@ export default class Order {
     } else {
       // let's risk $200 for now
       volume = Number.parseFloat(
-        ((100 * (this.leverageAmount || 1.2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((100 * (this.leverageAmount || 1.5)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
