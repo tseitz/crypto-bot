@@ -58,7 +58,6 @@ const provider = ethers.getDefaultProvider(network, {
   },
 });
 
-console.log(process.env.ETH_WALLET_PRIVATE_KEY);
 const wallet = new ethers.Wallet(process.env.ETH_WALLET_PRIVATE_KEY || '', provider);
 const uniswap = new ethers.Contract(uniswapRouterAddress, abis.router02, wallet);
 
