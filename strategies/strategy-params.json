@@ -6,12 +6,6 @@
     "latestResult": 4.58,
     "positionSize": 75
   },
-  "DASHUSDT": {
-    "name": "DASHUSDT SMA Cross Strategy",
-    "smaLength": 18,
-    "timeframe": "4h",
-    "lastResult": 3.62
-  },
   "ETHUSDT": {
     "name": "ETHUSDT SMA Cross Strategy",
     "smaLength": 3,
@@ -19,17 +13,17 @@
     "latestResult": 9.18,
     "positionSize": 75
   },
-  "ALGOBTC": {
-    "name": "ALGOBTC SMA Cross Strategy",
-    "smaLength": 45,
-    "timeframe": "2h",
-    "latestResult": 14.87
-  },
   "ADABTC": {
     "name": "ADABTC SMA Cross Strategy",
     "smaLength": 30,
     "timeframe": "30m",
     "latestResult": 7.26
+  },
+  "ALGOBTC": {
+    "name": "ALGOBTC SMA Cross Strategy",
+    "smaLength": 45,
+    "timeframe": "2h",
+    "latestResult": 14.87
   },
   "ATOMBTC": {
     "name": "ATOMBTC SMA Cross Strategy",
