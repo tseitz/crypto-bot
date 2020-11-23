@@ -97,8 +97,8 @@ app.post('/webhook/uniswap', jsonParser, async (req, res) => {
     return res.sendStatus(401);
   }
 
-  const pair = await handleUniswapOrder(requestBody);
-  return res.send(pair);
+  const blockNumberMined = await handleUniswapOrder(requestBody);
+  return res.send(blockNumberMined);
 });
 
 app.listen(process.env.PORT || 3000, () => {
