@@ -78,7 +78,7 @@ export async function handleUniswapOrder(body: TradingViewBody) {
   console.log(`ETH Price: ${ethPriceRoute.midPrice.toSignificant(6)}`);
 
   const token = body.ticker.slice(0, body.ticker.indexOf('WETH'));
-  if (body.strategy.action === 'buy') {
+  if (body.strategy.action === 'buy' || !body.strategy.description.includes('Close')) {
     const tradeValue = 200 / parseInt(ethPriceRoute.midPrice.toSignificant(6));
     return await swapExactETHForTokens(token, tradeValue);
   } else {
