@@ -1,8 +1,8 @@
 import express from 'express';
-import Order from './models/Order';
 import { KrakenOrder } from './services/krakenService';
 import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
+import { Queue } from './models/Queue';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -24,8 +24,8 @@ app.get('/', (req, res) => {
 });
 
 let locked = false;
-const queue: TradingViewBody[] = [];
-app.post('/webhook/trading-view', jsonParser, async (req, res) => {
+const queue: Queue[] = [];
+app.post('/webhook/kraken', jsonParser, async (req, res) => {
   // force body to be JSON
   const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
@@ -41,7 +41,7 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
     return res.sendStatus(200);
   }
 
-  queue.push(requestBody);
+  queue.push({ body: requestBody, res });
 
   if (locked === true) {
     return;
@@ -49,14 +49,14 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
 
   while (queue.length > 0) {
     locked = true;
-    const body = queue.shift();
-    if (body) {
-      const order = new KrakenOrder(body);
-      res.send(await order.placeOrder());
+    const request = queue.shift();
+    if (request) {
+      const order = new KrakenOrder(request.body);
+      request.res.send(await order.placeOrder());
     }
     locked = false;
   }
-  return res.sendStatus(200);
+  return;
 });
 
 app.post('/webhook/uniswap', jsonParser, async (req, res) => {

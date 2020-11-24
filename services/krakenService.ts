@@ -38,7 +38,7 @@ class KrakenService {
     return { priceError, priceData };
   }
 
-  async getBalance(krakenTicker: string) {
+  async getBalance() {
     const {
       error: balanceError,
       result: balanceData,
@@ -149,26 +149,26 @@ export class KrakenOrder {
   krakenTicker: string;
 
   constructor(requestBody: TradingViewBody) {
-    // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
-    // I use binance/uniswap for most webhooks since there is more volume
     this.requestBody = requestBody;
     this.tradingViewTicker = requestBody.ticker;
+    // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
+    // I use binance/uniswap for most webhooks since there is more volume
     this.krakenTicker = this.tradingViewTicker.replace('BTC', 'XBT').replace('WETH', 'ETH');
   }
 
-  async placeOrder() {
+  async placeOrder(): Promise<KrakenOrderResult> {
     // get pair data
     const { pairError, pairData } = await kraken.getPair(this.krakenTicker);
     if (pairError.length > 0) {
       console.log(`Pair data for ${this.krakenTicker} not available on Kraken`);
-      return false;
+      return new KrakenOrderResult(`Pair data for ${this.krakenTicker} not available on Kraken`);
     }
 
     // get pair price info for order
     const { priceError, priceData } = await kraken.getPrice(this.krakenTicker);
     if (priceError.length > 0) {
       console.log(`Price info for ${this.krakenTicker} not available on Kraken`);
-      return false;
+      return new KrakenOrderResult(`Price info for ${this.krakenTicker} not available on Kraken`);
     }
 
     // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
@@ -178,13 +178,17 @@ export class KrakenOrder {
     );
     if (assetClassError.length > 0) {
       console.log(`Asset Class Price info for ${this.krakenTicker} not available on Kraken`);
-      return false;
+      return new KrakenOrderResult(
+        `Asset Class Price info for ${this.krakenTicker} not available on Kraken`
+      );
     }
 
-    const { balanceError, balanceData } = await kraken.getBalance(this.krakenTicker);
+    const { balanceError, balanceData } = await kraken.getBalance();
     if (balanceError.length > 0) {
       console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
-      return false;
+      return new KrakenOrderResult(
+        `Could not find balance info for ${this.krakenTicker} on Kraken`
+      );
     }
 
     // set up the order
