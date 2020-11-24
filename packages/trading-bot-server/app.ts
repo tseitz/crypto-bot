@@ -1,8 +1,8 @@
 import express from 'express';
-import { KrakenOrder } from './services/krakenService';
+import { KrakenOrder } from './models/kraken/KrakenOrder';
 import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
-import { Queue } from './models/Queue';
+import { OrderQueue } from './models/OrderQueue';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -23,8 +23,9 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+const queue: OrderQueue[] = [];
 let locked = false;
-const queue: Queue[] = [];
+
 app.post('/webhook/kraken', jsonParser, async (req, res) => {
   // force body to be JSON
   const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));

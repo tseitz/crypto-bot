@@ -1,13 +1,11 @@
-import { TradingViewBody } from './TradingViewBody';
-import { KrakenTradeablePair } from './KrakenTradeablePair';
-import { KrakenPrice } from './KrakenPrice';
-import { StrategyParams, StrategyParamsJson } from './StrategyParams';
-import { KrakenBalance } from './KrakenBalance';
+import { TradingViewBody } from '../TradingViewBody';
+import { KrakenTradeablePair, KrakenPrice, KrakenBalance } from './KrakenResults';
+import { StrategyParams, StrategyParamsJson } from '../StrategyParams';
 const strategyParams: StrategyParamsJson = require('../strategies/strategy-params');
 
 type AssetClassTicker = 'XBTUSDT' | 'ETHUSDT';
 
-export default class Order {
+export default class KrakenOrderDetails {
   tradingViewTicker: string;
   krakenTicker: string;
   assetClassTicker: AssetClassTicker;
