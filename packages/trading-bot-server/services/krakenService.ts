@@ -1,3 +1,4 @@
+const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
 import Order from '../models/Order';
 import {
   KrakenPriceResult,
@@ -6,8 +7,9 @@ import {
   KrakenBalanceResult,
 } from '../models/KrakenResult';
 import { KrakenOpenPosition } from '../models/KrakenOpenPosition';
+import { TradingViewBody } from '../models/TradingViewBody';
 
-export class KrakenService {
+class KrakenService {
   kraken: any; // krakenApi
 
   constructor(kraken: any) {
@@ -140,3 +142,63 @@ export class KrakenService {
     return result;
   }
 }
+
+export class KrakenOrder {
+  requestBody: TradingViewBody;
+  tradingViewTicker: string;
+  krakenTicker: string;
+
+  constructor(requestBody: TradingViewBody) {
+    // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
+    // I use binance/uniswap for most webhooks since there is more volume
+    this.requestBody = requestBody;
+    this.tradingViewTicker = requestBody.ticker;
+    this.krakenTicker = this.tradingViewTicker.replace('BTC', 'XBT').replace('WETH', 'ETH');
+  }
+
+  async placeOrder() {
+    // get pair data
+    const { pairError, pairData } = await kraken.getPair(this.krakenTicker);
+    if (pairError.length > 0) {
+      console.log(`Pair data for ${this.krakenTicker} not available on Kraken`);
+      return false;
+    }
+
+    // get pair price info for order
+    const { priceError, priceData } = await kraken.getPrice(this.krakenTicker);
+    if (priceError.length > 0) {
+      console.log(`Price info for ${this.krakenTicker} not available on Kraken`);
+      return false;
+    }
+
+    // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
+    const assetClass = this.krakenTicker.includes('XBT') ? 'XBTUSDT' : 'ETHUSDT';
+    const { priceError: assetClassError, priceData: assetClassData } = await kraken.getPrice(
+      assetClass
+    );
+    if (assetClassError.length > 0) {
+      console.log(`Asset Class Price info for ${this.krakenTicker} not available on Kraken`);
+      return false;
+    }
+
+    const { balanceError, balanceData } = await kraken.getBalance(this.krakenTicker);
+    if (balanceError.length > 0) {
+      console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
+      return false;
+    }
+
+    // set up the order
+    const order = new Order(this.requestBody, pairData, priceData, assetClassData, balanceData);
+
+    // execute the order
+    if (order.closeOnly) {
+      const closeOrderResult = await kraken.handleLeveragedOrder(order, true, true);
+      return closeOrderResult;
+    }
+
+    return await kraken.openOrder(order);
+  }
+}
+
+const krakenApi = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_KEY);
+export const kraken = new KrakenService(krakenApi);

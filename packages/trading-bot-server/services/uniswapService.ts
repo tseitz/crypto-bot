@@ -15,8 +15,6 @@ import { toWei } from 'web3-utils';
 import abis from '../abis/abis';
 import { TradingViewBody } from '../models/TradingViewBody';
 
-const chainId = ChainId.MAINNET;
-
 interface TokenList {
   [index: string]: string;
 }
@@ -40,15 +38,19 @@ const tokensByNetwork: TokensByNetwork = {
 
 // Use the mainnet
 const network = 'mainnet';
+const chainId = ChainId.MAINNET;
+// const network = 'ropsten';
 const tokens = tokensByNetwork[network.toUpperCase()];
 const uniswapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'; // mainnet and ropsten
 
 const DAI = new Token(ChainId.MAINNET, utils.getAddress(tokens['DAI']), 18);
+// const DAI = new Token(ChainId.ROPSTEN, utils.getAddress(tokens['DAI']), 18);
 const weth = WETH[DAI.chainId];
 
 // Specify your own API keys
 // Each is optional, and if you omit it the default
 // API key for that service will be used.
+// const provider = ethers.getDefaultProvider();
 const provider = ethers.getDefaultProvider(network, {
   etherscan: process.env.ETHERSCAN_API_KEY,
   infura: {
@@ -79,13 +81,14 @@ export async function handleUniswapOrder(body: TradingViewBody) {
 
   const token = body.ticker.slice(0, body.ticker.indexOf('WETH'));
   if (body.strategy.action === 'buy' || !body.strategy.description.includes('Close')) {
-    const tradeValue = 200 / parseInt(ethPriceRoute.midPrice.toSignificant(6));
+    const tradeValue = 300 / parseInt(ethPriceRoute.midPrice.toSignificant(6));
     return await swapExactETHForTokens(token, tradeValue);
   } else {
     return await swapExactTokensForETH(token);
   }
 }
 
+// TODO handle not in token list
 async function swapExactETHForTokens(token: string, tradeValue: number) {
   const tradeableToken = await getToken(tokens[token]);
   const tradeablePair = await Fetcher.fetchPairData(tradeableToken, weth, provider);
@@ -139,13 +142,15 @@ async function swapExactTokensForETH(token: string) {
 
   const tradeableToken = await getToken(tokens[token]);
   const tradeablePair = await Fetcher.fetchPairData(tradeableToken, weth, provider);
-  const route = new Route([tradeablePair], weth);
+  const route = new Route([tradeablePair], tradeableToken, weth);
 
-  console.log(`${token} Price in ETH: `, route.midPrice.invert().toSignificant(6));
+  console.log(`${token} Price in ETH: `, route.midPrice.toSignificant(6));
   console.log('Trade Value: ', balance.toString());
 
   // set up trade
-  const trade = new Trade(route, new TokenAmount(weth, balance.toString()), TradeType.EXACT_INPUT);
+  const hey = new TokenAmount(tradeableToken, balance.toString());
+  console.log(balance.toString().length);
+  const trade = new Trade(route, new TokenAmount(tradeableToken, balance), TradeType.EXACT_INPUT);
   const slippageTolerance = new Percent('75', '10000'); // 75 bips, or 0.75%
   console.log('Execute Price: ', trade.executionPrice.toSignificant(6));
   console.log('Price After: ', trade.nextMidPrice.toSignificant(6)); // we can see what price we'll get after the trade
@@ -157,6 +162,8 @@ async function swapExactTokensForETH(token: string) {
   const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
   const inputAmount = trade.inputAmount.raw;
   const inputAmountHex = BigNumber.from(inputAmount.toString()).toHexString(); // needs to be converted to e.g. hex
+  console.log(inputAmount.toString());
+  console.log(amountOutMin.toString());
   const gasPrice = await provider.getGasPrice();
 
   console.log(`Gas Price: ${gasPrice.toString()}`);
@@ -165,11 +172,18 @@ async function swapExactTokensForETH(token: string) {
   // }
 
   // call a contract with order details
-  const tx = await uniswap.swapExactTokensForETH(amountOutMinHex, path, wallet.address, deadline, {
-    value: inputAmountHex,
-    gasPrice: gasPrice.toHexString(),
-    gasLimit: BigNumber.from(160000).toHexString(),
-  });
+  const tx = await uniswap.swapExactTokensForETH(
+    inputAmountHex,
+    amountOutMinHex,
+    path,
+    wallet.address,
+    deadline,
+    {
+      // value: inputAmountHex,
+      gasPrice: gasPrice.toHexString(),
+      gasLimit: BigNumber.from(160000).toHexString(),
+    }
+  );
   console.log(`Transaction Hash: ${tx.hash}`);
 
   // wait and profit
