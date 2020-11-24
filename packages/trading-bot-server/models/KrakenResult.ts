@@ -13,9 +13,14 @@ export interface KrakenPriceResult {
   result: KrakenPrice;
 }
 
-export interface KrakenOrderResult {
+export class KrakenOrderResult {
   error: string[];
-  result: KrakenOrder;
+  result: KrakenOrder | undefined;
+
+  constructor(error: string, result?: KrakenOrder) {
+    this.error = [error];
+    this.result = result;
+  }
 }
 
 export interface KrakenBalanceResult {
