@@ -33,8 +33,15 @@ macd3 = getMACD(3)
 // macd4 = getMACD(4)
 signal = ema(macd, 9)
 
-macdUp = macd0 > macd1 and macd1 > macd2 and macd2 > macd3 and macd0 < 0 and macd > signal
+BBbasis = sma(close, BBlength)
+BBdev = BBmult * stdev(close, BBlength)
+BBupper = BBbasis + BBdev
+BBlower = BBbasis - BBdev
+
+macdUp = macd0 > macd1 and macd1 > macd2 and macd2 > macd3 and macd1 < 0 and macd > signal
 macdDown = macd0 < macd1 and macd1 < macd2 and macd2 < macd3 and macd0 > 0
+
+macdCrossDown = isLong and crossunder(macd, signal) and macd0 > 0
 
 greenCandle = (close > open)
 redCandle = (close < open)

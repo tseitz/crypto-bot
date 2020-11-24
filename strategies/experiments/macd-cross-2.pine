@@ -9,8 +9,8 @@ msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 // let's be responsible
-longTakeProf = input(40.0, title='Long Take Profit %', type=input.float, step=1) / 100
-longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProf)
+longTakeProfPerc = input(40, title='Long Take Profit %', type=input.float, step=1) / 100
+longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
 
 var isLong = false
 var isShort = false
@@ -33,11 +33,46 @@ macd3 = getMACD(3)
 // macd4 = getMACD(4)
 signal = ema(macd, 9)
 
-macdUp = macd0 > macd1 and macd1 > macd2 and macd2 > macd3 and macd0 < 0 and macd > signal
-macdDown = macd0 < macd1 and macd1 < macd2 and macd2 < macd3 and macd0 > 0
-
 greenCandle = (close > open)
 redCandle = (close < open)
+
+highlightBBW = 10
+BBbasis = sma(close, 20)
+BBdev = 2 * stdev(close, 20)
+BBupper = BBbasis + BBdev
+BBlower = BBbasis - BBdev
+BBW = ((BBupper - BBlower)) / BBbasis * 100
+lowBBW = lowest(BBW, 180)
+highestVol = highest(volume, 120)
+bgcolor(volume >= highestVol and greenCandle ? color.green : na)
+
+// plot(BBW, title = "Bollinger Bandwidth", color = color.blue)
+// colorpick = BBW < highlightBBW and BBW > lowBBW[1] ? color.yellow : BBW < lowBBW[1] ? color.green : na
+// plot(lowBBW[1], title="Lowest Bollinger bandwidth", color = color.red)
+
+highestMACD = highest(macd, 14)
+lowestMACD = lowest(macd, 14)
+// plot(highestMACD, title="Highest MAC", color = color.green)
+// plot(lowestMACD, title="Lowest MAC", color = color.red)
+
+macdUp = macd0 > macd1 and macd1 > macd2 and macd2 > macd3 and macd1 < 0 and macd > signal
+macdDown = macd0 < macd1 and macd1 < macd2 and macd2 < macd3 and macd0 > 0
+
+macdCrossDown = isLong and crossunder(macd, signal) and macd0 > 0
+
+rsiValue = rsi(close, 14)
+prevRsiValue = rsi(close[1], 14)
+rsiOverbought = 70
+rsiOversold = 30
+rsiOB = rsiValue >= rsiOverbought
+rsiOS = rsiValue <= rsiOversold
+prevRsiOB = prevRsiValue >= rsiOverbought
+prevRsiOS = prevRsiValue <= rsiOversold
+entry = prevRsiValue <= lowest(prevRsiValue, 70) and prevRsiOS and greenCandle
+// (close[1] > open[1])
+// plotshape(rsiOB,  title= "Overbought", location=location.abovebar, color=color.red, transp=0, style=shape.triangledown, text="OB")
+plotshape(entry, title= "Oversold", location=location.belowbar, color=color.green, transp=0, style=shape.triangleup, text="OS")
+
 
 // plot(macd, color=color.blue)
 // plot(signal, color=color.orange)
@@ -55,14 +90,5 @@ if short
     isLong := false
     isShort := true
 
-strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.close("long", when=short or high > longTakeProfPrice and isWithinTimeBounds)
-// // strategy.close("long", when=short and isWithinTimeBounds)
-// // strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-// // strategy.close("short", when=long and isWithinTimeBounds)
-
-// if (strategy.position_size > 0)
-//     strategy.exit(id="stop long", profit=longTakeProfPrice)
-
-// if (strategy.position_size < 0)
-//     strategy.exit(id="stop short", stop=shortStopPrice)
+// strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+// strategy.close("long", when=short or high > longTakeProfPrice and isWithinTimeBounds)

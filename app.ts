@@ -1,7 +1,6 @@
 import express from 'express';
-const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
 import Order from './models/Order';
-import { KrakenService } from './services/krakenService';
+import { KrakenOrder } from './services/krakenService';
 import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
 // const Binance = require("node-binance-api");
@@ -16,9 +15,6 @@ const app = express();
 //   APISECRET: process.env.BINANCE_SECRET_KEY,
 // });
 
-const krakenApi = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_KEY);
-const kraken = new KrakenService(krakenApi);
-
 // create application/json parser
 const jsonParser = express.json();
 app.use(jsonParser);
@@ -27,9 +23,11 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+let locked = false;
+const queue: TradingViewBody[] = [];
 app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   // force body to be JSON
-  const requestBody = JSON.parse(JSON.stringify(req.body));
+  const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log('Hey buddy, get out of here');
     return res.sendStatus(401);
@@ -39,54 +37,26 @@ app.post('/webhook/trading-view', jsonParser, async (req, res) => {
   // allow to "close only" though, meaning exit current trade without entering a new one
   const description = requestBody.strategy.description.toLowerCase();
   if (description.includes('close') && !description.includes('close only')) {
+    console.log('Close order skipped');
     return res.sendStatus(200);
   }
 
-  // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
-  // I use binance/uniswap for most webhooks since there is more volume
-  const tradingViewTicker = requestBody.ticker;
-  const krakenTicker = tradingViewTicker.replace('BTC', 'XBT').replace('WETH', 'ETH');
+  queue.push(requestBody);
 
-  // get pair data
-  const { pairError, pairData } = await kraken.getPair(krakenTicker);
-  if (pairError.length > 0) {
-    console.log(`Pair data for ${krakenTicker} not available on Kraken`);
-    return res.sendStatus(404);
+  if (locked === true) {
+    return;
   }
 
-  // get pair price info for order
-  const { priceError, priceData } = await kraken.getPrice(krakenTicker);
-  if (priceError.length > 0) {
-    console.log(`Price info for ${krakenTicker} not available on Kraken`);
-    return res.sendStatus(404);
+  while (queue.length > 0) {
+    locked = true;
+    const body = queue.shift();
+    if (body) {
+      const order = new KrakenOrder(body);
+      res.send(await order.placeOrder());
+    }
+    locked = false;
   }
-
-  // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
-  const assetClass = krakenTicker.includes('XBT') ? 'XBTUSDT' : 'ETHUSDT';
-  const { priceError: assetClassError, priceData: assetClassData } = await kraken.getPrice(
-    assetClass
-  );
-  if (assetClassError.length > 0) {
-    console.log(`Asset Class Price info for ${krakenTicker} not available on Kraken`);
-    return res.sendStatus(404);
-  }
-
-  const { balanceError, balanceData } = await kraken.getBalance(krakenTicker);
-  if (balanceError.length > 0) {
-    console.log(`Could not find balance info for ${krakenTicker} on Kraken`);
-    return res.sendStatus(404);
-  }
-
-  // set up the order
-  const order = new Order(requestBody, pairData, priceData, assetClassData, balanceData);
-
-  // execute the order
-  if (order.closeOnly) {
-    const closeOrderResult = await kraken.handleLeveragedOrder(order, true, true);
-    return res.send(closeOrderResult);
-  }
-
-  return res.send(await kraken.openOrder(order));
+  return res.sendStatus(200);
 });
 
 app.post('/webhook/uniswap', jsonParser, async (req, res) => {
