@@ -1,13 +1,13 @@
 const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
-import Order from '../models/Order';
+import KrakenOrderDetails from '../models/kraken/KrakenOrderDetails';
 import {
   KrakenPriceResult,
   KrakenTradeablePairResult,
   KrakenOrderResult,
   KrakenBalanceResult,
-} from '../models/KrakenResult';
-import { KrakenOpenPosition } from '../models/KrakenOpenPosition';
-import { TradingViewBody } from '../models/TradingViewBody';
+} from '../models/kraken/KrakenResults';
+import { KrakenOpenPosition } from '../models/kraken/KrakenResults';
+import { KrakenOrderResponse } from '../models/kraken/KrakenOrderResponse';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -47,7 +47,7 @@ class KrakenService {
     return { balanceError, balanceData };
   }
 
-  async openOrder(order: Order): Promise<KrakenOrderResult> {
+  async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let result;
     if (typeof order.leverageAmount === 'undefined') {
       result = await this.handleNonLeveragedOrder(order);
@@ -58,7 +58,7 @@ class KrakenService {
     return result;
   }
 
-  async settleLeveragedOrder(order: Order): Promise<KrakenOrderResult> {
+  async settleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     const {
       error: openPositionError,
       result: openPositions,
@@ -87,10 +87,10 @@ class KrakenService {
   }
 
   async handleLeveragedOrder(
-    order: Order,
+    order: KrakenOrderDetails,
     closeOpenPositions = true,
     onlyCloseOpenPositions = false
-  ): Promise<KrakenOrderResult> {
+  ): Promise<KrakenOrderResponse> {
     // TODO: pass this along in the request body. Sometimes we don't want to close positions first
     if (closeOpenPositions) {
       const result = await this.settleLeveragedOrder(order);
@@ -112,7 +112,7 @@ class KrakenService {
     return result;
   }
 
-  async handleNonLeveragedOrder(order: Order): Promise<KrakenOrderResult> {
+  async handleNonLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     const { error: balanceError, result: balanceResult } = await this.kraken.getBalance();
     const pairBalance = balanceResult[order.baseOfPair];
 
@@ -140,67 +140,6 @@ class KrakenService {
 
     console.log('Non Leveraged Order Complete: ', result);
     return result;
-  }
-}
-
-export class KrakenOrder {
-  requestBody: TradingViewBody;
-  tradingViewTicker: string;
-  krakenTicker: string;
-
-  constructor(requestBody: TradingViewBody) {
-    this.requestBody = requestBody;
-    this.tradingViewTicker = requestBody.ticker;
-    // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
-    // I use binance/uniswap for most webhooks since there is more volume
-    this.krakenTicker = this.tradingViewTicker.replace('BTC', 'XBT').replace('WETH', 'ETH');
-  }
-
-  async placeOrder(): Promise<KrakenOrderResult> {
-    // get pair data
-    const { pairError, pairData } = await kraken.getPair(this.krakenTicker);
-    if (pairError.length > 0) {
-      console.log(`Pair data for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResult(`Pair data for ${this.krakenTicker} not available on Kraken`);
-    }
-
-    // get pair price info for order
-    const { priceError, priceData } = await kraken.getPrice(this.krakenTicker);
-    if (priceError.length > 0) {
-      console.log(`Price info for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResult(`Price info for ${this.krakenTicker} not available on Kraken`);
-    }
-
-    // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
-    const assetClass = this.krakenTicker.includes('XBT') ? 'XBTUSDT' : 'ETHUSDT';
-    const { priceError: assetClassError, priceData: assetClassData } = await kraken.getPrice(
-      assetClass
-    );
-    if (assetClassError.length > 0) {
-      console.log(`Asset Class Price info for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResult(
-        `Asset Class Price info for ${this.krakenTicker} not available on Kraken`
-      );
-    }
-
-    const { balanceError, balanceData } = await kraken.getBalance();
-    if (balanceError.length > 0) {
-      console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
-      return new KrakenOrderResult(
-        `Could not find balance info for ${this.krakenTicker} on Kraken`
-      );
-    }
-
-    // set up the order
-    const order = new Order(this.requestBody, pairData, priceData, assetClassData, balanceData);
-
-    // execute the order
-    if (order.closeOnly) {
-      const closeOrderResult = await kraken.handleLeveragedOrder(order, true, true);
-      return closeOrderResult;
-    }
-
-    return await kraken.openOrder(order);
   }
 }
 
