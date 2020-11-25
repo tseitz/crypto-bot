@@ -1,5 +1,7 @@
 import express from 'express';
+import schedule from 'node-schedule';
 import { KrakenOrder } from './models/kraken/KrakenOrder';
+import { kraken } from './services/krakenService';
 import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
 import { OrderQueue } from './models/OrderQueue';
@@ -79,3 +81,37 @@ app.listen(process.env.PORT || 3000, () => {
     console.log(`Hi Heroku`);
   }
 });
+
+const cron = schedule.scheduleJob('0 0 * * *', async () => {
+  const balances = await kraken.kraken.getTradeBalance();
+
+  console.log(`Nightly Log
+---------------------------
+  Balance: $${balances.result.eb}
+  Open:    $${balances.result.n}
+  Total:   $${Number.parseFloat(balances.result.eb) + Number.parseFloat(balances.result.n)}
+---------------------------`);
+});
+
+// async function getBalances() {
+//   // TODO - make this it's own thing
+//   // c:'2881.3240'
+//   // e:'1151.8423'
+//   // eb:'2052.1541'
+//   // m:'1095.7655'
+//   // mf:'56.0768'
+//   // ml:'105.11'
+//   // n:'24.1204'
+//   // tb:'1127.7219'
+//   // v:'2912.7724'
+//   const balances = await kraken.kraken.getTradeBalance();
+
+//   console.log(`Nightly Log
+// ---------------------------
+//   Balance: $${balances.result.eb}
+//   Open:    $${balances.result.n}
+//   Total:   $${Number.parseFloat(balances.result.eb) + Number.parseFloat(balances.result.n)}
+// ---------------------------`);
+// }
+
+// getBalances();
