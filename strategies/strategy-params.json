@@ -36,6 +36,13 @@
     "latestResult": 39.30,
     "allowShorts": true
   },
+  "BCHBTC": {
+    "name": "BCHBTC SMA Cross Strategy",
+    "smaLength": 6,
+    "timeframe": "30m",
+    "latestResult": 39.65,
+    "allowShorts": true
+  },
   "CRVBTC": {
     "name": "CRVBTC SMA Cross Strategy",
     "smaLength": 29,
@@ -85,11 +92,25 @@
     "latestResult": 91.51,
     "allowShorts": true
   },
+  "KNCBTC": {
+    "name": "KNCBTC SMA Cross Strategy",
+    "smaLength": 14,
+    "timeframe": "30m",
+    "latestResult": 32.97,
+    "allowShorts": true
+  },
   "KSMBTC": {
     "name": "KSMBTC SMA Cross Strategy",
     "smaLength": 21,
     "timeframe": "3h",
     "latestResult": 18.97,
+    "allowShorts": true
+  },
+  "ICXBTC": {
+    "name": "ICXBTC SMA Cross Strategy",
+    "smaLength": 14,
+    "timeframe": "1h",
+    "latestResult": 30.99,
     "allowShorts": true
   },
   "LINKBTC": {
@@ -112,6 +133,13 @@
     "latestResult": 28.48,
     "allowShorts": true
   },
+  "NANOBTC": {
+    "name": "NANOBTC SMA Cross Strategy",
+    "smaLength": 5,
+    "timeframe": "30m",
+    "latestResult": 71.91,
+    "allowShorts": true
+  },
   "OMGBTC": {
     "name": "OMGBTC SMA Cross Strategy",
     "smaLength": 11,
@@ -126,8 +154,15 @@
     "latestResult": 8.69,
     "allowShorts": true
   },
+  "SCBTC": {
+    "name": "SCBTC SMA Cross Strategy",
+    "smaLength": 3,
+    "timeframe": "30m",
+    "latestResult": 28.90,
+    "allowShorts": true
+  },
   "SNXBTC": {
-    "name": "SNX SMA Cross Strategy",
+    "name": "SNXBTC SMA Cross Strategy",
     "smaLength": 15,
     "timeframe": "30m",
     "latestResult": 43.67,
