@@ -41,7 +41,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   // allow "close only" though, meaning exit current trade without entering a new one
   const description = requestBody.strategy.description.toLowerCase();
   if (description.includes('close') && !description.includes('close only')) {
-    console.log('Close order skipped');
+    console.log('Close order skipped', queue.length);
     return res.send('Close order skipped');
   }
 
@@ -49,7 +49,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   queue.push({ body: requestBody, res });
 
   if (locked === true) {
-    console.log('Locked, please hold.');
+    console.log('Locked, please hold.', queue.length);
     return res.send('Locked, please hold.');
   }
 
