@@ -61,7 +61,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
     }
     locked = false;
   }
-  return res.send('All good');
+  return;
 });
 
 app.post('/webhook/uniswap', jsonParser, async (req, res) => {
