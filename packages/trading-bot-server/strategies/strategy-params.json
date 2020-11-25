@@ -156,39 +156,45 @@
   },
   "XLMBTC": {
     "name": "XLMBTC SMA Cross Strategy",
-    "smaLength": 65,
+    "smaLength": 14,
     "timeframe": "1h",
-    "latestResult": 4.52
+    "latestResult": 50.95,
+    "allowShorts": true
   },
   "XMRBTC": {
     "name": "XMRBTC SMA Cross Strategy",
     "smaLength": 3,
     "timeframe": "30m",
-    "latestResults": 11.31
+    "latestResults": 48.38,
+    "allowShorts": true
   },
   "XRPBTC": {
     "name": "XRPBTC SMA Cross Strategy",
-    "smaLength": 27,
+    "smaLength": 31,
     "timeframe": "1h",
-    "latestResult": 7.11
+    "latestResult": 126.08,
+    "allowShorts": true
   },
   "XTZBTC": {
     "name": "XTZBTC SMA Cross Strategy",
-    "smaLength": 36,
+    "smaLength": 30,
     "timeframe": "3h",
-    "latestResult": 6.58
+    "latestResult": 16.24,
+    "allowShorts": true
   },
   "YFIBTC": {
     "name": "YFIBTC SMA Cross Strategy",
     "smaLength": 10,
     "timeframe": "30m",
-    "latestResult": 14.05
+    "latestResult": 141.52,
+    "allowShorts": true
   },
   "ZECBTC": {
     "name": "ZECBTC SMA Cross Strategy",
-    "smaLength": 14,
-    "timeframe": "3h",
-    "latestResult": 9.33
+    "smaLength": 6,
+    "timeframe": "30m",
+    "latestResult": 39.65,
+    "allowShorts": true
   },
   "LINKWETH": {
     "name": "LINKWETH SMA Cross Strategy",

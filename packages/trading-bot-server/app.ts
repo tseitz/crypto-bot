@@ -33,7 +33,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log('Hey buddy, get out of here');
-    return res.sendStatus(401);
+    return res.send('Hey buddy, get out of here');
   }
 
   // ignore close signal for now. Our current strategy flips the order so we handle it below
@@ -41,13 +41,16 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   const description = requestBody.strategy.description.toLowerCase();
   if (description.includes('close') && !description.includes('close only')) {
     console.log('Close order skipped');
-    return;
+    return res.send('Close order skipped');
   }
 
   // queue it
   queue.push({ body: requestBody, res });
 
-  if (locked === true) return;
+  if (locked === true) {
+    console.log('Locked, please hold.');
+    return res.send('Locked, please hold.');
+  }
 
   while (queue.length > 0) {
     locked = true;
@@ -58,7 +61,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
     }
     locked = false;
   }
-  return;
+  return res.send('All good');
 });
 
 app.post('/webhook/uniswap', jsonParser, async (req, res) => {
@@ -66,7 +69,7 @@ app.post('/webhook/uniswap', jsonParser, async (req, res) => {
   const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log('Hey buddy, get out of here');
-    return res.sendStatus(401);
+    return res.send('Hey buddy, get out of here');
   }
 
   const blockNumberMined = await handleUniswapOrder(requestBody);
@@ -82,7 +85,7 @@ app.listen(process.env.PORT || 3000, () => {
   }
 });
 
-const cron = schedule.scheduleJob('35 * * * *', async () => {
+const cron = schedule.scheduleJob('0 0 * * *', async () => {
   const balances = await kraken.kraken.getTradeBalance();
 
   console.log(`Nightly Log
