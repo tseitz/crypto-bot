@@ -126,7 +126,7 @@ class KrakenService {
           ordertype: 'limit',
           volume: order.balanceOfBase,
           price: order.currentAsk,
-          validate: true,
+          // validate: true,
         });
       }
     } else {
