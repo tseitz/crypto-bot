@@ -35,18 +35,17 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   }
 
   // ignore close signal for now. Our current strategy flips the order so we handle it below
-  // allow to "close only" though, meaning exit current trade without entering a new one
+  // allow "close only" though, meaning exit current trade without entering a new one
   const description = requestBody.strategy.description.toLowerCase();
   if (description.includes('close') && !description.includes('close only')) {
     console.log('Close order skipped');
     return res.sendStatus(200);
   }
 
+  // queue it
   queue.push({ body: requestBody, res });
 
-  if (locked === true) {
-    return;
-  }
+  if (locked === true) return;
 
   while (queue.length > 0) {
     locked = true;

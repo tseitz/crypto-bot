@@ -1,7 +1,7 @@
 import { TradingViewBody } from '../TradingViewBody';
 import { KrakenTradeablePair, KrakenPrice, KrakenBalance } from './KrakenResults';
 import { StrategyParams, StrategyParamsJson } from '../StrategyParams';
-const strategyParams: StrategyParamsJson = require('../strategies/strategy-params');
+const strategyParams: StrategyParamsJson = require('../../strategies/strategy-params');
 
 type AssetClassTicker = 'XBTUSDT' | 'ETHUSDT';
 
@@ -101,7 +101,7 @@ export default class KrakenOrderDetails {
     } else {
       // let's risk $200 for now
       volume = Number.parseFloat(
-        ((100 * (this.leverageAmount || 1.5)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((80 * (this.leverageAmount || 1.5)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;

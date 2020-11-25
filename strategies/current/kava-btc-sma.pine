@@ -2,18 +2,20 @@
 strategy("KAVABTC SMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
-daysBackMax = input(defval=120, title="Max Days Back to Test", minval=0)
+daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
 daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 // let's be responsible
-// longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 120
+// longLossPerc = input(12.0, title='Long Stop Loss %', type=input.float, step=1) / 100
 // shortLossPerc = input(12.0, title='Short Stop Loss %', type=input.float, step=1) / 100
 // longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 // shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
-smaLength = input(defval=62, title="SMA Length", minval=0, step=3)
+
+smaLength = input(defval=45, title="SMA Length", minval=0, step=2)
+allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
 
 var isLong = false
 var isShort = false
@@ -41,8 +43,8 @@ if short
 
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.close("long", when=short and isWithinTimeBounds)
-strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.close("short", when=long and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds and allowShorts)
+strategy.close("short", when=long and isWithinTimeBounds and allowShorts)
 
 // if (strategy.position_size > 0)
 //     strategy.exit(id="stop buy", stop=longStopPrice)
