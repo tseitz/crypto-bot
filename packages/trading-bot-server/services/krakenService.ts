@@ -3,7 +3,6 @@ import KrakenOrderDetails from '../models/kraken/KrakenOrderDetails';
 import {
   KrakenPriceResult,
   KrakenTradeablePairResult,
-  KrakenOrderResult,
   KrakenBalanceResult,
 } from '../models/kraken/KrakenResults';
 import { KrakenOpenPosition } from '../models/kraken/KrakenResults';
