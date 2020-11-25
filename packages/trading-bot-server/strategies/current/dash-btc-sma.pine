@@ -1,5 +1,5 @@
 //@version=4
-strategy("CRVBTC SMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("DASHBTC SMA Cross Strategy", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
@@ -14,7 +14,7 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 // longStopPrice = strategy.position_avg_price * (1 - longLossPerc)
 // shortStopPrice = strategy.position_avg_price * (1 + shortLossPerc)
 
-smaLength = input(defval=29, title="SMA Length", minval=0, step=2)
+smaLength = input(defval=6, title="SMA Length", minval=0, step=2)
 allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
 
 var isLong = false
