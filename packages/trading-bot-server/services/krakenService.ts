@@ -78,7 +78,7 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-        console.log('Settled Position: ', latestResult);
+        console.log(`${order.krakenTicker} Settled Position: `, latestResult);
       }
     }
 
@@ -107,25 +107,28 @@ class KrakenService {
       // validate: true,
     });
 
-    console.log('Leveraged Order Complete: ', result);
+    console.log(`${order.krakenTicker} Leveraged Order Complete: `, result);
     return result;
   }
 
   async handleNonLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
-    const { error: balanceError, result: balanceResult } = await this.kraken.getBalance();
-    const pairBalance = balanceResult[order.baseOfPair];
-
     let result;
     if (order.action === 'sell') {
-      // sell off current balance, we cannot short so stop there
-      result = await this.kraken.setAddOrder({
-        pair: order.krakenTicker,
-        type: order.action,
-        ordertype: 'limit',
-        volume: pairBalance,
-        price: order.currentAsk,
-        // validate: true,
-      });
+      if (isNaN(order.balanceOfBase)) {
+        result = new KrakenOrderResponse(
+          `${order.krakenTicker} ${order.action.toUpperCase()} Balance is NaN`
+        );
+      } else {
+        // sell off current balance, we cannot short so stop there
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          volume: order.balanceOfBase,
+          price: order.currentAsk,
+          validate: true,
+        });
+      }
     } else {
       result = await this.kraken.setAddOrder({
         pair: order.krakenTicker,
@@ -137,7 +140,7 @@ class KrakenService {
       });
     }
 
-    console.log('Non Leveraged Order Complete: ', result);
+    console.log(`${order.krakenTicker} Non Leveraged Order Complete: `, result);
     return result;
   }
 }

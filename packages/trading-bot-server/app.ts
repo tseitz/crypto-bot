@@ -29,6 +29,7 @@ const queue: OrderQueue[] = [];
 let locked = false;
 
 app.post('/webhook/kraken', jsonParser, async (req, res) => {
+  console.log('Request Received, Current Queue: ', queue);
   // force body to be JSON
   const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
@@ -54,10 +55,12 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
 
   while (queue.length > 0) {
     locked = true;
+    console.log('Length of Queue Before: ', queue.length);
     const request = queue.shift();
     if (request) {
       const order = new KrakenOrder(request.body);
       request.res.send(await order.placeOrder());
+      console.log('Length of Queue After: ', queue.length);
     }
     locked = false;
   }
