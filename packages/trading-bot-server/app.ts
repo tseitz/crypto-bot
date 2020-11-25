@@ -41,7 +41,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   const description = requestBody.strategy.description.toLowerCase();
   if (description.includes('close') && !description.includes('close only')) {
     console.log('Close order skipped');
-    return res.sendStatus(200);
+    return;
   }
 
   // queue it
@@ -82,7 +82,7 @@ app.listen(process.env.PORT || 3000, () => {
   }
 });
 
-const cron = schedule.scheduleJob('0 0 * * *', async () => {
+const cron = schedule.scheduleJob('30 0 * * *', async () => {
   const balances = await kraken.kraken.getTradeBalance();
 
   console.log(`Nightly Log
