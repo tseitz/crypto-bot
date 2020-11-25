@@ -82,7 +82,7 @@ app.listen(process.env.PORT || 3000, () => {
   }
 });
 
-const cron = schedule.scheduleJob('30 0 * * *', async () => {
+const cron = schedule.scheduleJob('35 * * * *', async () => {
   const balances = await kraken.kraken.getTradeBalance();
 
   console.log(`Nightly Log
