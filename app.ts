@@ -50,7 +50,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
 
   if (locked === true) {
     console.log('Locked, please hold.', queue.length);
-    return res.send('Locked, please hold.');
+    return;
   }
 
   while (queue.length > 0) {
