@@ -74,11 +74,12 @@ class KrakenService {
           type: closeAction,
           ordertype: 'limit',
           price: order.currentAsk,
-          volume: position.vol, // only close current volume. 0 for close all
+          volume: 0, // position.vol wasn't giving what I wanted. 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
         });
         console.log(`${order.krakenTicker} Settled Position: `, latestResult);
+        break;
       }
     }
 

@@ -2,7 +2,7 @@ import express from 'express';
 import schedule from 'node-schedule';
 import { KrakenOrder } from './models/kraken/KrakenOrder';
 import { kraken } from './services/krakenService';
-import { handleUniswapOrder } from './services/uniswapService';
+// import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
 import { OrderQueue } from './models/OrderQueue';
 // const Binance = require("node-binance-api");
@@ -72,17 +72,17 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   return;
 });
 
-app.post('/webhook/uniswap', jsonParser, async (req, res) => {
-  // force body to be JSON
-  const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
-  if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
-    console.log('Hey buddy, get out of here');
-    return res.send('Hey buddy, get out of here');
-  }
+// app.post('/webhook/uniswap', jsonParser, async (req, res) => {
+//   // force body to be JSON
+//   const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
+//   if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
+//     console.log('Hey buddy, get out of here');
+//     return res.send('Hey buddy, get out of here');
+//   }
 
-  const blockNumberMined = await handleUniswapOrder(requestBody);
-  return res.send(blockNumberMined);
-});
+//   const blockNumberMined = await handleUniswapOrder(requestBody);
+//   return res.send(blockNumberMined);
+// });
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${PORT}`);
