@@ -55,7 +55,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
 
   while (queue.length > 0) {
     locked = true;
-    console.log('Length of Queue Before: ', queue.length);
+    console.log('Locked. Queue Length: ', queue.length);
     const request = queue.shift();
     if (request) {
       const order = new KrakenOrder(request.body);
@@ -65,8 +65,8 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
         console.log(error);
         locked = false;
       }
-      console.log('Length of Queue After: ', queue.length);
     }
+    console.log('Unlocked. Queue Length: ', queue.length);
     locked = false;
   }
   return;
