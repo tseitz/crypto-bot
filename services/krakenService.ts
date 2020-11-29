@@ -135,8 +135,8 @@ class KrakenService {
       result = await this.kraken.setAddOrder({
         pair: order.krakenTicker,
         type: order.action,
-        ordertype: 'stop-loss',
-        price: order.stopLoss,
+        ordertype: 'limit',
+        price: order.action === 'sell' ? order.currentBid : order.currentAsk,
         volume: order.tradeVolume,
         // validate: true,
       });
