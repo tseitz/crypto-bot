@@ -76,7 +76,7 @@ class KrakenService {
           type: closeAction,
           ordertype: 'limit',
           price: closeAction === 'sell' ? order.currentBid : order.currentAsk, // just fill current bid/ask
-          volume: volumeToClose, // 0 for close all
+          volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
         });
