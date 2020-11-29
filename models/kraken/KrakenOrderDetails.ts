@@ -80,8 +80,12 @@ export default class KrakenOrderDetails {
     this.currentBid = Number.parseFloat(pairPriceInfo[this.krakenTicker]['b'][0]);
     this.currentAsk = Number.parseFloat(pairPriceInfo[this.krakenTicker]['a'][0]);
     this.spread = this.currentAsk - this.currentBid;
-    this.bidPrice =
-      Number.parseFloat(this.currentBid.toString()) + Number.parseFloat(this.spread.toString()) / 2;
+    this.bidPrice = Number.parseFloat(
+      (
+        Number.parseFloat(this.currentBid.toString()) +
+        Number.parseFloat(this.spread.toString()) / 2
+      ).toFixed(this.priceDecimals)
+    );
     this.usdValueOfQuote = this.usdPair
       ? 1
       : Number.parseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
@@ -106,7 +110,7 @@ export default class KrakenOrderDetails {
     } else {
       // let's risk $200 for now
       volume = Number.parseFloat(
-        ((75 * (this.leverageAmount || 1.65)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((75 * (this.leverageAmount || 1.5)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
