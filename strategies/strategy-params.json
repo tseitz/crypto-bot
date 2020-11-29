@@ -36,13 +36,6 @@
     "latestResult": 39.30,
     "allowShorts": true
   },
-  "BCHBTC": {
-    "name": "BCHBTC SMA Cross Strategy",
-    "smaLength": 6,
-    "timeframe": "30m",
-    "latestResult": 39.65,
-    "allowShorts": true
-  },
   "CRVBTC": {
     "name": "CRVBTC SMA Cross Strategy",
     "smaLength": 29,
