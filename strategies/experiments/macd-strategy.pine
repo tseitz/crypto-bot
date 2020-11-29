@@ -40,8 +40,6 @@ macdLength = close / abs(macd)
 markMacd = macdDesc and macdLength < 20 and isLong
 macdDirUp = macd > signal
 macdDirDown = macd < signal
-macdCrossUp = crossover(macd, signal)
-macdCrossDown = crossunder(macd, signal)
 
 plotshape(markMacd, title="Mark", text="Mark", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
@@ -60,8 +58,8 @@ redCandle = (close < open)
 // long = not isLong and open > sma and greenCandle
 // short = not isShort and open < sma and redCandle
 
-long = not isLong and macdCrossUp
-short = not isShort and macdCrossDown
+long = not isLong and macdDirUp
+short = not isShort and macdDirDown
 
 bgcolor(color=long ? color.green : na)
 bgcolor(color=short ? color.red : na)
