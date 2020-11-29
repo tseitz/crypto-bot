@@ -82,10 +82,10 @@ export default class KrakenOrderDetails {
     this.spread = this.currentAsk - this.currentBid;
     this.bidPrice = Number.parseFloat(
       (
-        Number.parseFloat(this.currentBid.toString()) +
-        Number.parseFloat(this.spread.toString()) / 2
+        Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
+        Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.75
       ).toFixed(this.priceDecimals)
-    );
+    ); // 75% of current ask, trying to fill
     this.usdValueOfQuote = this.usdPair
       ? 1
       : Number.parseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
