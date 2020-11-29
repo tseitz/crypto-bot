@@ -34,14 +34,16 @@ macd2 = getMACD(2)
 // macd3 = getMACD(3)
 // macd4 = getMACD(4)
 
-macdDesc = macd0 < macd1 and macd0 < macd2
+// macdDesc = macd0 < macd1 and macd0 < macd2
 signal = ema(macd, 9)
 macdLength = close / abs(macd)
-markMacd = macdDesc and macdLength < 20 and isLong
+// markMacd = macdDesc and macdLength < 20 and isLong
 macdDirUp = macd > signal
 macdDirDown = macd < signal
+macdDesc = isLong and macd0 < macd1
+macdAsc = isShort and macd0 > macd1
 
-plotshape(markMacd, title="Mark", text="Mark", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+// plotshape(macdDesc, title="Mark", text="Mark", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
 // smaLength = input(defval=3, title="SMA Length", minval=0, step=2)
 
