@@ -69,17 +69,18 @@ class KrakenService {
       const position: KrakenOpenPosition = openPositions[key];
       if (position.pair === order.krakenTicker) {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+        const volumeToClose =
+          Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
           ordertype: 'limit',
-          price: order.currentAsk,
-          volume: 0, // position.vol wasn't giving what I wanted. 0 for close all
+          price: closeAction === 'sell' ? order.currentBid : order.currentAsk, // just fill current bid/ask
+          volume: volumeToClose, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
         });
         console.log(`${order.krakenTicker} Settled Position: `, latestResult);
-        break;
       }
     }
 
@@ -101,8 +102,8 @@ class KrakenService {
     const result = await this.kraken.setAddOrder({
       pair: order.krakenTicker,
       type: order.action,
-      ordertype: 'stop-loss',
-      price: order.stopLoss,
+      ordertype: 'limit',
+      price: order.action === 'sell' ? order.currentBid : order.currentAsk, // same as above. We really just want to fill for now
       volume: order.tradeVolume,
       leverage: order.leverageAmount,
       // validate: true,
