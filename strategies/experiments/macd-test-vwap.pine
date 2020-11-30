@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Test", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Test VWAP", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
@@ -17,6 +17,7 @@ fastMA = ema(close, fast)
 slowMA = ema(close, slow)
 macd = fastMA - slowMA
 signal = ema(macd, 9)
+vwapClose = vwap(close)
 
 getMACD(index) =>
     thisFastMA = ema(close[index], fast)
@@ -27,17 +28,14 @@ macd0 = getMACD(0)
 macd1 = getMACD(1)
 macd2 = getMACD(2)
 
-macdDirUp = macd > signal
-macdDirDown = macd < signal
+macdLong = macd > signal
+macdShort = macd < signal
 aboveVwap = open > vwap
 belowVwap = open < vwap
-longClose = isLong and aboveVwap and high >= vwap
-shortClose = isShort and aboveVwap and low <= vwap
+vwapShortClose = aboveVwap and isShort and low <= vwapClose
+vwapLongClose = belowVwap and isLong and high >= vwapClose
 
 // plotshape(macdDesc, title="Mark", text="Mark", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-
-// smaLength = input(defval=3, title="SMA Length", minval=0, step=2)
-
 
 greenCandle = (close > open)
 redCandle = (close < open)
@@ -45,30 +43,23 @@ redCandle = (close < open)
 // sma = sma(close, smaLength)
 
 plot(vwap, linewidth=1, color=color.blue)
-// plot(macd, color=color.blue)
-// plot(signal, color=color.orange)
 
-// long = not isLong and open > sma and greenCandle
-// short = not isShort and open < sma and redCandle
+// bgcolor(color=long ? color.green : na)
+// bgcolor(color=short ? color.red : na)
 
-long = not isLong and macdDirUp
-short = not isShort and macdDirDown
-
-bgcolor(color=long ? color.green : na)
-bgcolor(color=short ? color.red : na)
-
-if long
+if not isLong and macdLong
     isLong := true
     isShort := false
 
-if short
+if not isShort and macdShort
     isLong := false
     isShort := true
 
-strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.close("long", when=short or longClose and isWithinTimeBounds)
-strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.close("short", when=long or shortClose and isWithinTimeBounds)
+
+strategy.entry("long", long=true, when=isLong and isWithinTimeBounds)
+strategy.close("long", when=isShort or vwapLongClose and isWithinTimeBounds)
+strategy.entry("short", long=false, when=isShort and isWithinTimeBounds)
+strategy.close("short", when=isLong or vwapShortClose and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     strategy.exit(id="stop long", stop=longStopPrice)

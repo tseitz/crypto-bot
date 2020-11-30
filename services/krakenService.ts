@@ -118,9 +118,9 @@ class KrakenService {
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
-          ordertype: 'market',
-          // ordertype: 'limit',
-          // price: position.type === 'sell' ? order.currentBid : order.currentAsk,
+          // ordertype: 'market',
+          ordertype: 'limit',
+          price: position.type === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
@@ -147,9 +147,9 @@ class KrakenService {
     const result = await this.kraken.setAddOrder({
       pair: order.krakenTicker,
       type: order.action,
-      // ordertype: 'limit',
-      ordertype: 'market',
-      // price: order.bidPrice,
+      ordertype: 'limit',
+      // ordertype: 'market',
+      price: order.bidPrice,
       volume: order.tradeVolume,
       leverage: order.leverageAmount,
       // validate: true,
