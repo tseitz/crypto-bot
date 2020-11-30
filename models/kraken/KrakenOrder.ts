@@ -34,6 +34,8 @@ export class KrakenOrder {
       return new KrakenOrderResponse(`Price info for ${this.krakenTicker} not available on Kraken`);
     }
 
+    // const { orderBookError, orderBookData } = await kraken.getOrderBook(this.krakenTicker);
+
     // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
     const assetClass = this.krakenTicker.includes('XBT') ? 'XBTUSDT' : 'ETHUSDT';
     const { priceError: assetClassError, priceData: assetClassData } = await kraken.getPrice(
