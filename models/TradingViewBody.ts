@@ -10,5 +10,6 @@ export interface TradingViewBody {
 export interface TradingViewStrategyBody {
   action: string;
   description: string;
+  price: string;
   positionSize?: number;
 }
