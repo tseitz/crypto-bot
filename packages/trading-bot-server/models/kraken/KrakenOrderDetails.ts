@@ -132,21 +132,22 @@ export default class KrakenOrderDetails {
   }
 
   private getBid(): number {
-    if (this.action === 'buy') {
-      return Number.parseFloat(
-        (
-          Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
-          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
-        ).toFixed(this.priceDecimals)
-      ); // 95% of current ask, trying to fill
-    } else {
-      return Number.parseFloat(
-        (
-          Number.parseFloat(this.currentAsk.toFixed(this.priceDecimals)) -
-          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
-        ).toFixed(this.priceDecimals)
-      ); // 95% of current ask, trying to fill
-    }
+    return this.action === 'buy' ? this.currentAsk : this.currentBid;
+    // if (this.action === 'buy') {
+    //   return Number.parseFloat(
+    //     (
+    //       Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
+    //       Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
+    //     ).toFixed(this.priceDecimals)
+    //   ); // 95% of current ask, trying to fill
+    // } else {
+    //   return Number.parseFloat(
+    //     (
+    //       Number.parseFloat(this.currentAsk.toFixed(this.priceDecimals)) -
+    //       Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
+    //     ).toFixed(this.priceDecimals)
+    //   ); // 95% of current ask, trying to fill
+    // }
   }
 
   convertBaseToDollar(base: number, usd: number): number {

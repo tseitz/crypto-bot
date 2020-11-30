@@ -55,6 +55,15 @@ class KrakenService {
     return { openOrderError, openOrderData };
   }
 
+  async getOpenPositions() {
+    const {
+      error: openPositionError,
+      result: openPositionData,
+    }: KrakenBalanceResult = await this.kraken.getOpenPositions();
+
+    return { openPositionError, openPositionData };
+  }
+
   async cancelOpenOrdersForPair(order: KrakenOrderDetails) {
     const open = order.openOrders['open'];
 
@@ -176,7 +185,10 @@ class KrakenService {
   async balancePortfolio() {
     const { balanceData: balances } = await this.getBalance();
     console.log('USD Balance Before Rebalance: ', balances['ZUSD']);
-    console.log(balances);
+
+    const { openPositionData } = await this.getOpenPositions();
+    console.log(openPositionData);
+
     return balances;
   }
 }
