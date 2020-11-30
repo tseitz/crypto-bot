@@ -44,6 +44,7 @@ export default class KrakenOrderDetails {
 
   constructor(
     body: TradingViewBody,
+    krakenizedTicker: string,
     pairData: KrakenTradeablePair,
     pairPriceInfo: KrakenPrice,
     assetClassPriceInfo: KrakenPrice,
@@ -52,9 +53,7 @@ export default class KrakenOrderDetails {
   ) {
     // ticker info
     this.tradingViewTicker = body.ticker;
-    this.krakenizedTradingViewTicker = this.tradingViewTicker
-      .replace('BTC', 'XBT')
-      .replace('WETH', 'ETH');
+    this.krakenizedTradingViewTicker = krakenizedTicker;
     this.krakenTicker = Object.keys(pairData)[0];
     this.baseOfPair = pairData[this.krakenTicker]['base'];
     this.quoteOfPair = pairData[this.krakenTicker]['quote'];
