@@ -7,6 +7,7 @@ type AssetClassTicker = 'XBTUSDT' | 'ETHUSDT';
 
 export default class KrakenOrderDetails {
   tradingViewTicker: string;
+  krakenizedTradingViewTicker: string;
   krakenTicker: string;
   assetClassTicker: AssetClassTicker;
   action: string;
@@ -39,21 +40,27 @@ export default class KrakenOrderDetails {
   positionSize: number | undefined;
   spread: number;
   bidPrice: number;
+  openOrders: any; // KrakenOpenOrders
 
   constructor(
     body: TradingViewBody,
     pairData: KrakenTradeablePair,
     pairPriceInfo: KrakenPrice,
     assetClassPriceInfo: KrakenPrice,
-    myBalanceInfo: KrakenBalance
+    myBalanceInfo: KrakenBalance,
+    openOrders: any // KrakenOpenOrders
   ) {
     // ticker info
     this.tradingViewTicker = body.ticker;
+    this.krakenizedTradingViewTicker = this.tradingViewTicker
+      .replace('BTC', 'XBT')
+      .replace('WETH', 'ETH');
     this.krakenTicker = Object.keys(pairData)[0];
     this.baseOfPair = pairData[this.krakenTicker]['base'];
     this.quoteOfPair = pairData[this.krakenTicker]['quote'];
     this.assetClassTicker =
       Object.keys(assetClassPriceInfo)[0] === 'ETHUSDT' ? 'ETHUSDT' : 'XBTUSDT';
+    this.openOrders = openOrders;
 
     // setup params
     this.strategyParams = strategyParams[this.tradingViewTicker];

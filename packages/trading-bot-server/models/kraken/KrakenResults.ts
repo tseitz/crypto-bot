@@ -81,3 +81,7 @@ export interface KrakenOpenPosition {
   vol: string;
   vol_closed: string;
 }
+
+// error:(0) []
+// result:{count: 1}
+// count:1
