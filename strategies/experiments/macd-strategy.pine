@@ -31,11 +31,10 @@ getMACD(index) =>
 macd0 = getMACD(0)
 macd1 = getMACD(1)
 macd2 = getMACD(2)
-// macd3 = getMACD(3)
-// macd4 = getMACD(4)
 
 // macdDesc = macd0 < macd1 and macd0 < macd2
 signal = ema(macd, 9)
+vwapClose = vwap(close)
 macdLength = close / abs(macd)
 // markMacd = macdDesc and macdLength < 20 and isLong
 macdDirUp = macd > signal

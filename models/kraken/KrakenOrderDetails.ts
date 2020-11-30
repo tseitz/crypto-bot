@@ -114,9 +114,8 @@ export default class KrakenOrderDetails {
         ((this.positionSize / 100) * this.tradeBalanceInDollar).toFixed(this.volumeDecimals)
       );
     } else {
-      // let's risk $200 for now
       volume = Number.parseFloat(
-        ((50 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((60 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
