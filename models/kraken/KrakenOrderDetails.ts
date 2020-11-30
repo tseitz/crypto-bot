@@ -96,6 +96,16 @@ export default class KrakenOrderDetails {
     this.stopLoss = this.getStopLoss();
   }
 
+  private getKrakenTicker(pairData: KrakenTradeablePair): string {
+    let ticker = Object.keys(pairData)[0];
+
+    if (ticker.includes('USDT') && ticker !== 'XBTUSDT' && ticker !== 'ETHUSDT') {
+      ticker = ticker.replace('USDT', 'USD');
+    }
+
+    return ticker;
+  }
+
   private getVolume(): number {
     let volume = 0;
     if (this.positionSize) {
