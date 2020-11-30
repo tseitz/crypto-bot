@@ -71,7 +71,6 @@ class KrakenService {
     let result;
     for (const key in open) {
       if (open[key]['descr']['pair'] === order.krakenizedTradingViewTicker) {
-        console.log(key);
         result = await this.kraken.setCancelOrder({ txid: key });
       }
     }
@@ -112,7 +111,7 @@ class KrakenService {
           pair: order.krakenTicker,
           type: closeAction,
           ordertype: 'limit',
-          price: order.bidPrice,
+          price: position.type === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
