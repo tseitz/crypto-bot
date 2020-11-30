@@ -13,12 +13,13 @@ export class KrakenOrder {
     this.tradingViewTicker = requestBody.ticker;
     // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
     // I use binance/uniswap for most webhooks since there is more volume
-    this.krakenTicker = this.tradingViewTicker.replace('BTC', 'XBT').replace('WETH', 'ETH');
+    this.krakenTicker = this.tradingViewTicker
+      .replace('BTC', 'XBT')
+      .replace('WETH', 'ETH')
+      .replace('USDT', 'USD');
   }
 
   async placeOrder(): Promise<KrakenOrderResponse> {
-    this.krakenTicker = this.krakenTicker.replace('USDT', 'USD');
-
     // get pair data
     const { pairError, pairData } = await kraken.getPair(this.krakenTicker);
     if (pairError.length > 0) {
