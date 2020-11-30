@@ -134,14 +134,14 @@ export default class KrakenOrderDetails {
       return Number.parseFloat(
         (
           Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
-          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.9
+          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
         ).toFixed(this.priceDecimals)
       ); // 90% of current ask, trying to fill
     } else {
       return Number.parseFloat(
         (
           Number.parseFloat(this.currentAsk.toFixed(this.priceDecimals)) -
-          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.9
+          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
         ).toFixed(this.priceDecimals)
       ); // 90% of current ask, trying to fill
     }
