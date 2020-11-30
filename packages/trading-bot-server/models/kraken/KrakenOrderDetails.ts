@@ -80,12 +80,7 @@ export default class KrakenOrderDetails {
     this.currentBid = Number.parseFloat(pairPriceInfo[this.krakenTicker]['b'][0]);
     this.currentAsk = Number.parseFloat(pairPriceInfo[this.krakenTicker]['a'][0]);
     this.spread = this.currentAsk - this.currentBid;
-    this.bidPrice = Number.parseFloat(
-      (
-        Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
-        Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.9
-      ).toFixed(this.priceDecimals)
-    ); // 90% of current ask, trying to fill
+    this.bidPrice = this.getBid();
     this.usdValueOfQuote = this.usdPair
       ? 1
       : Number.parseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
@@ -122,6 +117,24 @@ export default class KrakenOrderDetails {
         ? this.currentBid * (1 + this.stopPercent / 100)
         : this.currentBid * (1 - this.stopPercent / 100);
     return Number.parseFloat(stop.toFixed(this.priceDecimals));
+  }
+
+  private getBid(): number {
+    if (this.action === 'buy') {
+      return Number.parseFloat(
+        (
+          Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
+          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.9
+        ).toFixed(this.priceDecimals)
+      ); // 90% of current ask, trying to fill
+    } else {
+      return Number.parseFloat(
+        (
+          Number.parseFloat(this.currentAsk.toFixed(this.priceDecimals)) -
+          Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.9
+        ).toFixed(this.priceDecimals)
+      ); // 90% of current ask, trying to fill
+    }
   }
 
   convertBaseToDollar(base: number, usd: number): number {
