@@ -17,13 +17,7 @@ export class KrakenOrder {
   }
 
   async placeOrder(): Promise<KrakenOrderResponse> {
-    if (
-      this.krakenTicker.includes('USDT') &&
-      this.krakenTicker !== 'XBTUSDT' &&
-      this.krakenTicker !== 'ETHUSDT'
-    ) {
-      this.krakenTicker = this.krakenTicker.replace('USDT', 'USD');
-    }
+    this.krakenTicker = this.krakenTicker.replace('USDT', 'USD');
 
     // get pair data
     const { pairError, pairData } = await kraken.getPair(this.krakenTicker);
