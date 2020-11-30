@@ -38,8 +38,8 @@ macd2 = getMACD(2)
 signal = ema(macd, 9)
 macdLength = close / abs(macd)
 // markMacd = macdDesc and macdLength < 20 and isLong
-macdDirUp = macd > signal
-macdDirDown = macd < signal
+macdDirUp = macd >= signal
+macdDirDown = macd <= signal
 macdDesc = isLong and macd0 < macd1
 macdAsc = isShort and macd0 > macd1
 
