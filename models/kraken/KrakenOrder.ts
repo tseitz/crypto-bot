@@ -59,6 +59,7 @@ export class KrakenOrder {
     // set up the order
     const order = new KrakenOrderDetails(
       this.requestBody,
+      this.krakenTicker,
       pairData,
       priceData,
       assetClassData,
