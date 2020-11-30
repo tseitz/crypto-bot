@@ -6,7 +6,6 @@ import {
   KrakenBalanceResult,
   KrakenOpenPositionResult,
 } from '../models/kraken/KrakenResults';
-import { KrakenOpenPosition } from '../models/kraken/KrakenResults';
 import { KrakenOrderResponse } from '../models/kraken/KrakenOrderResponse';
 
 class KrakenService {
@@ -65,6 +64,15 @@ class KrakenService {
     return { openPositionError, openPositionData };
   }
 
+  async getOrderBook(pair: string) {
+    const {
+      error: orderBookError,
+      result: orderBookData,
+    }: KrakenOpenPositionResult = await this.kraken.getOrderBook({ pair });
+
+    return { orderBookError, orderBookData };
+  }
+
   async cancelOpenOrdersForPair(order: KrakenOrderDetails) {
     const open = order.openOrders['open'];
 
@@ -110,8 +118,9 @@ class KrakenService {
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
-          ordertype: 'limit',
-          price: position.type === 'sell' ? order.currentBid : order.currentAsk,
+          ordertype: 'market',
+          // ordertype: 'limit',
+          // price: position.type === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
@@ -138,8 +147,9 @@ class KrakenService {
     const result = await this.kraken.setAddOrder({
       pair: order.krakenTicker,
       type: order.action,
-      ordertype: 'limit',
-      price: order.bidPrice,
+      // ordertype: 'limit',
+      ordertype: 'market',
+      // price: order.bidPrice,
       volume: order.tradeVolume,
       leverage: order.leverageAmount,
       // validate: true,
