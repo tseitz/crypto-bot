@@ -46,7 +46,33 @@ class KrakenService {
     return { balanceError, balanceData };
   }
 
+  async getOpenOrders() {
+    const {
+      error: openOrderError,
+      result: openOrderData,
+    }: KrakenBalanceResult = await this.kraken.getOpenOrders();
+
+    return { openOrderError, openOrderData };
+  }
+
+  async cancelOpenOrdersForPair(order: KrakenOrderDetails) {
+    const open = order.openOrders['open'];
+
+    let result;
+    for (const key in open) {
+      if (open[key]['descr']['pair'] === order.krakenizedTradingViewTicker) {
+        console.log(key);
+        result = await this.kraken.setCancelOrder({ txid: key });
+      }
+    }
+
+    return result;
+  }
+
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+    // some orders might not have filled. cancel beforehand
+    await this.cancelOpenOrdersForPair(order);
+
     let result;
     if (typeof order.leverageAmount === 'undefined') {
       result = await this.handleNonLeveragedOrder(order);

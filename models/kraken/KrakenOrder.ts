@@ -59,13 +59,16 @@ export class KrakenOrder {
       );
     }
 
+    const { openOrderError, openOrderData } = await kraken.getOpenOrders();
+
     // set up the order
     const order = new KrakenOrderDetails(
       this.requestBody,
       pairData,
       priceData,
       assetClassData,
-      balanceData
+      balanceData,
+      openOrderData
     );
 
     // execute the order
