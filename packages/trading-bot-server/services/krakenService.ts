@@ -173,7 +173,12 @@ class KrakenService {
     return result;
   }
 
-  async balancePortfolio() {}
+  async balancePortfolio() {
+    const { balanceData: balances } = await this.getBalance();
+    console.log('USD Balance Before Rebalance: ', balances['ZUSD']);
+    console.log(balances);
+    return balances;
+  }
 }
 
 const krakenApi = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_KEY);
