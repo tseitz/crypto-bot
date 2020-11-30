@@ -13,6 +13,11 @@ export interface KrakenBalanceResult {
   result: KrakenBalance;
 }
 
+export interface KrakenOpenPositionResult {
+  error: string[];
+  result: KrakenOpenPosition;
+}
+
 export interface KrakenOrderResult {
   descr: KrakenOrderDescription;
   txid: string[];
@@ -65,21 +70,23 @@ export interface KrakenBalance {
 }
 
 export interface KrakenOpenPosition {
-  cost: string;
-  fee: string;
-  margin: string;
-  misc: string;
-  oflags: string;
-  ordertxid: string;
-  ordertype: string;
-  pair: string;
-  posstatus: string;
-  rollovertm: string;
-  terms: string;
-  time: number;
-  type: string;
-  vol: string;
-  vol_closed: string;
+  [index: string]: {
+    cost: string;
+    fee: string;
+    margin: string;
+    misc: string;
+    oflags: string;
+    ordertxid: string;
+    ordertype: string;
+    pair: string;
+    posstatus: string;
+    rollovertm: string;
+    terms: string;
+    time: number;
+    type: string;
+    vol: string;
+    vol_closed: string;
+  };
 }
 
 // error:(0) []
