@@ -4,6 +4,7 @@ import {
   KrakenPriceResult,
   KrakenTradeablePairResult,
   KrakenBalanceResult,
+  KrakenOpenPositionResult,
 } from '../models/kraken/KrakenResults';
 import { KrakenOpenPosition } from '../models/kraken/KrakenResults';
 import { KrakenOrderResponse } from '../models/kraken/KrakenOrderResponse';
@@ -59,7 +60,7 @@ class KrakenService {
     const {
       error: openPositionError,
       result: openPositionData,
-    }: KrakenBalanceResult = await this.kraken.getOpenPositions();
+    }: KrakenOpenPositionResult = await this.kraken.getOpenPositions();
 
     return { openPositionError, openPositionData };
   }
@@ -101,7 +102,7 @@ class KrakenService {
     // close out positons first
     let latestResult;
     for (const key in openPositions) {
-      const position: KrakenOpenPosition = openPositions[key];
+      const position = openPositions[key];
       if (position.pair === order.krakenTicker) {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
         const volumeToClose =
@@ -184,10 +185,23 @@ class KrakenService {
 
   async balancePortfolio() {
     const { balanceData: balances } = await this.getBalance();
-    console.log('USD Balance Before Rebalance: ', balances['ZUSD']);
+    console.log('USD Balance Before Rebalance:', balances['ZUSD']);
 
     const { openPositionData } = await this.getOpenPositions();
-    console.log(openPositionData);
+
+    for (const key in openPositionData) {
+      const position = openPositionData[key];
+      // TODO: if short everything, hold
+      if (position['pair'] === 'XETHXXBT') {
+        if (position.type === 'sell') {
+          console.log('Short ETHBTC so Long BTC');
+          // mostly btc
+        } else {
+          console.log('Long ETHBTC so Long ETH');
+          // mostly eth
+        }
+      }
+    }
 
     return balances;
   }

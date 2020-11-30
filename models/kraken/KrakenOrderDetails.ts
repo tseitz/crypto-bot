@@ -89,8 +89,8 @@ export default class KrakenOrderDetails {
     this.bidPrice = this.getBid();
     console.log(
       this.action === 'buy'
-        ? console.log(`Buy Bid: ${this.bidPrice} : ${this.currentBid}`)
-        : console.log(`Sell Bid: ${this.bidPrice} : ${this.currentAsk}`)
+        ? console.log(`Buy Bid: ${this.currentBid} : ${this.bidPrice} : ${this.currentAsk}`)
+        : console.log(`Sell Bid: ${this.currentBid} : ${this.bidPrice} : ${this.currentAsk}`)
     );
     this.usdValueOfQuote = this.usdPair
       ? 1
