@@ -95,8 +95,9 @@ class KrakenService {
       const position: KrakenOpenPosition = openPositions[key];
       if (position.pair === order.krakenTicker) {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-        // const volumeToClose =
-        //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
+        const volumeToClose =
+          Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
+        console.log('Volume to Close: ', volumeToClose);
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
@@ -171,6 +172,8 @@ class KrakenService {
     console.log(`${order.krakenTicker} Non Leveraged Order Complete: `, result);
     return result;
   }
+
+  async balancePortfolio() {}
 }
 
 const krakenApi = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_KEY);

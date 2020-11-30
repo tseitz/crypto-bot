@@ -102,6 +102,8 @@ const cron = schedule.scheduleJob('0 0 * * *', async () => {
   Open:    $${balances.result.n}
   Total:   $${Number.parseFloat(balances.result.eb) + Number.parseFloat(balances.result.n)}
 ---------------------------`);
+
+  await kraken.balancePortfolio();
 });
 
 // async function getBalances() {
