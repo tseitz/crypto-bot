@@ -87,11 +87,11 @@ export default class KrakenOrderDetails {
     this.currentAsk = Number.parseFloat(pairPriceInfo[this.krakenTicker]['a'][0]);
     this.spread = this.currentAsk - this.currentBid;
     this.bidPrice = this.getBid();
-    console.log(
-      this.action === 'buy'
-        ? `${this.currentBid} : ${this.bidPrice} : ${this.currentAsk}`
-        : `${this.currentBid} : ${this.bidPrice} : ${this.currentAsk}`
-    );
+    // console.log(
+    //   this.action === 'buy'
+    //     ? `${this.currentBid} : ${this.bidPrice} : ${this.currentAsk}`
+    //     : `${this.currentBid} : ${this.bidPrice} : ${this.currentAsk}`
+    // );
     this.usdValueOfQuote = this.usdPair
       ? 1
       : Number.parseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
