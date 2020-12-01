@@ -19,7 +19,7 @@ export class KrakenOrder {
       .replace('USDT', 'USD');
   }
 
-  async placeOrder(): Promise<KrakenOrderResponse> {
+  async placeOrder() {
     // get pair data
     const { pairError, pairData } = await kraken.getPair(this.krakenTicker);
     if (pairError.length > 0) {
@@ -71,6 +71,11 @@ export class KrakenOrder {
 
     // execute the order
     if (order.closeOnly) {
+      if (!order.leverageAmount) {
+        console.log('Skipping non leveraged close');
+        return;
+      }
+
       const closeOrderResult = await kraken.handleLeveragedOrder(order, true, true);
       return closeOrderResult;
     }
