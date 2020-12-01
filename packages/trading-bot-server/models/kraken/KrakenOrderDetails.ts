@@ -83,8 +83,7 @@ export default class KrakenOrderDetails {
     this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
     this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
     this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1];
-    this.leverageAmount =
-      this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
+    this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
     this.lowestLeverageAmount =
       this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
 
