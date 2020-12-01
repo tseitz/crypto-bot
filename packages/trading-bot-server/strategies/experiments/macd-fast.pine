@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Fast W Shorts Add Long", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Fast W Shorts Add Long", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
@@ -80,12 +80,6 @@ if short
 if closeShort
     isShort := false
     isLong := false
-
-if addLong and close[1] == addLongClose
-    addLong := true
-else
-    addLongClose := open
-    
 
 strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
 strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
