@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Fast 2", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Fast W Shorts Add Long", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
@@ -12,6 +12,7 @@ allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
 
 var isLong = false
 var isShort = false
+var addLongClose = 0.0
 
 // MACD
 fast = 12, slow = 26
@@ -54,12 +55,12 @@ redCandle = (close < open)
 long = not isLong and macd < 0 and macd > macd1 and macd < signal
 closeLong = isLong and macd > 0 and macd < macd1 and macd > signal
 reopenLong = not isLong and open > vwap and greenCandle and macd > macd1 and macd <= signal
-// addLong = isLong and macd < macdEntry and macd > macd2 and macd < signal
+addLong = isLong and macd < macdEntry and macd > macd1 and macd < signal and macd1 < macd2
 short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
 closeShort = isShort and macd < 0 and macd > macd1 and macd < signal
 
 bgcolor(color=long ? color.green : na)
-bgcolor(color=reopenLong ? color.yellow : na)
+bgcolor(color=reopenLong or addLong ? color.yellow : na)
 bgcolor(color=short ? color.red : na)
 
 if long or reopenLong
@@ -80,8 +81,14 @@ if closeShort
     isShort := false
     isLong := false
 
+if addLong and close == addLongClose
+    addLong := false
+else
+    addLongClose := close
+    
+
 strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
-// strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
+strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
 strategy.close("long", when=closeLong and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and allowShorts and isWithinTimeBounds)
 strategy.close("short", when=(closeShort or (long or reopenLong)) and allowShorts and isWithinTimeBounds)

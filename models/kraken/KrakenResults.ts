@@ -13,9 +13,19 @@ export interface KrakenBalanceResult {
   result: KrakenBalance;
 }
 
-export interface KrakenOpenPositionResult {
+export interface KrakenOpenPositionResponse {
   error: string[];
   result: KrakenOpenPosition;
+}
+
+export class KrakenOpenPositionResult {
+  error: string[];
+  openPositions: KrakenOpenPosition;
+
+  constructor(response: KrakenOpenPositionResponse) {
+    this.error = response.error;
+    this.openPositions = response.result;
+  }
 }
 
 export interface KrakenOrderResult {

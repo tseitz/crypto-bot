@@ -12,7 +12,8 @@ export default class KrakenOrderDetails {
   assetClassTicker: AssetClassTicker;
   action: string;
   oppositeAction: string;
-  closeOnly: boolean;
+  close: boolean;
+  // closeOnly: boolean;
   minVolume: number;
   baseOfPair: string;
   quoteOfPair: string;
@@ -21,10 +22,12 @@ export default class KrakenOrderDetails {
   leverageSellAmounts: number[];
   leverageBuyAmount: number | undefined;
   leverageSellAmount: number | undefined;
+  lowestLeverageAmount: number | undefined;
   leverageAmount: number | undefined;
   priceDecimals: number;
   volumeDecimals: number;
   tradeVolume: number;
+  addVolume: number;
   currentPrice: number;
   currentBid: number;
   currentAsk: number;
@@ -66,7 +69,8 @@ export default class KrakenOrderDetails {
     this.positionSize = undefined;
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
-    this.closeOnly = body.strategy.description.toLowerCase().includes('close') ? true : false;
+    this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
+    // this.closeOnly = body.strategy.description.toLowerCase().includes('close') ? true : false;
 
     // pair info
     this.minVolume = Number.parseFloat(pairData[this.krakenTicker]['ordermin'].toString());
@@ -79,7 +83,10 @@ export default class KrakenOrderDetails {
     this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
     this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
     this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1];
-    this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
+    this.leverageAmount =
+      this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
+    this.lowestLeverageAmount =
+      this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
 
     // current price info
     this.currentPrice = Number.parseFloat(pairPriceInfo[this.krakenTicker]['c'][0]);
@@ -104,6 +111,7 @@ export default class KrakenOrderDetails {
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfBase);
     this.stopPercent = 12;
     this.tradeVolume = this.getVolume();
+    this.addVolume = this.getAddVolume();
     this.stopLoss = this.getStopLoss();
   }
 
@@ -118,6 +126,13 @@ export default class KrakenOrderDetails {
         ((60 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
+    return volume > this.minVolume ? volume : this.minVolume;
+  }
+
+  private getAddVolume(): number {
+    let volume = Number.parseFloat(
+      ((20 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+    );
     return volume > this.minVolume ? volume : this.minVolume;
   }
 

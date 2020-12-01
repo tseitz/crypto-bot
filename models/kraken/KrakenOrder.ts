@@ -70,16 +70,6 @@ export class KrakenOrder {
     );
 
     // execute the order
-    if (order.closeOnly) {
-      if (!order.leverageAmount) {
-        console.log('Skipping non leveraged close');
-        return;
-      }
-
-      const closeOrderResult = await kraken.handleLeveragedOrder(order, true, true);
-      return closeOrderResult;
-    }
-
     return await kraken.openOrder(order);
   }
 }

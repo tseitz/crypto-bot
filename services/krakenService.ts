@@ -55,20 +55,14 @@ class KrakenService {
     return { openOrderError, openOrderData };
   }
 
-  async getOpenPositions() {
-    const {
-      error: openPositionError,
-      result: openPositionData,
-    }: KrakenOpenPositionResult = await this.kraken.getOpenPositions();
-
-    return { openPositionError, openPositionData };
+  async getOpenPositions(): Promise<KrakenOpenPositionResult> {
+    return new KrakenOpenPositionResult(await this.kraken.getOpenPositions());
   }
 
   async getOrderBook(pair: string) {
-    const {
-      error: orderBookError,
-      result: orderBookData,
-    }: KrakenOpenPositionResult = await this.kraken.getOrderBook({ pair });
+    const { error: orderBookError, openPositions: orderBookData } = await this.kraken.getOrderBook({
+      pair,
+    });
 
     return { orderBookError, orderBookData };
   }
@@ -112,6 +106,7 @@ class KrakenService {
       const position = openPositions[key];
       if (position.pair === order.krakenTicker) {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+        console.log(order.action, position);
         const volumeToClose =
           Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
         latestResult = await this.kraken.setAddOrder({
@@ -132,30 +127,51 @@ class KrakenService {
     return latestResult;
   }
 
-  async handleLeveragedOrder(
-    order: KrakenOrderDetails,
-    closeOpenPositions = false,
-    onlyCloseOpenPositions = false
-  ): Promise<KrakenOrderResponse> {
-    // TODO: pass this along in the request body. Sometimes we don't want to close positions first
-    if (closeOpenPositions) {
-      const result = await this.settleLeveragedOrder(order);
+  async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+    let result;
+    if (order.close) {
+      result = await this.settleLeveragedOrder(order);
+    } else {
+      let { openPositions } = await this.getOpenPositions();
 
-      if (onlyCloseOpenPositions) return result;
+      let add = false;
+      for (const key in openPositions) {
+        const position = openPositions[key];
+        if (order.krakenTicker === position.pair && order.action === position.type) {
+          add = true;
+          console.log('Position Already Open, Adding', position);
+        } else if (order.krakenTicker === position.pair) {
+          console.log("Opposite Order, Should've Closed?", position);
+        }
+      }
+
+      if (add) {
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          // ordertype: 'market',
+          price: order.bidPrice,
+          volume: order.addVolume,
+          leverage: order.lowestLeverageAmount,
+          // validate: true,
+        });
+      } else {
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          // ordertype: 'market',
+          price: order.bidPrice,
+          volume: order.tradeVolume,
+          leverage: order.leverageAmount,
+          // validate: true,
+        });
+      }
+
+      console.log(`${order.krakenTicker} Leveraged Order Complete: `, result);
     }
 
-    const result = await this.kraken.setAddOrder({
-      pair: order.krakenTicker,
-      type: order.action,
-      ordertype: 'limit',
-      // ordertype: 'market',
-      price: order.bidPrice,
-      volume: order.tradeVolume,
-      leverage: order.leverageAmount,
-      // validate: true,
-    });
-
-    console.log(`${order.krakenTicker} Leveraged Order Complete: `, result);
     return result;
   }
 
@@ -196,10 +212,10 @@ class KrakenService {
     const { balanceData: balances } = await this.getBalance();
     console.log('USD Balance Before Rebalance:', balances['ZUSD']);
 
-    const { openPositionData } = await this.getOpenPositions();
+    const { openPositions } = await this.getOpenPositions();
 
-    for (const key in openPositionData) {
-      const position = openPositionData[key];
+    for (const key in openPositions) {
+      const position = openPositions[key];
       // TODO: if short everything, hold
       if (position['pair'] === 'XETHXXBT') {
         if (position.type === 'sell') {
