@@ -12,7 +12,7 @@ allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
 
 var isLong = false
 var isShort = false
-var addLongClose = 0.0
+var addLongOpen = 0.0
 
 // MACD
 fast = 12, slow = 26
@@ -81,10 +81,10 @@ if closeShort
     isShort := false
     isLong := false
 
-if addLong and close == addLongClose
+if addLong and open[1] == addLongOpen
     addLong := false
 else
-    addLongClose := close
+    addLongOpen := open
     
 
 strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
