@@ -51,7 +51,8 @@ redCandle = (close < open)
 
 long = not isLong and macd < 0 and macd > macd1
 closeLong = isLong and macd > 0 and macd < macd1
-addLong = isLong and macd < macdEntry and macd > macd2 and macd < signal
+reopenLong = not isLong and open > vwap and greenCandle
+// addLong = isLong and macd < macdEntry and macd > macd2 and macd < signal
 short = not isShort and macd > 0 and macd < macd1
 // closeShort = isShort and macd < 0 and macd > macd1
 
@@ -63,12 +64,21 @@ if long
     isShort := false
     macdEntry := macd
 
+if closeLong
+    isLong := false
+    isShort := false
+
+if reopenLong
+    isLong := true
+    isShort := false
+
 if short
     isLong := false
     isShort := true
+    macdEntry := 0.0
 
-strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and isWithinTimeBounds)
+strategy.entry("long", long=true, when=long or reopenLong and isWithinTimeBounds)
+// strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
 strategy.close("long", when=closeLong and isWithinTimeBounds)
 // strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 // strategy.close("short", when=closeShort and isWithinTimeBounds)

@@ -1,12 +1,11 @@
 {
-  "passphrase": "xmpyUo8Moo_ZvVamDoNsGCH*.P.U8U",
+  "passphrase": "super_secret_passphrase",
   "time": "{{timenow}}",
   "exchange": "{{exchange}}",
   "ticker": "{{ticker}}",
   "interval": "{{interval}}",
   "strategy": {
       "action": "{{strategy.order.action}}",
-      "description": "{{strategy.order.id}}",
-      "price": "{{strategy.order.price}}"
+      "description": "{{strategy.order.id}}"
   }
 }
