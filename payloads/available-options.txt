@@ -1,5 +1,5 @@
 {
-    "passphrase": "supersecretpassphrase",
+    "passphrase": "super_secret_passphrase",
     "time": "{{timenow}}",
     "exchange": "{{exchange}}",
     "ticker": "{{ticker}}",
