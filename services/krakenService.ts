@@ -114,7 +114,6 @@ class KrakenService {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
         const volumeToClose =
           Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
-        console.log('Volume to Close: ', volumeToClose);
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
@@ -125,6 +124,7 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
+        console.log('Volume to Close: ', volumeToClose);
         console.log(`${order.krakenTicker} Settled Position: `, latestResult);
       }
     }

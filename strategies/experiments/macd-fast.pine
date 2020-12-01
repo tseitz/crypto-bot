@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Fast", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Fast 2", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
@@ -7,6 +7,8 @@ daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
 
 var isLong = false
 var isShort = false
@@ -49,17 +51,18 @@ redCandle = (close < open)
 // plot(mapMacdFast, linewidth=1, color=color.blue)
 // plot(mapSignal, color=color.orange)
 
-long = not isLong and macd < 0 and macd > macd1
-closeLong = isLong and macd > 0 and macd < macd1
-// reopenLong = not isLong and open > vwap and greenCandle and macd > macd1 and macd1 < signal
+long = not isLong and macd < 0 and macd > macd1 and macd < signal
+closeLong = isLong and macd > 0 and macd < macd1 and macd > signal
+reopenLong = not isLong and open > vwap and greenCandle and macd > macd1 and macd <= signal
 // addLong = isLong and macd < macdEntry and macd > macd2 and macd < signal
-short = not isShort and macd > 0 and macd < macd1
-// closeShort = isShort and macd < 0 and macd > macd1
+short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
+closeShort = isShort and macd < 0 and macd > macd1 and macd < signal
 
 bgcolor(color=long ? color.green : na)
+bgcolor(color=reopenLong ? color.yellow : na)
 bgcolor(color=short ? color.red : na)
 
-if long
+if long or reopenLong
     isLong := true
     isShort := false
     macdEntry := macd
@@ -68,20 +71,20 @@ if closeLong
     isLong := false
     isShort := false
 
-// if reopenLong
-//     isLong := true
-//     isShort := false
-
 if short
     isLong := false
     isShort := true
-    macdEntry := 0.0
+    macdEntry := macd
 
-strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+if closeShort
+    isShort := false
+    isLong := false
+
+strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
 // strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
 strategy.close("long", when=closeLong and isWithinTimeBounds)
-// strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-// strategy.close("short", when=closeShort and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and allowShorts and isWithinTimeBounds)
+strategy.close("short", when=(closeShort or (long or reopenLong)) and allowShorts and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     strategy.exit(id="stop long", stop=longStopPrice)
