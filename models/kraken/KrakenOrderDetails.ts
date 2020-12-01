@@ -66,7 +66,7 @@ export default class KrakenOrderDetails {
     this.positionSize = undefined;
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
-    this.closeOnly = body.strategy.description.toLowerCase().includes('close only') ? true : false;
+    this.closeOnly = body.strategy.description.toLowerCase().includes('close') ? true : false;
 
     // pair info
     this.minVolume = Number.parseFloat(pairData[this.krakenTicker]['ordermin'].toString());

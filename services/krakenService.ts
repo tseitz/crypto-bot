@@ -134,7 +134,7 @@ class KrakenService {
 
   async handleLeveragedOrder(
     order: KrakenOrderDetails,
-    closeOpenPositions = true,
+    closeOpenPositions = false,
     onlyCloseOpenPositions = false
   ): Promise<KrakenOrderResponse> {
     // TODO: pass this along in the request body. Sometimes we don't want to close positions first
