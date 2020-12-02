@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Fast W Shorts Add Long", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Fast Shorts Add RSI", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
@@ -8,20 +8,24 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
+allowShorts = input(defval=false, title="Allow Shorts?", type=input.bool)
 allowAdds = input(defval=true, title="Allow Adds?", type=input.bool)
+reopenLongs = input(defval=true, title="Reopen Longs?", type=input.bool)
+addLongRSI = input(defval=43, title="Add Long RSI", minval=0, step=1)
 
 var isLong = false
 var isShort = false
 var addLongClose = 0.0
+var rsiEntry = 0.0
 
 // MACD
 fast = 12, slow = 26
 fastMA = ema(close, fast)
 slowMA = ema(close, slow)
 macd = fastMA - slowMA
-// mapMacdFast = macd + fastMA
 signal = ema(macd, 9)
+rsiClose = rsi(close, 14)
+// mapMacdFast = macd + fastMA
 // mapSignal = signal + fastMA
 
 var macdEntry = 0.0
@@ -50,16 +54,16 @@ redCandle = (close < open)
 // plot(mapMacdFast, linewidth=1, color=color.blue)
 // plot(mapSignal, color=color.orange)
 
-long = not isLong and macd < 0 and macd > macd1 and macd < signal
+long = not isLong and macd < 0 and macd > macd1 and macd < signal // and rsiClose <= 42
 closeLong = isLong and macd > 0 and macd < macd1 and macd > signal
 stopLong = isLong and crossunder(macd, signal)
-reopenLong = not isLong and open > vwap and greenCandle and macd > macd1 and macd <= signal
-addLong = isLong and macd < macdEntry and macd > macd1 and macd < signal and macd1 < macd2
+reopenLong = reopenLongs and not isLong and open >= vwap and macd >= macd1 and macd <= signal // and rsiClose <= 60
+addLong = isLong and (macd < macdEntry or rsiClose < rsiEntry) and macd >= macd1 and macd < signal and rsiClose <= addLongRSI // and macd1 < macd2 
 short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
 addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
 closeShort = isShort and macd < 0 and macd > macd1 and macd < signal
 
-// plotshape(stopLong, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+// plotshape(long, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
 bgcolor(color=long ? color.green : na)
 bgcolor(color=reopenLong or addLong ? color.yellow : na)
@@ -70,6 +74,7 @@ if long or reopenLong
     isLong := true
     isShort := false
     macdEntry := macd
+    rsiEntry := rsiClose
 
 if closeLong
     isLong := false
@@ -79,6 +84,7 @@ if short
     isLong := false
     isShort := true
     macdEntry := macd
+    rsiEntry := rsiClose
 
 if closeShort
     isShort := false
