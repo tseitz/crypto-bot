@@ -107,7 +107,7 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-        logOrderResult(`${order.krakenTicker} Settled Position`, latestResult);
+        logOrderResult(`${position.type} ${order.krakenTicker} Settled Position`, latestResult);
         break;
       }
     }
