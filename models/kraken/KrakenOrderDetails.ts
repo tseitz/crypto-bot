@@ -1,5 +1,5 @@
 import { TradingViewBody } from '../TradingViewBody';
-import { KrakenTradeablePair, KrakenPrice, KrakenBalance } from './KrakenResults';
+import { KrakenTradeablePair, KrakenPrice, KrakenBalance, KrakenOpenOrders } from './KrakenResults';
 import { StrategyParams, StrategyParamsJson } from '../StrategyParams';
 const strategyParams: StrategyParamsJson = require('../../strategies/strategy-params');
 
@@ -43,7 +43,7 @@ export default class KrakenOrderDetails {
   positionSize: number | undefined;
   spread: number;
   bidPrice: number;
-  openOrders: any; // KrakenOpenOrders
+  openOrders: KrakenOpenOrders;
 
   constructor(
     body: TradingViewBody,
@@ -52,7 +52,7 @@ export default class KrakenOrderDetails {
     pairPriceInfo: KrakenPrice,
     assetClassPriceInfo: KrakenPrice,
     myBalanceInfo: KrakenBalance,
-    openOrders: any // KrakenOpenOrders
+    openOrders: KrakenOpenOrders
   ) {
     // ticker info
     this.tradingViewTicker = body.ticker;
