@@ -39,11 +39,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
 
   // queue it
   queue.push({ body, res });
-
-  if (locked === true) {
-    // console.log('Locked, please hold.', queue.length);
-    return;
-  }
+  if (locked === true) return;
 
   while (queue.length > 0) {
     locked = true;
@@ -62,7 +58,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
         locked = false;
       }
     }
-    // console.log('Finished. Length Remaining: ', queue.length);
+    console.log('-'.repeat(20));
     locked = false;
   }
   return;

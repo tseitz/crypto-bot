@@ -9,6 +9,7 @@ msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 allowShorts = input(defval=true, title="Allow Shorts?", type=input.bool)
+allowAdds = input(defval=true, title="Allow Adds?", type=input.bool)
 
 var isLong = false
 var isShort = false
@@ -39,9 +40,7 @@ macd2 = getMACD(2)
 // aboveVwap = open > vwap
 // belowVwap = open < vwap
 
-
 // smaLength = input(defval=3, title="SMA Length", minval=0, step=2)
-
 
 greenCandle = (close > open)
 redCandle = (close < open)
@@ -86,7 +85,7 @@ if closeShort
     isLong := false
 
 strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
+strategy.order("long", long=true, when=addLong and allowAdds and isWithinTimeBounds, comment="add")
 strategy.close("long", when=closeLong and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and allowShorts and isWithinTimeBounds)
 strategy.close("short", when=(closeShort or (long or reopenLong)) and allowShorts and isWithinTimeBounds)

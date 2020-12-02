@@ -6,6 +6,7 @@
   "interval": "{{interval}}",
   "strategy": {
       "action": "{{strategy.order.action}}",
-      "description": "{{strategy.order.id}}"
+      "description": "{{strategy.order.id}}",
+      "price": {{strategy.order.price}}
   }
 }
