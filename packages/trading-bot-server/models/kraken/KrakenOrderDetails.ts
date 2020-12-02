@@ -103,6 +103,10 @@ export default class KrakenOrderDetails {
       : Number.parseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
     this.usdValueOfBase = this.convertBaseToDollar(this.currentPrice, this.usdValueOfQuote);
 
+    console.log(
+      `${this.action} Bid Price: ${this.bidPrice}, TradingView Price: ${body.strategy.price}`
+    );
+
     // balance and order info
     this.balanceOfBase = Number.parseFloat(myBalanceInfo[this.baseOfPair]);
     this.balanceOfQuote = Number.parseFloat(myBalanceInfo[this.quoteOfPair]);

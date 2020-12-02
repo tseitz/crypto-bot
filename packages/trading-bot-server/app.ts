@@ -29,19 +29,19 @@ const queue: OrderQueue[] = [];
 let locked = false;
 
 app.post('/webhook/kraken', jsonParser, async (req, res) => {
-  console.log('Request Received, Current Queue: ', queue.length);
+  // console.log('Request Received, Current Queue: ', queue.length);
   // force body to be JSON
-  const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));
-  if (!requestBody || requestBody.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
+  const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
+  if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log('Hey buddy, get out of here');
     return res.send('Hey buddy, get out of here');
   }
 
   // queue it
-  queue.push({ body: requestBody, res });
+  queue.push({ body, res });
 
   if (locked === true) {
-    console.log('Locked, please hold.', queue.length);
+    // console.log('Locked, please hold.', queue.length);
     return;
   }
 
@@ -49,6 +49,11 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
     locked = true;
     const request = queue.shift();
     if (request) {
+      console.log(
+        request.body.ticker,
+        request.body.strategy.action,
+        request.body.strategy.description
+      );
       const order = new KrakenOrder(request.body);
       try {
         request.res.send(await order.placeOrder());
@@ -57,7 +62,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
         locked = false;
       }
     }
-    console.log('Finished. Length Remaining: ', queue.length);
+    // console.log('Finished. Length Remaining: ', queue.length);
     locked = false;
   }
   return;
