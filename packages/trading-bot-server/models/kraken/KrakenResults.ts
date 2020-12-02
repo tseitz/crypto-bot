@@ -60,11 +60,11 @@ export class KrakenOpenPositionResult {
 
 export interface KrakenOpenOrderResponse {
   error: string[];
-  result: KrakenOpenOrder;
+  result: KrakenOpenOrders;
 }
 export class KrakenOpenOrderResult {
   error: string[];
-  openOrders: KrakenOpenOrder;
+  openOrders: KrakenOpenOrders;
 
   constructor(response: KrakenOpenOrderResponse) {
     this.error = response.error;
@@ -155,7 +155,7 @@ export interface KrakenOpenPosition {
 // error:(0) []
 // result:{count: 1}
 // count:1
-export interface KrakenOpenOrder {
+export interface KrakenOpenOrders {
   open: {
     [index: string]: {
       cost: string;
