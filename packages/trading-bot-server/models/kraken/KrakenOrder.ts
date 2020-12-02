@@ -21,14 +21,14 @@ export class KrakenOrder {
 
   async placeOrder() {
     // get pair data
-    const { pairError, pairData } = await kraken.getPair(this.krakenTicker);
+    const { error: pairError, pair } = await kraken.getPair(this.krakenTicker);
     if (pairError.length > 0) {
       console.log(`Pair data for ${this.krakenTicker} not available on Kraken`);
       return new KrakenOrderResponse(`Pair data for ${this.krakenTicker} not available on Kraken`);
     }
 
     // get pair price info for order
-    const { priceError, priceData } = await kraken.getPrice(this.krakenTicker);
+    const { error: priceError, price } = await kraken.getPrice(this.krakenTicker);
     if (priceError.length > 0) {
       console.log(`Price info for ${this.krakenTicker} not available on Kraken`);
       return new KrakenOrderResponse(`Price info for ${this.krakenTicker} not available on Kraken`);
@@ -38,9 +38,7 @@ export class KrakenOrder {
 
     // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
     const assetClass = this.krakenTicker.includes('XBT') ? 'XBTUSDT' : 'ETHUSDT';
-    const { priceError: assetClassError, priceData: assetClassData } = await kraken.getPrice(
-      assetClass
-    );
+    const { error: assetClassError, price: assetClassPrice } = await kraken.getPrice(assetClass);
     if (assetClassError.length > 0) {
       console.log(`Asset Class Price info for ${this.krakenTicker} not available on Kraken`);
       return new KrakenOrderResponse(
@@ -48,7 +46,7 @@ export class KrakenOrder {
       );
     }
 
-    const { balanceError, balanceData } = await kraken.getBalance();
+    const { error: balanceError, balance } = await kraken.getBalance();
     if (balanceError.length > 0) {
       console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
       return new KrakenOrderResponse(
@@ -56,17 +54,17 @@ export class KrakenOrder {
       );
     }
 
-    const { openOrderError, openOrderData } = await kraken.getOpenOrders();
+    const { openOrders } = await kraken.getOpenOrders();
 
     // set up the order
     const order = new KrakenOrderDetails(
       this.requestBody,
       this.krakenTicker,
-      pairData,
-      priceData,
-      assetClassData,
-      balanceData,
-      openOrderData
+      pair,
+      price,
+      assetClassPrice,
+      balance,
+      openOrders
     );
 
     // execute the order

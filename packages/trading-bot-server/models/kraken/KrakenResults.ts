@@ -1,23 +1,53 @@
-export interface KrakenTradeablePairResult {
+// Response is what we receive from Kraken
+// Result is what we handle internally
+// currently do it this way so we can destructure result to human readable form e.g. { balance } = getBalance
+
+export interface KrakenTradeablePairResponse {
   error: string[];
   result: KrakenTradeablePair;
 }
+export class KrakenTradeablePairResult {
+  error: string[];
+  pair: KrakenTradeablePair;
 
-export interface KrakenPriceResult {
+  constructor(response: KrakenTradeablePairResponse) {
+    this.error = response.error;
+    this.pair = response.result;
+  }
+}
+
+export interface KrakenPriceResponse {
   error: string[];
   result: KrakenPrice;
 }
+export class KrakenPriceResult {
+  error: string[];
+  price: KrakenPrice;
 
-export interface KrakenBalanceResult {
+  constructor(response: KrakenPriceResponse) {
+    this.error = response.error;
+    this.price = response.result;
+  }
+}
+
+export interface KrakenBalanceResponse {
   error: string[];
   result: KrakenBalance;
+}
+export class KrakenBalanceResult {
+  error: string[];
+  balance: KrakenBalance;
+
+  constructor(response: KrakenBalanceResponse) {
+    this.error = response.error;
+    this.balance = response.result;
+  }
 }
 
 export interface KrakenOpenPositionResponse {
   error: string[];
   result: KrakenOpenPosition;
 }
-
 export class KrakenOpenPositionResult {
   error: string[];
   openPositions: KrakenOpenPosition;
@@ -28,10 +58,33 @@ export class KrakenOpenPositionResult {
   }
 }
 
-export interface KrakenOrderResult {
+export interface KrakenOpenOrderResponse {
+  error: string[];
+  result: KrakenOpenOrder;
+}
+export class KrakenOpenOrderResult {
+  error: string[];
+  openOrders: KrakenOpenOrder;
+
+  constructor(response: KrakenOpenOrderResponse) {
+    this.error = response.error;
+    this.openOrders = response.result;
+  }
+}
+
+export interface KrakenOrderResponse {
   descr: KrakenOrderDescription;
   txid: string[];
 }
+// export class KrakenOrderResult {
+//   error: string[];
+//   order: KrakenOpenPosition;
+
+//   constructor(response: KrakenOrderResponse) {
+//     this.error = response.error;
+//     this.order = response.result;
+//   }
+// }
 
 interface KrakenOrderDescription {
   order: string;
@@ -102,3 +155,36 @@ export interface KrakenOpenPosition {
 // error:(0) []
 // result:{count: 1}
 // count:1
+export interface KrakenOpenOrder {
+  open: {
+    [index: string]: {
+      cost: string;
+      descr: KrakenOpenOrderDescription;
+      expiretm: number;
+      fee: string;
+      limitprice: string;
+      misc: string;
+      oflags: string;
+      opentm: number;
+      price: string;
+      refid: any; // came in as null, not sure
+      starttm: number;
+      status: string;
+      stopprice: string;
+      userref: number;
+      vol: string;
+      vol_exec: string;
+    };
+  };
+}
+
+interface KrakenOpenOrderDescription {
+  close: string;
+  leverage: string;
+  order: string;
+  ordertype: string;
+  pair: string;
+  price: string;
+  price2: string;
+  type: string;
+}
