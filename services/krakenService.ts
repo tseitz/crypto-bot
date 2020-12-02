@@ -102,12 +102,12 @@ class KrakenService {
           pair: order.krakenTicker,
           type: closeAction,
           ordertype: 'limit',
-          price: position.type === 'sell' ? order.currentBid : order.currentAsk,
+          price: closeAction === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
         });
-        logOrderResult(`${position.type} ${order.krakenTicker} Settled Position`, latestResult);
+        logOrderResult(`${order.krakenTicker} Settled Position`, latestResult);
         break;
       }
     }
