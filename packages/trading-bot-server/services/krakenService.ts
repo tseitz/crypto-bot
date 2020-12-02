@@ -127,9 +127,9 @@ class KrakenService {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
-          console.log('Position Already Open, Adding');
+          console.log('Position Already Open, Adding', order.krakenTicker);
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
-          console.log("Opposite Order, Should've Closed?", order.tradingViewTicker);
+          console.log("Opposite Order, Should've Closed?", order.krakenTicker);
           // await this.settleLeveragedOrder(order);
         }
       }
