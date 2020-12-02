@@ -194,7 +194,7 @@ class KrakenService {
   }
 
   async balancePortfolio() {
-    const { balanceData: balances } = await this.getBalance();
+    const { balances } = await this.getBalance();
     console.log('USD Balance Before Rebalance:', balances['ZUSD']);
 
     const { openPositions } = await this.getOpenPositions();
