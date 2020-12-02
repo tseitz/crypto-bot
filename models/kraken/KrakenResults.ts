@@ -36,11 +36,11 @@ export interface KrakenBalanceResponse {
 }
 export class KrakenBalanceResult {
   error: string[];
-  balance: KrakenBalance;
+  balances: KrakenBalance;
 
   constructor(response: KrakenBalanceResponse) {
     this.error = response.error;
-    this.balance = response.result;
+    this.balances = response.result;
   }
 }
 
@@ -72,7 +72,7 @@ export class KrakenOpenOrderResult {
   }
 }
 
-export interface KrakenOrderResponse {
+export interface KrakenOrderResult {
   descr: KrakenOrderDescription;
   txid: string[];
 }

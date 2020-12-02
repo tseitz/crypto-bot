@@ -46,7 +46,7 @@ export class KrakenOrder {
       );
     }
 
-    const { error: balanceError, balance } = await kraken.getBalance();
+    const { error: balanceError, balances } = await kraken.getBalance();
     if (balanceError.length > 0) {
       console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
       return new KrakenOrderResponse(
@@ -63,7 +63,7 @@ export class KrakenOrder {
       pair,
       price,
       assetClassPrice,
-      balance,
+      balances,
       openOrders
     );
 
