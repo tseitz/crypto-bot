@@ -160,33 +160,39 @@ export default class KrakenOrderDetails {
   }
 
   private getBid(): number {
-    // if (isNaN(this.tradingViewPrice)) {
-    return this.action === 'buy' ? this.currentAsk : this.currentBid;
-    // } else {
-    //   if (this.action === 'buy') {
-    //     return Number.parseFloat(
-    //       (
-    //         Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
-    //         Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
-    //       ).toFixed(this.priceDecimals)
-    //     ); // 95% of current ask, trying to fill
-    //   } else {
-    //     if (this.tradingViewPrice < this.currentBid) {
-    //       const bid = this.tradingViewPrice + this.currentBid + this.tradingViewPrice / 2;
-    //       console.log(
-    //         'My Bid: ',
-    //         this.tradingViewPrice + (this.currentBid + this.tradingViewPrice) / 2
-    //       );
-    //       return Number.parseFloat(Number.parseFloat(bid.toString()).toFixed(this.priceDecimals));
-    //     }
-    //     return Number.parseFloat(
-    //       (
-    //         Number.parseFloat(this.currentAsk.toFixed(this.priceDecimals)) -
-    //         Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
-    //       ).toFixed(this.priceDecimals)
-    //     ); // 95% of current ask, trying to fill
-    //   }
-    // }
+    if (isNaN(this.tradingViewPrice)) {
+      return this.action === 'buy' ? this.currentAsk : this.currentBid;
+    } else {
+      if (this.action === 'buy') {
+        if (this.tradingViewPrice < this.currentBid) {
+          return this.currentBid;
+        } else if (this.tradingViewPrice > this.currentAsk) {
+          return this.currentAsk;
+        }
+
+        return Number.parseFloat(
+          (
+            Number.parseFloat(this.currentBid.toFixed(this.priceDecimals)) +
+            Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
+          ).toFixed(this.priceDecimals)
+        ); // 95% of current ask, trying to fill
+      } else {
+        if (this.tradingViewPrice < this.currentBid) {
+          const bid = this.tradingViewPrice + this.currentBid + this.tradingViewPrice / 2;
+          console.log(
+            'My Bid: ',
+            this.tradingViewPrice + (this.currentBid + this.tradingViewPrice) / 2
+          );
+          return Number.parseFloat(Number.parseFloat(bid.toString()).toFixed(this.priceDecimals));
+        }
+        return Number.parseFloat(
+          (
+            Number.parseFloat(this.currentAsk.toFixed(this.priceDecimals)) -
+            Number.parseFloat(this.spread.toFixed(this.priceDecimals)) * 0.95
+          ).toFixed(this.priceDecimals)
+        ); // 95% of current ask, trying to fill
+      }
+    }
   }
 
   convertBaseToDollar(base: number, usd: number): number {

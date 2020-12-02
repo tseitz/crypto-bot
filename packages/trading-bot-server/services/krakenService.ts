@@ -144,7 +144,7 @@ class KrakenService {
           // ordertype: 'market',
           price: order.bidPrice,
           volume: order.addVolume,
-          leverage: order.lowestLeverageAmount,
+          leverage: order.leverageAmount,
           // validate: true,
         });
       } else {
@@ -207,19 +207,27 @@ class KrakenService {
 
     const { openPositions } = await this.getOpenPositions();
 
+    let longEthBtc, longBtcUsd, longEthUsd;
     for (const key in openPositions) {
-      const position = openPositions[key];
-      // TODO: if short everything, hold
-      if (position['pair'] === 'XETHXXBT') {
-        if (position.type === 'sell') {
-          console.log('Short ETHBTC so Long BTC');
-          // mostly btc
-        } else {
-          console.log('Long ETHBTC so Long ETH');
-          // mostly eth
-        }
+      const pair = openPositions[key]['pair'];
+      const type = openPositions[key]['type'];
+
+      if (pair === 'XETHXXBT') {
+        longEthBtc = type === 'buy';
+      } else if (pair === 'XXBTZUSD') {
+        longBtcUsd = type === 'buy';
+      } else if (pair === 'XETHZUSD') {
+        longEthUsd = type === 'buy';
       }
     }
+
+    // if (longEthBtc && longBtcUsd) {
+
+    // } else if () {
+
+    // }
+
+    console.log(longEthBtc, longBtcUsd, longEthUsd);
 
     return balances;
   }
