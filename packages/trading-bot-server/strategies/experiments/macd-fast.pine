@@ -39,7 +39,6 @@ macd2 = getMACD(2)
 // aboveVwap = open > vwap
 // belowVwap = open < vwap
 
-// plotshape(macdDesc, title="Mark", text="Mark", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
 // smaLength = input(defval=3, title="SMA Length", minval=0, step=2)
 
@@ -54,14 +53,19 @@ redCandle = (close < open)
 
 long = not isLong and macd < 0 and macd > macd1 and macd < signal
 closeLong = isLong and macd > 0 and macd < macd1 and macd > signal
+stopLong = isLong and crossunder(macd, signal)
 reopenLong = not isLong and open > vwap and greenCandle and macd > macd1 and macd <= signal
 addLong = isLong and macd < macdEntry and macd > macd1 and macd < signal and macd1 < macd2
 short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
+addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
 closeShort = isShort and macd < 0 and macd > macd1 and macd < signal
+
+plotshape(stopLong, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
 bgcolor(color=long ? color.green : na)
 bgcolor(color=reopenLong or addLong ? color.yellow : na)
 bgcolor(color=short ? color.red : na)
+bgcolor(color=addShort ? color.orange : na)
 
 if long or reopenLong
     isLong := true

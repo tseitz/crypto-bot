@@ -122,6 +122,7 @@ class KrakenService {
         });
         console.log('Volume to Close: ', volumeToClose);
         console.log(`${order.krakenTicker} Settled Position: `, latestResult);
+        break;
       }
     }
 
