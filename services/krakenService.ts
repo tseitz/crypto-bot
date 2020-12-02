@@ -5,6 +5,7 @@ import {
   KrakenTradeablePairResult,
   KrakenBalanceResult,
   KrakenOpenPositionResult,
+  KrakenOpenOrderResult,
 } from '../models/kraken/KrakenResults';
 import { KrakenOrderResponse } from '../models/kraken/KrakenOrderResponse';
 
@@ -15,44 +16,28 @@ class KrakenService {
     this.kraken = kraken;
   }
 
-  async getPair(krakenTicker: string) {
-    const {
-      error: pairError,
-      result: pairData,
-    }: KrakenTradeablePairResult = await this.kraken.getTradableAssetPairs({
-      pair: krakenTicker,
-    });
-
-    return { pairError, pairData };
+  async getPair(krakenTicker: string): Promise<KrakenTradeablePairResult> {
+    return new KrakenTradeablePairResult(
+      await this.kraken.getTradableAssetPairs({
+        pair: krakenTicker,
+      })
+    );
   }
 
-  async getPrice(krakenTicker: string) {
-    const {
-      error: priceError,
-      result: priceData,
-    }: KrakenPriceResult = await this.kraken.getTickerInformation({
-      pair: krakenTicker,
-    });
-
-    return { priceError, priceData };
+  async getPrice(krakenTicker: string): Promise<KrakenPriceResult> {
+    return new KrakenPriceResult(
+      await this.kraken.getTickerInformation({
+        pair: krakenTicker,
+      })
+    );
   }
 
-  async getBalance() {
-    const {
-      error: balanceError,
-      result: balanceData,
-    }: KrakenBalanceResult = await this.kraken.getBalance();
-
-    return { balanceError, balanceData };
+  async getBalance(): Promise<KrakenBalanceResult> {
+    return new KrakenBalanceResult(await this.kraken.getBalance());
   }
 
-  async getOpenOrders() {
-    const {
-      error: openOrderError,
-      result: openOrderData,
-    }: KrakenBalanceResult = await this.kraken.getOpenOrders();
-
-    return { openOrderError, openOrderData };
+  async getOpenOrders(): Promise<KrakenOpenOrderResult> {
+    return new KrakenOpenOrderResult(await this.kraken.getOpenOrders());
   }
 
   async getOpenPositions(): Promise<KrakenOpenPositionResult> {
@@ -107,13 +92,11 @@ class KrakenService {
       const position = openPositions[key];
       if (position.pair === order.krakenTicker) {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-        // console.log(order.action, position.type);
         const volumeToClose =
           Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
-          // ordertype: 'market',
           ordertype: 'limit',
           price: position.type === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
