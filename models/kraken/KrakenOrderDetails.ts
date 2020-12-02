@@ -104,7 +104,9 @@ export default class KrakenOrderDetails {
     this.usdValueOfBase = this.convertBaseToDollar(this.currentPrice, this.usdValueOfQuote);
 
     console.log(
-      `${this.action} Bid Price: ${this.bidPrice}, TradingView Price: ${body.strategy.price}`
+      `${this.action} Bid Price: ${this.bidPrice}, TradingView Price: ${Number.parseFloat(
+        body.strategy.price
+      ).toFixed(this.priceDecimals)}`
     );
 
     // balance and order info
