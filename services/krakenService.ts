@@ -123,18 +123,20 @@ class KrakenService {
       let { openPositions } = await this.getOpenPositions();
 
       let add = false;
+      let count = 0;
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
-          console.log('Position Already Open, Adding', order.krakenTicker);
+          count++;
+          console.log('Position Already Open, Adding', order.krakenTicker, count);
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenTicker);
           // await this.settleLeveragedOrder(order);
         }
       }
 
-      if (add) {
+      if (add && count < 4) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
