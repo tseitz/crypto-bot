@@ -1,4 +1,4 @@
-import { KrakenOrderResponse } from './KrakenOrderResponse';
+import { KrakenOrderResult } from './KrakenResults';
 import { TradingViewBody } from '../TradingViewBody';
 import { kraken } from '../../services/krakenService';
 import KrakenOrderDetails from './KrakenOrderDetails';
@@ -24,14 +24,18 @@ export class KrakenOrder {
     const { error: pairError, pair } = await kraken.getPair(this.krakenTicker);
     if (pairError.length > 0) {
       console.log(`Pair data for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResponse(`Pair data for ${this.krakenTicker} not available on Kraken`);
+      return new KrakenOrderResult({
+        error: [`Pair data for ${this.krakenTicker} not available on Kraken`],
+      });
     }
 
     // get pair price info for order
     const { error: priceError, price } = await kraken.getPrice(this.krakenTicker);
     if (priceError.length > 0) {
       console.log(`Price info for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResponse(`Price info for ${this.krakenTicker} not available on Kraken`);
+      return new KrakenOrderResult({
+        error: [`Price info for ${this.krakenTicker} not available on Kraken`],
+      });
     }
 
     // const { orderBookError, orderBookData } = await kraken.getOrderBook(this.krakenTicker);
@@ -41,17 +45,17 @@ export class KrakenOrder {
     const { error: assetClassError, price: assetClassPrice } = await kraken.getPrice(assetClass);
     if (assetClassError.length > 0) {
       console.log(`Asset Class Price info for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResponse(
-        `Asset Class Price info for ${this.krakenTicker} not available on Kraken`
-      );
+      return new KrakenOrderResult({
+        error: [`Asset Class Price info for ${this.krakenTicker} not available on Kraken`],
+      });
     }
 
     const { error: balanceError, balances } = await kraken.getBalance();
     if (balanceError.length > 0) {
       console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
-      return new KrakenOrderResponse(
-        `Could not find balance info for ${this.krakenTicker} on Kraken`
-      );
+      return new KrakenOrderResult({
+        error: [`Could not find balance info for ${this.krakenTicker} on Kraken`],
+      });
     }
 
     const { openOrders } = await kraken.getOpenOrders();

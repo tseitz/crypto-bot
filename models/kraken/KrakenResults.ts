@@ -2,6 +2,11 @@
 // Result is what we handle internally
 // currently do it this way so we can destructure result to human readable form e.g. { balance } = getBalance
 
+export interface GenericResponse {
+  error: string[];
+  result: any;
+}
+
 export interface KrakenTradeablePairResponse {
   error: string[];
   result: KrakenTradeablePair;
@@ -72,20 +77,24 @@ export class KrakenOpenOrderResult {
   }
 }
 
-export interface KrakenOrderResult {
+export interface KrakenOrderResponse {
+  error: string[];
+  result?: KrakenOrder;
+}
+export class KrakenOrderResult {
+  error: string[];
+  order: KrakenOrder | undefined;
+
+  constructor(response: KrakenOrderResponse) {
+    this.error = response.error;
+    this.order = response.result;
+  }
+}
+
+interface KrakenOrder {
   descr: KrakenOrderDescription;
   txid: string[];
 }
-// export class KrakenOrderResult {
-//   error: string[];
-//   order: KrakenOpenPosition;
-
-//   constructor(response: KrakenOrderResponse) {
-//     this.error = response.error;
-//     this.order = response.result;
-//   }
-// }
-
 interface KrakenOrderDescription {
   order: string;
 }

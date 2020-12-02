@@ -1,13 +1,15 @@
 const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
 import KrakenOrderDetails from '../models/kraken/KrakenOrderDetails';
+import { logOrderResult } from './logger';
 import {
   KrakenPriceResult,
   KrakenTradeablePairResult,
   KrakenBalanceResult,
   KrakenOpenPositionResult,
   KrakenOpenOrderResult,
+  KrakenOrderResult,
+  KrakenOrderResponse,
 } from '../models/kraken/KrakenResults';
-import { KrakenOrderResponse } from '../models/kraken/KrakenOrderResponse';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -52,6 +54,8 @@ class KrakenService {
     return { orderBookError, orderBookData };
   }
 
+  // async setAddOrder() {}
+
   async cancelOppositeOpenOrdersForPair(order: KrakenOrderDetails) {
     const open = order.openOrders['open'];
 
@@ -61,7 +65,6 @@ class KrakenService {
       const type = open[key]['descr']['type'];
 
       if (pair === order.krakenizedTradingViewTicker && type === order.oppositeAction) {
-        console.log('hey there');
         result = await this.kraken.setCancelOrder({ txid: key });
       }
     }
@@ -71,7 +74,7 @@ class KrakenService {
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     // some orders might not have filled. cancel beforehand
-    await this.cancelOppositeOpenOrdersForPair(order);
+    // await this.cancelOppositeOpenOrdersForPair(order);
 
     let result;
     if (typeof order.leverageAmount === 'undefined') {
@@ -92,8 +95,8 @@ class KrakenService {
       const position = openPositions[key];
       if (position.pair === order.krakenTicker) {
         const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-        const volumeToClose =
-          Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
+        // const volumeToClose =
+        //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: closeAction,
@@ -101,10 +104,9 @@ class KrakenService {
           price: position.type === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
-          // validate: true,
+          validate: true,
         });
-        console.log('Volume to Close: ', volumeToClose);
-        console.log(`${order.krakenTicker} Settled Position: `, latestResult);
+        logOrderResult(`${order.krakenTicker} Settled Position`, latestResult);
         break;
       }
     }
@@ -126,7 +128,8 @@ class KrakenService {
           add = true;
           console.log('Position Already Open, Adding');
         } else if (order.krakenTicker === position.pair) {
-          console.log("Opposite Order, Should've Closed?");
+          console.log("Opposite Order, Should've Closed?", order);
+          // await this.settleLeveragedOrder(order);
         }
       }
 
@@ -154,7 +157,7 @@ class KrakenService {
         });
       }
 
-      console.log(`${order.krakenTicker} Leveraged Order Complete: `, result);
+      logOrderResult(`${order.krakenTicker} Leveraged Order Complete`, result);
     }
 
     return result;
@@ -164,9 +167,11 @@ class KrakenService {
     let result;
     if (order.action === 'sell') {
       if (isNaN(order.balanceOfBase) || order.balanceOfBase < 1e-6) {
-        result = new KrakenOrderResponse(
-          `${order.krakenTicker} ${order.action.toUpperCase()} balance is too small to sell`
-        );
+        result = new KrakenOrderResult({
+          error: [
+            `${order.krakenTicker} ${order.action.toUpperCase()} balance is too small to sell`,
+          ],
+        });
       } else {
         // sell off current balance, we cannot short so stop there
         result = await this.kraken.setAddOrder({
@@ -189,7 +194,7 @@ class KrakenService {
       });
     }
 
-    console.log(`${order.krakenTicker} Non Leveraged Order Complete: `, result);
+    logOrderResult(`${order.krakenTicker} Non Leveraged Order Complete`, result);
     return result;
   }
 
