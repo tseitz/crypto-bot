@@ -65,6 +65,7 @@ class KrakenService {
       const type = open[key]['descr']['type'];
 
       if (pair === order.krakenizedTradingViewTicker && type === order.oppositeAction) {
+        console.log(`Canceling ${pair} ${type}`);
         result = await this.kraken.setCancelOrder({ txid: key });
       }
     }
