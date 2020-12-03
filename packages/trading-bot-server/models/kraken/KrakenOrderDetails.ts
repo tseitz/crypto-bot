@@ -116,7 +116,7 @@ export default class KrakenOrderDetails {
     console.log(
       `${this.action} TradingView Price: ${Number.parseFloat(body.strategy.price).toFixed(
         this.priceDecimals
-      )}, Bid Price: ${this.currentBid}, Ask Price: ${this.currentAsk}`
+      )}, Bid Price: ${this.currentBid}, Ask Price: ${this.currentAsk}, My Bid: ${this.bidPrice}`
     );
 
     // balance and order info
