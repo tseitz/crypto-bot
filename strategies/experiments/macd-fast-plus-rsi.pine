@@ -8,9 +8,9 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-allowShorts = input(defval=false, title="Allow Shorts?", type=input.bool)
 allowAdds = input(defval=true, title="Allow Adds?", type=input.bool)
-reopenLongs = input(defval=true, title="Reopen Longs?", type=input.bool)
+allowShorts = input(defval=false, title="Allow Shorts?", type=input.bool)
+reopenLongs = input(defval=false, title="Reopen Longs?", type=input.bool)
 addLongRSI = input(defval=43, title="Add Long RSI", minval=0, step=1)
 
 var isLong = false
@@ -38,6 +38,7 @@ getMACD(index) =>
 macd0 = getMACD(0)
 macd1 = getMACD(1)
 macd2 = getMACD(2)
+macd3 = getMACD(3)
 
 // macdDirUp = macd > signal
 // macdDirDown = macd < signal
@@ -57,8 +58,8 @@ redCandle = (close < open)
 long = not isLong and macd < 0 and macd > macd1 and macd < signal // and rsiClose <= 42
 closeLong = isLong and macd > 0 and macd < macd1 and macd > signal
 stopLong = isLong and crossunder(macd, signal)
-reopenLong = reopenLongs and not isLong and open >= vwap and macd >= macd1 and macd <= signal // and rsiClose <= 60
-addLong = isLong and (macd < macdEntry or rsiClose < rsiEntry) and macd >= macd1 and macd < signal and rsiClose <= addLongRSI // and macd1 < macd2 
+reopenLong = reopenLongs and not isLong and greenCandle and macd >= macd1 and macd <= signal // and rsiClose <= 60
+addLong = isLong and (macd < macdEntry or rsiClose < rsiEntry) and macd >= macd1 and rsiClose <= addLongRSI and (macd1 < macd2 or macd2 < macd3)
 short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
 addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
 closeShort = isShort and macd < 0 and macd > macd1 and macd < signal

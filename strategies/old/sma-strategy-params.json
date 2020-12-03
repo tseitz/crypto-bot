@@ -1,0 +1,233 @@
+{
+  "BTCUSDT": {
+    "name": "BTCUSDT SMA Cross Strategy",
+    "smaLength": 8,
+    "timeframe": "3h",
+    "latestResult": 30.00,
+    "allowShorts": false,
+    "positionSize": 75
+  },
+  "ETHUSDT": {
+    "name": "ETHUSDT SMA Cross Strategy",
+    "smaLength": 29,
+    "timeframe": "30m",
+    "latestResult": 34.68,
+    "allowShorts": false,
+    "positionSize": 75
+  },
+  "ALGOBTC": {
+    "name": "ALGOBTC SMA Cross Strategy",
+    "smaLength": 34,
+    "timeframe": "30m",
+    "latestResult": 49.80,
+    "allowShorts": true
+  },
+  "ATOMBTC": {
+    "name": "ATOMBTC SMA Cross Strategy",
+    "smaLength": 8,
+    "timeframe": "30m",
+    "latestResult": 39.30,
+    "allowShorts": true
+  },
+  "CRVBTC": {
+    "name": "CRVBTC SMA Cross Strategy",
+    "smaLength": 29,
+    "timeframe": "15m",
+    "latestResult": 100.51,
+    "allowShorts": true
+  },
+  "DASHBTC": {
+    "name": "DASHBTC SMA Cross Strategy",
+    "smaLength": 6,
+    "timeframe": "4h",
+    "latestResult": 14.57,
+    "allowShorts": true
+  },
+  "DOTBTC": {
+    "name": "DOTBTC SMA Cross Strategy",
+    "smaLength": 10,
+    "timeframe": "1h",
+    "latestResult": 30.13,
+    "allowShorts": true
+  },
+  "EOSBTC": {
+    "name": "EOSBTC SMA Cross Strategy",
+    "smaLength": 30,
+    "timeframe": "1h",
+    "latestResult": 46.29,
+    "allowShorts": true
+  },
+  "ETHBTC": {
+    "name": "ETHBTC SMA Cross Strategy",
+    "smaLength": 13,
+    "timeframe": "1h",
+    "latestResult": 27.42,
+    "allowShorts": true
+  },
+  "FILBTC": {
+    "name": "FILBTC SMA Cross Strategy",
+    "smaLength": 5,
+    "timeframe": "3h",
+    "latestResult": 26.44,
+    "allowShorts": true
+  },
+  "KAVABTC": {
+    "name": "KAVABTC SMA Cross Strategy",
+    "smaLength": 45,
+    "timeframe": "30m",
+    "latestResult": 91.51,
+    "allowShorts": true
+  },
+  "KNCBTC": {
+    "name": "KNCBTC SMA Cross Strategy",
+    "smaLength": 14,
+    "timeframe": "30m",
+    "latestResult": 32.97,
+    "allowShorts": true
+  },
+  "KSMBTC": {
+    "name": "KSMBTC SMA Cross Strategy",
+    "smaLength": 21,
+    "timeframe": "3h",
+    "latestResult": 18.97,
+    "allowShorts": true
+  },
+  "ICXBTC": {
+    "name": "ICXBTC SMA Cross Strategy",
+    "smaLength": 14,
+    "timeframe": "1h",
+    "latestResult": 30.99,
+    "allowShorts": true
+  },
+  "LINKBTC": {
+    "name": "LINKBTC SMA Cross Strategy",
+    "smaLength": 4,
+    "timeframe": "1h",
+    "latestResult": 18
+  },
+  "LTCBTC": {
+    "name": "LTCBTC SMA Cross Strategy",
+    "smaLength": 4,
+    "timeframe": "3h",
+    "latestResult": 24.77,
+    "allowShorts": true
+  },
+  "MLNBTC": {
+    "name": "MLNBTC SMA Cross Strategy",
+    "smaLength": 28,
+    "timeframe": "3h",
+    "latestResult": 28.48,
+    "allowShorts": true
+  },
+  "NANOBTC": {
+    "name": "NANOBTC SMA Cross Strategy",
+    "smaLength": 5,
+    "timeframe": "30m",
+    "latestResult": 71.91,
+    "allowShorts": true
+  },
+  "OMGBTC": {
+    "name": "OMGBTC SMA Cross Strategy",
+    "smaLength": 11,
+    "timeframe": "4h",
+    "latestResult": 26.53,
+    "allowShorts": true
+  },
+  "REPBTC": {
+    "name": "REPBTC SMA Cross Strategy",
+    "smaLength": 30,
+    "timeframe": "3h",
+    "latestResult": 8.69,
+    "allowShorts": true
+  },
+  "SCBTC": {
+    "name": "SCBTC SMA Cross Strategy",
+    "smaLength": 3,
+    "timeframe": "30m",
+    "latestResult": 28.90,
+    "allowShorts": true
+  },
+  "SNXBTC": {
+    "name": "SNXBTC SMA Cross Strategy",
+    "smaLength": 15,
+    "timeframe": "30m",
+    "latestResult": 43.67,
+    "allowShorts": true
+  },
+  "TRXBTC": {
+    "name": "TRXBTC SMA Cross Strategy",
+    "smaLength": 5,
+    "timeframe": "30m",
+    "latestResult": 53.38,
+    "allowShorts": true
+  },
+  "UNIBTC": {
+    "name": "UNIBTC SMA Cross Strategy",
+    "smaLength": 27,
+    "timeframe": "1h",
+    "latestResult": 80.63,
+    "allowShorts": true
+  },
+  "WAVESBTC": {
+    "name": "WAVESBTC SMA Cross Strategy",
+    "smaLength": 13,
+    "timeframe": "2h",
+    "latestResult": 58.22,
+    "allowShorts": true
+  },
+  "XLMBTC": {
+    "name": "XLMBTC SMA Cross Strategy",
+    "smaLength": 14,
+    "timeframe": "1h",
+    "latestResult": 50.95,
+    "allowShorts": true
+  },
+  "XMRBTC": {
+    "name": "XMRBTC SMA Cross Strategy",
+    "smaLength": 3,
+    "timeframe": "30m",
+    "latestResults": 48.38,
+    "allowShorts": true
+  },
+  "XRPBTC": {
+    "name": "XRPBTC SMA Cross Strategy",
+    "smaLength": 31,
+    "timeframe": "1h",
+    "latestResult": 126.08,
+    "allowShorts": true
+  },
+  "XTZBTC": {
+    "name": "XTZBTC SMA Cross Strategy",
+    "smaLength": 30,
+    "timeframe": "3h",
+    "latestResult": 16.24,
+    "allowShorts": true
+  },
+  "YFIBTC": {
+    "name": "YFIBTC SMA Cross Strategy",
+    "smaLength": 10,
+    "timeframe": "30m",
+    "latestResult": 141.52,
+    "allowShorts": true
+  },
+  "ZECBTC": {
+    "name": "ZECBTC SMA Cross Strategy",
+    "smaLength": 6,
+    "timeframe": "30m",
+    "latestResult": 39.65,
+    "allowShorts": true
+  },
+  "LINKWETH": {
+    "name": "LINKWETH SMA Cross Strategy",
+    "smaLength": 13,
+    "timeframe": "4h",
+    "latestResult": 28.39,
+    "allowShorts": true
+  },
+  "RPLWETH": {
+    "name": "RPLWETH Uniswap MACD Strategy",
+    "longTakeProfPerc": 42,
+    "timeframe": "4h",
+    "latestResult": 128.2
+  }
+}
