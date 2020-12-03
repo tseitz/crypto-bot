@@ -107,7 +107,7 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-        logOrderResult(`${order.krakenTicker} Settled Position`, latestResult);
+        logOrderResult(`${order.krakenizedTradingViewTicker} Settled Position`, latestResult);
         break;
       }
       // if (position.pair === order.krakenTicker) {
@@ -152,7 +152,7 @@ class KrakenService {
         }
       }
 
-      if (add && count < 4) {
+      if (add && count < 5) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -163,7 +163,7 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-      } else {
+      } else if (!add) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -174,9 +174,11 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
+      } else {
+        console.log('Too much power!!');
       }
 
-      logOrderResult(`${order.krakenTicker} Leveraged Order Complete`, result);
+      logOrderResult(`${order.krakenizedTradingViewTicker} Leveraged Order Complete`, result);
     }
 
     return result;
