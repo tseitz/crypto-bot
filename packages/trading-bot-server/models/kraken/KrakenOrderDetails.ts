@@ -114,9 +114,11 @@ export default class KrakenOrderDetails {
     this.usdValueOfBase = this.convertBaseToDollar(this.currentPrice, this.usdValueOfQuote);
 
     console.log(
-      `${this.action} TradingView Price: ${Number.parseFloat(body.strategy.price).toFixed(
-        this.priceDecimals
-      )}, Bid Price: ${this.currentBid}, Ask Price: ${this.currentAsk}, My Bid: ${this.bidPrice}`
+      `${this.action.toUpperCase()} TradingView Price: ${Number.parseFloat(
+        body.strategy.price
+      ).toFixed(this.priceDecimals)}, Bid Price: ${this.currentBid}, Ask Price: ${
+        this.currentAsk
+      }, My Bid: ${this.bidPrice}`
     );
 
     // balance and order info
@@ -146,7 +148,7 @@ export default class KrakenOrderDetails {
 
   private getAddVolume(): number {
     let volume = Number.parseFloat(
-      ((40 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+      ((50 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
     );
     return volume > this.minVolume ? volume : this.minVolume;
   }
@@ -163,34 +165,34 @@ export default class KrakenOrderDetails {
     if (isNaN(this.tradingViewPrice)) {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
     } else {
-      if (this.action === 'buy') {
-        if (this.tradingViewPrice >= this.currentAsk) {
-          return this.currentAsk;
-        } else {
-          return Number.parseFloat(
-            Number.parseFloat(
-              ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-            ).toFixed(this.priceDecimals)
-          );
-        }
+      //   if (this.action === 'buy') {
+      //     if (this.tradingViewPrice >= this.currentAsk) {
+      //       return this.currentAsk;
+      //     } else {
+      //       return Number.parseFloat(
+      //         Number.parseFloat(
+      //           ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+      //         ).toFixed(this.priceDecimals)
+      //       );
+      //     }
+      //   } else {
+      //     if (this.tradingViewPrice <= this.currentBid) {
+      //       return this.currentBid;
+      //     } else {
+      //       return Number.parseFloat(
+      //         Number.parseFloat(
+      //           ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+      //         ).toFixed(this.priceDecimals)
+      //       );
+      //     }
+      //   }
+      if (this.tradingViewPrice <= this.currentBid) {
+        return this.currentBid;
+      } else if (this.tradingViewPrice >= this.currentAsk) {
+        return this.currentAsk;
       } else {
-        if (this.tradingViewPrice <= this.currentBid) {
-          return this.currentBid;
-        } else {
-          return Number.parseFloat(
-            Number.parseFloat(
-              ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-            ).toFixed(this.priceDecimals)
-          );
-        }
+        return this.action === 'buy' ? this.currentAsk : this.currentBid;
       }
-      // if (this.tradingViewPrice <= this.currentBid) {
-      //   return this.currentBid;
-      // } else if (this.tradingViewPrice >= this.currentAsk) {
-      //   return this.currentAsk;
-      // } else {
-      //   return this.action === 'buy' ? this.currentAsk : this.currentBid;
-      // }
     }
   }
 
