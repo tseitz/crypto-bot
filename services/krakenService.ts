@@ -163,7 +163,7 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-      } else {
+      } else if (!add) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -174,6 +174,8 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
+      } else {
+        console.log('Too much power!!');
       }
 
       logOrderResult(`${order.krakenizedTradingViewTicker} Leveraged Order Complete`, result);
