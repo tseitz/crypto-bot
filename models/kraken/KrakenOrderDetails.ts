@@ -138,7 +138,7 @@ export default class KrakenOrderDetails {
       );
     } else {
       volume = Number.parseFloat(
-        ((70 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((80 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
@@ -146,7 +146,7 @@ export default class KrakenOrderDetails {
 
   private getAddVolume(): number {
     let volume = Number.parseFloat(
-      ((40 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+      ((50 * (this.leverageAmount || 2)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
     );
     return volume > this.minVolume ? volume : this.minVolume;
   }
