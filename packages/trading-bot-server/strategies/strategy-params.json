@@ -70,5 +70,17 @@
     "latestResult": 380.13,
     "totalTrades": 374,
     "percentProfitable": 74.87
+  },
+  "XTZUSD": {
+    "name": "XTZUSD 5m MACD AL!S!R",
+    "timeframe": "5m",
+    "allowShorts": false,
+    "addLong": true,
+    "reopenLong": false,
+    "addLongRsi": 48,
+    "positionSize": 75,
+    "latestResult": 237.81,
+    "totalTrades": 398,
+    "percentProfitable": 71.61
   }
 }
