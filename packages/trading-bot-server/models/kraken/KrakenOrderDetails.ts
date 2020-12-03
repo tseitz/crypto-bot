@@ -165,27 +165,32 @@ export default class KrakenOrderDetails {
     if (isNaN(this.tradingViewPrice)) {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
     } else {
-      if (this.action === 'buy') {
-        if (this.tradingViewPrice >= this.currentAsk) {
-          return this.currentAsk;
-        } else {
-          return Number.parseFloat(
-            Number.parseFloat(
-              ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-            ).toFixed(this.priceDecimals)
-          );
-        }
-      } else {
-        if (this.tradingViewPrice <= this.currentBid) {
-          return this.currentBid;
-        } else {
-          return Number.parseFloat(
-            Number.parseFloat(
-              ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-            ).toFixed(this.priceDecimals)
-          );
-        }
-      }
+      return Number.parseFloat(
+        Number.parseFloat(
+          ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+        ).toFixed(this.priceDecimals)
+      );
+      // if (this.action === 'buy') {
+      //   if (this.tradingViewPrice >= this.currentAsk) {
+      //     return this.currentAsk;
+      //   } else {
+      //     return Number.parseFloat(
+      //       Number.parseFloat(
+      //         ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+      //       ).toFixed(this.priceDecimals)
+      //     );
+      //   }
+      // } else {
+      //   if (this.tradingViewPrice <= this.currentBid) {
+      //     return this.currentBid;
+      //   } else {
+      //     return Number.parseFloat(
+      //       Number.parseFloat(
+      //         ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+      //       ).toFixed(this.priceDecimals)
+      //     );
+      //   }
+      // }
       // if (this.tradingViewPrice <= this.currentBid) {
       //   return this.currentBid;
       // } else if (this.tradingViewPrice >= this.currentAsk) {
