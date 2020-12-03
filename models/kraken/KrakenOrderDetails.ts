@@ -165,21 +165,23 @@ export default class KrakenOrderDetails {
     if (isNaN(this.tradingViewPrice)) {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
     } else {
-      // return Number.parseFloat(
-      //   Number.parseFloat(
-      //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-      //   ).toFixed(this.priceDecimals)
-      // );
+      // if it's running away long or short, buy it, otherwise average it out
       if (this.action === 'buy') {
         if (this.tradingViewPrice >= this.currentAsk) {
           return this.currentAsk;
+        } else if (
+          this.tradingViewPrice <= this.currentAsk &&
+          this.tradingViewPrice >= this.currentBid
+        ) {
+          return this.tradingViewPrice;
         } else {
-          return Number.parseFloat(
-            Number.parseFloat(
-              ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-            ).toFixed(this.priceDecimals)
-          );
+          return (this.currentBid + this.currentAsk) / 2;
         }
+        // return Number.parseFloat(
+        //   Number.parseFloat(
+        //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+        //   ).toFixed(this.priceDecimals)
+        // );
       } else {
         if (this.tradingViewPrice <= this.currentBid) {
           return this.currentBid;
@@ -191,13 +193,6 @@ export default class KrakenOrderDetails {
           );
         }
       }
-      // if (this.tradingViewPrice <= this.currentBid) {
-      //   return this.currentBid;
-      // } else if (this.tradingViewPrice >= this.currentAsk) {
-      //   return this.currentAsk;
-      // } else {
-      //   return this.action === 'buy' ? this.currentAsk : this.currentBid;
-      // }
     }
   }
 
