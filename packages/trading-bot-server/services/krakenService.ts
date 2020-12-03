@@ -56,16 +56,17 @@ class KrakenService {
 
   // async setAddOrder() {}
 
-  async cancelOppositeOpenOrdersForPair(order: KrakenOrderDetails) {
+  async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = true) {
     const open = order.openOrders['open'];
 
     let result;
     for (const key in open) {
       const pair = open[key]['descr']['pair'];
       const type = open[key]['descr']['type'];
+      const action = opposite ? order.oppositeAction : order.action;
 
-      if (pair === order.krakenizedTradingViewTicker && type === order.oppositeAction) {
-        console.log(`Canceling ${pair} ${type}`);
+      if (pair === order.krakenizedTradingViewTicker && type === action) {
+        console.log(`${pair} ${order.action} Canceling ${type}`);
         result = await this.kraken.setCancelOrder({ txid: key });
       }
     }
@@ -75,7 +76,7 @@ class KrakenService {
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     // some orders might not have filled. cancel beforehand
-    await this.cancelOppositeOpenOrdersForPair(order);
+    await this.cancelOpenOrdersForPair(order);
 
     let result;
     if (typeof order.leverageAmount === 'undefined') {
@@ -89,6 +90,9 @@ class KrakenService {
 
   async settleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     const { openPositions } = await this.getOpenPositions();
+
+    // cancel open add order for this run. Some might not have been picked up
+    await this.cancelOpenOrdersForPair(order, false);
 
     // close out positons first
     let latestResult;
