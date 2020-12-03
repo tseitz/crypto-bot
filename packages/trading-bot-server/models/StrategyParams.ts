@@ -1,17 +1,19 @@
 export interface StrategyParamsJson {
-  [index: string]: {
-    name: string;
-    smaLength: number;
-    timeframe: string;
-    latestResult: number;
-    positionSize: number; // as a percent
-  };
+  [index: string]: StrategyParams;
 }
 
 export interface StrategyParams {
   name: string;
-  smaLength: number;
   timeframe: string;
+  allowShorts: boolean;
+  addLong: boolean;
+  reopenLong: boolean;
+  rsiEntry: number;
+  addLongRsi: number;
+  entrySize: number;
+  addSize: number;
   latestResult: number;
-  positionSize: number; // as a percent
+  totalTrades: number;
+  percentProfitable: number;
+  avgTrade: number;
 }
