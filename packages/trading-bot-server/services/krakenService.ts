@@ -105,7 +105,7 @@ class KrakenService {
           price: position.type === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
-          validate: true,
+          // validate: true,
         });
         logOrderResult(`${order.krakenTicker} Settled Position`, latestResult);
         break;
