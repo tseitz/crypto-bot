@@ -187,14 +187,20 @@ class KrakenService {
         });
       }
     } else {
-      result = await this.kraken.setAddOrder({
-        pair: order.krakenTicker,
-        type: order.action,
-        ordertype: 'limit',
-        price: order.bidPrice,
-        volume: order.tradeVolume,
-        // validate: true,
-      });
+      if (order.balanceOfBase < 380) {
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          price: order.bidPrice,
+          volume: order.tradeVolume,
+          // validate: true,
+        });
+      } else {
+        console.log(
+          `Position size for ${order.krakenizedTradingViewTicker} is too large ${order.balanceOfBase}`
+        );
+      }
     }
 
     logOrderResult(`${order.krakenTicker} Non Leveraged Order Complete`, result);
