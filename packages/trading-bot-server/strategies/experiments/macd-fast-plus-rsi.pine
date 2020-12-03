@@ -56,7 +56,7 @@ redCandle = (close < open)
 // plot(mapSignal, color=color.orange)
 
 long = not isLong and macd < 0 and macd > macd1 and macd < signal // and rsiClose <= 42
-closeLong = isLong and macd > 0 and macd < macd1 and macd > signal
+closeLong = isLong and macd > 0 and macd < macd1 // and macd > signal) or (macd > 0 and macd < signal))
 stopLong = isLong and crossunder(macd, signal)
 reopenLong = reopenLongs and not isLong and greenCandle and macd >= macd1 and macd <= signal // and rsiClose <= 60
 addLong = isLong and (macd < macdEntry or rsiClose < rsiEntry) and macd >= macd1 and rsiClose <= addLongRSI and (macd1 < macd2 or macd2 < macd3)

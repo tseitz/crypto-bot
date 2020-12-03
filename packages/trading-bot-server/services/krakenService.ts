@@ -95,14 +95,14 @@ class KrakenService {
     for (const key in openPositions) {
       const position = openPositions[key];
       if (position.pair === order.krakenTicker) {
-        // const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+        const closeAction = position.type === 'sell' ? 'buy' : 'sell';
         // const volumeToClose =
         //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
-          type: position.type,
-          ordertype: 'settle-position',
-          price: position.type === 'sell' ? order.currentBid : order.currentAsk,
+          type: closeAction,
+          ordertype: 'limit',
+          price: closeAction === 'sell' ? order.currentBid : order.currentAsk,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
