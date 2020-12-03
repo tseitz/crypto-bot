@@ -17,11 +17,11 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "addLongRsi": 45,
+    "addLongRsi": 46,
     "positionSize": 75,
-    "latestResult": 120.36,
-    "totalTrades": 369,
-    "percentProfitable": 69.38
+    "latestResult": 139.14,
+    "totalTrades": 376,
+    "percentProfitable": 74.73
   },
   "CRVBTC": {
     "name": "CRVBTC 15m MACD AL!SR",
@@ -29,11 +29,11 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": true,
-    "addLongRsi": 50,
+    "addLongRsi": 45,
     "positionSize": 75,
-    "latestResult": 621.00,
-    "totalTrades": 383,
-    "percentProfitable": 71.28
+    "latestResult": 209.77,
+    "totalTrades": 97,
+    "percentProfitable": 77.32
   },
   "ETHUSDT": {
     "name": "ETHUSDT 5m MACD AL!S!R",
