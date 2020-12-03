@@ -143,16 +143,16 @@ class KrakenService {
       let { openPositions } = await this.getOpenPositions();
 
       let add = false;
-      let positionMargin = 0;
+      let positionMargin = 0,
+        totalPosition = 0;
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
           positionMargin += Number.parseFloat(position.margin);
+          totalPosition += Number.parseFloat(position.cost);
           console.log(
-            'Position Already Open, Adding',
-            order.krakenizedTradingViewTicker,
-            positionMargin
+            `Position Already Open, Adding ${order.krakenizedTradingViewTicker}, Margin In: ${positionMargin}, Total Position: ${totalPosition}`
           );
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
