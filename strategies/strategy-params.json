@@ -119,6 +119,18 @@
     "totalTrades": 333,
     "percentProfitable": 73.87
   },
+  "SNXBTC": {
+    "name": "SNXBTC 5m MACD AL!S!R",
+    "timeframe": "5m",
+    "allowShorts": false,
+    "addLong": true,
+    "reopenLong": false,
+    "addLongRsi": 42,
+    "positionSize": 75,
+    "latestResult": 255.42,
+    "totalTrades": 323,
+    "percentProfitable": 70.28
+  },
   "SNXUSDT": {
     "name": "SNXUSDT 5m MACD AL!S!R",
     "timeframe": "5m",
