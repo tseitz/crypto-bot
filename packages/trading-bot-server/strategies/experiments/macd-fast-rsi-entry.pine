@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Fast Shorts Add RSI", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Fast Shorts Add RSI Entry", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
@@ -11,13 +11,15 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 allowAdds = input(defval=true, title="Allow Adds?", type=input.bool)
 allowShorts = input(defval=false, title="Allow Shorts?", type=input.bool)
 reopenLongs = input(defval=false, title="Reopen Longs?", type=input.bool)
-addLongRSI = input(defval=43, title="Add Long RSI", minval=0, step=1)
-rsiEntryLevel = input(defval=40, title="RSI Entry", minval=0, step=1)
+rsiEntryLevel = input(defval=41, title="RSI Entry", minval=0, step=1)
+addLongRSI = input(defval=40, title="Add Long RSI", minval=0, step=1)
+maxAdds = input(defval=5, title="Max Adds", minval=0, step=1)
 
 var isLong = false
 var isShort = false
 var addLongClose = 0.0
 var rsiEntry = 0.0
+var longCount = 0
 
 // MACD
 fast = 12, slow = 26
@@ -65,10 +67,11 @@ redCandle = (close < open)
 // plot(mapMacdFast, linewidth=1, color=color.blue)
 // plot(mapSignal, color=color.orange)
 
-long = not isLong and macd < 0 and macd > macd1 and macd < signal // and rsiClose <= rsiEntryLevel
+long = not isLong and macd < signal and rsiClose > rsi1 and rsiClose <= rsiEntryLevel
+// long = not isLong and macd < 0 and macd > macd1 and rsiClose <= rsiEntryLevel
 closeLong = isLong and macd > 0 and macd < macd1 and macd > signal // ) or (macd > 0 and macd < signal))
 stopLong = isLong and crossunder(macd, signal)
-reopenLong = reopenLongs and not isLong and open >= vwap and macd >= macd1 and macd <= signal // and rsiClose <= 60
+reopenLong = reopenLongs and not isLong and open >= vwap and macd <= signal and rsi1 < rsi2 // and rsiClose <= 60
 addLong = isLong and (macd < macdEntry or rsiClose < rsiEntry) and rsiClose > rsi1 and (rsi1 < rsi2) and macd < signal and rsiClose <= addLongRSI and (macd1 < macd2 or macd2 < macd3)
 short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
 addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
@@ -90,6 +93,7 @@ if long or reopenLong
 if closeLong
     isLong := false
     isShort := false
+    longCount := 0
 
 if short and allowShorts
     isLong := false
@@ -100,9 +104,12 @@ if short and allowShorts
 if closeShort and allowShorts
     isShort := false
     isLong := false
+  
+if addLong
+    longCount := longCount + 1
 
 strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and allowAdds and isWithinTimeBounds, comment="add")
+strategy.order("long", long=true, when=addLong and allowAdds and longCount <= maxAdds and isWithinTimeBounds, comment="add")
 strategy.close("long", when=closeLong and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and allowShorts and isWithinTimeBounds)
 strategy.close("short", when=(closeShort or (long or reopenLong)) and allowShorts and isWithinTimeBounds)

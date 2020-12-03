@@ -5,11 +5,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "addLongRsi": 40,
+    "rsiEntry": 42,
+    "addLongRsi": 39,
     "positionSize": 75,
-    "latestResult": 181.31,
-    "totalTrades": 301,
-    "percentProfitable": 69.44
+    "latestResult": 174.78,
+    "totalTrades": 242,
+    "percentProfitable": 72.73,
+    "avgTrade": 0.72
   },
   "BCHUSDT": {
     "name": "BCHUSDT 3m MACD AL!S!R",
@@ -17,11 +19,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 38,
     "positionSize": 75,
     "latestResult": 124.00,
     "totalTrades": 369,
-    "percentProfitable": 69.38
+    "percentProfitable": 69.38,
+    "avgTrade": 0
   },
   "BTCUSDT": {
     "name": "BTCUSDT 5m MACD AL!S!R",
@@ -29,11 +33,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 46,
     "positionSize": 75,
     "latestResult": 139.14,
     "totalTrades": 376,
-    "percentProfitable": 74.73
+    "percentProfitable": 74.73,
+    "avgTrade": 0
   },
   "CRVBTC": {
     "name": "CRVBTC 15m MACD AL!SR",
@@ -41,11 +47,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": true,
+    "rsiEntry": 0,
     "addLongRsi": 45,
     "positionSize": 75,
     "latestResult": 209.77,
     "totalTrades": 97,
-    "percentProfitable": 77.32
+    "percentProfitable": 77.32,
+    "avgTrade": 0
   },
   "ETHUSDT": {
     "name": "ETHUSDT 5m MACD AL!S!R",
@@ -53,11 +61,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 44,
     "positionSize": 75,
     "latestResult": 157.59,
     "totalTrades": 336,
-    "percentProfitable": 71.73
+    "percentProfitable": 71.73,
+    "avgTrade": 0
   },
   "KSMUSDT": {
     "name": "KSMUSDT 5m MACD AL!S!R",
@@ -65,11 +75,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 46,
     "positionSize": 75,
     "latestResult": 260.82,
     "totalTrades": 394,
-    "percentProfitable": 74.11
+    "percentProfitable": 74.11,
+    "avgTrade": 0
   },
   "LINKUSDT": {
     "name": "LINKUSDT 5m MACD AL!S!R",
@@ -77,11 +89,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 49,
     "positionSize": 75,
     "latestResult": 296.97,
     "totalTrades": 368,
-    "percentProfitable": 77.17
+    "percentProfitable": 77.17,
+    "avgTrade": 0
   },
   "LTCUSDT": {
     "name": "LTCUSDT 5m MACD AL!S!R",
@@ -89,11 +103,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "addLongRsi": 46,
+    "rsiEntry": 40,
+    "addLongRsi": 40,
     "positionSize": 75,
-    "latestResult": 254.14,
-    "totalTrades": 367,
-    "percentProfitable": 75.2
+    "latestResult": 203.57,
+    "totalTrades": 218,
+    "percentProfitable": 77.06,
+    "avgTrade": 0.93
   },
   "MLNUSDT": {
     "name": "MLNUSDT 5m MACD AL!S!R",
@@ -101,11 +117,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 45,
     "positionSize": 75,
     "latestResult": 196.00,
     "totalTrades": 333,
-    "percentProfitable": 67.57
+    "percentProfitable": 67.57,
+    "avgTrade": 0
   },
   "OMGUSDT": {
     "name": "OMGUSDT 5m MACD AL!S!R",
@@ -113,11 +131,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 43,
     "positionSize": 75,
     "latestResult": 306.97,
     "totalTrades": 333,
-    "percentProfitable": 73.87
+    "percentProfitable": 73.87,
+    "avgTrade": 0
   },
   "SNXBTC": {
     "name": "SNXBTC 5m MACD AL!S!R",
@@ -125,11 +145,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 42,
     "positionSize": 75,
     "latestResult": 255.42,
     "totalTrades": 323,
-    "percentProfitable": 70.28
+    "percentProfitable": 70.28,
+    "avgTrade": 0
   },
   "SNXUSDT": {
     "name": "SNXUSDT 5m MACD AL!S!R",
@@ -137,11 +159,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 41,
     "positionSize": 75,
     "latestResult": 389.89,
     "totalTrades": 301,
-    "percentProfitable": 70.1
+    "percentProfitable": 70.1,
+    "avgTrade": 0
   },
   "XRPUSDT": {
     "name": "XRPUSDT 5m MACD AL!S!R",
@@ -149,11 +173,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "addLongRsi": 45,
+    "rsiEntry": 40,
+    "addLongRsi": 40,
     "positionSize": 75,
-    "latestResult": 380.13,
-    "totalTrades": 374,
-    "percentProfitable": 74.87
+    "latestResult": 260.27,
+    "totalTrades": 182,
+    "percentProfitable": 81.87,
+    "avgTrade": 1.43
   },
   "XTZUSD": {
     "name": "XTZUSD 5m MACD AL!S!R",
@@ -161,11 +187,13 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "addLongRsi": 48,
+    "rsiEntry": 41,
+    "addLongRsi": 43,
     "positionSize": 75,
-    "latestResult": 237.81,
+    "latestResult": 222.80,
     "totalTrades": 398,
-    "percentProfitable": 71.61
+    "percentProfitable": 71.61,
+    "avgTrade": 0.75
   },
   "YFIXBT": {
     "name": "YFIXBT 5m MACD AL!S!R",
@@ -173,10 +201,12 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
+    "rsiEntry": 0,
     "addLongRsi": 46,
     "positionSize": 75,
     "latestResult": 353.24,
     "totalTrades": 185,
-    "percentProfitable": 70.81
+    "percentProfitable": 70.81,
+    "avgTrade": 0
   }
 }
