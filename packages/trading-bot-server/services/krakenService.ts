@@ -152,7 +152,7 @@ class KrakenService {
         }
       }
 
-      if (add && count < 4) {
+      if (add && count < 5) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
