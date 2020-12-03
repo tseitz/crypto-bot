@@ -200,7 +200,7 @@ class KrakenService {
           error: [
             `${
               order.krakenizedTradingViewTicker
-            } ${order.action.toUpperCase()} balance is too small to sell`,
+            } ${order.action.toUpperCase()} balance is too small`,
           ],
         });
       } else {

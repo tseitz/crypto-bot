@@ -41,7 +41,8 @@ export default class KrakenOrderDetails {
   tradeBalanceInDollar: number;
   usdValueOfQuote: number;
   usdValueOfBase: number;
-  positionSize: number | undefined;
+  entrySize: number;
+  addSize: number;
   spread: number;
   bidPrice: number;
   openOrders: KrakenOpenOrders;
@@ -67,7 +68,8 @@ export default class KrakenOrderDetails {
 
     // setup params
     this.strategyParams = strategyParams[this.tradingViewTicker];
-    this.positionSize = undefined;
+    this.entrySize = this.strategyParams?.entrySize;
+    this.addSize = this.strategyParams?.addSize;
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
@@ -134,9 +136,11 @@ export default class KrakenOrderDetails {
 
   private getVolume(): number {
     let volume = 0;
-    if (this.positionSize) {
+    if (this.entrySize) {
       volume = Number.parseFloat(
-        ((this.positionSize / 100) * this.tradeBalanceInDollar).toFixed(this.volumeDecimals)
+        ((this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
+          this.volumeDecimals
+        )
       );
     } else {
       volume = Number.parseFloat(
@@ -147,9 +151,18 @@ export default class KrakenOrderDetails {
   }
 
   private getAddVolume(): number {
-    let volume = Number.parseFloat(
-      ((70 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
-    );
+    let volume = 0;
+    if (this.addSize) {
+      volume = Number.parseFloat(
+        ((this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
+          this.volumeDecimals
+        )
+      );
+    } else {
+      volume = Number.parseFloat(
+        ((70 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+      );
+    }
     return volume > this.minVolume ? volume : this.minVolume;
   }
 
