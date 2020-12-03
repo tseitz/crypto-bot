@@ -129,9 +129,9 @@ class KrakenService {
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
           count++;
-          console.log('Position Already Open, Adding', order.krakenTicker, count);
+          console.log('Position Already Open, Adding', order.krakenizedTradingViewTicker, count);
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
-          console.log("Opposite Order, Should've Closed?", order.krakenTicker);
+          console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
           // await this.settleLeveragedOrder(order);
         }
       }
@@ -172,7 +172,9 @@ class KrakenService {
       if (isNaN(order.balanceOfBase) || order.balanceOfBase < 1e-6) {
         result = new KrakenOrderResult({
           error: [
-            `${order.krakenTicker} ${order.action.toUpperCase()} balance is too small to sell`,
+            `${
+              order.krakenizedTradingViewTicker
+            } ${order.action.toUpperCase()} balance is too small to sell`,
           ],
         });
       } else {
@@ -203,7 +205,7 @@ class KrakenService {
       }
     }
 
-    logOrderResult(`${order.krakenTicker} Non Leveraged Order Complete`, result);
+    logOrderResult(`${order.krakenizedTradingViewTicker} Non Leveraged Order Complete`, result);
     return result;
   }
 
