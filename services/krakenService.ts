@@ -102,7 +102,7 @@ class KrakenService {
           pair: order.krakenTicker,
           type: closeAction,
           ordertype: 'limit',
-          price: closeAction === 'sell' ? order.currentBid : order.currentAsk,
+          price: order.bidPrice,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: true,
@@ -110,6 +110,22 @@ class KrakenService {
         logOrderResult(`${order.krakenTicker} Settled Position`, latestResult);
         break;
       }
+      // if (position.pair === order.krakenTicker) {
+      //   // const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+      //   // const volumeToClose =
+      //   //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
+      //   latestResult = await this.kraken.setAddOrder({
+      //     pair: order.krakenTicker,
+      //     type: position.type,
+      //     ordertype: 'settle-position',
+      //     price: position.type === 'sell' ? order.currentBid : order.currentAsk,
+      //     volume: 0, // 0 for close all
+      //     leverage: order.leverageAmount,
+      //     // validate: true,
+      //   });
+      //   logOrderResult(`${order.krakenizedTradingViewTicker} Settled Position`, latestResult);
+      //   break;
+      // }
     }
 
     return latestResult;
