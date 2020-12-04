@@ -35,14 +35,14 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "rsiEntry": 0,
-    "addLongRsi": 46,
-    "entrySize": 0,
-    "addSize": 0,
-    "latestResult": 139.14,
-    "totalTrades": 376,
-    "percentProfitable": 74.73,
-    "avgTrade": 0
+    "rsiEntry": 39,
+    "addLongRsi": 43,
+    "entrySize": 100,
+    "addSize": 50,
+    "latestResult": 85.01,
+    "totalTrades": 234,
+    "percentProfitable": 74.79,
+    "avgTrade": 0.36
   },
   "CRVBTC": {
     "name": "CRVBTC 15m MACD AL!SR",
