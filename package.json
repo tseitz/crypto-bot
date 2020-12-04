@@ -13,8 +13,9 @@
   },
   "private": true,
   "scripts": {
-    "server:start": "yarn workspace @slim-crypto/trading-bot-server start",
-    "server:build-strategy": "yarn workspace @slim-crypto/trading-bot-server build-strategy"
+    "bot:start": "yarn workspace @slim-crypto/trading-bot-server start",
+    "bot:build-strategy": "yarn workspace @slim-crypto/trading-bot-server build-strategy",
+    "bot:deploy": "yarn workspace @slim-crypto/trading-bot-server build-strategy"
   },
   "workspaces": {
     "packages": [

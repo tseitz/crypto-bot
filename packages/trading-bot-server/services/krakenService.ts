@@ -160,7 +160,7 @@ class KrakenService {
         }
       }
 
-      if (add && positionMargin < 250) {
+      if (add && positionMargin < 200) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -215,7 +215,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceOfBase < 275) {
+      if (order.balanceOfBase < 250) {
         if (order.balanceOfBase < 1e-5) {
           console.log('New Entry');
           result = await this.kraken.setAddOrder({

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon -x ts-node app.ts",
     "build-strategy": "ts-node ./strategies/build-strategy.ts $1 $2 $3",
+    "deploy": "git subtree split --prefix packages/trading-bot-server -b deploy && git push heroku deploy:master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
