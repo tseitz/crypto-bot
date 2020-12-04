@@ -106,6 +106,7 @@ if closeShort and allowShorts
     isLong := false
   
 if addLong
+    macdEntry := macd
     longCount := longCount + 1
 
 strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
