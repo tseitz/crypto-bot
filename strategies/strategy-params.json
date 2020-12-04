@@ -232,7 +232,7 @@
     "reopenLong": false,
     "rsiEntry": 40,
     "addLongRsi": 40,
-    "entrySize": 80,
+    "entrySize": 125,
     "addSize": 100,
     "latestResult": 260.27,
     "totalTrades": 182,
