@@ -58,7 +58,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
         locked = false;
       }
     }
-    console.log('-'.repeat(20));
+    console.log('-'.repeat(24));
     locked = false;
   }
   return;
