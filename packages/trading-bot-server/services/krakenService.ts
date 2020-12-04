@@ -155,9 +155,9 @@ class KrakenService {
           add = true;
           positionMargin += Number.parseFloat(position.margin);
           totalPosition += Number.parseFloat(position.cost);
-          console.log(
-            `Adding ${order.krakenizedTradingViewTicker}, My Margin: ${positionMargin}, Total Position: ${totalPosition}`
-          );
+          // console.log(
+          //   `Adding ${order.krakenizedTradingViewTicker}, My Margin: ${positionMargin}, Total Position: ${totalPosition}`
+          // );
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
           // await this.settleLeveragedOrder(order);
@@ -165,7 +165,7 @@ class KrakenService {
       }
 
       if (add) {
-        console.log('Margin After Trade: ', positionMargin + order.addSize);
+        console.log('Adding... Margin After Trade: ', positionMargin + order.addSize);
         console.log('Total Allowable: ', order.entrySize + order.addSize * 3);
         const tooMuch = order.entrySize
           ? positionMargin > order.entrySize + order.addSize * 3
