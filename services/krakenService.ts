@@ -132,6 +132,10 @@ class KrakenService {
       // }
     }
 
+    if (!latestResult) {
+      console.log('Nothing to close');
+    }
+
     return latestResult;
   }
 
