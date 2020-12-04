@@ -13,7 +13,7 @@ allowShorts = input(defval=false, title="Allow Shorts?", type=input.bool)
 reopenLongs = input(defval=false, title="Reopen Longs?", type=input.bool)
 rsiEntryLevel = input(defval=41, title="RSI Entry", minval=0, step=1)
 addLongRSI = input(defval=40, title="Add Long RSI", minval=0, step=1)
-maxAdds = input(defval=5, title="Max Adds", minval=0, step=1)
+maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
 
 var isLong = false
 var isShort = false
@@ -72,7 +72,7 @@ long = not isLong and macd < signal and rsiClose > rsi1 and rsiClose <= rsiEntry
 closeLong = isLong and macd > 0 and macd < macd1 and macd > signal // ) or (macd > 0 and macd < signal))
 stopLong = isLong and crossunder(macd, signal)
 reopenLong = reopenLongs and not isLong and open >= vwap and macd <= signal and rsi1 < rsi2 // and rsiClose <= 60
-addLong = isLong and (macd < macdEntry or rsiClose < rsiEntry) and rsiClose > rsi1 and (rsi1 < rsi2) and macd < signal and rsiClose <= addLongRSI and (macd1 < macd2 or macd2 < macd3)
+addLong = isLong and (macd < macdEntry and rsiClose < rsiEntry) and rsiClose > rsi1 and (rsi1 < rsi2) and macd < signal and rsiClose <= addLongRSI and (macd1 < macd2 or macd2 < macd3)
 short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
 addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
 closeShort = isShort and macd < 0 and macd > macd1 and macd < signal
