@@ -143,9 +143,8 @@ export default class KrakenOrderDetails {
         )
       );
     } else {
-      // cut down non new strategy to $75 if non leverage
       volume = Number.parseFloat(
-        ((100 * (this.leverageAmount || 0.75)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((80 * (this.leverageAmount || 0.8)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
@@ -161,7 +160,7 @@ export default class KrakenOrderDetails {
       );
     } else {
       volume = Number.parseFloat(
-        ((70 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((65 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
