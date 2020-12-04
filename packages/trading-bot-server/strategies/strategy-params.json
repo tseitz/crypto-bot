@@ -215,14 +215,14 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "rsiEntry": 39,
-    "addLongRsi": 39,
-    "entrySize": 100,
-    "addSize": 90,
-    "latestResult": 244.53,
-    "totalTrades": 172,
-    "percentProfitable": 76.74,
-    "avgTrade": 1.42
+    "rsiEntry": 38,
+    "addLongRsi": 32,
+    "entrySize": 110,
+    "addSize": 80,
+    "latestResult": 144.05,
+    "totalTrades": 93,
+    "percentProfitable": 79.57,
+    "avgTrade": 1.55
   },
   "XRPUSDT": {
     "name": "XRPUSDT 5m MACD AL!S!R",
