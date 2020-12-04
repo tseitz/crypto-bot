@@ -160,17 +160,27 @@ class KrakenService {
         }
       }
 
-      if (add && positionMargin < 230) {
-        result = await this.kraken.setAddOrder({
-          pair: order.krakenTicker,
-          type: order.action,
-          ordertype: 'limit',
-          // ordertype: 'market',
-          price: order.bidPrice,
-          volume: order.addVolume,
-          leverage: order.leverageAmount,
-          // validate: true,
-        });
+      if (add) {
+        console.log('Total Margin: ', positionMargin);
+        console.log('Total Allowable: ', order.entrySize + order.addSize * 3);
+        const tooMuch = order.entrySize
+          ? positionMargin > order.entrySize + order.addSize * 3
+          : positionMargin > 175;
+
+        if (!tooMuch) {
+          result = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: order.action,
+            ordertype: 'limit',
+            // ordertype: 'market',
+            price: order.bidPrice,
+            volume: order.addVolume,
+            leverage: order.leverageAmount,
+            // validate: true,
+          });
+        } else {
+          console.log('Too much power!!');
+        }
       } else if (!add) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -182,8 +192,6 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-      } else {
-        console.log('Too much power!!');
       }
 
       logOrderResult(`${order.krakenizedTradingViewTicker} Leveraged Order Complete`, result);
