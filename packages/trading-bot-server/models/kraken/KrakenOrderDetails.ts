@@ -129,12 +129,12 @@ export default class KrakenOrderDetails {
     this.tradeBalance = this.action === 'sell' ? this.balanceOfBase : this.balanceOfQuote;
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfBase);
     this.stopPercent = 12;
-    this.tradeVolume = this.getVolume();
+    this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();
     this.stopLoss = this.getStopLoss();
   }
 
-  private getVolume(): number {
+  private getTradeVolume(): number {
     let volume = 0;
     if (this.entrySize) {
       volume = Number.parseFloat(
@@ -188,7 +188,11 @@ export default class KrakenOrderDetails {
         ) {
           return this.tradingViewPrice;
         } else {
-          return (this.currentBid + this.currentAsk) / 2;
+          return Number.parseFloat(
+            Number.parseFloat(((this.currentBid + this.currentAsk) / 2).toString()).toFixed(
+              this.priceDecimals
+            )
+          );
         }
         // return Number.parseFloat(
         //   Number.parseFloat(
