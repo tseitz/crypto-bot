@@ -1,0 +1,124 @@
+//@version=4
+strategy("MACD Fast Shorts Add RSI Entry", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+allowAdds = input(defval=true, title="Allow Adds?", type=input.bool)
+// allowShorts = input(defval=false, title="Allow Shorts?", type=input.bool)
+// reopenLongs = input(defval=false, title="Reopen Longs?", type=input.bool)
+// rsiEntryLevel = input(defval=41, title="RSI Entry", minval=0, step=1)
+// addLongRSI = input(defval=40, title="Add Long RSI", minval=0, step=1)
+maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
+
+var isLong = false
+var isShort = false
+var addLongClose = 0.0
+var rsiEntry = 0.0
+var longCount = 0
+
+// MACD
+fast = 12, slow = 26
+fastMA = ema(close, fast)
+slowMA = ema(close, slow)
+macd = fastMA - slowMA
+signal = ema(macd, 9)
+rsiClose = rsi(close, 14)
+
+// mapMacdFast = macd + fastMA
+// mapSignal = signal + fastMA
+
+var macdEntry = 0.0
+
+getMACD(index) =>
+    thisFastMA = ema(close[index], fast)
+    thisSlowMA = ema(close[index], slow)
+    thisMacd = thisFastMA - thisSlowMA
+
+getRsi(index) =>
+    thisRsi = rsi(close[index], 14)
+
+macd0 = getMACD(0)
+macd1 = getMACD(1)
+macd2 = getMACD(2)
+macd3 = getMACD(3)
+
+rsi0 = getRsi(0)
+rsi1 = getRsi(1)
+rsi2 = getRsi(2)
+rsi3 = getRsi(3)
+
+// macdDirUp = macd > signal
+// macdDirDown = macd < signal
+// aboveVwap = open > vwap
+// belowVwap = open < vwap
+
+// smaLength = input(defval=3, title="SMA Length", minval=0, step=2)
+
+greenCandle = (close > open)
+redCandle = (close < open)
+
+// sma = sma(close, smaLength)
+
+// plot(mapMacdFast, linewidth=1, color=color.blue)
+// plot(mapSignal, color=color.orange)
+
+short = open < vwap and macd > 0 and macd < macd1
+
+// long = not isLong and macd < signal and rsiClose > rsi1 and rsiClose <= rsiEntryLevel
+// long = not isLong and macd < 0 and macd > macd1 and rsiClose <= rsiEntryLevel
+// closeLong = isLong and macd > 0 and macd < macd1 and macd > signal // ) or (macd > 0 and macd < signal))
+// stopLong = isLong and crossunder(macd, signal)
+// reopenLong = reopenLongs and not isLong and open >= vwap and macd <= signal and rsi1 < rsi2 // and rsiClose <= 60
+// addLong = isLong and (macd < macdEntry and rsiClose < rsiEntry) and rsiClose > rsi1 and (rsi1 < rsi2) and macd < signal and rsiClose <= addLongRSI and (macd1 < macd2 or macd2 < macd3)
+// short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
+// addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
+closeShort = isShort and macd < 0 and macd > macd1 and macd < signal
+
+// plotshape(long, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+
+// bgcolor(color=long ? color.green : na)
+// bgcolor(color=reopenLong or addLong ? color.yellow : na)
+bgcolor(color=short ? color.red : na)
+// bgcolor(color=addShort ? color.orange : na)
+
+// if long or reopenLong
+//     isLong := true
+//     isShort := false
+//     macdEntry := macd
+//     rsiEntry := rsiClose
+
+// if closeLong
+//     isLong := false
+//     isShort := false
+//     longCount := 0
+
+if short
+    isLong := false
+    isShort := true
+    macdEntry := macd
+    rsiEntry := rsiClose
+
+if closeShort
+    isShort := false
+    isLong := false
+  
+// if addLong
+//     macdEntry := macd
+//     longCount := longCount + 1
+
+// strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
+// strategy.order("long", long=true, when=addLong and allowAdds and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+// strategy.close("long", when=closeLong and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+strategy.close("short", when=(closeShort or (long or reopenLong)) and isWithinTimeBounds)
+
+// if (strategy.position_size > 0)
+//     strategy.exit(id="stop long", stop=longStopPrice)
+
+// if (strategy.position_size < 0)
+//     strategy.exit(id="stop short", stop=shortStopPrice)
