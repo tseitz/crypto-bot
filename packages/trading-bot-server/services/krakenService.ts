@@ -168,7 +168,7 @@ class KrakenService {
         console.log('My Margin After Trade: ', positionMargin + order.addSize);
         console.log('Total Allowable: ', order.entrySize + order.addSize * 3);
         const tooMuch = order.entrySize
-          ? positionMargin > order.entrySize + order.addSize * 4
+          ? positionMargin > order.entrySize + order.addSize * 3
           : positionMargin > 175;
 
         if (!tooMuch) {
