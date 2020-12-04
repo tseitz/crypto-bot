@@ -123,7 +123,7 @@ class KrakenService {
       //     type: position.type,
       //     ordertype: 'settle-position',
       //     price: position.type === 'sell' ? order.currentBid : order.currentAsk,
-      //     volume: position.cost, // 0 for close all
+      //     volume: position.vol, // 0 for close all
       //     leverage: order.leverageAmount,
       //     // validate: true,
       //   });
@@ -160,7 +160,7 @@ class KrakenService {
         }
       }
 
-      if (add && positionMargin < 200) {
+      if (add && positionMargin < 230) {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
