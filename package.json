@@ -15,7 +15,7 @@
   "scripts": {
     "bot:start": "yarn workspace @slim-crypto/trading-bot-server start",
     "bot:build-strategy": "yarn workspace @slim-crypto/trading-bot-server build-strategy",
-    "bot:deploy": "yarn workspace @slim-crypto/trading-bot-server build-strategy"
+    "bot:deploy": "git subtree split --prefix packages/trading-bot-server -b deploy && git push heroku deploy:master"
   },
   "workspaces": {
     "packages": [
