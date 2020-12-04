@@ -216,14 +216,27 @@ class KrakenService {
       }
     } else {
       if (order.balanceOfBase < 380) {
-        result = await this.kraken.setAddOrder({
-          pair: order.krakenTicker,
-          type: order.action,
-          ordertype: 'limit',
-          price: order.bidPrice,
-          volume: order.tradeVolume,
-          // validate: true,
-        });
+        if (order.balanceOfBase < 1e-5) {
+          console.log('New Entry');
+          result = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: order.action,
+            ordertype: 'limit',
+            price: order.bidPrice,
+            volume: order.tradeVolume,
+            // validate: true,
+          });
+        } else {
+          console.log('Adding');
+          result = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: order.action,
+            ordertype: 'limit',
+            price: order.bidPrice,
+            volume: order.addVolume,
+            // validate: true,
+          });
+        }
       } else {
         console.log(
           `Position size for ${order.krakenizedTradingViewTicker} is too large ${order.balanceOfBase}`
