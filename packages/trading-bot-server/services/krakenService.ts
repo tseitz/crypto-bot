@@ -111,7 +111,11 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-        logOrderResult(`${order.krakenizedTradingViewTicker} Settled Position`, latestResult);
+        logOrderResult(
+          `${order.krakenizedTradingViewTicker} Settled Position`,
+          latestResult,
+          order.krakenizedTradingViewTicker
+        );
         break;
       }
       // if (position.pair === order.krakenTicker) {
@@ -198,7 +202,10 @@ class KrakenService {
         });
       }
 
-      logOrderResult(`${order.krakenizedTradingViewTicker} Leveraged Order Complete`, result);
+      logOrderResult(
+        `${order.krakenizedTradingViewTicker} Leveraged Order Complete`,
+        result.order.krakenizedTradingViewTicker
+      );
     }
 
     return result;
@@ -229,7 +236,7 @@ class KrakenService {
     } else {
       if (order.balanceOfBase < 250) {
         if (order.balanceOfBase < 1e-5) {
-          console.log('New Entry');
+          console.log('New Non Leveraged Entry');
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
@@ -239,7 +246,7 @@ class KrakenService {
             // validate: true,
           });
         } else {
-          console.log('Adding');
+          console.log('Adding to Non Leverage');
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
@@ -256,7 +263,11 @@ class KrakenService {
       }
     }
 
-    logOrderResult(`${order.krakenizedTradingViewTicker} Non Leveraged Order Complete`, result);
+    logOrderResult(
+      `${order.krakenizedTradingViewTicker} Non Leveraged Order Complete`,
+      result,
+      order.krakenizedTradingViewTicker
+    );
     return result;
   }
 
