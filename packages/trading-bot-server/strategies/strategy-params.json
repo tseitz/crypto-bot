@@ -140,14 +140,14 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "rsiEntry": 41,
-    "addLongRsi": 43,
+    "rsiEntry": 39,
+    "addLongRsi": 41,
     "entrySize": 100,
     "addSize": 75,
-    "latestResult": 224.16,
-    "totalTrades": 275,
-    "percentProfitable": 73.82,
-    "avgTrade": 0.82
+    "latestResult": 205.47,
+    "totalTrades": 150,
+    "percentProfitable": 76,
+    "avgTrade": 1.37
   },
   "SNXBTC": {
     "name": "SNXBTC 5m MACD AL!S!R",
@@ -245,14 +245,14 @@
     "allowShorts": false,
     "addLong": true,
     "reopenLong": false,
-    "rsiEntry": 45,
+    "rsiEntry": 41,
     "addLongRsi": 40,
-    "entrySize": 90,
-    "addSize": 75,
-    "latestResult": 196.89,
-    "totalTrades": 308,
-    "percentProfitable": 73.7,
-    "avgTrade": 0.64
+    "entrySize": 80,
+    "addSize": 80,
+    "latestResult": 152.38,
+    "totalTrades": 192,
+    "percentProfitable": 73.44,
+    "avgTrade": 0.79
   },
   "YFIXBT": {
     "name": "YFIXBT 5m MACD AL!S!R",
