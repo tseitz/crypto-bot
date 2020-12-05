@@ -190,6 +190,7 @@ class KrakenService {
           console.log('Too much power!!');
         }
       } else if (!add) {
+        console.log('New Entry');
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
