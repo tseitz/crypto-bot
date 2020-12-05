@@ -175,7 +175,8 @@ export default class KrakenOrderDetails {
   }
 
   private getBid(): number {
-    if (isNaN(this.tradingViewPrice)) {
+    // YFI doesn't get filled as often so giving it to the ask
+    if (isNaN(this.tradingViewPrice) || this.tradingViewTicker === 'YFIXBT') {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
     } else {
       // if it's running away long or short, buy it, otherwise average it out
