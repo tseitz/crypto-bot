@@ -204,7 +204,8 @@ class KrakenService {
 
       logOrderResult(
         `${order.krakenizedTradingViewTicker} Leveraged Order Complete`,
-        result.order.krakenizedTradingViewTicker
+        result,
+        order.krakenizedTradingViewTicker
       );
     }
 
