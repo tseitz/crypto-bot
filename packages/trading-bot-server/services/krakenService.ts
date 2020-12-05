@@ -237,7 +237,7 @@ class KrakenService {
     } else {
       if (order.balanceOfBase < 250) {
         if (order.balanceOfBase < 1e-5) {
-          console.log('New Non Leveraged Entry');
+          console.log('New Entry');
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
@@ -247,7 +247,7 @@ class KrakenService {
             // validate: true,
           });
         } else {
-          console.log('Adding to Non Leverage');
+          console.log('Adding');
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
