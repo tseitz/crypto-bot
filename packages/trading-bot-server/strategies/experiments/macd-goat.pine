@@ -79,45 +79,44 @@ redCandle = (close < open)
 
 // plotshape(long, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
-hi_high = highest(close, 5)
+hi_high = highest(high, 6)
 
+longTime = hi_high > vwap
+shortTime = hi_high < vwap
 
+bgcolor(color=longTime ? color.green : na)
+bgcolor(color=shortTime ? color.red : na)
 
-bgcolor(color=long ? color.green : na)
-bgcolor(color=reopenLong or addLong ? color.yellow : na)
-bgcolor(color=short ? color.red : na)
-bgcolor(color=addShort ? color.orange : na)
+// if long or reopenLong
+//     isLong := true
+//     isShort := false
+//     macdEntry := macd
+//     rsiEntry := rsiClose
 
-if long or reopenLong
-    isLong := true
-    isShort := false
-    macdEntry := macd
-    rsiEntry := rsiClose
+// if closeLong
+//     isLong := false
+//     isShort := false
+//     longCount := 0
 
-if closeLong
-    isLong := false
-    isShort := false
-    longCount := 0
+// if short and allowShorts
+//     isLong := false
+//     isShort := true
+//     macdEntry := macd
+//     rsiEntry := rsiClose
 
-if short and allowShorts
-    isLong := false
-    isShort := true
-    macdEntry := macd
-    rsiEntry := rsiClose
-
-if closeShort and allowShorts
-    isShort := false
-    isLong := false
+// if closeShort and allowShorts
+//     isShort := false
+//     isLong := false
   
-if addLong
-    macdEntry := macd
-    longCount := longCount + 1
+// if addLong
+//     macdEntry := macd
+//     longCount := longCount + 1
 
-strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and allowAdds and longCount <= maxAdds and isWithinTimeBounds, comment="add")
-strategy.close("long", when=closeLong and isWithinTimeBounds)
-strategy.entry("short", long=false, when=short and allowShorts and isWithinTimeBounds)
-strategy.close("short", when=(closeShort or (long or reopenLong)) and allowShorts and isWithinTimeBounds)
+// strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
+// strategy.order("long", long=true, when=addLong and allowAdds and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+// strategy.close("long", when=closeLong and isWithinTimeBounds)
+// strategy.entry("short", long=false, when=short and allowShorts and isWithinTimeBounds)
+// strategy.close("short", when=(closeShort or (long or reopenLong)) and allowShorts and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     strategy.exit(id="stop long", stop=longStopPrice)
