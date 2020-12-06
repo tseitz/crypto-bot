@@ -144,7 +144,7 @@ export default class KrakenOrderDetails {
       );
     } else {
       volume = Number.parseFloat(
-        ((80 * (this.leverageAmount || 0.9)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        ((80 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
