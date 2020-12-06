@@ -67,7 +67,7 @@ redCandle = (close < open)
 // plot(mapMacdFast, linewidth=1, color=color.blue)
 // plot(mapSignal, color=color.orange)
 
-long = not isLong and macd < signal and rsiClose > rsi1 and rsiClose <= rsiEntryLevel
+long = not isLong and macd > macd1 and rsiClose > rsi1 and rsiClose <= rsiEntryLevel
 // long = not isLong and macd < 0 and macd > macd1 and rsiClose <= rsiEntryLevel
 closeLong = isLong and macd > 0 and macd < macd1 and macd > signal // ) or (macd > 0 and macd < signal))
 stopLong = isLong and crossunder(macd, signal)
