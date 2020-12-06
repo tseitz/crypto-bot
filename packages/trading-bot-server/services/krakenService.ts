@@ -258,11 +258,7 @@ class KrakenService {
       }
     }
 
-    logOrderResult(
-      `${order.krakenizedTradingViewTicker} Non Leveraged Order Complete`,
-      result,
-      order.krakenizedTradingViewTicker
-    );
+    logOrderResult(`Non Leveraged Order Complete`, result, order.krakenizedTradingViewTicker);
     return result;
   }
 
