@@ -229,7 +229,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceOfBase < 250) {
+      if (order.usdValueOfBase * order.balanceOfBase < 250) {
         if (order.balanceOfBase < 1e-5) {
           console.log('New Entry');
           result = await this.kraken.setAddOrder({
