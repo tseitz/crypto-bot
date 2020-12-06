@@ -66,7 +66,7 @@ class KrakenService {
       const action = opposite ? order.oppositeAction : order.action;
 
       if (pair === order.krakenizedTradingViewTicker && type === action) {
-        console.log(`${pair} ${order.action} Canceling ${type} order`);
+        console.log(`Canceling ${type} order`);
         result = await this.kraken.setCancelOrder({ txid: key });
       }
     }
@@ -111,11 +111,7 @@ class KrakenService {
           leverage: order.leverageAmount,
           // validate: true,
         });
-        logOrderResult(
-          `${order.krakenizedTradingViewTicker} Settled Position`,
-          latestResult,
-          order.krakenizedTradingViewTicker
-        );
+        logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
         break;
       }
       // if (position.pair === order.krakenTicker) {
@@ -204,11 +200,7 @@ class KrakenService {
         });
       }
 
-      logOrderResult(
-        `${order.krakenizedTradingViewTicker} Leveraged Order Complete`,
-        result,
-        order.krakenizedTradingViewTicker
-      );
+      logOrderResult(`Leveraged Order Complete`, result, order.krakenizedTradingViewTicker);
     }
 
     return result;
