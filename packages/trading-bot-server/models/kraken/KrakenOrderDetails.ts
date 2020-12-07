@@ -175,43 +175,44 @@ export default class KrakenOrderDetails {
   }
 
   private getBid(): number {
-    // YFI doesn't get filled as often so giving it to the ask
-    if (isNaN(this.tradingViewPrice) || this.tradingViewTicker === 'YFIXBT') {
-      return this.action === 'buy' ? this.currentAsk : this.currentBid;
-    } else {
-      // if it's running away long or short, buy it, otherwise average it out
-      if (this.action === 'buy') {
-        if (this.tradingViewPrice >= this.currentAsk) {
-          return this.currentAsk;
-        } else if (
-          this.tradingViewPrice <= this.currentAsk &&
-          this.tradingViewPrice >= this.currentBid
-        ) {
-          return this.tradingViewPrice;
-        } else {
-          return Number.parseFloat(
-            Number.parseFloat(((this.currentBid + this.currentAsk) / 2).toString()).toFixed(
-              this.priceDecimals
-            )
-          );
-        }
-        // return Number.parseFloat(
-        //   Number.parseFloat(
-        //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-        //   ).toFixed(this.priceDecimals)
-        // );
-      } else {
-        if (this.tradingViewPrice <= this.currentBid) {
-          return this.currentBid;
-        } else {
-          return Number.parseFloat(
-            Number.parseFloat(
-              ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-            ).toFixed(this.priceDecimals)
-          );
-        }
-      }
-    }
+    // YFI doesn't get filled as often so giving
+    return this.action === 'buy' ? this.currentAsk : this.currentBid; it to the ask
+    // if (isNaN(this.tradingViewPrice) || this.tradingViewTicker === 'YFIXBT') {
+    //   return this.action === 'buy' ? this.currentAsk : this.currentBid;
+    // } else {
+    //   // if it's running away long or short, buy it, otherwise average it out
+    //   if (this.action === 'buy') {
+    //     if (this.tradingViewPrice >= this.currentAsk) {
+    //       return this.currentAsk;
+    //     } else if (
+    //       this.tradingViewPrice <= this.currentAsk &&
+    //       this.tradingViewPrice >= this.currentBid
+    //     ) {
+    //       return this.tradingViewPrice;
+    //     } else {
+    //       return Number.parseFloat(
+    //         Number.parseFloat(((this.currentBid + this.currentAsk) / 2).toString()).toFixed(
+    //           this.priceDecimals
+    //         )
+    //       );
+    //     }
+    //     // return Number.parseFloat(
+    //     //   Number.parseFloat(
+    //     //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+    //     //   ).toFixed(this.priceDecimals)
+    //     // );
+    //   } else {
+    //     if (this.tradingViewPrice <= this.currentBid) {
+    //       return this.currentBid;
+    //     } else {
+    //       return Number.parseFloat(
+    //         Number.parseFloat(
+    //           ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+    //         ).toFixed(this.priceDecimals)
+    //       );
+    //     }
+    //   }
+    // }
   }
 
   convertBaseToDollar(base: number, usd: number): number {

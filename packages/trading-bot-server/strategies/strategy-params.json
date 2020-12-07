@@ -194,6 +194,21 @@
     "percentProfitable": 69.88,
     "avgTrade": 1.76
   },
+  "WAVESBTC": {
+    "name": "WAVESBTC 5m MACD AL!S!R",
+    "timeframe": "5m",
+    "allowShorts": false,
+    "addLong": true,
+    "reopenLong": false,
+    "rsiEntry": 44,
+    "addLongRsi": 39,
+    "entrySize": 90,
+    "addSize": 70,
+    "latestResult": 167.29,
+    "totalTrades": 217,
+    "percentProfitable": 80.65,
+    "avgTrade": 0.77
+  },
   "WAVESUSDT": {
     "name": "WAVESUSDT 5m MACD AL!S!R",
     "timeframe": "5m",
