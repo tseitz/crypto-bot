@@ -176,7 +176,7 @@ export default class KrakenOrderDetails {
 
   private getBid(): number {
     // YFI doesn't get filled as often so giving
-    return this.action === 'buy' ? this.currentAsk : this.currentBid; it to the ask
+    return this.action === 'buy' ? this.currentAsk : this.currentBid; // it to the ask
     // if (isNaN(this.tradingViewPrice) || this.tradingViewTicker === 'YFIXBT') {
     //   return this.action === 'buy' ? this.currentAsk : this.currentBid;
     // } else {
