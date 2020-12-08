@@ -69,10 +69,10 @@ redCandle = (close < open)
 
 // plot(mapMacdFast, linewidth=1, color=color.blue)
 
-highestMacd = highest(macd, hiLow)
+// highestMacd = highest(macd, hiLow)
 
-highestHighs = highest(high, hiLow)[2]
-lowestLows   = lowest(low, hiLow)[2]
+highestHighs = highest(high, hiLow)[1]
+lowestLows   = lowest(low, hiLow)[1]
 
 twoHighs = high > highestHighs
 twoLows = low < lowestLows
@@ -80,7 +80,7 @@ twoLows = low < lowestLows
 bgColor = twoHighs ? color.teal : twoLows ? color.maroon : na
 
 bgcolor(color=bgColor, transp=45)
-bgcolor(color=highestMacd ? color.blue : na, transp=45)
+// bgcolor(color=highestMacd ? color.blue : na, transp=45)
 
 // plot(vwap, color=color.blue)
 // plot(vwapHigh, color=color.blue)
