@@ -8,8 +8,18 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-hiLow = input(defval=12, title="Hi Low Lookback", minval=0, step=1)
-reopenLongs = input(defval=false, title="Reopen Longs?", type=input.bool)
+hiLowShort = input(defval=30, title="Hi Low Short", minval=0, step=1)
+hiLowLong = input(defval=60, title="Hi Low Long", minval=0, step=1)
+
+longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=1) / 100
+longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
+longStopPerc = input(1.5, title='Long Stop %', type=input.float, step=1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
+
+shortTakeProfPerc = input(2, title='Short Take Profit %', type=input.float, step=1) / 100
+shortTakeProfPrice = strategy.position_avg_price * (1 - shortTakeProfPerc)
+shortStopPerc = input(1.5, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 var isLong = false
 var isShort = false
@@ -45,10 +55,14 @@ rsi3 = getRsi(3)
 greenCandle = (close > open)
 redCandle = (close < open)
 
-highestPrev1 = highest(high, hiLow)[1]
-lowestPrev1   = lowest(low, hiLow)[1]
-highestPrev2 = highest(high, hiLow)[2]
-lowestPrev2   = lowest(low, hiLow)[2]
+highestPrev1 = highest(high, hiLowShort)[1]
+lowestPrev1   = lowest(low, hiLowShort)[1]
+highestPrev2 = highest(high, hiLowShort)[2]
+lowestPrev2   = lowest(low, hiLowShort)[2]
+highestPrev11 = highest(high, hiLowLong)[1]
+lowestPrev11   = lowest(low, hiLowLong)[1]
+highestPrev21 = highest(high, hiLowLong)[2]
+lowestPrev21   = lowest(low, hiLowLong)[2]
 
 oneLow = low < lowestPrev1
 oneHigh = high > highestPrev1
@@ -56,62 +70,47 @@ twoHighs = high > highestPrev1 and high[1] > highestPrev2
 twoLows = low < lowestPrev1 and low[1] < lowestPrev2
 
 // bgColor = twoHighs ? color.teal : twoLows ? color.maroon : na
-bgColor = oneHigh ? color.teal : oneLow ? color.maroon : na
+// bgColor = oneHigh ? color.teal : oneLow ? color.maroon : na
 
-bgcolor(color=bgColor, transp=45)
+// bgcolor(color=bgColor, transp=45)
 // bgcolor(color=highestMacd ? color.blue : na, transp=45)
 
 plot(vwap, color=color.blue)
 plot(series=highestPrev1, color=color.green, linewidth=1)
 plot(series=lowestPrev1, color=color.red, linewidth=1)
 
-// bgColor2 = shortZone ? color.orange : longZone ? color.blue : na
-// bgcolor(color=bgColor2, transp=85)
 
 macdBottomed = macd > macd2 and macd1 < macd2 and macd < 0
 rsiBottomed = rsiClose > rsi1 and rsi1 > rsi2 and rsiClose > rsi3 and rsi2 < rsi3
 
-// long = not isLong and macd < 0 and macd > macd1 and rsiClose <= rsiEntryLevel
-// closeLong = isLong and macd > 0 and macd < macd1 and macd > signal // ) or (macd > 0 and macd < signal))
-// stopLong = isLong and crossunder(macd, signal)
-// reopenLong = reopenLongs and not isLong and open >= vwap and macd <= signal and rsi1 < rsi2 // and rsiClose <= 60
-// addLong = isLong and rsiBottomed
-// short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
-// addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
-
-long = not isLong and twoHighs
-closeLong = isLong and oneLow
-short = not isShort and oneLow
-closeShort = isShort and crossover(macd, signal)
+// long = not isLong and oneHigh
+// closeLong = isLong and oneLow
+// short = not isShort and oneLow
+// closeShort = isShort and crossover(macd, signal)
 
 // plotshape(long, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
-
-// bgcolor(color=rsiBottomed ? color.red : na)
-// bgcolor(color=macdBottomed ? color.green : na)
-// bgcolor(color=reopenLong or addLong ? color.yellow : na)
-// bgcolor(color=short ? color.red : na)
-// bgcolor(color=addShort ? color.orange : na)
-
-if long
-    isLong := true
-    isShort := false
-
-if short
-    isShort := true
-    isLong := false
-
-if closeLong or closeShort
-    isLong := false
-    isShort := false
-
-if low < lowestPrev1
+if low < lowestPrev11
     shortZone := true
     longZone := false
 
-if high > highestPrev1
+if high > highestPrev11
     longZone := true
     shortZone := false
+
+long = not isLong and longZone and high > highestPrev1
+short = not isShort and shortZone and low < lowestPrev1
+
+if long and not (high >= longTakeProfPrice or low <= longStopPrice)
+    isLong := true
+    isShort := false
+
+if short and not (low <= shortTakeProfPrice or high >= shortStopPrice)
+    isShort := true
+    isLong := false
+
+bgColor2 = shortZone ? color.red : longZone ? color.green : na
+bgcolor(color=bgColor2, transp=85)
 
 // if long or reopenLong
 //     isLong := true
@@ -138,13 +137,20 @@ if high > highestPrev1
 //     macdEntry := macd
 //     longCount := longCount + 1
 
-// strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-// strategy.close("long", when=closeLong and isWithinTimeBounds)
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+// strategy.close("long", when=short and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.close("short", when=closeShort and isWithinTimeBounds)
+strategy.close("short", when=long and isWithinTimeBounds)
 
-// if (strategy.position_size > 0)
-//     strategy.exit(id="stop long", stop=longStopPrice)
+if (strategy.position_size > 0)
+    exitLong = high >= longTakeProfPrice or low <= longStopPrice
+    if exitLong
+        isLong := false
+    strategy.close("long", when=(short or exitLong) and isWithinTimeBounds)
+    // strategy.exit("exit long", "long", limit=longTakeProfPrice, stop=longStopPrice)
 
-// if (strategy.position_size < 0)
-//     strategy.exit(id="stop short", stop=shortStopPrice)
+if (strategy.position_size < 0)
+    exitShort = low <= shortTakeProfPrice or high >= shortStopPrice
+    if exitShort
+        isShort := false
+    strategy.close("short", when=(long or exitShort) and isWithinTimeBounds)
