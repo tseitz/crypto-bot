@@ -216,7 +216,7 @@ export default class KrakenOrderDetails {
     //       );
     //     }
     //   }
-    }
+    // }
   }
 
   convertBaseToDollar(base: number, usd: number): number {
