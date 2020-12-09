@@ -78,6 +78,8 @@ twoLows = low < lowestPrev1 and low[1] < lowestPrev2
 plot(vwap, color=color.blue)
 plot(series=highestPrev1, color=color.green, linewidth=1)
 plot(series=lowestPrev1, color=color.red, linewidth=1)
+plot(series=highestPrev11, color=color.green, linewidth=2)
+plot(series=lowestPrev11, color=color.red, linewidth=2)
 
 
 macdBottomed = macd > macd2 and macd1 < macd2 and macd < 0

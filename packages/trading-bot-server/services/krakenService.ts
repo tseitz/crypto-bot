@@ -160,7 +160,7 @@ class KrakenService {
           // );
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
-          // await this.settleLeveragedOrder(order);
+          await this.settleLeveragedOrder(order);
         }
       }
 
