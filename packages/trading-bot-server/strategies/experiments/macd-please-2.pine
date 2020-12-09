@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Please", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Please", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
@@ -8,11 +8,13 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-hiLow = input(defval=30, title="Hi Low Lookback", minval=0, step=1)
+hiLow = input(defval=12, title="Hi Low Lookback", minval=0, step=1)
 reopenLongs = input(defval=false, title="Reopen Longs?", type=input.bool)
 
 var isLong = false
 var isShort = false
+var shortZone = false
+var longZone = false
 
 // MACD
 fast = 12, slow = 26
@@ -43,34 +45,44 @@ rsi3 = getRsi(3)
 greenCandle = (close > open)
 redCandle = (close < open)
 
-highestHighs = highest(high, hiLow)[1]
-lowestLows   = lowest(low, hiLow)[1]
+highestPrev1 = highest(high, hiLow)[1]
+lowestPrev1   = lowest(low, hiLow)[1]
+highestPrev2 = highest(high, hiLow)[2]
+lowestPrev2   = lowest(low, hiLow)[2]
 
-twoHighs = high > highestHighs
-twoLows = low < lowestLows
+oneLow = low < lowestPrev1
+oneHigh = high > highestPrev1
+twoHighs = high > highestPrev1 and high[1] > highestPrev2
+twoLows = low < lowestPrev1 and low[1] < lowestPrev2
 
-bgColor = twoHighs ? color.teal : twoLows ? color.maroon : na
+// bgColor = twoHighs ? color.teal : twoLows ? color.maroon : na
+bgColor = oneHigh ? color.teal : oneLow ? color.maroon : na
 
 bgcolor(color=bgColor, transp=45)
 // bgcolor(color=highestMacd ? color.blue : na, transp=45)
 
 plot(vwap, color=color.blue)
-plot(series=highestHighs, color=color.green, linewidth=1)
-plot(series=lowestLows, color=color.red, linewidth=1)
+plot(series=highestPrev1, color=color.green, linewidth=1)
+plot(series=lowestPrev1, color=color.red, linewidth=1)
+
+// bgColor2 = shortZone ? color.orange : longZone ? color.blue : na
+// bgcolor(color=bgColor2, transp=85)
 
 macdBottomed = macd > macd2 and macd1 < macd2 and macd < 0
 rsiBottomed = rsiClose > rsi1 and rsi1 > rsi2 and rsiClose > rsi3 and rsi2 < rsi3
 
 // long = not isLong and macd < 0 and macd > macd1 and rsiClose <= rsiEntryLevel
-closeLong = isLong and macd > 0 and macd < macd1 and macd > signal // ) or (macd > 0 and macd < signal))
-stopLong = isLong and crossunder(macd, signal)
-reopenLong = reopenLongs and not isLong and open >= vwap and macd <= signal and rsi1 < rsi2 // and rsiClose <= 60
+// closeLong = isLong and macd > 0 and macd < macd1 and macd > signal // ) or (macd > 0 and macd < signal))
+// stopLong = isLong and crossunder(macd, signal)
+// reopenLong = reopenLongs and not isLong and open >= vwap and macd <= signal and rsi1 < rsi2 // and rsiClose <= 60
 // addLong = isLong and rsiBottomed
 // short = not isLong and macd > 0 and macd < macd1 and macd < macd2 and macd >= signal
-addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
-closeShort = isShort and macd < 0 and macd > macd1 and macd < signal
+// addShort = isShort and macd > macdEntry and macd > macd1 and macd > signal and macd1 > macd2
 
-short = not isShort and low < lowestLows
+long = not isLong and twoHighs
+closeLong = isLong and oneLow
+short = not isShort and oneLow
+closeShort = isShort and crossover(macd, signal)
 
 // plotshape(long, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
@@ -80,6 +92,26 @@ short = not isShort and low < lowestLows
 // bgcolor(color=reopenLong or addLong ? color.yellow : na)
 // bgcolor(color=short ? color.red : na)
 // bgcolor(color=addShort ? color.orange : na)
+
+if long
+    isLong := true
+    isShort := false
+
+if short
+    isShort := true
+    isLong := false
+
+if closeLong or closeShort
+    isLong := false
+    isShort := false
+
+if low < lowestPrev1
+    shortZone := true
+    longZone := false
+
+if high > highestPrev1
+    longZone := true
+    shortZone := false
 
 // if long or reopenLong
 //     isLong := true
@@ -106,11 +138,10 @@ short = not isShort and low < lowestLows
 //     macdEntry := macd
 //     longCount := longCount + 1
 
-// strategy.entry("long", long=true, when=(long or reopenLong) and isWithinTimeBounds)
-// strategy.order("long", long=true, when=addLong and allowAdds and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+// strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 // strategy.close("long", when=closeLong and isWithinTimeBounds)
-// strategy.entry("short", long=false, when=short and allowShorts and isWithinTimeBounds)
-// strategy.close("short", when=(closeShort or (long or reopenLong)) and allowShorts and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+strategy.close("short", when=closeShort and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     strategy.exit(id="stop long", stop=longStopPrice)
