@@ -11,14 +11,14 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 hiLowShort = input(defval=30, title="Hi Low Short", minval=0, step=1)
 hiLowLong = input(defval=60, title="Hi Low Long", minval=0, step=1)
 
-longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=1) / 100
+longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=0.1) / 100
 longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
-longStopPerc = input(1.5, title='Long Stop %', type=input.float, step=1) / 100
+longStopPerc = input(1.5, title='Long Stop %', type=input.float, step=0.1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 
-shortTakeProfPerc = input(2, title='Short Take Profit %', type=input.float, step=1) / 100
+shortTakeProfPerc = input(2, title='Short Take Profit %', type=input.float, step=0.1) / 100
 shortTakeProfPrice = strategy.position_avg_price * (1 - shortTakeProfPerc)
-shortStopPerc = input(1.5, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPerc = input(1.5, title='Short Stop %', type=input.float, step=0.1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 var isLong = false
@@ -66,8 +66,8 @@ lowestPrev21   = lowest(low, hiLowLong)[2]
 
 oneLow = low < lowestPrev1
 oneHigh = high > highestPrev1
-twoHighs = high > highestPrev1 and high[1] > highestPrev2
-twoLows = low < lowestPrev1 and low[1] < lowestPrev2
+twoHighs = high > highestPrev11 and high[1] > highestPrev21
+twoLows = low < lowestPrev11 and low[1] < lowestPrev21
 
 // bgColor = twoHighs ? color.teal : twoLows ? color.maroon : na
 // bgColor = oneHigh ? color.teal : oneLow ? color.maroon : na
@@ -92,67 +92,47 @@ rsiBottomed = rsiClose > rsi1 and rsi1 > rsi2 and rsiClose > rsi3 and rsi2 < rsi
 
 // plotshape(long, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
-if low < lowestPrev11
+if twoLows
     shortZone := true
     longZone := false
 
-if high > highestPrev11
+if twoHighs
     longZone := true
     shortZone := false
 
 long = not isLong and longZone and high > highestPrev1
 short = not isShort and shortZone and low < lowestPrev1
 
-if long and not (high >= longTakeProfPrice or low <= longStopPrice)
-    isLong := true
-    isShort := false
-
-if short and not (low <= shortTakeProfPrice or high >= shortStopPrice)
-    isShort := true
-    isLong := false
+closeLong = isLong and (high >= longTakeProfPrice or low <= longStopPrice)
+closeShort = isShort and (low <= shortTakeProfPrice or high >= shortStopPrice)
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
 
-// if long or reopenLong
-//     isLong := true
-//     isShort := false
-//     macdEntry := macd
-//     rsiEntry := rsiClose
+if long
+    isLong := true
+    isShort := false
 
-// if closeLong
-//     isLong := false
-//     isShort := false
-//     longCount := 0
+if short
+    isShort := true
+    isLong := false
 
-// if short and allowShorts
-//     isLong := false
-//     isShort := true
-//     macdEntry := macd
-//     rsiEntry := rsiClose
-
-// if closeShort and allowShorts
-//     isShort := false
-//     isLong := false
-  
-// if addLong
-//     macdEntry := macd
-//     longCount := longCount + 1
+if closeLong or closeShort
+    isLong := false
+    isShort := false
 
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-// strategy.close("long", when=short and isWithinTimeBounds)
+strategy.close("long", when=closeLong and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.close("short", when=long and isWithinTimeBounds)
+strategy.close("short", when=closeShort and isWithinTimeBounds)
 
-if (strategy.position_size > 0)
-    exitLong = high >= longTakeProfPrice or low <= longStopPrice
-    if exitLong
-        isLong := false
-    strategy.close("long", when=(short or exitLong) and isWithinTimeBounds)
-    // strategy.exit("exit long", "long", limit=longTakeProfPrice, stop=longStopPrice)
+// if (strategy.position_size > 0)
+//     exitLong = high >= longTakeProfPrice or low <= longStopPrice
+//     if exitLong
+//         isLong := false
+//     // strategy.exit("exit long", "long", limit=longTakeProfPrice, stop=longStopPrice)
 
-if (strategy.position_size < 0)
-    exitShort = low <= shortTakeProfPrice or high >= shortStopPrice
-    if exitShort
-        isShort := false
-    strategy.close("short", when=(long or exitShort) and isWithinTimeBounds)
+// if (strategy.position_size < 0)
+//     exitShort = low <= shortTakeProfPrice or high >= shortStopPrice
+//     if exitShort
+//         isShort := false

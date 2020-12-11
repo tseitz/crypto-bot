@@ -1,0 +1,38 @@
+//@version=4
+strategy("Fast EMA", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+var isLong = false
+var isShort = false
+
+getEma(index) =>
+    fastEma = ema(close[index], 2)
+
+ema0 = ema(close, 2)
+ema1 = getEma(1)
+ema2 = getEma(2)
+ema3 = getEma(3)
+
+plot(ema0, color=color.orange)
+
+long = ema0 > ema1
+short = ema0 < ema1
+
+if long
+    isLong := true
+    isShort := false
+
+if short
+    isShort := true
+    isLong := false
+
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+strategy.close("long", when=short and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+strategy.close("short", when=long and isWithinTimeBounds)
