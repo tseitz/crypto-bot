@@ -128,9 +128,9 @@ rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3) and rsi2 > rsi1
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3) and rsiClose < rsi2
 
 long = not isLong and longZone and ((macdBottomed))
-short = not isShort and shortZone and (macdTopped and (rsiClose > 50 or rsi1 > 50)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
-addShort = isShort and high[2] > highestFast3 and close[1] < highestFast2 and barstate.isnew
-addLong = isLong and low[2] < lowestFast3 and close[1] > lowestFast2 and barstate.isnew
+short = not isShort and shortZone and (macdTopped and (rsiClose > 55)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
+addShort = isShort and high[1] > highestFast2 and close < highestFast1 and barstate.isnew
+addLong = isLong and low[1] < lowestFast2 and close > lowestFast1 and barstate.isnew
 closeLong = isLong and ((rsiTopped and (rsiClose > 65 or rsi1 > 65))) // and macdBottomed 
 closeShort = isShort and rsiBottomed and rsiClose > rsi1 and rsiClose > rsi2 and rsi1 < rsi2 and macdBottomed and (rsiClose < 38 or rsi1 < 32)
 
