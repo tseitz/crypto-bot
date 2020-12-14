@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Please", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Please 3", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
@@ -8,8 +8,8 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-hiLowFast = input(defval=7, title="Hi Low Short", minval=0, step=1)
-hiLowSlow = input(defval=40, title="Hi Low Long", minval=0, step=1)
+hiLowFast = input(defval=2, title="Hi Low Short", minval=0, step=1)
+hiLowSlow = input(defval=5, title="Hi Low Long", minval=0, step=1)
 
 longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=0.1) / 100
 longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
@@ -26,6 +26,8 @@ var isShort = false
 var shortZone = false
 var longZone = false
 var firstOpen = false
+var highCount = 0
+var lowCount = 0
 
 // MACD
 fast = 12, slow = 26
@@ -65,10 +67,10 @@ lowestPrevSlow1   = lowest(low, hiLowSlow)[1]
 highestPrevSlow2 = highest(high, hiLowSlow)[2]
 lowestPrevSlow2   = lowest(low, hiLowSlow)[2]
 
-oneLow = low < lowestPrevFast1
-oneHigh = high > highestPrevFast1
-twoHighs = high > highestPrevSlow1 and high[1] > highestPrevSlow2
-twoLows = low < lowestPrevSlow1 and low[1] < lowestPrevSlow2
+oneLow = low < lowestPrevSlow1
+oneHigh = high > highestPrevSlow1
+// twoHighs = high > highestPrevSlow1 and high[1] > highestPrevSlow2
+// twoLows = low < lowestPrevSlow1 and low[1] < lowestPrevSlow2
 
 // bgColor = twoHighs ? color.teal : twoLows ? color.maroon : na
 // bgColor = oneHigh ? color.teal : oneLow ? color.maroon : na
@@ -93,49 +95,60 @@ rsiBottomed = rsiClose > rsi1 and rsi1 > rsi2 and rsiClose > rsi3 and rsi2 < rsi
 
 // plotshape(long, title="Stop", text="Stop Long", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
-if twoLows
+if oneLow
+    lowCount := lowCount + 1
+
+if oneHigh
+    highCount := highCount + 1
+
+if lowCount == 2
     shortZone := true
     longZone := false
     firstOpen := true
+    highCount := 0
+    lowCount := 0
 
-if twoHighs
+if highCount == 2
     longZone := true
     shortZone := false
     firstOpen := true
+    lowCount := 0
+    highCount := 0
 
-firstLong = not isLong and firstOpen and longZone and rsi0 > rsi1 and rsi1 < rsi2
-firstShort = not isShort and firstOpen and shortZone and rsi0 < rsi1 and rsi1 > rsi2
-long = not isLong and not firstOpen and (longZone and high > highestPrevFast1) // or (longZone and low[1] < lowestPrevSlow2 and open > lowestPrevFast1)
-short = not isShort and not firstOpen and (shortZone and low < lowestPrevFast1) // or (shortZone and high[1] > highestPrevSlow2 and open < highestPrevFast1)
-addLong = isLong and longZone and low < lowestPrevFast1 and open > lowestPrevFast1
-addShort = isShort and shortZone and high > highestPrevFast1 and open < highestPrevFast1
+long = not isLong and longZone and ((rsi0 > rsi1 and rsi1 < rsi2) or (high > highestPrevSlow1))
+short = not isShort and shortZone and ((rsi0 < rsi1 and rsi1 > rsi2) or (low < lowestPrevSlow1))
 
-closeLong = isLong and (high >= longTakeProfPrice or low <= longStopPrice)
-closeShort = isShort and (low <= shortTakeProfPrice or high >= shortStopPrice)
+// firstLong = not isLong and firstOpen and longZone and rsi0 > rsi1 and rsi1 < rsi2
+// firstShort = not isShort and firstOpen and shortZone and rsi0 < rsi1 and rsi1 > rsi2
+// long = not isLong and not firstOpen and (longZone and high > highestPrevFast1) // or (longZone and low[1] < lowestPrevSlow2 and open > lowestPrevFast1)
+// short = not isShort and not firstOpen and (shortZone and low < lowestPrevFast1) // or (shortZone and high[1] > highestPrevSlow2 and open < highestPrevFast1)
+// addLong = isLong and longZone and low < lowestPrevFast1 and open > lowestPrevFast1
+// addShort = isShort and shortZone and high > highestPrevFast1 and open < highestPrevFast1
+
+closeLong = isLong and (short or low < lowestPrevFast1)
+closeShort = isShort and (long or high > highestPrevFast1)
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
 
-if firstLong
+if long
     isLong := true
     isShort := false
-    firstOpen := false
 
-if firstShort
+if short
     isShort := true
     isLong := false
-    firstOpen := false
 
-if closeLong or closeShort
-    isLong := false
-    isShort := false
+// if closeLong or closeShort
+//     isLong := false
+//     isShort := false
 
-strategy.entry("long", long=true, when=firstLong and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
-strategy.close("long", when=closeLong and isWithinTimeBounds)
-strategy.entry("short", long=false, when=firstShort and isWithinTimeBounds)
-strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
-strategy.close("short", when=closeShort and isWithinTimeBounds)
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+// strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
+strategy.close("long", when=short and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
+strategy.close("short", when=long and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     exitLong = high >= longTakeProfPrice or low <= longStopPrice
