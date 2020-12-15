@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Please 4", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD Please 4", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
@@ -129,8 +129,8 @@ rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3) and rsiClose < rsi2
 
 long = not isLong and longZone and ((macdBottomed))
 short = not isShort and shortZone and (macdTopped and rsiClose > 55) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
-addShort = isShort and high[1] > highestFast2 and close < highestFast1 and barstate.isnew
-addLong = isLong and low[1] < lowestFast2 and close > lowestFast1 and barstate.isnew
+addShort = isShort and high[1] > highestFast2 and close < highestFast1
+addLong = isLong and low[1] < lowestFast2 and close > lowestFast1
 closeLong = isLong and ((rsiTopped and (rsiClose > 65 or rsi1 > 65))) // and macdBottomed 
 closeShort = isShort and rsiBottomed and rsiClose > rsi1 and rsiClose > rsi2 and rsi1 < rsi2 and macdBottomed and (rsiClose < 38 or rsi1 < 32)
 
