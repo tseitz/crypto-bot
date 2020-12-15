@@ -196,7 +196,6 @@ class KrakenService {
           volume: order.tradeVolume,
           leverage: order.leverageAmount,
         });
-        console.log(result);
       }
 
       logOrderResult(`Leveraged Order Complete`, result, order.krakenizedTradingViewTicker);
