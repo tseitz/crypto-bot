@@ -59,6 +59,36 @@
     "percentProfitable": 74.19,
     "avgTrade": 2.11
   },
+  "DOTUSDT": {
+    "name": "DOTUSDT MACD Please",
+    "timeframe": "15m",
+    "allowShorts": false,
+    "addLong": true,
+    "reopenLong": true,
+    "rsiEntry": 37,
+    "addLongRsi": 42,
+    "entrySize": 35,
+    "addSize": 60,
+    "latestResult": 130.71,
+    "totalTrades": 62,
+    "percentProfitable": 74.19,
+    "avgTrade": 2.11
+  },
+  "EOSUSDT": {
+    "name": "EOSUSDT MACD Please",
+    "timeframe": "5m",
+    "allowShorts": false,
+    "addLong": true,
+    "reopenLong": false,
+    "rsiEntry": 0,
+    "addLongRsi": 44,
+    "entrySize": 35,
+    "addSize": 45,
+    "latestResult": 157.59,
+    "totalTrades": 336,
+    "percentProfitable": 71.73,
+    "avgTrade": 0
+  },
   "ETHUSDT": {
     "name": "ETHUSDT 5m MACD AL!S!R",
     "timeframe": "5m",
