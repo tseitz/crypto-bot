@@ -1,5 +1,5 @@
 //@version=4
-strategy("MACD Please 4", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("MACD 15 min", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
@@ -8,8 +8,8 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=1)
-hiLowSlow = input(defval=160, title="Hi Low Long", minval=0, step=1)
+hiLowFast = input(defval=60, title="Hi Low Short", minval=0, step=1)
+hiLowSlow = input(defval=220, title="Hi Low Long", minval=0, step=1)
 
 longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=0.1) / 100
 longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
@@ -80,11 +80,11 @@ lowestSlow1 = getLowest(1, hiLowSlow)
 lowestSlow2 = getLowest(2, hiLowSlow)
 lowestSlow3 = getLowest(3, hiLowSlow)
 
-plot(vwap, color=color.blue)
-plot(series=highestFast1, color=color.green, linewidth=1)
-plot(series=lowestFast1, color=color.red, linewidth=1)
-plot(series=highestSlow1, color=color.green, linewidth=2)
-plot(series=lowestSlow1, color=color.red, linewidth=2)
+// plot(vwap, color=color.blue)
+// plot(series=highestFast1, color=color.green, linewidth=1)
+// plot(series=lowestFast1, color=color.red, linewidth=1)
+// plot(series=highestSlow1, color=color.green, linewidth=2)
+// plot(series=lowestSlow1, color=color.red, linewidth=2)
 
 oneSlowLow = low < lowestSlow1
 oneSlowHigh = high > highestSlow1
@@ -125,25 +125,27 @@ if highSlowCount == 2
 macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and macd < 0
 macdTopped = macd > signal and macd < macd1 and (macd - signal < macd1 - signal[1]) and macd > 0
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3) and rsi2 > rsi1
-rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3) and rsiClose < rsi2
+rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
+rsiDecreasing = rsiClose < rsi2
+rsiIncreasing = rsiClose > rsi2
 
-long = not isLong and longZone and ((macdBottomed))
+long = not isLong and rsiBottomed and rsiIncreasing and (rsiClose < 30 or rsi1 < 30)
 short = not isShort and shortZone and (macdTopped and rsiClose > 55) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
 addShort = isShort and high[1] > highestFast2 and close < highestFast1 and barstate.isnew
 addLong = isLong and low[1] < lowestFast2 and close > lowestFast1 and barstate.isnew
 closeLong = isLong and ((rsiTopped and (rsiClose > 65 or rsi1 > 65))) // and macdBottomed 
 closeShort = isShort and rsiBottomed and rsiClose > rsi1 and rsiClose > rsi2 and rsi1 < rsi2 and macdBottomed and (rsiClose < 38 or rsi1 < 32)
 
-bgColor2 = shortZone ? color.red : longZone ? color.green : na
-bgcolor(color=bgColor2, transp=85)
+// bgColor2 = shortZone ? color.red : longZone ? color.green : na
+// bgcolor(color=bgColor2, transp=85)
 
 if long
     isLong := true
     isShort := false
 
-if short
-    isShort := true
-    isLong := false
+// if short
+//     isShort := true
+//     isLong := false
 
 if closeLong or closeShort
     isLong := false
@@ -158,11 +160,11 @@ if addShort
     shortCount := shortCount + 1
 
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+// strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
 strategy.close("long", when=(closeLong or short) and isWithinTimeBounds)
-strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.order("short", long=false, when=addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
-strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
+// strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// strategy.order("short", long=false, when=addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
+// strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     exitLong = high >= longTakeProfPrice or low <= longStopPrice

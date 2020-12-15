@@ -8,8 +8,8 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=1)
-hiLowSlow = input(defval=160, title="Hi Low Long", minval=0, step=1)
+hiLowFast = input(defval=2, title="Hi Low Short", minval=0, step=1)
+hiLowSlow = input(defval=20, title="Hi Low Long", minval=0, step=1)
 
 longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=0.1) / 100
 longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
@@ -127,8 +127,8 @@ macdTopped = macd > signal and macd < macd1 and (macd - signal < macd1 - signal[
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3) and rsi2 > rsi1
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3) and rsiClose < rsi2
 
-long = not isLong and longZone and ((macdBottomed))
-short = not isShort and shortZone and (macdTopped and rsiClose > 55) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
+long = not isLong and longZone and rsiBottomed
+short = not isShort and shortZone and (macdTopped and (rsiClose > 55)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
 addShort = isShort and high[1] > highestFast2 and close < highestFast1 and barstate.isnew
 addLong = isLong and low[1] < lowestFast2 and close > lowestFast1 and barstate.isnew
 closeLong = isLong and ((rsiTopped and (rsiClose > 65 or rsi1 > 65))) // and macdBottomed 
@@ -140,10 +140,14 @@ bgcolor(color=bgColor2, transp=85)
 if long
     isLong := true
     isShort := false
+    shortCount := 0
+    longCount := 0
 
 if short
     isShort := true
     isLong := false
+    shortCount := 0
+    longCount := 0
 
 if closeLong or closeShort
     isLong := false
