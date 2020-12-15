@@ -129,8 +129,8 @@ rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3) and rsiClose < rsi2
 
 long = not isLong and longZone and ((macdBottomed))
 short = not isShort and shortZone and (macdTopped and rsiClose > 55) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
-addShort = isShort and high[1] > highestFast2 and close < highestFast1
-addLong = isLong and low[1] < lowestFast2 and close > lowestFast1
+addShort = isShort and high[1] > highestFast2 and open < highestFast1
+addLong = isLong and low[1] < lowestFast2 and open > lowestFast1
 closeLong = isLong and ((rsiTopped and (rsiClose > 65 or rsi1 > 65))) // and macdBottomed 
 closeShort = isShort and rsiBottomed and rsiClose > rsi1 and rsiClose > rsi2 and rsi1 < rsi2 and macdBottomed and (rsiClose < 38 or rsi1 < 32)
 
