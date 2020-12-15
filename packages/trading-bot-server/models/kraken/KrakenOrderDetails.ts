@@ -46,6 +46,7 @@ export default class KrakenOrderDetails {
   spread: number;
   bidPrice: number;
   openOrders: KrakenOpenOrders;
+  txId?: string;
 
   constructor(
     body: TradingViewBody,
@@ -73,6 +74,7 @@ export default class KrakenOrderDetails {
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
+    this.txId = body.strategy.txId;
     // this.closeOnly = body.strategy.description.toLowerCase().includes('close') ? true : false;
 
     // pair info

@@ -12,4 +12,5 @@ export interface TradingViewStrategyBody {
   description: string;
   price: string;
   positionSize?: number;
+  txId?: string;
 }
