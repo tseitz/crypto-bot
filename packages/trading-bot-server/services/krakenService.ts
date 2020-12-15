@@ -176,7 +176,7 @@ class KrakenService {
         console.log(`Total Allowable: ${order.entrySize + order.addSize * 2}`);
         const tooMuch = order.entrySize
           ? positionMargin > order.entrySize + order.addSize * 2
-          : positionMargin > 175;
+          : positionMargin > 200;
 
         if (!tooMuch) {
           result = await this.kraken.setAddOrder({
