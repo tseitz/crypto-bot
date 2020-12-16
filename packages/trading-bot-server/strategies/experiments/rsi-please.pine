@@ -8,7 +8,7 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-hiLowSlow = input(defval=60, title="Hi Low Long", minval=0, step=1)
+hiLowSlow = input(defval=75, title="Hi Low Long", minval=0, step=1)
 
 longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=0.1) / 100
 longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
@@ -20,7 +20,7 @@ shortTakeProfPrice = strategy.position_avg_price * (1 - shortTakeProfPerc)
 shortStopPerc = input(10, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
-maxAdds = input(defval=3, title="Max Adds", minval=0, step=1)
+// maxAdds = input(defval=3, title="Max Adds", minval=0, step=1)
 
 var isLong = false
 var isShort = false
@@ -41,6 +41,9 @@ slowMA = ema(close, slow)
 macd = fastMA - slowMA
 signal = ema(macd, 9)
 rsiClose = rsi(close, 14)
+
+wma = wma(close, 66)
+plot(series=wma, color=color.blue, linewidth=1)
 
 getMACD(index) =>
     thisFastMA = ema(close[index], fast)
@@ -80,8 +83,10 @@ size4 = getSize(4)
 greenCandle = (close > open)
 redCandle = (close < open)
 
-// plotit = size0 > ((size1 + size2 + size3 + size4) / 2) // and abs(open - close) > abs(open[1] - close[1])
-// plotshape(plotit, title="SIZE!", text="SIZE!", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+plotit = size0 > size1 + size2 + size3 // and abs(open - close) > abs(open[1] - close[1])
+longGreen = plotit and greenCandle
+longRed = plotit and redCandle
+plotshape(plotit, title="SIZE!", text="SIZE!", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
 highestSlow1 = getHighest(1, hiLowSlow)
 highestSlow2 = getHighest(2, hiLowSlow)
@@ -106,7 +111,7 @@ lowerMacd = macd < lowestMacd and macd < 0
 lowerMacd2 = macd1 < lowestMacd2 and macd1 < 0
 lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
-bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=60)
+bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
 
 // plot(vwap, color=color.blue)
 
@@ -146,17 +151,16 @@ rsiTopped = rsiClose < rsi1 and rsi1 >= rsi2
 rsiDecreasing = rsiClose < rsi2
 rsiIncreasing = rsiClose > rsi2
 
-
 firstShort = shortZone and firstOpen and barstate.isnew
 firstLong = longZone and firstOpen and barstate.isnew
-long = not isLong and longZone and (higherMacd or (rsiBottomed and rsi1 < 50)) and barstate.isnew
-short = not isShort and shortZone and (lowerMacd or (rsiTopped and rsi1 > 50)) and barstate.isnew
-addShort = isShort and shortCount < maxAdds and higherMacd2 and macd < highestMacd and barstate.isnew
-addLong = isLong and longCount < maxAdds and lowerMacd2 and macd > lowestMacd and barstate.isnew
+// long = not isLong and longZone and (higherMacd or (rsiBottomed and rsi1 < 55)) and barstate.isnew
+// short = not isShort and shortZone and (lowerMacd or (rsiTopped and rsi1 > 50)) and barstate.isnew
+addShort = shortZone and ((higherMacd2 and macd < highestMacd and barstate.isnew) or (rsiTopped and rsi1 > 67 and not higherMacd) or (longRed) or (not isShort and oneSlowLow))
+addLong = longZone and ((lowerMacd2 and macd > lowestMacd and barstate.isnew) or (rsiBottomed and rsi1 < 33 and not lowerMacd) or (longGreen) or (not isLong and oneSlowHigh))
 // stopLong = lowerMacd2 and lowerMacd3 and lowerMacd4
 // stopShort = higherMacd2 and higherMacd3 and higherMacd4
-closeLong = isLong and higherMacd2 and macd < highestMacd and barstate.isnew
-closeShort = isShort and lowerMacd2 and macd > lowestMacd and barstate.isnew
+closeLong = isLong and ((higherMacd2 and macd < highestMacd and barstate.isnew) or (rsi1 < rsi2 and rsi2 >= rsi3 and not higherMacd and rsi2 > 70 and barstate.isnew) or (longRed))
+closeShort = isShort and ((lowerMacd2 and macd > lowestMacd and barstate.isnew) or (rsi1 > rsi2 and rsi2 <= rsi3 and not lowerMacd and rsi2 < 30 and barstate.isnew)  or (longGreen))
 
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
@@ -164,44 +168,29 @@ bgcolor(color=bgColor2, transp=85)
 
 plot(series=highestSlow1, color=color.green, linewidth=2)
 plot(series=lowestSlow1, color=color.red, linewidth=2)
-// plot(macd, color=color.blue)
-// plot(signal, color=color.orange)
 
-if firstLong or long
+if firstLong or addLong
     isLong := true
     isShort := false
-    longCount := 0
-    shortCount := 0
 
-if firstShort or short
+if firstShort or addShort
     isShort := true
     isLong := false
-    longCount := 0
-    shortCount := 0
 
 if closeLong
     isLong := false
-    longCount := 0
-    shortCount := 0
 
 if closeShort
     isShort := false
-    longCount := 0
-    shortCount := 0
 
 if (firstShort or firstLong) and firstOpen
     firstOpen := false
 
-if addLong
-    longCount := longCount + 1
 
-if addShort
-    shortCount := shortCount + 1
-
-strategy.entry("long", long=true, when=(firstLong or long) and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+strategy.entry("long", long=true, when=(firstLong or addLong) and isWithinTimeBounds)
+strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
 strategy.close("long", when=(closeLong or shortZone) and isWithinTimeBounds)
-strategy.entry("short", long=false, when=(firstShort or short) and isWithinTimeBounds)
+strategy.entry("short", long=false, when=(firstShort or addShort) and isWithinTimeBounds)
 strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
 strategy.close("short", when=(closeShort or longZone) and isWithinTimeBounds)
 
