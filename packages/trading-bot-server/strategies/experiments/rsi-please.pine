@@ -84,9 +84,11 @@ greenCandle = (close > open)
 redCandle = (close < open)
 
 plotit = size0 > size1 + size2 + size3 // and abs(open - close) > abs(open[1] - close[1])
+superplotit = size0 > size1 + size2 + size3 + size4
 longGreen = plotit and greenCandle
 longRed = plotit and redCandle
 plotshape(plotit, title="SIZE!", text="SIZE!", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+plotshape(superplotit, title="SUPER SIZE!", text="SUPER SIZE!", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
 highestSlow1 = getHighest(1, hiLowSlow)
 highestSlow2 = getHighest(2, hiLowSlow)
@@ -117,6 +119,7 @@ bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
 
 oneSlowLow = low < lowestSlow1
 oneSlowHigh = high > highestSlow1
+
 
 if oneSlowLow and not shortZone
     shortZone := true
