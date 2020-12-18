@@ -13,7 +13,8 @@ hiLowSlow = input(defval=160, title="Hi Low Long", minval=0, step=1)
 
 maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
 allowShorts = input(defval=true, title="Allow shorts?", type=input.bool)
-macdBottomLongs = input(defval=true, title="MACD Bottom Longs?", type=input.bool)
+fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool)
+lowestMacdBottoms = input(defval=true, title="Lowest MACD Bottoms?", type=input.bool)
 closeLongInShortZone = input(defval=52, title="Close Long In Short Zone RSI", minval=0, step=1)
 macdLength = input(defval=50, title="MACD Bars", minval=0, step=10)
 
@@ -144,11 +145,10 @@ rsiDecreasing = rsiClose < rsi2
 rsiIncreasing = rsiClose > rsi2
 
 // long = not isLong and longZone and ((macdBottomed))
-long = not isLong and ((not allowShorts) or longZone) and ((low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1) or (macdBottomLongs and macdBottomed and lowerMacd2 and macd > lowestMacd))
-// longShort = not isLong and ((low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1))
+long = not isLong and ((not allowShorts) or longZone) and ((low[1] < lowestFast2 and low > lowestFast1) or (fastMacdBottoms and macdBottomed))
 short = allowShorts and not isShort and shortZone and (macdTopped and (rsiClose > 55 or rsi1 > 55)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
-addShort = allowShorts and isShort and high[1] > highestFast2 and open < highestFast1 and close < highestFast1 and (macd > lastMacd or rsiClose > lastRsi)
-addLong = isLong and low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1 and (macd < lastMacd or rsiClose < lastRsi)
+addShort = allowShorts and isShort and high[1] > highestFast2 and high < highestFast1 and (macd > lastMacd or rsiClose > lastRsi)
+addLong = isLong and (low[1] < lowestFast2 and low > lowestFast1) and (macd < lastMacd or rsiClose < lastRsi)
 closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone)) // and macdBottomed 
 closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 38 or rsi1 < 32)) or longZone)
 
