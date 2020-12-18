@@ -11,17 +11,11 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=1)
 hiLowSlow = input(defval=160, title="Hi Low Long", minval=0, step=1)
 
-longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=0.1) / 100
-longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
-longStopPerc = input(10, title='Long Stop %', type=input.float, step=1) / 100
-longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
-
-shortTakeProfPerc = input(2, title='Short Take Profit %', type=input.float, step=0.1) / 100
-shortTakeProfPrice = strategy.position_avg_price * (1 - shortTakeProfPerc)
-shortStopPerc = input(10, title='Short Stop %', type=input.float, step=1) / 100
-shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
-
 maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
+allowShorts = input(defval=true, title="Allow shorts?", type=input.bool)
+macdBottomLongs = input(defval=true, title="MACD Bottom Longs?", type=input.bool)
+closeLongInShortZone = input(defval=52, title="Close Long In Short Zone RSI", minval=0, step=1)
+macdLength = input(defval=50, title="MACD Bars", minval=0, step=10)
 
 var isLong = false
 var isShort = false
@@ -33,6 +27,8 @@ var lowFastCount = 0
 var highFastCount = 0
 var longCount = 0
 var shortCount = 0
+var lastMacd = 0.0
+var lastRsi = 0.0
 
 // MACD
 fast = 12, slow = 26
@@ -122,20 +118,39 @@ if oneSlowHigh
 // plotit = (lowSlowCount == 1 and lowFastCount > 5) or (highSlowCount == 1 and highFastCount > 5)
 // plotshape(plotit, title="Stop", text="Stop", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
+highestMacd = highest(macd, macdLength)[1]
+highestMacd2 = highest(macd, macdLength)[2]
+highestMacd3 = highest(macd, macdLength)[3]
+highestMacd4 = highest(macd, macdLength)[4]
+lowestMacd = lowest(macd, macdLength)[1]
+lowestMacd2 = lowest(macd, macdLength)[2]
+lowestMacd3 = lowest(macd, macdLength)[3]
+lowestMacd4 = lowest(macd, macdLength)[4]
+higherMacd = macd > highestMacd and macd > 0
+higherMacd2 = macd1 > highestMacd2 and macd1 > 0
+higherMacd3 = macd2 > highestMacd3 and macd2 > 0
+higherMacd4 = macd3 > highestMacd4 and macd3 > 0
+lowerMacd = macd < lowestMacd and macd < 0
+lowerMacd2 = macd1 < lowestMacd2 and macd1 < 0
+lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
+lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
+bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
+
 macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and macd < 0
 macdTopped = macd > signal and macd < macd1 and (macd - signal < macd1 - signal[1]) and macd > 0
-rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3) and rsi2 > rsi1
+rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
 rsiDecreasing = rsiClose < rsi2
 rsiIncreasing = rsiClose > rsi2
 
 // long = not isLong and longZone and ((macdBottomed))
-long = not isLong and ((low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1) or (macdBottomed))
-short = not isShort and shortZone and (macdTopped and (rsiClose > 55 or rsi1 > 55)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
-addShort = isShort and high[1] > highestFast2 and open < highestFast1 and close < highestFast1
-addLong = isLong and low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1
-closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 65 or rsi1 > 65))) // and macdBottomed 
-closeShort = isShort and (rsiBottomed and rsiClose > rsi1 and rsiIncreasing and rsi1 < rsi2 and macdBottomed and (rsiClose < 38 or rsi1 < 32) or longZone)
+long = not isLong and ((not allowShorts) or longZone) and ((low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1) or (macdBottomLongs and macdBottomed and lowerMacd2 and macd > lowestMacd))
+// longShort = not isLong and ((low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1))
+short = allowShorts and not isShort and shortZone and (macdTopped and (rsiClose > 55 or rsi1 > 55)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
+addShort = allowShorts and isShort and high[1] > highestFast2 and open < highestFast1 and close < highestFast1 and (macd > lastMacd or rsiClose > lastRsi)
+addLong = isLong and low[1] < lowestFast2 and open > lowestFast1 and close > lowestFast1 and (macd < lastMacd or rsiClose < lastRsi)
+closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone)) // and macdBottomed 
+closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 38 or rsi1 < 32)) or longZone)
 
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
@@ -145,28 +160,38 @@ if long
     isLong := true
     isShort := false
 
-if short
+if short and allowShorts
     isShort := true
     isLong := false
 
-if closeLong or closeShort
+if closeLong
     isLong := false
+    longCount := 0
+    lastMacd := 0.0
+    lastRsi := 0.0
+    
+if closeShort and allowShorts
     isShort := false
     shortCount := 0
-    longCount := 0
+    lastMacd := 0.0
+    lastRsi := 0.0
 
 if addLong
     longCount := longCount + 1
+    lastMacd := macd < lastMacd ? macd : lastMacd
+    lastRsi := rsiClose < lastRsi ? rsiClose : lastRsi
 
-if addShort
+if addShort and allowShorts
     shortCount := shortCount + 1
+    lastMacd := macd > lastMacd ? macd : lastMacd
+    lastRsi := rsiClose > lastRsi ? rsiClose : lastRsi
 
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
 strategy.close("long", when=(closeLong or short) and isWithinTimeBounds)
-strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.order("short", long=false, when=addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
-strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
+strategy.entry("short", long=false, when=allowShorts and short and isWithinTimeBounds)
+strategy.order("short", long=false, when=allowShorts and addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
+strategy.close("short", when=allowShorts and (closeShort or long) and isWithinTimeBounds)
 
 // if (strategy.position_size > 0)
 //     exitLong = high >= longTakeProfPrice or low <= longStopPrice
