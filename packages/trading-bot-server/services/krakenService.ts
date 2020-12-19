@@ -119,7 +119,7 @@ class KrakenService {
     } else {
       for (const key in openPositions) {
         const position = openPositions[key];
-        if (position.pair === order.krakenTicker) {
+        if (position.pair === order.krakenTicker && order.action !== position.type) {
           const closeAction = position.type === 'sell' ? 'buy' : 'sell';
           // const volumeToClose =
           //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
@@ -157,7 +157,8 @@ class KrakenService {
         totalPosition = 0;
       for (const key in openPositions) {
         const position = openPositions[key];
-        if (order.krakenTicker === position.pair && order.action === position.type) {
+        // if (order.krakenTicker === position.pair && order.action === position.type) {
+        if (order.krakenTicker === position.pair) {
           add = true;
           positionMargin += Number.parseFloat(position.margin);
           totalPosition += Number.parseFloat(position.cost);
