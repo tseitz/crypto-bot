@@ -1,18 +1,19 @@
 {
   "ATOMUSDT": {
-    "name": "ATOMUSDT 5m MACD AL!S!R",
+    "name": "ATOMUSDT",
     "timeframe": "5m",
     "allowShorts": false,
-    "addLong": true,
-    "reopenLong": false,
-    "rsiEntry": 41,
+    "fastMacdBottoms": true,
+    "hiLowShort": 30,
+    "hiLowLong": 220,
+    "rsiEntry": 54,
     "addLongRsi": 44,
     "entrySize": 50,
     "addSize": 70,
-    "latestResult": 198.21,
-    "totalTrades": 259,
+    "latestResult": 189.35,
+    "totalTrades": 608,
     "percentProfitable": 72.2,
-    "avgTrade": 0.77
+    "avgTrade": 0.31
   },
   "BCHUSDT": {
     "name": "BCHUSDT 3m MACD AL!S!R",

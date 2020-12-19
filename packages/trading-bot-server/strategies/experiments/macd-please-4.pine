@@ -2,8 +2,8 @@
 strategy("MACD Please 4", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
-daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
-daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+daysBackMax = 60 // input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMin = 0
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
@@ -11,12 +11,12 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=1)
 hiLowSlow = input(defval=160, title="Hi Low Long", minval=0, step=1)
 
-maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
+closeLongInShortZone = input(defval=52, title="Close Long In Short Zone RSI", minval=0, step=1)
+maxAdds = 3 // input(defval=3, title="Max Adds", minval=0, step=1)
 allowShorts = input(defval=true, title="Allow shorts?", type=input.bool)
 fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool)
-lowestMacdBottoms = input(defval=true, title="Lowest MACD Bottoms?", type=input.bool)
-closeLongInShortZone = input(defval=52, title="Close Long In Short Zone RSI", minval=0, step=1)
-macdLength = input(defval=50, title="MACD Bars", minval=0, step=10)
+// lowestMacdBottoms = input(defval=true, title="Lowest MACD Bottoms?", type=input.bool)
+macdLength = 50 // input(defval=50, title="MACD Bars", minval=0, step=10)
 
 var isLong = false
 var isShort = false

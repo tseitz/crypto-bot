@@ -157,8 +157,7 @@ class KrakenService {
         totalPosition = 0;
       for (const key in openPositions) {
         const position = openPositions[key];
-        // if (order.krakenTicker === position.pair && order.action === position.type) {
-        if (order.krakenTicker === position.pair) {
+        if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
           positionMargin += Number.parseFloat(position.margin);
           totalPosition += Number.parseFloat(position.cost);
