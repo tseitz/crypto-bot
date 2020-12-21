@@ -32,8 +32,8 @@ export default class KrakenOrderDetails {
   currentPrice: number;
   currentBid: number;
   currentAsk: number;
-  stopLoss: number;
-  stopPercent: number;
+  // stopLoss: number;
+  // stopPercent: number;
   strategyParams: StrategyParams;
   balanceOfBase: number;
   balanceOfQuote: number;
@@ -46,6 +46,7 @@ export default class KrakenOrderDetails {
   spread: number;
   bidPrice: number;
   openOrders: KrakenOpenOrders;
+  txId?: string;
 
   constructor(
     body: TradingViewBody,
@@ -73,6 +74,7 @@ export default class KrakenOrderDetails {
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
+    this.txId = body.strategy.txId;
     // this.closeOnly = body.strategy.description.toLowerCase().includes('close') ? true : false;
 
     // pair info
@@ -128,10 +130,10 @@ export default class KrakenOrderDetails {
     this.balanceOfQuote = Number.parseFloat(myBalanceInfo[this.quoteOfPair]);
     this.tradeBalance = this.action === 'sell' ? this.balanceOfBase : this.balanceOfQuote;
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfBase);
-    this.stopPercent = 12;
+    // this.stopPercent = 12;
     this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();
-    this.stopLoss = this.getStopLoss();
+    // this.stopLoss = this.getStopLoss();
   }
 
   private getTradeVolume(): number {
@@ -166,53 +168,57 @@ export default class KrakenOrderDetails {
     return volume > this.minVolume ? volume : this.minVolume;
   }
 
-  private getStopLoss(): number {
-    const stop =
-      this.action === 'sell'
-        ? this.currentBid * (1 + this.stopPercent / 100)
-        : this.currentBid * (1 - this.stopPercent / 100);
-    return Number.parseFloat(stop.toFixed(this.priceDecimals));
-  }
+  // private getStopLoss(): number {
+  //   const stop =
+  //     this.action === 'sell'
+  //       ? this.currentBid * (1 + this.stopPercent / 100)
+  //       : this.currentBid * (1 - this.stopPercent / 100);
+  //   return Number.parseFloat(stop.toFixed(this.priceDecimals));
+  // }
 
   private getBid(): number {
+    // return this.action === 'buy' ? this.currentAsk : this.currentBid; // give it to the ask
     // YFI doesn't get filled as often so giving
-    return this.action === 'buy' ? this.currentAsk : this.currentBid; // it to the ask
-    // if (isNaN(this.tradingViewPrice) || this.tradingViewTicker === 'YFIXBT') {
-    //   return this.action === 'buy' ? this.currentAsk : this.currentBid;
-    // } else {
-    //   // if it's running away long or short, buy it, otherwise average it out
-    //   if (this.action === 'buy') {
-    //     if (this.tradingViewPrice >= this.currentAsk) {
-    //       return this.currentAsk;
-    //     } else if (
-    //       this.tradingViewPrice <= this.currentAsk &&
-    //       this.tradingViewPrice >= this.currentBid
-    //     ) {
-    //       return this.tradingViewPrice;
-    //     } else {
-    //       return Number.parseFloat(
-    //         Number.parseFloat(((this.currentBid + this.currentAsk) / 2).toString()).toFixed(
-    //           this.priceDecimals
-    //         )
-    //       );
-    //     }
-    //     // return Number.parseFloat(
-    //     //   Number.parseFloat(
-    //     //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-    //     //   ).toFixed(this.priceDecimals)
-    //     // );
-    //   } else {
-    //     if (this.tradingViewPrice <= this.currentBid) {
-    //       return this.currentBid;
-    //     } else {
-    //       return Number.parseFloat(
-    //         Number.parseFloat(
-    //           ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-    //         ).toFixed(this.priceDecimals)
-    //       );
-    //     }
-    //   }
-    // }
+    if (
+      isNaN(this.tradingViewPrice) ||
+      this.tradingViewTicker === 'YFIXBT' ||
+      this.tradingViewTicker === 'ATOMUSDT'
+    ) {
+      return this.action === 'buy' ? this.currentAsk : this.currentBid;
+    } else {
+      // if it's running away long or short, buy it, otherwise average it out
+      if (this.action === 'buy') {
+        if (this.tradingViewPrice >= this.currentAsk) {
+          return this.currentAsk;
+        } else if (
+          this.tradingViewPrice <= this.currentAsk &&
+          this.tradingViewPrice >= this.currentBid
+        ) {
+          return this.tradingViewPrice;
+        } else {
+          return Number.parseFloat(
+            Number.parseFloat(((this.currentBid + this.currentAsk) / 2).toString()).toFixed(
+              this.priceDecimals
+            )
+          );
+        }
+        // return Number.parseFloat(
+        //   Number.parseFloat(
+        //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+        //   ).toFixed(this.priceDecimals)
+        // );
+      } else {
+        if (this.tradingViewPrice <= this.currentBid) {
+          return this.currentBid;
+        } else {
+          return Number.parseFloat(
+            Number.parseFloat(
+              ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
+            ).toFixed(this.priceDecimals)
+          );
+        }
+      }
+    }
   }
 
   convertBaseToDollar(base: number, usd: number): number {

@@ -1,0 +1,178 @@
+//@version=4
+strategy("MACD 15 min", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMin = input(defval=0, title="Min Days Back to Test", minval=0)
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+hiLowFast = input(defval=60, title="Hi Low Short", minval=0, step=1)
+hiLowSlow = input(defval=220, title="Hi Low Long", minval=0, step=1)
+
+longTakeProfPerc = input(2, title='Long Take Profit %', type=input.float, step=0.1) / 100
+longTakeProfPrice = strategy.position_avg_price * (1 + longTakeProfPerc)
+longStopPerc = input(10, title='Long Stop %', type=input.float, step=1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
+
+shortTakeProfPerc = input(2, title='Short Take Profit %', type=input.float, step=0.1) / 100
+shortTakeProfPrice = strategy.position_avg_price * (1 - shortTakeProfPerc)
+shortStopPerc = input(10, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
+
+maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
+
+var isLong = false
+var isShort = false
+var shortZone = false
+var longZone = false
+var lowSlowCount = 0
+var highSlowCount = 0
+var lowFastCount = 0
+var highFastCount = 0
+var longCount = 0
+var shortCount = 0
+
+// MACD
+fast = 12, slow = 26
+fastMA = ema(close, fast)
+slowMA = ema(close, slow)
+macd = fastMA - slowMA
+signal = ema(macd, 9)
+rsiClose = rsi(close, 14)
+
+getMACD(index) =>
+    thisFastMA = ema(close[index], fast)
+    thisSlowMA = ema(close[index], slow)
+    thisMacd = thisFastMA - thisSlowMA
+
+getRsi(index) =>
+    thisRsi = rsi(close[index], 14)
+
+getHighest(index, speed) =>
+    thisHighest = highest(high, speed)[index]
+
+getLowest(index, speed) =>
+    thisLowest = lowest(low, speed)[index]
+
+macd0 = getMACD(0)
+macd1 = getMACD(1)
+macd2 = getMACD(2)
+macd3 = getMACD(3)
+
+rsi0 = getRsi(0)
+rsi1 = getRsi(1)
+rsi2 = getRsi(2)
+rsi3 = getRsi(3)
+rsi4 = getRsi(4)
+
+highestFast1 = getHighest(1, hiLowFast)
+highestFast2 = getHighest(2, hiLowFast)
+highestFast3 = getHighest(3, hiLowFast)
+lowestFast1 = getLowest(1, hiLowFast)
+lowestFast2 = getLowest(2, hiLowFast)
+lowestFast3 = getLowest(3, hiLowFast)
+highestSlow1 = getHighest(1, hiLowSlow)
+highestSlow2 = getHighest(2, hiLowSlow)
+highestSlow3 = getHighest(3, hiLowSlow)
+lowestSlow1 = getLowest(1, hiLowSlow)
+lowestSlow2 = getLowest(2, hiLowSlow)
+lowestSlow3 = getLowest(3, hiLowSlow)
+
+// plot(vwap, color=color.blue)
+// plot(series=highestFast1, color=color.green, linewidth=1)
+// plot(series=lowestFast1, color=color.red, linewidth=1)
+// plot(series=highestSlow1, color=color.green, linewidth=2)
+// plot(series=lowestSlow1, color=color.red, linewidth=2)
+
+oneSlowLow = low < lowestSlow1
+oneSlowHigh = high > highestSlow1
+oneFastLow = longZone and low < lowestFast1
+oneFastHigh = shortZone and high > highestFast1
+
+if oneSlowLow
+    lowSlowCount := lowSlowCount + 1
+
+if oneSlowHigh
+    highSlowCount := highSlowCount + 1
+
+if oneFastLow
+    lowFastCount := lowFastCount + 1
+
+if oneFastHigh
+    highFastCount := highFastCount + 1
+
+if lowSlowCount == 2
+    shortZone := true
+    longZone := false
+    highSlowCount := 0
+    lowSlowCount := 0
+    highFastCount := 0
+    lowFastCount := 0
+
+if highSlowCount == 2
+    longZone := true
+    shortZone := false
+    lowSlowCount := 0
+    highSlowCount := 0
+    highFastCount := 0
+    lowFastCount := 0
+
+// plotit = (lowSlowCount == 1 and lowFastCount > 5) or (highSlowCount == 1 and highFastCount > 5)
+// plotshape(plotit, title="Stop", text="Stop", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+
+macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and macd < 0
+macdTopped = macd > signal and macd < macd1 and (macd - signal < macd1 - signal[1]) and macd > 0
+rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3) and rsi2 > rsi1
+rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
+rsiDecreasing = rsiClose < rsi2
+rsiIncreasing = rsiClose > rsi2
+
+long = not isLong and rsiBottomed and rsiIncreasing and (rsiClose < 30 or rsi1 < 30)
+short = not isShort and shortZone and (macdTopped and rsiClose > 55) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
+addShort = isShort and high[1] > highestFast2 and close < highestFast1 and barstate.isnew
+addLong = isLong and low[1] < lowestFast2 and close > lowestFast1 and barstate.isnew
+closeLong = isLong and ((rsiTopped and (rsiClose > 65 or rsi1 > 65))) // and macdBottomed 
+closeShort = isShort and rsiBottomed and rsiClose > rsi1 and rsiClose > rsi2 and rsi1 < rsi2 and macdBottomed and (rsiClose < 38 or rsi1 < 32)
+
+// bgColor2 = shortZone ? color.red : longZone ? color.green : na
+// bgcolor(color=bgColor2, transp=85)
+
+if long
+    isLong := true
+    isShort := false
+
+// if short
+//     isShort := true
+//     isLong := false
+
+if closeLong or closeShort
+    isLong := false
+    isShort := false
+    shortCount := 0
+    longCount := 0
+
+if addLong
+    longCount := longCount + 1
+
+if addShort
+    shortCount := shortCount + 1
+
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+// strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+strategy.close("long", when=(closeLong or short) and isWithinTimeBounds)
+// strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// strategy.order("short", long=false, when=addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
+// strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
+
+// if (strategy.position_size > 0)
+//     exitLong = high >= longTakeProfPrice or low <= longStopPrice
+//     if exitLong
+//         isLong := false
+//     // strategy.exit("exit long", "long", limit=longTakeProfPrice, stop=longStopPrice)
+
+// if (strategy.position_size < 0)
+//     exitShort = low <= shortTakeProfPrice or high >= shortStopPrice
+//     if exitShort
+//         isShort := false

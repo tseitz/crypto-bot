@@ -92,44 +92,48 @@ class KrakenService {
     const { openPositions } = await this.getOpenPositions();
 
     // cancel open add order for this run. Some might not have been picked up
-    await this.cancelOpenOrdersForPair(order, false);
+    await this.cancelOpenOrdersForPair(order);
 
-    // close out positons first
     let latestResult;
-    for (const key in openPositions) {
-      const position = openPositions[key];
-      if (position.pair === order.krakenTicker) {
-        const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-        // const volumeToClose =
-        //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
-        latestResult = await this.kraken.setAddOrder({
-          pair: order.krakenTicker,
-          type: closeAction,
-          ordertype: 'limit',
-          price: order.bidPrice,
-          volume: 0, // 0 for close all
-          leverage: order.leverageAmount,
-          // validate: true,
-        });
-        logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
-        break;
+    if (order.txId) {
+      // close out specific transaction only (at least the value of it since we can't specify closing by id)
+      // we do not break the for loop after close because there may be 2 or more orders filled in a transaction
+      for (const key in openPositions) {
+        const position = openPositions[key];
+        if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
+          const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+          const volumeToClose =
+            Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
+          latestResult = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: closeAction,
+            ordertype: 'limit',
+            price: order.bidPrice,
+            volume: volumeToClose,
+            leverage: order.leverageAmount,
+            // validate: true,
+          });
+          logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
+        }
       }
-      // if (position.pair === order.krakenTicker) {
-      //   // const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-      //   // const volumeToClose =
-      //   //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
-      //   latestResult = await this.kraken.setAddOrder({
-      //     pair: order.krakenTicker,
-      //     type: position.type,
-      //     ordertype: 'settle-position',
-      //     price: position.type === 'sell' ? order.currentBid : order.currentAsk,
-      //     volume: position.vol, // 0 for close all
-      //     leverage: order.leverageAmount,
-      //     // validate: true,
-      //   });
-      //   logOrderResult(`${order.krakenizedTradingViewTicker} Settled Position`, latestResult);
-      //   // break;
-      // }
+    } else {
+      for (const key in openPositions) {
+        const position = openPositions[key];
+        if (position.pair === order.krakenTicker && order.action !== position.type) {
+          const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+          latestResult = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: closeAction,
+            ordertype: 'limit',
+            price: order.bidPrice,
+            volume: 0, // 0 for close all
+            leverage: order.leverageAmount,
+            // validate: true,
+          });
+          logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
+          break;
+        }
+      }
     }
 
     if (!latestResult) {
@@ -160,16 +164,16 @@ class KrakenService {
           // );
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
-          // await this.settleLeveragedOrder(order);
+          await this.settleLeveragedOrder(order);
         }
       }
 
       if (add) {
         console.log(`Adding: ${order.addSize}`);
         console.log(`Margin After Trade: ${positionMargin + order.addSize}`);
-        console.log(`Total Allowable: ${order.entrySize + order.addSize * 3}`);
+        console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
         const tooMuch = order.entrySize
-          ? positionMargin > order.entrySize + order.addSize * 3
+          ? positionMargin > order.entrySize + order.addSize * 4
           : positionMargin > 175;
 
         if (!tooMuch) {
@@ -187,16 +191,14 @@ class KrakenService {
           console.log('Too much power!!');
         }
       } else if (!add) {
-        console.log('New Entry');
+        console.log('New Entry', order.tradeVolume);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
           ordertype: 'limit',
-          // ordertype: 'market',
           price: order.bidPrice,
           volume: order.tradeVolume,
           leverage: order.leverageAmount,
-          // validate: true,
         });
       }
 
