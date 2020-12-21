@@ -13,3 +13,7 @@ Creating a subtree and deploying to heroku
 Power up and down:
 `heroku ps:scale web=0`
 `heroku ps:scale web=1`
+
+Docker
+`docker tag local-image:tagname new-repo:tagname`
+`docker push new-repo:tagname`

@@ -6,6 +6,8 @@
   "scripts": {
     "start": "nodemon -x ts-node app.ts",
     "build-strategy": "ts-node ./strategies/build-strategy.ts $1 $2 $3",
+    "dockerize": "sudo docker run -it -p 3000:3000 -v $(pwd):/src tseitz/crypto-trading-bot",
+    "docker-start": "ts-node app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

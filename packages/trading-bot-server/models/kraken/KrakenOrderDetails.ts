@@ -1,7 +1,7 @@
 import { TradingViewBody } from '../TradingViewBody';
 import { KrakenTradeablePair, KrakenPrice, KrakenBalance, KrakenOpenOrders } from './KrakenResults';
 import { StrategyParams, StrategyParamsJson } from '../StrategyParams';
-const strategyParams: StrategyParamsJson = require('../../strategies/strategy-params');
+const strategyParams: StrategyParamsJson = require('../../strategy-params.json');
 
 type AssetClassTicker = 'XBTUSDT' | 'ETHUSDT';
 
