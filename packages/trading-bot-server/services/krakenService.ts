@@ -121,8 +121,6 @@ class KrakenService {
         const position = openPositions[key];
         if (position.pair === order.krakenTicker && order.action !== position.type) {
           const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-          // const volumeToClose =
-          //   Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
           latestResult = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: closeAction,
