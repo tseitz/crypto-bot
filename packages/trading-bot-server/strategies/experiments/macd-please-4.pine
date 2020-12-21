@@ -8,6 +8,11 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
+longStopPerc = input(12, title='Long Stop %', type=input.float, step=1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
+shortStopPerc = input(12, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
+
 hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=1)
 hiLowSlow = input(defval=220, title="Hi Low Long", minval=0, step=1) // 160
 
@@ -193,13 +198,18 @@ strategy.entry("short", long=false, when=allowShorts and short and isWithinTimeB
 strategy.order("short", long=false, when=allowShorts and addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
 strategy.close("short", when=allowShorts and (closeShort or long) and isWithinTimeBounds)
 
-// if (strategy.position_size > 0)
-//     exitLong = high >= longTakeProfPrice or low <= longStopPrice
-//     if exitLong
-//         isLong := false
-//     // strategy.exit("exit long", "long", limit=longTakeProfPrice, stop=longStopPrice)
+if (strategy.position_size > 0)
+    if close <= longStopPrice
+        isLong := false
+        longCount := 0
+        lastMacd := 0.0
+        lastRsi := 0.0
+    strategy.exit("exit long", "long", stop=longStopPrice)
 
-// if (strategy.position_size < 0)
-//     exitShort = low <= shortTakeProfPrice or high >= shortStopPrice
-//     if exitShort
-//         isShort := false
+if (strategy.position_size < 0)
+    if close >= shortStopPrice and allowShorts
+        isShort := false
+        shortCount := 0
+        lastMacd := 0.0
+        lastRsi := 0.0
+    strategy.exit("exit short", "short", stop=shortStopPrice)
