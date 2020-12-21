@@ -151,7 +151,7 @@ rsiIncreasing = rsiClose > rsi2
 
 // long = not isLong and longZone and ((macdBottomed))
 long = not isLong and ((not allowShorts) or longZone) and ((low[1] < lowestFast2 and low > lowestFast1) or (fastMacdBottoms and macdBottomed) or (not allowShorts and lowerMacd2 and macd > lowestMacd))
-short = allowShorts and not isShort and shortZone and (macdTopped and (rsiClose > 55 or rsi1 > 55)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
+short = allowShorts and not isShort and shortZone and ((macdTopped and (rsiClose > 55 or rsi1 > 55)) // or not isLong and shortZone)
 addShort = allowShorts and isShort and high[1] > highestFast2 and high < highestFast1 and (macd > lastMacd or rsiClose > lastRsi)
 addLong = isLong and (low[1] < lowestFast2 and low > lowestFast1) and (macd < lastMacd or rsiClose < lastRsi)
 closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone)) // and macdBottomed 
