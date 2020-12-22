@@ -17,7 +17,7 @@
     "allowShorts": true,
     "macdBottoms": true,
     "entrySize": 40,
-    "addSize": 65,
+    "addSize": 60,
     "latestResult": 210.17,
     "totalTrades": 390,
     "percentProfitable": 61.79,
@@ -66,10 +66,10 @@
     "macdBottoms": true,
     "entrySize": 45,
     "addSize": 65,
-    "latestResult": 142.73,
-    "totalTrades": 405,
-    "percentProfitable": 64.44,
-    "avgTrade": 0.35
+    "latestResult": 143.58,
+    "totalTrades": 495,
+    "percentProfitable": 68.28,
+    "avgTrade": 0.29
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
@@ -100,8 +100,8 @@
     "timeframe": "5m",
     "allowShorts": true,
     "macdBottoms": true,
-    "entrySize": 50,
-    "addSize": 75,
+    "entrySize": 45,
+    "addSize": 70,
     "latestResult": 288.98,
     "totalTrades": 455,
     "percentProfitable": 63.08,
@@ -136,11 +136,11 @@
     "timeframe": "5m",
     "allowShorts": true,
     "macdBottoms": true,
-    "entrySize": 50,
+    "entrySize": 45,
     "addSize": 70,
-    "latestResult": 205.51,
-    "totalTrades": 230,
-    "percentProfitable": 73.04,
-    "avgTrade": 0.89
+    "latestResult": 228.79,
+    "totalTrades": 254,
+    "percentProfitable": 68.9,
+    "avgTrade": 0.90
   }
 }
