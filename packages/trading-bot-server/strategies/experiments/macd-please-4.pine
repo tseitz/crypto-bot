@@ -8,9 +8,9 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-longStopPerc = input(12, title='Long Stop %', type=input.float, step=1) / 100
+longStopPerc = input(15, title='Long Stop %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
-shortStopPerc = input(12, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPerc = input(15, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=1)
@@ -151,9 +151,9 @@ rsiIncreasing = rsiClose > rsi2
 
 // long = not isLong and longZone and ((macdBottomed))
 long = not isLong and ((not allowShorts) or longZone) and ((low[1] < lowestFast2 and low > lowestFast1) or (fastMacdBottoms and macdBottomed) or (not allowShorts and lowerMacd2 and macd > lowestMacd))
-short = allowShorts and not isShort and shortZone and ((macdTopped and (rsiClose > 55 or rsi1 > 55)) // or not isLong and shortZone)
+short = allowShorts and not isShort and shortZone and (macdTopped and (rsiClose > 55 or rsi1 > 55)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
 addShort = allowShorts and isShort and high[1] > highestFast2 and high < highestFast1 and (macd > lastMacd or rsiClose > lastRsi)
-addLong = isLong and (low[1] < lowestFast2 and low > lowestFast1) and (macd < lastMacd or rsiClose < lastRsi)
+addLong = isLong and ((longZone and low[1] < lowestFast2 and low > lowestFast1) or (shortZone and lowerMacd2 and macd > lowestMacd)) and (macd < lastMacd or rsiClose < lastRsi)
 closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone)) // and macdBottomed 
 closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 38 or rsi1 < 32)) or longZone)
 
