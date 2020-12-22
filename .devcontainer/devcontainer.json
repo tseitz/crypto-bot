@@ -1,0 +1,31 @@
+{
+  "name": "Crypto Container",
+  "dockerFile": "Dockerfile",
+  "appPort": [3000],
+  "runArgs": ["-u", "node"],
+  "postCreateCommand": "yarn install",
+  "extensions": [
+    "ms-vscode-remote.remote-containers",
+    "ms-azuretools.vscode-docker",
+    "aaron-bond.better-comments",
+    "coenraads.bracket-pair-colorizer-2",
+    "pranaygp.vscode-css-peek",
+    "msjsdiag.debugger-for-chrome",
+    "bierner.docs-view",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "davidanson.vscode-markdownlint",
+    "pkief.material-icon-theme",
+    "silvenon.mdx",
+    "xyc.vscode-mdx-preview",
+    "christian-kohler.npm-intellisense",
+    "quicktype.quicktype",
+    "ex-codes.pine-script-syntax-highlighter",
+    "esbenp.prettier-vscode",
+    "juanblanco.solidity",
+    "hosho.solidity-debugger",
+    "meganrogge.template-string-converter",
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "pmneo.tsimporter"
+  ]
+}
