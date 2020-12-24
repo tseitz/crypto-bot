@@ -4,6 +4,8 @@
     "timeframe": "5m",
     "allowShorts": true,
     "macdBottoms": true,
+    "longStop": 12,
+    "shortStop": 4,
     "entrySize": 40,
     "addSize": 60,
     "latestResult": 157.55,
@@ -100,12 +102,14 @@
     "timeframe": "5m",
     "allowShorts": true,
     "macdBottoms": true,
+    "longStop": 12,
+    "shortStop": 4,
     "entrySize": 45,
     "addSize": 70,
-    "latestResult": 288.98,
-    "totalTrades": 455,
-    "percentProfitable": 63.08,
-    "avgTrade": 0.64
+    "latestResult": 357.34,
+    "totalTrades": 648,
+    "percentProfitable": 60.8,
+    "avgTrade": 0.55
   },
   "SNXUSDT": {
     "name": "SNXUSDT",

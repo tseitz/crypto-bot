@@ -8,16 +8,16 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-longStopPerc = input(6, title='Long Stop %', type=input.float, step=1) / 100
+longStopPerc = input(12, title='Long Stop %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
-shortStopPerc = input(6, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPerc = input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
 hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=1) // 160
 
 closeLongInShortZone = input(defval=54, title="Close Long In Short Zone RSI", minval=0, step=1)
-maxAdds = 3 // input(defval=3, title="Max Adds", minval=0, step=1)
+maxAdds = 2 // input(defval=3, title="Max Adds", minval=0, step=1)
 allowShorts = input(defval=true, title="Allow shorts?", type=input.bool) // true
 fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool) // true
 // lowestMacdBottoms = input(defval=true, title="Lowest MACD Bottoms?", type=input.bool)
@@ -33,6 +33,7 @@ var lowFastCount = 0
 var highFastCount = 0
 var longCount = 0
 var shortCount = 0
+var entryPrice = 0.0
 var lastMacd = 0.0
 var lastRsi = 0.0
 
@@ -47,7 +48,7 @@ rsiClose = rsi(close, 14)
 getMACD(index) =>
     thisFastMA = ema(close[index], fast)
     thisSlowMA = ema(close[index], slow)
-    thisMacd = thisFastMA - thisSlowMA
+    thisMacd = round((thisFastMA - thisSlowMA) * 100) / 100
 
 getRsi(index) =>
     thisRsi = rsi(close[index], 14)
@@ -82,7 +83,7 @@ lowestSlow1 = getLowest(1, hiLowSlow)
 lowestSlow2 = getLowest(2, hiLowSlow)
 lowestSlow3 = getLowest(3, hiLowSlow)
 
-plot(vwap, color=color.blue)
+// plot(vwap, color=color.blue)
 plot(series=highestFast1, color=color.green, linewidth=1)
 plot(series=lowestFast1, color=color.red, linewidth=1)
 plot(series=highestSlow1, color=color.green, linewidth=2)
@@ -142,20 +143,30 @@ lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
 bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
 
-macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and macd < 0
+macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2))
 macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 and macd1 > macd2)) and macd > 0
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
 rsiDecreasing = rsiClose < rsi2
 rsiIncreasing = rsiClose > rsi2
+newLow = low[1] < lowestFast2 and low > lowestFast1
+newHigh = high[1] > highestFast2 and high < highestFast1
+lowestPrevMacd = lowerMacd2 and macd > lowestMacd
+highestPrevMacd = higherMacd2 and macd < highestMacd
+// possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
+
+openLong = not isLong and ((not allowShorts) or longZone)
+openShort = allowShorts and not isShort and shortZone
+
+stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
 
 // long = not isLong and longZone and ((macdBottomed))
-long = not isLong and ((not allowShorts) or longZone) and ((low[1] < lowestFast2 and low > lowestFast1) or (fastMacdBottoms and macdBottomed) or (not allowShorts and lowerMacd2 and macd > lowestMacd))
-short = allowShorts and not isShort and shortZone and ((high[1] > highestFast2 and high < highestFast1) or (fastMacdBottoms and macdTopped)) //  or (low[1] < lowestSlow2 and low < lowestSlow1 and rsiClose > 25))
-addShort = allowShorts and isShort and ((high[1] > highestFast2 and high < highestFast1 and not higherMacd) or (higherMacd2 and macd < highestMacd)) and (macd > lastMacd or rsiClose > lastRsi)
-addLong = isLong and ((longZone and low[1] < lowestFast2 and low > lowestFast1) or (shortZone and lowerMacd2 and macd > lowestMacd)) and (macd < lastMacd or rsiClose < lastRsi)
-closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone)) // and macdBottomed 
-closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or longZone)
+long = openLong and ((newLow) or (fastMacdBottoms and macdBottomed) or (not allowShorts and lowestPrevMacd))
+short = openShort and ((newHigh) or (fastMacdBottoms and macdTopped))
+addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd) or (highestPrevMacd)) // and close > entryPrice
+addLong = isLong and ((longZone and newLow and not lowerMacd) or (lowestPrevMacd)) // and close < entryPrice
+closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (highestPrevMacd) or (stopped))
+closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or (lowestPrevMacd) or (stopped))
 
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
@@ -164,22 +175,28 @@ bgcolor(color=bgColor2, transp=85)
 if long
     isLong := true
     isShort := false
+    entryPrice := open
 
 if short and allowShorts
     isShort := true
     isLong := false
+    entryPrice := open
 
 if closeLong
     isLong := false
     longCount := 0
-    lastMacd := 0.0
-    lastRsi := 0.0
-    
-if closeShort and allowShorts
-    isShort := false
     shortCount := 0
     lastMacd := 0.0
     lastRsi := 0.0
+    entryPrice := 0.0
+    
+if closeShort and allowShorts
+    isShort := false
+    longCount := 0
+    shortCount := 0
+    lastMacd := 0.0
+    lastRsi := 0.0
+    entryPrice := 0.0
 
 if addLong
     longCount := longCount + 1
@@ -198,18 +215,20 @@ strategy.entry("short", long=false, when=allowShorts and short and isWithinTimeB
 strategy.order("short", long=false, when=allowShorts and addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
 strategy.close("short", when=allowShorts and (closeShort or long) and isWithinTimeBounds)
 
-if (strategy.position_size > 0)
-    if close <= longStopPrice
-        isLong := false
-        longCount := 0
-        lastMacd := 0.0
-        lastRsi := 0.0
-    strategy.exit("exit long", "long", stop=longStopPrice)
+// if (strategy.position_size > 0)
+//     if low <= longStopPrice
+//         isLong := false
+//         longCount := 0
+//         lastMacd := 0.0
+//         lastRsi := 0.0
+//         entryPrice := 0.0
+//     strategy.exit("close long", "long", stop=longStopPrice)
 
-if (strategy.position_size < 0)
-    if close >= shortStopPrice and allowShorts
-        isShort := false
-        shortCount := 0
-        lastMacd := 0.0
-        lastRsi := 0.0
-    strategy.exit("exit short", "short", stop=shortStopPrice)
+// if (strategy.position_size < 0)
+//     if high >= shortStopPrice and allowShorts
+//         isShort := false
+//         shortCount := 0
+//         lastMacd := 0.0
+//         lastRsi := 0.0
+//         entryPrice := 0.0
+//     strategy.exit("close short", "short", stop=shortStopPrice)
