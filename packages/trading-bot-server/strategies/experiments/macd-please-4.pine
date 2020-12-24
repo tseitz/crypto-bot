@@ -14,7 +14,7 @@ shortStopPerc = input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
-hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=1) // 160
+hiLowSlow = input(defval=220, title="Hi Low Long", minval=0, step=1) // 160
 
 closeLongInShortZone = input(defval=54, title="Close Long In Short Zone RSI", minval=0, step=1)
 maxAdds = 2 // input(defval=3, title="Max Adds", minval=0, step=1)
@@ -125,25 +125,29 @@ if oneSlowHigh
 // plotit = (lowSlowCount == 1 and lowFastCount > 5) or (highSlowCount == 1 and highFastCount > 5)
 // plotshape(plotit, title="Stop", text="Stop", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
-highestMacd = highest(macd, macdLength)[1]
+highestMacd0 = highest(macd, macdLength)[0]
+highestMacd1 = highest(macd, macdLength)[1]
 highestMacd2 = highest(macd, macdLength)[2]
 highestMacd3 = highest(macd, macdLength)[3]
 highestMacd4 = highest(macd, macdLength)[4]
-lowestMacd = lowest(macd, macdLength)[1]
+lowestMacd0 = lowest(macd, macdLength)[0]
+lowestMacd1 = lowest(macd, macdLength)[1]
 lowestMacd2 = lowest(macd, macdLength)[2]
 lowestMacd3 = lowest(macd, macdLength)[3]
 lowestMacd4 = lowest(macd, macdLength)[4]
-higherMacd = macd > highestMacd and macd > 0
+higherMacd0 = macd > highestMacd0 and macd > 0
+higherMacd1 = macd0 > highestMacd1 and macd0 > 0
 higherMacd2 = macd1 > highestMacd2 and macd1 > 0
 higherMacd3 = macd2 > highestMacd3 and macd2 > 0
 higherMacd4 = macd3 > highestMacd4 and macd3 > 0
-lowerMacd = macd < lowestMacd and macd < 0
+lowerMacd0 = macd < lowestMacd0 and macd < 0
+lowerMacd1 = macd0 < lowestMacd1 and macd0 < 0
 lowerMacd2 = macd1 < lowestMacd2 and macd1 < 0
 lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
-bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
+bgcolor(color=higherMacd1 ? color.green : lowerMacd1 ? color.red : na, transp=90)
 
-macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2))
+macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and macd < 0
 macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 and macd1 > macd2)) and macd > 0
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
@@ -151,8 +155,9 @@ rsiDecreasing = rsiClose < rsi2
 rsiIncreasing = rsiClose > rsi2
 newLow = low[1] < lowestFast2 and low > lowestFast1
 newHigh = high[1] > highestFast2 and high < highestFast1
-lowestPrevMacd = lowerMacd2 and macd > lowestMacd
-highestPrevMacd = higherMacd2 and macd < highestMacd
+twoNewHighs = high[2] > highestFast3 and newHigh
+lowestPrevMacd = lowerMacd1 and macd > lowestMacd0
+highestPrevMacd = higherMacd1 and macd < highestMacd0
 // possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
 
 openLong = not isLong and ((not allowShorts) or longZone)
@@ -162,12 +167,13 @@ stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPri
 
 // long = not isLong and longZone and ((macdBottomed))
 long = openLong and ((newLow) or (fastMacdBottoms and macdBottomed) or (not allowShorts and lowestPrevMacd))
-short = openShort and ((newHigh) or (fastMacdBottoms and macdTopped))
-addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd) or (highestPrevMacd)) // and close > entryPrice
-addLong = isLong and ((longZone and newLow and not lowerMacd) or (lowestPrevMacd)) // and close < entryPrice
+short = openShort and ((twoNewHighs) or (fastMacdBottoms and macdTopped))
+addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd0) or (highestPrevMacd)) // and close > entryPrice
+addLong = isLong and ((longZone and newLow and not lowerMacd0) or (lowestPrevMacd)) // and close < entryPrice
 closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (highestPrevMacd) or (stopped))
 closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or (lowestPrevMacd) or (stopped))
 
+// shortMacdTrigger = short and macdTrigger
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
