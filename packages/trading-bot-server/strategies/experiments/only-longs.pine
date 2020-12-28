@@ -1,0 +1,250 @@
+//@version=4
+strategy("Only Longs", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = 60 // input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMin = 0
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+longStopPerc = input(12, title='Long Stop %', type=input.float, step=1) / 100
+longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
+// shortStopPerc = input(12, title='Short Stop %', type=input.float, step=1) / 100
+// shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
+
+hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
+hiLowMed = input(defval=60, title="Hi Low Medium", minval=0, step=5)
+hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=5)
+
+closeLongInShortZone = input(defval=58, title="Close Long In Short Zone RSI", minval=0, step=1)
+maxAdds = input(defval=3, title="Max Adds", minval=0, step=1)
+allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool) // true
+fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool) // true
+// lowestMacdBottoms = input(defval=true, title="Lowest MACD Bottoms?", type=input.bool)
+macdLength = input(defval=50, title="MACD Bars", minval=0, step=10)
+
+var isLong = false
+var isShort = false
+var shortZone = false
+var longZone = false
+var lowSlowCount = 0
+var highSlowCount = 0
+var lowFastCount = 0
+var highFastCount = 0
+var longCount = 0
+var shortCount = 0
+var entryPrice = 0.0
+var lastMacd = 0.0
+var lastRsi = 0.0
+
+// MACD
+fast = 12, slow = 26
+fastMA = ema(close, fast)
+slowMA = ema(close, slow)
+macd = fastMA - slowMA
+signal = ema(macd, 9)
+rsiClose = rsi(close, 14)
+
+getMACD(index) =>
+    thisFastMA = ema(close[index], fast)
+    thisSlowMA = ema(close[index], slow)
+    thisMacd = round((thisFastMA - thisSlowMA) * 100) / 100
+
+getRsi(index) =>
+    thisRsi = rsi(close[index], 14)
+
+getHighest(index, speed) =>
+    thisHighest = highest(high, speed)[index]
+
+getLowest(index, speed) =>
+    thisLowest = lowest(low, speed)[index]
+
+macd0 = getMACD(0)
+macd1 = getMACD(1)
+macd2 = getMACD(2)
+macd3 = getMACD(3)
+
+rsi0 = getRsi(0)
+rsi1 = getRsi(1)
+rsi2 = getRsi(2)
+rsi3 = getRsi(3)
+rsi4 = getRsi(4)
+
+highestFast1 = getHighest(1, hiLowFast)
+highestFast2 = getHighest(2, hiLowFast)
+highestFast3 = getHighest(3, hiLowFast)
+lowestFast1 = getLowest(1, hiLowFast)
+lowestFast2 = getLowest(2, hiLowFast)
+lowestFast3 = getLowest(3, hiLowFast)
+highestMed1 = getHighest(1, hiLowMed)
+highestMed2 = getHighest(2, hiLowMed)
+highestMed3 = getHighest(3, hiLowMed)
+lowestMed1 = getLowest(1, hiLowMed)
+lowestMed2 = getLowest(2, hiLowMed)
+lowestMed3 = getLowest(3, hiLowMed)
+highestSlow1 = getHighest(1, hiLowSlow)
+highestSlow2 = getHighest(2, hiLowSlow)
+highestSlow3 = getHighest(3, hiLowSlow)
+lowestSlow1 = getLowest(1, hiLowSlow)
+lowestSlow2 = getLowest(2, hiLowSlow)
+lowestSlow3 = getLowest(3, hiLowSlow)
+
+// plot(vwap, color=color.blue)
+plot(series=highestFast1, color=color.green, linewidth=1)
+plot(series=lowestFast1, color=color.red, linewidth=1)
+plot(series=highestMed1, color=color.green, linewidth=2)
+plot(series=lowestMed1, color=color.red, linewidth=2)
+plot(series=highestSlow1, color=color.green, linewidth=3)
+plot(series=lowestSlow1, color=color.red, linewidth=3)
+
+oneSlowLow = low < lowestSlow1
+oneSlowHigh = high > highestSlow1
+oneFastLow = longZone and low < lowestFast1
+oneFastHigh = shortZone and high > highestFast1
+
+if oneSlowLow
+    lowSlowCount := lowSlowCount + 1
+
+if oneSlowHigh
+    highSlowCount := highSlowCount + 1
+
+if oneFastLow
+    lowFastCount := lowFastCount + 1
+
+if oneFastHigh
+    highFastCount := highFastCount + 1
+
+if oneSlowLow
+    shortZone := true
+    longZone := false
+    highSlowCount := 0
+    lowSlowCount := 0
+    highFastCount := 0
+    lowFastCount := 0
+
+if oneSlowHigh
+    longZone := true
+    shortZone := false
+    lowSlowCount := 0
+    highSlowCount := 0
+    highFastCount := 0
+    lowFastCount := 0
+
+// plotit = (lowSlowCount == 1 and lowFastCount > 5) or (highSlowCount == 1 and highFastCount > 5)
+
+highestMacd0 = highest(macd, macdLength)[0]
+highestMacd1 = highest(macd, macdLength)[1]
+highestMacd2 = highest(macd, macdLength)[2]
+highestMacd3 = highest(macd, macdLength)[3]
+highestMacd4 = highest(macd, macdLength)[4]
+lowestMacd0 = lowest(macd, macdLength)[0]
+lowestMacd1 = lowest(macd, macdLength)[1]
+lowestMacd2 = lowest(macd, macdLength)[2]
+lowestMacd3 = lowest(macd, macdLength)[3]
+lowestMacd4 = lowest(macd, macdLength)[4]
+higherMacd0 = macd > highestMacd0 and macd > 0
+higherMacd1 = macd0 > highestMacd1 and macd0 > 0
+higherMacd2 = macd1 > highestMacd2 and macd1 > 0
+higherMacd3 = macd2 > highestMacd3 and macd2 > 0
+higherMacd4 = macd3 > highestMacd4 and macd3 > 0
+lowerMacd0 = macd < lowestMacd0 and macd < 0
+lowerMacd1 = macd0 < lowestMacd1 and macd0 < 0
+lowerMacd2 = macd1 < lowestMacd2 and macd1 < 0
+lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
+lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
+bgcolor(color=higherMacd1 ? color.green : lowerMacd1 ? color.red : na, transp=90)
+
+macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and macd < 0
+macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 and macd1 > macd2)) and macd > 0
+rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
+rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
+rsiDecreasing = rsiClose < rsi2
+rsiIncreasing = rsiClose > rsi2
+newLow = low[1] < lowestFast2 and low > lowestFast1
+newHigh = high[1] > highestFast2 and high < highestFast1
+twoNewHighs = high[2] > highestFast3 and newHigh
+lowestPrevMacd = lowerMacd2 and macd > lowestMacd1
+highestPrevMacd = higherMacd2 and macd < highestMacd1
+// possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
+
+// plotshape(lowestPrevMacd, title="Low", text="low", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+
+// openLong = not isLong and (longZone)
+openShort = allowShorts and not isShort and shortZone
+
+stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
+
+// long = not isLong and longZone and ((macdBottomed))
+long = not isLong and ((longZone and (newLow or (fastMacdBottoms and macdBottomed))) or (shortZone and (lowestPrevMacd))) // or high > highestMed1
+short = openShort and ((twoNewHighs) or (fastMacdBottoms and macdTopped))
+addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd0) or (highestPrevMacd)) // and close > entryPrice
+addLong = isLong and ((longZone and newLow and not lowerMacd0) or (lowestPrevMacd)) // and close < entryPrice
+closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (highestPrevMacd) or (stopped))
+closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or (lowestPrevMacd) or (stopped))
+
+// shortMacdTrigger = short and macdTrigger
+
+bgColor2 = shortZone ? color.red : longZone ? color.green : na
+bgcolor(color=bgColor2, transp=85)
+
+if long
+    isLong := true
+    isShort := false
+    entryPrice := open
+
+if short and allowShorts
+    isShort := true
+    isLong := false
+    entryPrice := open
+
+if closeLong
+    isLong := false
+    longCount := 0
+    shortCount := 0
+    lastMacd := 0.0
+    lastRsi := 0.0
+    entryPrice := 0.0
+    
+if closeShort and allowShorts
+    isShort := false
+    longCount := 0
+    shortCount := 0
+    lastMacd := 0.0
+    lastRsi := 0.0
+    entryPrice := 0.0
+
+if addLong
+    longCount := longCount + 1
+    lastMacd := macd < lastMacd ? macd : lastMacd
+    lastRsi := rsiClose < lastRsi ? rsiClose : lastRsi
+
+if addShort and allowShorts
+    shortCount := shortCount + 1
+    lastMacd := macd > lastMacd ? macd : lastMacd
+    lastRsi := rsiClose > lastRsi ? rsiClose : lastRsi
+
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+strategy.close("long", when=closeLong and isWithinTimeBounds)
+// strategy.entry("short", long=false, when=allowShorts and short and isWithinTimeBounds)
+// strategy.order("short", long=false, when=allowShorts and addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
+// strategy.close("short", when=allowShorts and (closeShort or long) and isWithinTimeBounds)
+
+// if (strategy.position_size > 0)
+//     if low <= longStopPrice
+//         isLong := false
+//         longCount := 0
+//         lastMacd := 0.0
+//         lastRsi := 0.0
+//         entryPrice := 0.0
+//     strategy.exit("close long", "long", stop=longStopPrice)
+
+// if (strategy.position_size < 0)
+//     if high >= shortStopPrice and allowShorts
+//         isShort := false
+//         shortCount := 0
+//         lastMacd := 0.0
+//         lastRsi := 0.0
+//         entryPrice := 0.0
+//     strategy.exit("close short", "short", stop=shortStopPrice)
