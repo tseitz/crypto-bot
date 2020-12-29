@@ -10,8 +10,8 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 
 longStopPerc = input(12, title='Long Stop %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
-// shortStopPerc = input(12, title='Short Stop %', type=input.float, step=1) / 100
-// shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
+shortStopPerc = 12 // input(12, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
 hiLowMed = input(defval=60, title="Hi Low Medium", minval=0, step=5)
@@ -28,6 +28,9 @@ var isLong = false
 var isShort = false
 var shortZone = false
 var longZone = false
+var firstAction = false
+var logSell = false
+var logBuy = false
 var lowSlowCount = 0
 var highSlowCount = 0
 var lowFastCount = 0
@@ -93,8 +96,8 @@ lowestSlow3 = getLowest(3, hiLowSlow)
 // plot(vwap, color=color.blue)
 plot(series=highestFast1, color=color.green, linewidth=1)
 plot(series=lowestFast1, color=color.red, linewidth=1)
-plot(series=highestMed1, color=color.green, linewidth=2)
-plot(series=lowestMed1, color=color.red, linewidth=2)
+// plot(series=highestMed1, color=color.green, linewidth=2)
+// plot(series=lowestMed1, color=color.red, linewidth=2)
 plot(series=highestSlow1, color=color.green, linewidth=3)
 plot(series=lowestSlow1, color=color.red, linewidth=3)
 
@@ -116,6 +119,7 @@ if oneFastHigh
     highFastCount := highFastCount + 1
 
 if oneSlowLow
+    firstAction := longZone or firstAction
     shortZone := true
     longZone := false
     highSlowCount := 0
@@ -124,14 +128,13 @@ if oneSlowLow
     lowFastCount := 0
 
 if oneSlowHigh
+    firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
     lowSlowCount := 0
     highSlowCount := 0
     highFastCount := 0
     lowFastCount := 0
-
-// plotit = (lowSlowCount == 1 and lowFastCount > 5) or (highSlowCount == 1 and highFastCount > 5)
 
 highestMacd0 = highest(macd, macdLength)[0]
 highestMacd1 = highest(macd, macdLength)[1]
@@ -167,8 +170,6 @@ twoNewHighs = high[2] > highestFast3 and newHigh
 lowestPrevMacd = lowerMacd2 and macd > lowestMacd1
 highestPrevMacd = higherMacd2 and macd < highestMacd1
 // possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
-
-// plotshape(lowestPrevMacd, title="Low", text="low", style=shape.labeldown, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 
 // openLong = not isLong and (longZone)
 openShort = allowShorts and not isShort and shortZone
@@ -223,6 +224,15 @@ if addShort and allowShorts
     shortCount := shortCount + 1
     lastMacd := macd > lastMacd ? macd : lastMacd
     lastRsi := rsiClose > lastRsi ? rsiClose : lastRsi
+
+plotshape(firstAction and longZone and long, title="buybags", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+plotshape(firstAction and shortZone and closeLong, title="sellbags", style=shape.xcross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+
+if firstAction and shortZone and closeLong
+    firstAction := false
+
+if firstAction and longZone and long
+    firstAction := false
 
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")

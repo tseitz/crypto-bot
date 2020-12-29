@@ -60,6 +60,9 @@ export class KrakenOrder {
 
     const { openOrders } = await kraken.getOpenOrders();
 
+    // TODO: krakenize this
+    const { result: tradeBalance } = await kraken.kraken.getTradeBalance();
+
     // set up the order
     const order = new KrakenOrderDetails(
       this.requestBody,
@@ -68,7 +71,8 @@ export class KrakenOrder {
       price,
       assetClassPrice,
       balances,
-      openOrders
+      openOrders,
+      tradeBalance
     );
 
     // execute the order

@@ -47,6 +47,10 @@ export default class KrakenOrderDetails {
   bidPrice: number;
   openOrders: KrakenOpenOrders;
   txId?: string;
+  noLeverage: boolean;
+  sellBags: boolean;
+  buyBags: boolean;
+  marginFree: number;
 
   constructor(
     body: TradingViewBody,
@@ -55,7 +59,8 @@ export default class KrakenOrderDetails {
     pairPriceInfo: KrakenPrice,
     assetClassPriceInfo: KrakenPrice,
     myBalanceInfo: KrakenBalance,
-    openOrders: KrakenOpenOrders
+    openOrders: KrakenOpenOrders,
+    tradeBalance: any
   ) {
     // ticker info
     this.tradingViewTicker = body.ticker;
@@ -66,6 +71,7 @@ export default class KrakenOrderDetails {
     this.assetClassTicker =
       Object.keys(assetClassPriceInfo)[0] === 'ETHUSDT' ? 'ETHUSDT' : 'XBTUSDT';
     this.openOrders = openOrders;
+    this.marginFree = Number.parseFloat(tradeBalance.mf);
 
     // setup params
     this.strategyParams = strategyParams[this.tradingViewTicker];
@@ -75,6 +81,8 @@ export default class KrakenOrderDetails {
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
     this.txId = body.strategy.txId;
+    this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;
+    this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;
     // this.closeOnly = body.strategy.description.toLowerCase().includes('close') ? true : false;
 
     // pair info
@@ -91,6 +99,7 @@ export default class KrakenOrderDetails {
     this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
     this.lowestLeverageAmount =
       this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
+    this.noLeverage = this.sellBags || this.buyBags || typeof this.leverageAmount === 'undefined';
 
     // current price info
     this.tradingViewPrice = Number.parseFloat(
@@ -139,17 +148,50 @@ export default class KrakenOrderDetails {
   private getTradeVolume(): number {
     let volume = 0;
     if (this.entrySize) {
-      volume = Number.parseFloat(
-        ((this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
-          this.volumeDecimals
-        )
-      );
+      if (this.noLeverage) {
+        if (this.buyBags) {
+          // buy 65% worth of my usd available
+          return (this.balanceOfQuote * 0.7) / this.usdValueOfBase;
+        } else if (this.sellBags) {
+          // sell 75% worth of currency available
+          // if not enough free margin, sell what free margin is available
+          const sellVolumeInCurrency = Number.parseFloat(
+            (this.balanceOfBase * 0.7).toFixed(this.volumeDecimals)
+          );
+          // return this.marginFree < sellVolumeInCurrency * this.usdValueOfBase
+          //   ? Number.parseFloat(
+          //       (this.marginFree / this.usdValueOfBase).toFixed(this.volumeDecimals)
+          //     )
+          //   : sellVolumeInCurrency;
+          return sellVolumeInCurrency;
+        } else {
+          // it's a currency without leverage available
+          // sell the entire balance, or handle standard entry
+          if (this.action === 'sell') {
+            return this.balanceOfBase;
+          } else {
+            return Number.parseFloat(
+              ((this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
+                this.volumeDecimals
+              )
+            );
+          }
+        }
+      } else {
+        // if there's leverage available, handle it
+        return Number.parseFloat(
+          ((this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
+            this.volumeDecimals
+          )
+        );
+      }
     } else {
+      console.log('No size in entry. Please fix');
       volume = Number.parseFloat(
         ((80 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
       );
+      return volume > this.minVolume ? volume : this.minVolume;
     }
-    return volume > this.minVolume ? volume : this.minVolume;
   }
 
   private getAddVolume(): number {

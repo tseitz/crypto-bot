@@ -33,7 +33,8 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   // force body to be JSON
   const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
-    console.log('Hey buddy, get out of here');
+    console.log('Hey buddy, get out of here', req);
+    console.log('-'.repeat(20));
     return res.send('Hey buddy, get out of here');
   }
 

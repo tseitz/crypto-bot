@@ -79,7 +79,7 @@ class KrakenService {
     await this.cancelOpenOrdersForPair(order);
 
     let result;
-    if (typeof order.leverageAmount === 'undefined') {
+    if (order.noLeverage) {
       result = await this.handleNonLeveragedOrder(order);
     } else {
       result = await this.handleLeveragedOrder(order);
@@ -169,13 +169,12 @@ class KrakenService {
       }
 
       if (add) {
-        const marginAfterTrade = positionMargin + order.addSize;
         console.log(`Adding: ${order.addSize}`);
-        console.log(`Margin After Trade: ${marginAfterTrade}`);
-        console.log(`Total Allowable: ${order.entrySize + order.addSize * 3}`);
+        console.log(`Current Margin: ${positionMargin}`);
+        console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
         const tooMuch = order.entrySize
-          ? marginAfterTrade >= order.entrySize + order.addSize * 3
-          : marginAfterTrade >= 175;
+          ? positionMargin >= order.entrySize + order.addSize * 4
+          : positionMargin >= 175;
 
         if (!tooMuch) {
           result = await this.kraken.setAddOrder({
@@ -221,18 +220,18 @@ class KrakenService {
           ],
         });
       } else {
-        // sell off current balance, we cannot short so stop there
+        console.log(order.sellBags ? `Selling Bags` : `Selling ${order.tradingViewTicker}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
           ordertype: 'limit',
-          volume: order.balanceOfBase,
           price: order.bidPrice,
+          volume: order.tradeVolume,
           // validate: true,
         });
       }
     } else {
-      if (order.usdValueOfBase * order.balanceOfBase < 250) {
+      if (order.usdValueOfBase * order.balanceOfBase < 250 || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log('New Entry');
           result = await this.kraken.setAddOrder({
@@ -244,13 +243,13 @@ class KrakenService {
             // validate: true,
           });
         } else {
-          console.log(`Adding: ${order.addSize}`);
+          console.log(order.buyBags ? 'Buying Bags' : `Adding: ${order.addSize}`);
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
             ordertype: 'limit',
             price: order.bidPrice,
-            volume: order.addVolume,
+            volume: order.buyBags ? order.tradeVolume : order.addVolume,
             // validate: true,
           });
         }
