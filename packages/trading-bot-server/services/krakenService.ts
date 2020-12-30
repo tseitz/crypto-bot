@@ -261,7 +261,9 @@ class KrakenService {
         }
       } else {
         console.log(
-          `Position size for ${order.krakenizedTradingViewTicker} is too large ${order.balanceOfBase}`
+          `Position size for ${order.krakenizedTradingViewTicker} is too large ${
+            order.usdValueOfBase * order.balanceOfBase
+          }`
         );
       }
     }
