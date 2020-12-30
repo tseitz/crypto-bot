@@ -111,4 +111,4 @@ async function getBalances() {
 ---------------------------`);
 }
 
-getBalances();
+// getBalances();
