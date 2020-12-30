@@ -231,7 +231,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.usdValueOfBase * order.balanceOfBase < 250 || order.buyBags) {
+      if (order.usdValueOfBase * order.balanceOfBase < 220 || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log('New Entry');
           result = await this.kraken.setAddOrder({
