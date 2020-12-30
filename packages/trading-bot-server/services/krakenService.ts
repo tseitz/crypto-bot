@@ -248,7 +248,9 @@ class KrakenService {
           });
         } else {
           console.log(order.buyBags ? 'Buying Bags' : `Adding: ${order.addSize}`);
-          console.log(`Balance After Trade: ${order.balanceOfBase + order.addSize}`);
+          console.log(
+            `Balance After Trade: ${order.usdValueOfBase * order.balanceOfBase + order.addSize}`
+          );
           console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
