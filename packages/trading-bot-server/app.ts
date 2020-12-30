@@ -87,6 +87,20 @@ app.listen(process.env.PORT || 3000, () => {
 });
 
 const cron = schedule.scheduleJob('0 0 * * *', async () => {
+  getBalances();
+});
+
+async function getBalances() {
+  // TODO - make this it's own thing
+  // c:'2881.3240'
+  // e:'1151.8423'
+  // eb:'2052.1541'
+  // m:'1095.7655'
+  // mf:'56.0768'
+  // ml:'105.11'
+  // n:'24.1204'
+  // tb:'1127.7219'
+  // v:'2912.7724'
   const balances = await kraken.kraken.getTradeBalance();
 
   console.log(`Nightly Log
@@ -95,30 +109,6 @@ const cron = schedule.scheduleJob('0 0 * * *', async () => {
   Open:    $${balances.result.n}
   Total:   $${Number.parseFloat(balances.result.eb) + Number.parseFloat(balances.result.n)}
 ---------------------------`);
-});
+}
 
-// async function getBalances() {
-//   // TODO - make this it's own thing
-//   // c:'2881.3240'
-//   // e:'1151.8423'
-//   // eb:'2052.1541'
-//   // m:'1095.7655'
-//   // mf:'56.0768'
-//   // ml:'105.11'
-//   // n:'24.1204'
-//   // tb:'1127.7219'
-//   // v:'2912.7724'
-//   const balances = await kraken.kraken.getTradeBalance();
-
-//   console.log(`Nightly Log
-// ---------------------------
-//   Balance: $${balances.result.eb}
-//   Open:    $${balances.result.n}
-//   Total:   $${Number.parseFloat(balances.result.eb) + Number.parseFloat(balances.result.n)}
-// ---------------------------`);
-// }
-
-// async function getBalances() {
-//   const balances = await kraken.balancePortfolio();
-// }
-// getBalances();
+getBalances();
