@@ -153,6 +153,7 @@ class KrakenService {
       let add = false;
       let positionMargin = 0,
         totalPosition = 0;
+      // TODO: use balanceOfBase?
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
@@ -231,7 +232,10 @@ class KrakenService {
         });
       }
     } else {
-      if (order.usdValueOfBase * order.balanceOfBase < 220 || order.buyBags) {
+      if (
+        order.usdValueOfBase * order.balanceOfBase < order.entrySize + order.addSize * 4 ||
+        order.buyBags
+      ) {
         if (order.balanceOfBase < 1e-5) {
           console.log('New Entry');
           result = await this.kraken.setAddOrder({
@@ -244,6 +248,8 @@ class KrakenService {
           });
         } else {
           console.log(order.buyBags ? 'Buying Bags' : `Adding: ${order.addSize}`);
+          console.log(`Balance After Trade: ${order.balanceOfBase + order.addSize}`);
+          console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
