@@ -28,8 +28,6 @@
   "BTCUSDT": {
     "name": "BTCUSDT",
     "timeframe": "5m",
-    "allowShorts": false,
-    "macdBottoms": true,
     "entrySize": 45,
     "addSize": 70,
     "latestResult": 158.89,
@@ -76,14 +74,12 @@
   "ETHUSDT": {
     "name": "ETHUSDT",
     "timeframe": "5m",
-    "allowShorts": true,
-    "macdBottoms": true,
     "entrySize": 45,
     "addSize": 65,
-    "latestResult": 143.58,
-    "totalTrades": 495,
-    "percentProfitable": 68.28,
-    "avgTrade": 0.29
+    "latestResult": 352.03,
+    "totalTrades": 574,
+    "percentProfitable": 71.78,
+    "avgTrade": 0.61
   },
   "KSMUSDT": {
     "name": "KSMUSDT",

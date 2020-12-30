@@ -151,7 +151,14 @@ export default class KrakenOrderDetails {
       if (this.noLeverage) {
         if (this.buyBags) {
           // buy 65% worth of my usd available
-          return (this.balanceOfQuote * 0.7) / this.usdValueOfBase;
+          const sellVolumeInCurrency = Number.parseFloat(
+            (this.balanceOfQuote * 0.7).toFixed(this.volumeDecimals)
+          );
+          return this.marginFree < sellVolumeInCurrency * this.usdValueOfBase
+            ? Number.parseFloat(
+                ((this.marginFree * 0.95) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+              )
+            : sellVolumeInCurrency;
         } else if (this.sellBags) {
           // sell 75% worth of currency available
           // if not enough free margin, sell what free margin is available
@@ -160,7 +167,7 @@ export default class KrakenOrderDetails {
           );
           return this.marginFree < sellVolumeInCurrency * this.usdValueOfBase
             ? Number.parseFloat(
-                (this.marginFree / this.usdValueOfBase).toFixed(this.volumeDecimals)
+                ((this.marginFree * 0.95) / this.usdValueOfBase).toFixed(this.volumeDecimals)
               )
             : sellVolumeInCurrency;
         } else {
