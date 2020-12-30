@@ -37,8 +37,20 @@
     "percentProfitable": 72.4,
     "avgTrade": 0.32
   },
+  "CRVUSDT": {
+    "name": "CRVUSDT",
+    "timeframe": "5m",
+    "allowShorts": false,
+    "macdBottoms": true,
+    "entrySize": 40,
+    "addSize": 50,
+    "latestResult": 168.78,
+    "totalTrades": 490,
+    "percentProfitable": 60.2,
+    "avgTrade": 0.34
+  },
   "DOTUSDT": {
-    "name": "BTCUSDT",
+    "name": "DOTUSDT",
     "timeframe": "5m",
     "allowShorts": false,
     "macdBottoms": true,
