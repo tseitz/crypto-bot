@@ -158,12 +158,11 @@ export default class KrakenOrderDetails {
           const sellVolumeInCurrency = Number.parseFloat(
             (this.balanceOfBase * 0.7).toFixed(this.volumeDecimals)
           );
-          // return this.marginFree < sellVolumeInCurrency * this.usdValueOfBase
-          //   ? Number.parseFloat(
-          //       (this.marginFree / this.usdValueOfBase).toFixed(this.volumeDecimals)
-          //     )
-          //   : sellVolumeInCurrency;
-          return sellVolumeInCurrency;
+          return this.marginFree < sellVolumeInCurrency * this.usdValueOfBase
+            ? Number.parseFloat(
+                (this.marginFree / this.usdValueOfBase).toFixed(this.volumeDecimals)
+              )
+            : sellVolumeInCurrency;
         } else {
           // it's a currency without leverage available
           // sell the entire balance, or handle standard entry

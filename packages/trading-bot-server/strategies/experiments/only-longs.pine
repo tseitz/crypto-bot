@@ -178,7 +178,7 @@ long = not isLong and ((longZone and (newLow or (fastMacdBottoms and macdBottome
 short = openShort and ((twoNewHighs) or (fastMacdBottoms and macdTopped))
 addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd) or (highestPrevMacd)) // and close > entryPrice
 addLong = isLong and ((longZone and newLow and not lowerMacd) or (lowestPrevMacd)) // and close < entryPrice
-closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (highestPrevMacd) or (stopped))
+closeLong = isLong and ((rsiTopped and rsiDecreasing and (rsiClose > 70 or rsi1 > 68)) or (shortZone and rsiTopped and rsiDecreasing and rsi1 > closeLongInShortZone) or (shortZone and highestPrevMacd) or (stopped))
 closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or (lowestPrevMacd) or (stopped))
 
 // shortMacdTrigger = short and macdTrigger
