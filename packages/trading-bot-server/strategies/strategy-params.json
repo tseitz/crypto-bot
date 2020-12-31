@@ -2,7 +2,7 @@
   "ATOMUSDT": {
     "name": "ATOMUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
+    "entrySize": 50,
     "addSize": 50,
     "latestResult": 426.93,
     "totalTrades": 319,
