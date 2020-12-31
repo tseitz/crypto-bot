@@ -235,6 +235,7 @@ export default class KrakenOrderDetails {
     // YFI doesn't get filled as often so giving
     if (
       isNaN(this.tradingViewPrice) ||
+      this.tradingViewTicker === 'DOTUSDT' ||
       // this.tradingViewTicker === 'ATOMUSDT' ||
       // this.tradingViewTicker === 'LINKUSDT' ||
       // this.tradingViewTicker === 'LTCUSDT' ||
