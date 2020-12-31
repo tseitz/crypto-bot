@@ -24,9 +24,9 @@
     "timeframe": "5m",
     "entrySize": 40,
     "addSize": 45,
-    "latestResult": 264.13,
-    "totalTrades": 551,
-    "percentProfitable": 72.05,
+    "latestResult": 262.18,
+    "totalTrades": 546,
+    "percentProfitable": 73.63,
     "avgTrade": 0.48
   },
   "CRVUSDT": {
@@ -64,10 +64,10 @@
     "timeframe": "5m",
     "entrySize": 50,
     "addSize": 60,
-    "latestResult": 402.47,
-    "totalTrades": 672,
-    "percentProfitable": 74.85,
-    "avgTrade": 0.60
+    "latestResult": 364.73,
+    "totalTrades": 555,
+    "percentProfitable": 75.14,
+    "avgTrade": 0.66
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
