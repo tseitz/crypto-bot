@@ -170,9 +170,9 @@ class KrakenService {
       }
 
       if (add) {
+        console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
         console.log(`Adding: ${order.addSize}`);
         console.log(`Margin After Trade: ${positionMargin + order.addSize}`);
-        console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
         const tooMuch = order.entrySize
           ? positionMargin >= order.entrySize + order.addSize * 4
           : positionMargin >= 175;
@@ -192,7 +192,7 @@ class KrakenService {
           console.log('Too much power!!');
         }
       } else if (!add) {
-        console.log('New Entry', order.tradeVolume);
+        console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -247,11 +247,11 @@ class KrakenService {
             // validate: true,
           });
         } else {
+          console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
           console.log(order.buyBags ? 'Buying Bags' : `Adding: ${order.addSize}`);
           console.log(
             `Balance After Trade: ${order.usdValueOfBase * order.balanceOfBase + order.addSize}`
           );
-          console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
