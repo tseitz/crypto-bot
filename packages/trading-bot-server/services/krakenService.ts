@@ -152,7 +152,6 @@ class KrakenService {
       let add = false;
       let positionMargin = 0,
         totalPosition = 0;
-      // TODO: use balanceOfBase?
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
@@ -171,9 +170,9 @@ class KrakenService {
       if (add) {
         console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
         console.log(
-          `Adding (${(Math.floor(positionMargin) - order.entrySize) / order.addSize}/${
+          `Adding ${(Math.floor(positionMargin) - order.entrySize) / order.addSize}/${
             order.addCount
-          }): ${order.addSize}`
+          }: ${order.addSize}`
         );
         console.log(`Margin After Trade: ${positionMargin + order.addSize}`);
         const tooMuch = order.entrySize
@@ -252,9 +251,9 @@ class KrakenService {
           console.log(
             order.buyBags
               ? 'Buying Bags'
-              : `Adding (${(Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize}/${
+              : `Adding ${(Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize}/${
                   order.addCount
-                }): ${order.addSize}`
+                }: ${order.addSize}`
           );
           console.log(
             `Balance After Trade: ${order.usdValueOfBase * order.balanceOfBase + order.addSize}`
