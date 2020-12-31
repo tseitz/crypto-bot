@@ -18,7 +18,7 @@ hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
 hiLowMed = 60 // input(defval=60, title="Hi Low Medium", minval=0, step=5)
 hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=5)
 
-closeLongInShortZone = input(defval=58, title="Close Long In Short Zone RSI", minval=0, step=1)
+closeLongInShortZone = input(defval=61, title="Close Long In Short Zone RSI", minval=0, step=1)
 maxAdds = input(defval=6, title="Max Adds", minval=0, step=1)
 allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool) // true
 fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool) // true
