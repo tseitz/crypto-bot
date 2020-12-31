@@ -171,19 +171,19 @@ class KrakenService {
       }
 
       if (add) {
-        console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
-        console.log(`Current Margin Balance: ${positionMargin}`);
-        console.log(
-          `Adding ${(Math.floor(positionMargin) - order.entrySize) / order.addSize + 1}/${
-            order.addCount
-          }: ${order.addSize}`
-        );
+        console.log(`Current Balance: ${positionMargin}`);
         console.log(`Margin After Trade: ${positionMargin + order.addSize}`);
+        console.log(`Total Allowed: ${order.maxVolumeInDollar}`);
         const tooMuch = order.entrySize
           ? positionMargin >= order.maxVolumeInDollar
           : positionMargin >= 175;
 
         if (!tooMuch) {
+          console.log(
+            `Adding ${(Math.floor(positionMargin) - order.entrySize) / order.addSize + 1}/${
+              order.addCount
+            }: ${order.addSize}`
+          );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
@@ -195,7 +195,7 @@ class KrakenService {
             // validate: true,
           });
         } else {
-          console.log('Too much power!!');
+          console.log('Easy there buddy');
         }
       } else if (!add) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
@@ -234,7 +234,6 @@ class KrakenService {
         });
       }
     } else {
-      const adds = 4;
       if (order.balanceInDollar < order.maxVolumeInDollar || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log(`New Entry: ${order.tradeVolumeInDollar}`);
@@ -247,17 +246,15 @@ class KrakenService {
             // validate: true,
           });
         } else {
-          console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
           console.log(`Current Balance: ${Math.floor(order.balanceInDollar)}`);
+          console.log(`Total Allowed: ${order.maxVolumeInDollar}`);
+          console.log(`Balance After Trade: ${order.balanceInDollar + order.addSize}`);
           console.log(
             order.buyBags
               ? 'Buying Bags'
               : `Adding ${
                   (Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize + 1
                 }/${order.addCount}: ${order.addSize}`
-          );
-          console.log(
-            `Balance After Trade: ${order.usdValueOfBase * order.balanceOfBase + order.addSize}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
