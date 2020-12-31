@@ -24,7 +24,7 @@
   "BTCUSDT": {
     "name": "BTCUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
+    "entrySize": 40,
     "addSize": 50,
     "latestResult": 235.76,
     "totalTrades": 549,
