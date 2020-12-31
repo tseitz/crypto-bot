@@ -102,8 +102,7 @@ class KrakenService {
         const position = openPositions[key];
         if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
           const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-          const volumeToClose =
-            Number.parseFloat(position.vol) - Number.parseFloat(position.vol_closed);
+          const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
           latestResult = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: closeAction,
@@ -158,8 +157,8 @@ class KrakenService {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
-          positionMargin += Number.parseFloat(position.margin);
-          totalPosition += Number.parseFloat(position.cost);
+          positionMargin += parseFloat(position.margin);
+          totalPosition += parseFloat(position.cost);
           // console.log(
           //   `Adding ${order.krakenizedTradingViewTicker}, My Margin: ${positionMargin}, Total Position: ${totalPosition}`
           // );

@@ -128,10 +128,9 @@ export default class KrakenOrderDetails {
     this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
-    console.log(this.tradeVolumeInDollar);
 
     console.log(
-      `${this.action.toUpperCase()} TV Price: ${this.superParseFloat(
+      `${this.action.toUpperCase()} TradingView Price: ${this.superParseFloat(
         body.strategy.price,
         this.priceDecimals
       )}, Bid: ${this.currentBid}, Ask: ${this.currentAsk}, My Bid: ${this.bidPrice}`
