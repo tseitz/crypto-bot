@@ -223,7 +223,7 @@ class KrakenService {
           error: [`${order.action.toUpperCase()} balance is too small`],
         });
       } else {
-        console.log(order.sellBags ? `Selling Bags` : `Selling ${order.tradingViewTicker}`);
+        console.log(order.sellBags ? `Selling Bags` : `Selling ${order.balanceInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -248,7 +248,7 @@ class KrakenService {
           });
         } else {
           console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
-          console.log(`Current Balance: ${order.balanceInDollar}`);
+          console.log(`Current Balance: ${Math.floor(order.balanceInDollar)}`);
           console.log(
             order.buyBags
               ? 'Buying Bags'
