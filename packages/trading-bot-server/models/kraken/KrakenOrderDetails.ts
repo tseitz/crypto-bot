@@ -52,6 +52,7 @@ export default class KrakenOrderDetails {
   balanceInDollar: number;
   maxVolumeInDollar: number;
   addCount: number;
+  bagIt: boolean;
 
   constructor(
     body: TradingViewBody,
@@ -99,7 +100,8 @@ export default class KrakenOrderDetails {
     this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
     this.lowestLeverageAmount =
       this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
-    this.noLeverage = this.sellBags || this.buyBags || typeof this.leverageAmount === 'undefined';
+    this.noLeverage = typeof this.leverageAmount === 'undefined';
+    this.bagIt = this.sellBags || this.buyBags;
 
     // current price info
     this.tradingViewPrice = this.superParseFloat(body.strategy.price, this.priceDecimals);

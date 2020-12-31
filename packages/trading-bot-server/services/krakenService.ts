@@ -79,7 +79,10 @@ class KrakenService {
     await this.cancelOpenOrdersForPair(order);
 
     let result;
-    if (order.noLeverage) {
+    if (order.noLeverage && !order.bagIt) {
+      result = await this.handleNonLeveragedOrder(order);
+    } else if (order.noLeverage && order.bagIt) {
+      result = await this.handleLeveragedOrder(order);
       result = await this.handleNonLeveragedOrder(order);
     } else {
       result = await this.handleLeveragedOrder(order);
@@ -169,6 +172,7 @@ class KrakenService {
 
       if (add) {
         console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
+        console.log(`Current Margin Balance: ${positionMargin}`);
         console.log(
           `Adding ${(Math.floor(positionMargin) - order.entrySize) / order.addSize}/${
             order.addCount
@@ -244,6 +248,7 @@ class KrakenService {
           });
         } else {
           console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
+          console.log(`Current Balance: ${order.balanceInDollar}`);
           console.log(
             order.buyBags
               ? 'Buying Bags'
