@@ -87,7 +87,7 @@ export default class KrakenOrderDetails {
     this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;
 
     // pair info
-    this.minVolume = this.superParseFloat(pairData[this.krakenTicker]['ordermin'].toString());
+    this.minVolume = this.superParseFloat(pairData[this.krakenTicker]['ordermin']);
     this.usdPair = !/XBT$|ETH$/.test(this.krakenTicker);
     this.priceDecimals = pairData[this.krakenTicker]['pair_decimals'];
     this.volumeDecimals = pairData[this.krakenTicker]['lot_decimals'];
@@ -146,7 +146,7 @@ export default class KrakenOrderDetails {
   }
 
   private superParseFloat(floatString: number | string, decimals?: number) {
-    floatString = floatString.toString();
+    floatString = floatString?.toString();
     return typeof decimals === 'undefined'
       ? parseFloat(floatString)
       : parseFloat(parseFloat(floatString).toFixed(decimals));
