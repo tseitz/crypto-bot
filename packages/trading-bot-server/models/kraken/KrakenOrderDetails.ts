@@ -146,7 +146,7 @@ export default class KrakenOrderDetails {
   }
 
   private superParseFloat(floatString: string, decimals?: number) {
-    return decimals
+    return typeof decimals === 'undefined'
       ? parseFloat(parseFloat(floatString).toFixed(decimals))
       : parseFloat(floatString);
   }
