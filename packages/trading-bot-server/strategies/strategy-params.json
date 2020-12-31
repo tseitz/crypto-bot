@@ -33,7 +33,7 @@
     "name": "CRVUSDT",
     "timeframe": "5m",
     "entrySize": 35,
-    "addSize": 40,
+    "addSize": 35,
     "latestResult": 352.64,
     "totalTrades": 505,
     "percentProfitable": 65.35,
@@ -120,5 +120,15 @@
     "totalTrades": 265,
     "percentProfitable": 73.58,
     "avgTrade": 1.21
+  },
+  "YFIUSDT": {
+    "name": "YFIUSDT",
+    "timeframe": "5m",
+    "entrySize": 35,
+    "addSize": 45,
+    "latestResult": 688.95,
+    "totalTrades": 667,
+    "percentProfitable": 70.31,
+    "avgTrade": 1.03
   }
 }
