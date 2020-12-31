@@ -145,10 +145,11 @@ export default class KrakenOrderDetails {
     );
   }
 
-  private superParseFloat(floatString: string, decimals?: number) {
+  private superParseFloat(floatString: number | string, decimals?: number) {
+    floatString = floatString.toString();
     return typeof decimals === 'undefined'
-      ? parseFloat(parseFloat(floatString).toFixed(decimals))
-      : parseFloat(floatString);
+      ? parseFloat(floatString)
+      : parseFloat(parseFloat(floatString).toFixed(decimals));
   }
 
   private getTradeVolume(): number {
@@ -158,22 +159,26 @@ export default class KrakenOrderDetails {
         if (this.buyBags) {
           // buy 65% worth of my usd available
           const buyVolumeInCrypto = this.superParseFloat(
-            (this.balanceOfQuote * 0.65).toFixed(this.volumeDecimals)
+            this.balanceOfQuote * 0.65,
+            this.volumeDecimals
           );
           return this.marginFree < buyVolumeInCrypto * this.usdValueOfBase
             ? this.superParseFloat(
-                ((this.marginFree * 0.98) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+                (this.marginFree * 0.98) / this.usdValueOfBase,
+                this.volumeDecimals
               )
             : buyVolumeInCrypto;
         } else if (this.sellBags) {
           // sell 65% worth of currency available
           // if not enough free margin, sell what free margin is available
           const sellVolumeInCrypto = this.superParseFloat(
-            (this.balanceOfBase * 0.65).toFixed(this.volumeDecimals)
+            this.balanceOfBase * 0.65,
+            this.volumeDecimals
           );
           return this.marginFree < sellVolumeInCrypto * this.usdValueOfBase
             ? this.superParseFloat(
-                ((this.marginFree * 0.95) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+                (this.marginFree * 0.95) / this.usdValueOfBase,
+                this.volumeDecimals
               )
             : sellVolumeInCrypto;
         } else {
@@ -183,24 +188,23 @@ export default class KrakenOrderDetails {
             return this.balanceOfBase;
           } else {
             return this.superParseFloat(
-              ((this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
-                this.volumeDecimals
-              )
+              (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+              this.volumeDecimals
             );
           }
         }
       } else {
         // if there's leverage available, handle it
         return this.superParseFloat(
-          ((this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
-            this.volumeDecimals
-          )
+          (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+          this.volumeDecimals
         );
       }
     } else {
       console.log('No size to enter. Using default. Fix please');
       volume = this.superParseFloat(
-        ((80 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        (80 * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        this.volumeDecimals
       );
       return volume > this.minVolume ? volume : this.minVolume;
     }
@@ -210,13 +214,13 @@ export default class KrakenOrderDetails {
     let volume = 0;
     if (this.addSize) {
       volume = this.superParseFloat(
-        ((this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(
-          this.volumeDecimals
-        )
+        (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        this.volumeDecimals
       );
     } else {
       volume = this.superParseFloat(
-        ((60 * (this.leverageAmount || 1)) / this.usdValueOfBase).toFixed(this.volumeDecimals)
+        (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        this.volumeDecimals
       );
     }
     return volume > this.minVolume ? volume : this.minVolume;
@@ -239,7 +243,7 @@ export default class KrakenOrderDetails {
       // this.tradingViewTicker === 'ATOMUSDT' ||
       // this.tradingViewTicker === 'LINKUSDT' ||
       this.tradingViewTicker === 'LTCUSDT' ||
-      this.tradingViewTicker === 'YFIUSDT' ||
+      // this.tradingViewTicker === 'YFIUSDT' ||
       (this.action === 'sell' && this.tradingViewTicker === 'KSMUSDT')
     ) {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
@@ -254,10 +258,7 @@ export default class KrakenOrderDetails {
         ) {
           return this.tradingViewPrice;
         } else {
-          return this.superParseFloat(
-            ((this.currentBid + this.currentAsk) / 2).toString(),
-            this.priceDecimals
-          );
+          return this.superParseFloat((this.currentBid + this.currentAsk) / 2, this.priceDecimals);
         }
         // return Number.parseFloat(
         //   Number.parseFloat(
@@ -269,7 +270,7 @@ export default class KrakenOrderDetails {
           return this.currentBid;
         } else {
           return this.superParseFloat(
-            ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString(),
+            (this.tradingViewPrice + this.currentAsk + this.currentBid) / 3,
             this.priceDecimals
           );
         }
