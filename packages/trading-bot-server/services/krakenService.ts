@@ -174,7 +174,7 @@ class KrakenService {
         console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
         console.log(`Current Margin Balance: ${positionMargin}`);
         console.log(
-          `Adding ${(Math.floor(positionMargin) - order.entrySize) / order.addSize}/${
+          `Adding ${(Math.floor(positionMargin) - order.entrySize) / order.addSize + 1}/${
             order.addCount
           }: ${order.addSize}`
         );
@@ -237,7 +237,7 @@ class KrakenService {
       const adds = 4;
       if (order.balanceInDollar < order.maxVolumeInDollar || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
-          console.log('New Entry');
+          console.log(`New Entry: ${order.tradeVolumeInDollar}`);
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
@@ -252,9 +252,9 @@ class KrakenService {
           console.log(
             order.buyBags
               ? 'Buying Bags'
-              : `Adding ${(Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize}/${
-                  order.addCount
-                }: ${order.addSize}`
+              : `Adding ${
+                  (Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize + 1
+                }/${order.addCount}: ${order.addSize}`
           );
           console.log(
             `Balance After Trade: ${order.usdValueOfBase * order.balanceOfBase + order.addSize}`
