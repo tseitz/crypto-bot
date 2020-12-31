@@ -169,11 +169,15 @@ class KrakenService {
       }
 
       if (add) {
-        console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
-        console.log(`Adding: ${order.addSize}`);
+        console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
+        console.log(
+          `Adding (${(Math.floor(positionMargin) - order.entrySize) / order.addSize}/${
+            order.addCount
+          }): ${order.addSize}`
+        );
         console.log(`Margin After Trade: ${positionMargin + order.addSize}`);
         const tooMuch = order.entrySize
-          ? positionMargin >= order.entrySize + order.addSize * 4
+          ? positionMargin >= order.maxVolumeInDollar
           : positionMargin >= 175;
 
         if (!tooMuch) {
@@ -231,10 +235,8 @@ class KrakenService {
         });
       }
     } else {
-      if (
-        order.usdValueOfBase * order.balanceOfBase < order.entrySize + order.addSize * 4 ||
-        order.buyBags
-      ) {
+      const adds = 4;
+      if (order.balanceInDollar < order.maxVolumeInDollar || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log('New Entry');
           result = await this.kraken.setAddOrder({
@@ -246,8 +248,14 @@ class KrakenService {
             // validate: true,
           });
         } else {
-          console.log(`Total Allowable: ${order.entrySize + order.addSize * 4}`);
-          console.log(order.buyBags ? 'Buying Bags' : `Adding: ${order.addSize}`);
+          console.log(`Total Allowable: ${order.maxVolumeInDollar}`);
+          console.log(
+            order.buyBags
+              ? 'Buying Bags'
+              : `Adding (${(Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize}/${
+                  order.addCount
+                }): ${order.addSize}`
+          );
           console.log(
             `Balance After Trade: ${order.usdValueOfBase * order.balanceOfBase + order.addSize}`
           );

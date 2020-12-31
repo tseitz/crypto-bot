@@ -49,6 +49,9 @@ export default class KrakenOrderDetails {
   buyBags: boolean;
   marginFree: number;
   tradeVolumeInDollar: number;
+  balanceInDollar: number;
+  maxVolumeInDollar: number;
+  addCount: number;
 
   constructor(
     body: TradingViewBody,
@@ -124,10 +127,13 @@ export default class KrakenOrderDetails {
     this.balanceOfBase = this.superParseFloat(myBalanceInfo[this.baseOfPair]);
     this.balanceOfQuote = this.superParseFloat(myBalanceInfo[this.quoteOfPair]);
     this.tradeBalance = this.action === 'sell' ? this.balanceOfBase : this.balanceOfQuote;
+    this.balanceInDollar = this.convertBaseToDollar(this.balanceOfBase, this.usdValueOfQuote);
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfQuote);
     this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
+    this.addCount = 4;
+    this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
 
     console.log(
       `${this.action.toUpperCase()} TradingView Price: ${this.superParseFloat(
