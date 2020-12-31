@@ -130,8 +130,8 @@
   "XLMUSDT": {
     "name": "XLMUSDT",
     "timeframe": "5m",
-    "entrySize": 40,
-    "addSize": 45,
+    "entrySize": 30,
+    "addSize": 40,
     "latestResult": 275.13,
     "totalTrades": 649,
     "percentProfitable": 68.26,
