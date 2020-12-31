@@ -158,7 +158,7 @@ export default class KrakenOrderDetails {
         if (this.buyBags) {
           // buy 65% worth of my usd available
           const buyVolumeInCrypto = this.superParseFloat(
-            (this.balanceOfQuote * 0.7).toFixed(this.volumeDecimals)
+            (this.balanceOfQuote * 0.65).toFixed(this.volumeDecimals)
           );
           return this.marginFree < buyVolumeInCrypto * this.usdValueOfBase
             ? this.superParseFloat(
@@ -166,10 +166,10 @@ export default class KrakenOrderDetails {
               )
             : buyVolumeInCrypto;
         } else if (this.sellBags) {
-          // sell 75% worth of currency available
+          // sell 65% worth of currency available
           // if not enough free margin, sell what free margin is available
           const sellVolumeInCrypto = this.superParseFloat(
-            (this.balanceOfBase * 0.7).toFixed(this.volumeDecimals)
+            (this.balanceOfBase * 0.65).toFixed(this.volumeDecimals)
           );
           return this.marginFree < sellVolumeInCrypto * this.usdValueOfBase
             ? this.superParseFloat(

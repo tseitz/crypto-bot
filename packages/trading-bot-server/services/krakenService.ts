@@ -79,9 +79,9 @@ class KrakenService {
     await this.cancelOpenOrdersForPair(order);
 
     let result;
-    if (order.noLeverage && !order.bagIt) {
+    if (order.noLeverage) {
       result = await this.handleNonLeveragedOrder(order);
-    } else if (order.noLeverage && order.bagIt) {
+    } else if (order.bagIt) {
       result = await this.handleLeveragedOrder(order);
       result = await this.handleNonLeveragedOrder(order);
     } else {
