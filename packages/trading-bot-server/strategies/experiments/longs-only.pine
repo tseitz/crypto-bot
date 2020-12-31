@@ -160,7 +160,7 @@ macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
 rsiDecreasing = rsiClose < rsi2
-rsiIncreasing = rsiClose > rsi2
+rsiIncreasing = ((rsiClose > rsi2 and rsi1 < rsi2) or (rsiClose > rsi3 and rsi2 < rsi3))
 newLow = low[1] < lowestFast2 and low > lowestFast1
 newHigh = high[1] > highestFast2 and high < highestFast1
 twoNewHighs = high[2] > highestFast3 and newHigh
@@ -175,11 +175,11 @@ openShort = allowShorts and not isShort and shortZone
 stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
 
 // long = not isLong and longZone and ((macdBottomed))
-long = not isLong and ((longZone and (newLow or (fastMacdBottoms and macdBottomed))) or (shortZone and (lowestPrevMacd))) // or high > highestMed1
+long = not isLong and ((longZone and ((newLow and not lowerMacd) or (fastMacdBottoms and macdBottomed) or (rsiBottomed and lowerMacd2 and lowerMacd))) or (shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd)) // or high > highestMed1
 short = openShort and ((twoNewHighs) or (fastMacdBottoms and macdTopped))
 addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd) or (highestPrevMacd)) // and close > entryPrice
-addLong = isLong and ((longZone and newLow and not lowerMacd) or (lowestPrevMacd)) // and close < entryPrice
-closeLong = isLong and ((rsiTopped and rsiDecreasing and ((rsiClose > 70 or rsi1 > 68) or (higherMacd2))) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (highestPrevMacd) or (stopped))
+addLong = isLong and ((longZone and ((newLow and not lowerMacd) or (rsiBottomed and lowerMacd2 and lowerMacd))) or (shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd)) // and close < entryPrice
+closeLong = isLong and ((rsiTopped and rsiDecreasing and ((rsiClose > 70 or rsi1 > 68) or (higherMacd2 and higherMacd))) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (shortZone and highestPrevMacd) or (stopped))
 closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or (lowestPrevMacd) or (stopped))
 
 // shortMacdTrigger = short and macdTrigger
