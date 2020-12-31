@@ -139,7 +139,7 @@ class KrakenService {
     }
 
     if (!latestResult) {
-      console.log('Nothing to close');
+      console.log('Leveraged Order: Nothing to close');
     }
 
     return latestResult;
@@ -209,7 +209,7 @@ class KrakenService {
         });
       }
 
-      logOrderResult(`Leveraged Order Complete`, result, order.krakenizedTradingViewTicker);
+      logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
     }
 
     return result;
@@ -277,7 +277,7 @@ class KrakenService {
       }
     }
 
-    logOrderResult(`Non Leveraged Order Complete`, result, order.krakenizedTradingViewTicker);
+    logOrderResult(`Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
     return result;
   }
 
