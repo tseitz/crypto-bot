@@ -129,7 +129,7 @@ export default class KrakenOrderDetails {
     this.balanceOfBase = this.superParseFloat(myBalanceInfo[this.baseOfPair]);
     this.balanceOfQuote = this.superParseFloat(myBalanceInfo[this.quoteOfPair]);
     this.tradeBalance = this.action === 'sell' ? this.balanceOfBase : this.balanceOfQuote;
-    this.balanceInDollar = this.convertBaseToDollar(this.balanceOfBase, this.usdValueOfQuote);
+    this.balanceInDollar = this.convertBaseToDollar(this.balanceOfBase, this.usdValueOfBase);
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfQuote);
     this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();

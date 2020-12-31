@@ -252,9 +252,9 @@ class KrakenService {
           console.log(
             order.buyBags
               ? 'Buying Bags'
-              : `Adding ${
+              : `Adding ${Math.floor(
                   (Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize + 1
-                }/${order.addCount}: ${order.addSize}`
+                )}/${order.addCount}: ${order.addSize}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
@@ -267,9 +267,7 @@ class KrakenService {
         }
       } else {
         console.log(
-          `Position size for ${order.krakenizedTradingViewTicker} is too large ${
-            order.usdValueOfBase * order.balanceOfBase
-          }`
+          `Position size for ${order.krakenizedTradingViewTicker} is too large ${order.balanceInDollar}`
         );
       }
     }
