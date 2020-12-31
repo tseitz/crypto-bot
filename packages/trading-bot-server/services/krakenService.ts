@@ -216,11 +216,7 @@ class KrakenService {
     if (order.action === 'sell') {
       if (isNaN(order.balanceOfBase) || order.balanceOfBase < 1e-6) {
         result = new KrakenOrderResult({
-          error: [
-            `${
-              order.krakenizedTradingViewTicker
-            } ${order.action.toUpperCase()} balance is too small`,
-          ],
+          error: [`${order.action.toUpperCase()} balance is too small`],
         });
       } else {
         console.log(order.sellBags ? `Selling Bags` : `Selling ${order.tradingViewTicker}`);
