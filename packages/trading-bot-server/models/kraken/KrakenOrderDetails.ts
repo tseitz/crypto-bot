@@ -159,7 +159,7 @@ export default class KrakenOrderDetails {
         if (this.buyBags) {
           // buy 65% worth of my usd available
           const buyVolumeInCrypto = this.superParseFloat(
-            this.balanceOfQuote * 0.65,
+            this.balanceOfQuote * 0.5,
             this.volumeDecimals
           );
           return this.marginFree < buyVolumeInCrypto * this.usdValueOfBase

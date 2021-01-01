@@ -2,8 +2,8 @@
   "ATOMUSDT": {
     "name": "ATOMUSDT",
     "timeframe": "5m",
-    "entrySize": 50,
-    "addSize": 50,
+    "entrySize": 45,
+    "addSize": 45,
     "latestResult": 426.93,
     "totalTrades": 319,
     "percentProfitable": 71.47,
@@ -22,7 +22,7 @@
   "BTCUSDT": {
     "name": "BTCUSDT",
     "timeframe": "5m",
-    "entrySize": 40,
+    "entrySize": 45,
     "addSize": 45,
     "latestResult": 262.18,
     "totalTrades": 546,
@@ -63,7 +63,7 @@
     "name": "ETHUSDT",
     "timeframe": "5m",
     "entrySize": 50,
-    "addSize": 60,
+    "addSize": 55,
     "latestResult": 361.02,
     "totalTrades": 562,
     "percentProfitable": 74.2,
@@ -114,7 +114,7 @@
   "XTZUSD": {
     "name": "XTZUSD",
     "timeframe": "5m",
-    "entrySize": 35,
+    "entrySize": 40,
     "addSize": 45,
     "latestResult": 319.69,
     "totalTrades": 265,
