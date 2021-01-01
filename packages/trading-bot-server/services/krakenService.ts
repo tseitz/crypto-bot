@@ -171,8 +171,8 @@ class KrakenService {
       }
 
       if (add) {
-        console.log(`Current Balance: ${positionMargin}`);
-        console.log(`Margin After Trade: ${positionMargin + order.addSize}`);
+        console.log(`Current Balance: ${positionMargin.toFixed(2)}`);
+        console.log(`Margin After Trade: ${(positionMargin + order.addSize).toFixed(2)}`);
         console.log(`Total Allowed: ${order.maxVolumeInDollar}`);
         const tooMuch = order.entrySize
           ? positionMargin >= order.maxVolumeInDollar
@@ -246,9 +246,9 @@ class KrakenService {
             // validate: true,
           });
         } else {
-          console.log(`Current Balance: ${Math.floor(order.balanceInDollar)}`);
+          console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
           console.log(`Total Allowed: ${order.maxVolumeInDollar}`);
-          console.log(`Balance After Trade: ${order.balanceInDollar + order.addSize}`);
+          console.log(`Balance After Trade: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
           console.log(
             order.buyBags
               ? 'Buying Bags'
