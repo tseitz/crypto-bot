@@ -252,9 +252,11 @@ class KrakenService {
           console.log(
             order.buyBags
               ? 'Buying Bags'
-              : `Adding ${Math.floor(
-                  (Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize + 1
-                )}/${order.addCount}: ${order.addSize}`
+              : `Adding ${
+                  ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(
+                    0
+                  ) + 1
+                }/${order.addCount}: ${order.addSize}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
