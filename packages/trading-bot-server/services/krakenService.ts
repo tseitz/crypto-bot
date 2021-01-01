@@ -220,7 +220,7 @@ class KrakenService {
   async handleNonLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let result;
     if (order.action === 'sell') {
-      if (isNaN(order.balanceOfBase) || order.balanceOfBase < 1e-6) {
+      if (isNaN(order.balanceOfBase) || order.balanceOfBase < 1e-5) {
         result = new KrakenOrderResult({
           error: [`${order.action.toUpperCase()} balance is too small`],
         });
