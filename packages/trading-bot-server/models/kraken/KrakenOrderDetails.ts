@@ -240,7 +240,7 @@ export default class KrakenOrderDetails {
     if (
       isNaN(this.tradingViewPrice) ||
       this.tradingViewTicker === 'DOTUSDT' ||
-      // this.tradingViewTicker === 'ATOMUSDT' ||
+      this.tradingViewTicker === 'ATOMUSDT' ||
       // this.tradingViewTicker === 'LINKUSDT' ||
       this.tradingViewTicker === 'LTCUSDT' ||
       // this.tradingViewTicker === 'YFIUSDT' ||
