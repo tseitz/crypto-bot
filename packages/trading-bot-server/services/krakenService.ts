@@ -198,7 +198,7 @@ class KrakenService {
           console.log('Easy there buddy');
         }
       } else if (!add) {
-        console.log(`New Entry: ${order.tradeVolumeInDollar}`);
+        console.log(`New Entry: ${order.tradeVolumeInDollar} @ ${order.leverageAmount}:1 leverage`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
