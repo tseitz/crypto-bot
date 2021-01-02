@@ -156,7 +156,7 @@ lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
 bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
 
-macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and macd < 0
+macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and (longZone or macd < 0)
 macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 and macd1 > macd2)) and macd > 0
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
