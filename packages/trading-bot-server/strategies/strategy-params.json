@@ -64,10 +64,10 @@
     "timeframe": "5m",
     "entrySize": 50,
     "addSize": 55,
-    "latestResult": 361.02,
-    "totalTrades": 562,
-    "percentProfitable": 74.2,
-    "avgTrade": 0.64
+    "latestResult": 479.36,
+    "totalTrades": 662,
+    "percentProfitable": 76.28,
+    "avgTrade": 0.72
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
