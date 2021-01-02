@@ -12,7 +12,7 @@
   "BCHUSDT": {
     "name": "BCHUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
+    "entrySize": 40,
     "addSize": 45,
     "latestResult": 296.67,
     "totalTrades": 427,

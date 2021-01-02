@@ -155,11 +155,11 @@ export default class KrakenOrderDetails {
   private getTradeVolume(): number {
     let volume = 0;
     if (this.entrySize) {
-      if (this.noLeverage) {
+      if (this.noLeverage || this.bagIt) {
         if (this.buyBags) {
           // buy 65% worth of my usd available
           const buyVolumeInCrypto = this.superParseFloat(
-            this.balanceOfQuote * 0.6,
+            this.balanceOfQuote * 0.4,
             this.volumeDecimals
           );
           return this.marginFree < buyVolumeInCrypto * this.usdValueOfBase
@@ -172,7 +172,7 @@ export default class KrakenOrderDetails {
           // sell 65% worth of currency available
           // if not enough free margin, sell what free margin is available
           const sellVolumeInCrypto = this.superParseFloat(
-            this.balanceOfBase * 0.6,
+            this.balanceOfBase * 0.7,
             this.volumeDecimals
           );
           return this.marginFree < sellVolumeInCrypto * this.usdValueOfBase
