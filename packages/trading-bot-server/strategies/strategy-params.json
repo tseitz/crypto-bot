@@ -115,7 +115,7 @@
     "name": "YFIUSDT",
     "timeframe": "5m",
     "entrySize": 35,
-    "addSize": 40,
+    "addSize": 35,
     "latestResult": 655.51,
     "totalTrades": 534,
     "percentProfitable": 59.18,
