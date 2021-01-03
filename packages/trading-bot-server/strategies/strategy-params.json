@@ -42,8 +42,8 @@
   "DOTUSDT": {
     "name": "DOTUSDT",
     "timeframe": "5m",
-    "entrySize": 40,
-    "addSize": 50,
+    "entrySize": 35,
+    "addSize": 40,
     "latestResult": 387.10,
     "totalTrades": 535,
     "percentProfitable": 68.22,
@@ -62,8 +62,8 @@
   "ETHUSDT": {
     "name": "ETHUSDT",
     "timeframe": "5m",
-    "entrySize": 50,
-    "addSize": 50,
+    "entrySize": 45,
+    "addSize": 45,
     "latestResult": 479.36,
     "totalTrades": 662,
     "percentProfitable": 76.28,
