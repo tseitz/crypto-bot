@@ -13,11 +13,12 @@ longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 shortStopPerc = 12 // input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
-ignoreTwoNewLows = input(defval=false, title="Ignore 2 New Lows", type=input.bool)
 hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
 hiLowMed = 60 // input(defval=60, title="Hi Low Medium", minval=0, step=5)
 hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=5)
 
+loneCloseLong = input(defval=70, title="Lone Close Long", minval=0, step=1)
+highestMacdCloseLong = input(defval=68, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=61, title="Close Long In Short Zone RSI", minval=0, step=1)
 maxAdds = input(defval=6, title="Max Adds", minval=0, step=1)
 allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool) // true
@@ -177,11 +178,11 @@ openShort = allowShorts and not isShort and shortZone
 stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
 
 // long = not isLong and longZone and ((macdBottomed))
-long = not isLong and ((longZone and ((newLow) or (fastMacdBottoms and macdBottomed) or (rsiBottomed and lowerMacd2))) or (shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd)) // or high > highestMed1
+long = not isLong and ((longZone and ((newLow) or (fastMacdBottoms and macdBottomed) or (rsiBottomed and lowerMacd2))) or (shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd))
 short = openShort and ((twoNewHighs) or (fastMacdBottoms and macdTopped))
 addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd) or (highestPrevMacd)) // and close > entryPrice
-addLong = isLong and ((longZone and (ignoreTwoNewLows or not twoNewLows) and ((newLow) or (rsiBottomed and lowerMacd2))) or (shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsiClose < 30 or rsi1 < 28)))) // and close < entryPrice
-closeLong = isLong and ((rsiTopped and rsiDecreasing and ((rsiClose > 70 or rsi1 > 68) or (higherMacd2 and higherMacd))) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (shortZone and highestPrevMacd) or (stopped))
+addLong = isLong and ((longZone and ((rsiBottomed and (newLow or (rsiIncreasing and (lowerMacd2 or rsi1 < 41)))))) or (shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsiClose < 30 or rsi1 < 28)))) // and close < entryPrice
+closeLong = isLong and ((rsiTopped and rsiDecreasing and ((rsi1 > loneCloseLong and not higherMacd2) or (rsi1 > highestMacdCloseLong and higherMacd2))) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (shortZone and highestPrevMacd) or (stopped))
 closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or (lowestPrevMacd) or (stopped))
 
 // shortMacdTrigger = short and macdTrigger

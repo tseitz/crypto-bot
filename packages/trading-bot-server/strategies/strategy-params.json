@@ -4,10 +4,10 @@
     "timeframe": "5m",
     "entrySize": 40,
     "addSize": 45,
-    "latestResult": 426.93,
-    "totalTrades": 319,
-    "percentProfitable": 71.47,
-    "avgTrade": 1.34
+    "latestResult": 443.24,
+    "totalTrades": 281,
+    "percentProfitable": 70.82,
+    "avgTrade": 1.58
   },
   "BCHUSDT": {
     "name": "BCHUSDT",
@@ -24,20 +24,20 @@
     "timeframe": "5m",
     "entrySize": 45,
     "addSize": 40,
-    "latestResult": 262.18,
-    "totalTrades": 546,
-    "percentProfitable": 73.63,
-    "avgTrade": 0.48
+    "latestResult": 409.93,
+    "totalTrades": 450,
+    "percentProfitable": 68.89,
+    "avgTrade": 0.91
   },
   "CRVUSDT": {
     "name": "CRVUSDT",
     "timeframe": "5m",
     "entrySize": 40,
     "addSize": 30,
-    "latestResult": 352.64,
-    "totalTrades": 505,
-    "percentProfitable": 65.35,
-    "avgTrade": 0.70
+    "latestResult": 776.79,
+    "totalTrades": 649,
+    "percentProfitable": 61.79,
+    "avgTrade": 1.20
   },
   "DOTUSDT": {
     "name": "DOTUSDT",
@@ -64,10 +64,10 @@
     "timeframe": "5m",
     "entrySize": 50,
     "addSize": 50,
-    "latestResult": 479.36,
-    "totalTrades": 662,
-    "percentProfitable": 76.28,
-    "avgTrade": 0.72
+    "latestResult": 615.82,
+    "totalTrades": 532,
+    "percentProfitable": 67.67,
+    "avgTrade": 1.16
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
