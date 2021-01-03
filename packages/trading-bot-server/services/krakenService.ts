@@ -306,27 +306,25 @@ class KrakenService {
             : buyVolumeInDollar / order.usdValueOfBase;
         volumeBoughtInDollar += order.tradeVolume * order.usdValueOfBase;
         if (order.tradeVolume < order.minVolume) break;
+        if (i > 8) {
+          console.log(`Something went wrong buying bags, canceling`);
+          volumeBoughtInDollar = buyVolumeInDollar;
+        }
 
         // no way of knowing when the leveraged order is filled, so we'll wait
         setTimeout(async () => {
-          console.log(i);
           result = await this.handleNonLeveragedOrder(order);
           logOrderResult(`Bagged Result`, result, order.krakenizedTradingViewTicker);
 
-          if (result.error.length === 0) {
-            const orderResult = result.result?.descr.order;
-            if (!orderResult) return;
+          // if (result.error.length === 0) {
+          //   const orderResult = result.result?.descr.order;
+          //   if (!orderResult) return;
 
-            const match = orderResult.match(/(\d+\.+\d+)\s/);
-            console.log(match ? match[0].trim() : 'No match found');
-            const filled = match ? match[0].trim() : 0;
+          //   const match = orderResult.match(/(\d+\.+\d+)\s/);
+          //   const filled = match ? match[0].trim() : 0;
 
-            volumeBoughtInDollar += order.superParseFloat(filled, order.volumeDecimals) || 0;
-          }
-          if (i > 8) {
-            console.log(`Something went wrong buying bags, canceling`);
-            volumeBoughtInDollar = buyVolumeInDollar;
-          }
+          //   volumeBoughtInDollar += order.superParseFloat(filled, order.volumeDecimals) || 0;
+          // }
         }, 1000 * i++);
       }
     } else if (order.sellBags) {
