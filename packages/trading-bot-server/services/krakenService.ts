@@ -315,6 +315,7 @@ class KrakenService {
         setTimeout(async () => {
           result = await this.handleNonLeveragedOrder(order);
           logOrderResult(`Bagged Result`, result, order.krakenizedTradingViewTicker);
+          console.log('-'.repeat(20));
 
           // if (result.error.length === 0) {
           //   const orderResult = result.result?.descr.order;
