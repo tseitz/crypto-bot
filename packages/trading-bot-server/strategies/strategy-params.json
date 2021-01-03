@@ -52,12 +52,12 @@
   "EOSUSDT": {
     "name": "EOSUSDT",
     "timeframe": "5m",
-    "entrySize": 20,
-    "addSize": 30,
-    "latestResult": 203.37,
-    "totalTrades": 517,
-    "percentProfitable": 69.83,
-    "avgTrade": 0.39
+    "entrySize": 30,
+    "addSize": 40,
+    "latestResult": 511.97,
+    "totalTrades": 537,
+    "percentProfitable": 70.39,
+    "avgTrade": 0.95
   },
   "ETHUSDT": {
     "name": "ETHUSDT",
@@ -74,20 +74,20 @@
     "timeframe": "5m",
     "entrySize": 35,
     "addSize": 40,
-    "latestResult": 371.81,
-    "totalTrades": 612,
-    "percentProfitable": 69.61,
-    "avgTrade": 0.61
+    "latestResult": 479.45,
+    "totalTrades": 441,
+    "percentProfitable": 61.68,
+    "avgTrade": 1.09
   },
   "LINKUSDT": {
     "name": "LINKUSDT",
     "timeframe": "5m",
     "entrySize": 40,
     "addSize": 40,
-    "latestResult": 307.28,
-    "totalTrades": 548,
-    "percentProfitable": 66.79,
-    "avgTrade": 0.56
+    "latestResult": 509.93,
+    "totalTrades": 498,
+    "percentProfitable": 68.47,
+    "avgTrade": 1.02
   },
   "LTCUSDT": {
     "name": "LTCUSDT",
@@ -95,40 +95,30 @@
     "longStop": 11,
     "shortStop": 3,
     "entrySize": 45,
-    "addSize": 50,
-    "latestResult": 574.44,
-    "totalTrades": 592,
-    "percentProfitable": 70.78,
-    "avgTrade": 0.97
+    "addSize": 60,
+    "latestResult": 1030.19,
+    "totalTrades": 621,
+    "percentProfitable": 69.73,
+    "avgTrade": 1.66
   },
   "SNXUSDT": {
     "name": "SNXUSDT",
     "timeframe": "5m",
     "entrySize": 40,
     "addSize": 50,
-    "latestResult": 806.41,
-    "totalTrades": 315,
-    "percentProfitable": 78.1,
-    "avgTrade": 2.56
-  },
-  "XTZUSD": {
-    "name": "XTZUSD",
-    "timeframe": "5m",
-    "entrySize": 40,
-    "addSize": 40,
-    "latestResult": 319.69,
-    "totalTrades": 265,
-    "percentProfitable": 73.58,
-    "avgTrade": 1.21
+    "latestResult": 1069.09,
+    "totalTrades": 373,
+    "percentProfitable": 77.21,
+    "avgTrade": 2.87
   },
   "YFIUSDT": {
     "name": "YFIUSDT",
     "timeframe": "5m",
     "entrySize": 35,
     "addSize": 40,
-    "latestResult": 688.95,
-    "totalTrades": 667,
-    "percentProfitable": 70.31,
-    "avgTrade": 1.03
+    "latestResult": 655.51,
+    "totalTrades": 534,
+    "percentProfitable": 59.18,
+    "avgTrade": 1.23
   }
 }
