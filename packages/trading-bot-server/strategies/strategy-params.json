@@ -13,7 +13,7 @@
     "name": "BCHUSDT",
     "timeframe": "5m",
     "entrySize": 35,
-    "addSize": 40,
+    "addSize": 35,
     "latestResult": 296.67,
     "totalTrades": 427,
     "percentProfitable": 72.37,
@@ -32,7 +32,7 @@
   "CRVUSDT": {
     "name": "CRVUSDT",
     "timeframe": "5m",
-    "entrySize": 40,
+    "entrySize": 35,
     "addSize": 30,
     "latestResult": 352.64,
     "totalTrades": 505,
