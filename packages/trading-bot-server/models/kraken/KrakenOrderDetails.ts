@@ -145,7 +145,7 @@ export default class KrakenOrderDetails {
     );
   }
 
-  private superParseFloat(floatString: number | string, decimals?: number) {
+  public superParseFloat(floatString: number | string, decimals?: number) {
     floatString = floatString?.toString();
     return typeof decimals === 'undefined'
       ? parseFloat(floatString)
@@ -155,51 +155,11 @@ export default class KrakenOrderDetails {
   private getTradeVolume(): number {
     let volume = 0;
     if (this.entrySize) {
-      if (this.noLeverage || this.bagIt) {
-        if (this.buyBags) {
-          // buy 65% worth of my usd available
-          const buyVolumeInCrypto = this.superParseFloat(
-            this.balanceOfQuote * 0.4,
-            this.volumeDecimals
-          );
-          return this.marginFree < buyVolumeInCrypto * this.usdValueOfBase
-            ? this.superParseFloat(
-                (this.marginFree * 0.98) / this.usdValueOfBase,
-                this.volumeDecimals
-              )
-            : buyVolumeInCrypto;
-        } else if (this.sellBags) {
-          // sell 65% worth of currency available
-          // if not enough free margin, sell what free margin is available
-          const sellVolumeInCrypto = this.superParseFloat(
-            this.balanceOfBase * 0.7,
-            this.volumeDecimals
-          );
-          return this.marginFree < sellVolumeInCrypto * this.usdValueOfBase
-            ? this.superParseFloat(
-                (this.marginFree * 0.95) / this.usdValueOfBase,
-                this.volumeDecimals
-              )
-            : sellVolumeInCrypto;
-        } else {
-          // it's a currency without leverage available
-          // sell the entire balance, or handle standard entry
-          if (this.action === 'sell') {
-            return this.balanceOfBase;
-          } else {
-            return this.superParseFloat(
-              (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
-              this.volumeDecimals
-            );
-          }
-        }
-      } else {
-        // if there's leverage available, handle it
-        return this.superParseFloat(
-          (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
-          this.volumeDecimals
-        );
-      }
+      // if there's leverage available, handle it
+      return this.superParseFloat(
+        (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        this.volumeDecimals
+      );
     } else {
       console.log('No size to enter. Using default. Fix please');
       volume = this.superParseFloat(

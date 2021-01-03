@@ -82,8 +82,7 @@ class KrakenService {
     if (order.noLeverage) {
       result = await this.handleNonLeveragedOrder(order);
     } else if (order.bagIt) {
-      result = await this.handleLeveragedOrder(order);
-      result = await this.handleNonLeveragedOrder(order);
+      result = await this.handleBags(order);
     } else {
       result = await this.handleLeveragedOrder(order);
     }
@@ -208,6 +207,7 @@ class KrakenService {
           price: order.bidPrice,
           volume: order.tradeVolume,
           leverage: order.leverageAmount,
+          // validate: true,
         });
       }
 
@@ -279,6 +279,65 @@ class KrakenService {
     }
 
     logOrderResult(`Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
+    return result;
+  }
+
+  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+    let result = await this.handleLeveragedOrder(order);
+    let closingVolume;
+
+    if (order.buyBags) {
+      // buy 40% worth of my usd available
+      // currently morphing original order. Sorry immutability
+      const buyVolumeInDollar = order.superParseFloat(
+        order.balanceOfQuote * 0.4,
+        order.volumeDecimals
+      );
+      let volumeBoughtInDollar = 0;
+      let i = 1;
+
+      while (volumeBoughtInDollar < buyVolumeInDollar) {
+        order.tradeVolume =
+          order.marginFree < buyVolumeInDollar
+            ? order.superParseFloat(
+                (order.marginFree * 0.98) / order.usdValueOfBase,
+                order.volumeDecimals
+              )
+            : buyVolumeInDollar / order.usdValueOfBase;
+        volumeBoughtInDollar += order.tradeVolume * order.usdValueOfBase;
+
+        // no way of knowing when the leveraged order is filled, so we'll wait
+        setTimeout(async () => {
+          console.log(i);
+          result = await this.handleNonLeveragedOrder(order);
+          if (result.error.length === 0) {
+            const orderResult = result.result?.descr.order;
+            if (!orderResult) return;
+
+            const match = orderResult.match(/(\d+\.+\d+)\s/);
+            console.log(match ? match[0].trim() : 'No match found');
+            const filled = match ? match[0].trim() : 0;
+
+            volumeBoughtInDollar += order.superParseFloat(filled, order.volumeDecimals) || 0;
+          }
+          console.log(result);
+          if (i > 8) {
+            console.log(`Something went wrong buying bags, canceling`);
+            volumeBoughtInDollar = buyVolumeInDollar;
+          }
+        }, 1000 * i++);
+      }
+    } else if (order.sellBags) {
+      // sell 75% worth of currency available
+      // if not enough free margin, sell what free margin is available
+      closingVolume = order.superParseFloat(order.balanceOfBase * 0.75, order.volumeDecimals);
+
+      // get right to it, we don't care about margin free
+      result = await this.handleNonLeveragedOrder(order);
+    } else {
+      console.log('Idk how we got here');
+    }
+
     return result;
   }
 
