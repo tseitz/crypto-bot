@@ -305,11 +305,14 @@ class KrakenService {
               )
             : buyVolumeInDollar / order.usdValueOfBase;
         volumeBoughtInDollar += order.tradeVolume * order.usdValueOfBase;
+        if (order.tradeVolume < order.minVolume) break;
 
         // no way of knowing when the leveraged order is filled, so we'll wait
         setTimeout(async () => {
           console.log(i);
           result = await this.handleNonLeveragedOrder(order);
+          logOrderResult(`Bagged Result`, result, order.krakenizedTradingViewTicker);
+
           if (result.error.length === 0) {
             const orderResult = result.result?.descr.order;
             if (!orderResult) return;
@@ -320,7 +323,6 @@ class KrakenService {
 
             volumeBoughtInDollar += order.superParseFloat(filled, order.volumeDecimals) || 0;
           }
-          console.log(result);
           if (i > 8) {
             console.log(`Something went wrong buying bags, canceling`);
             volumeBoughtInDollar = buyVolumeInDollar;
