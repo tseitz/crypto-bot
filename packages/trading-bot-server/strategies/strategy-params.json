@@ -82,8 +82,8 @@
   "LINKUSDT": {
     "name": "LINKUSDT",
     "timeframe": "5m",
-    "entrySize": 45,
-    "addSize": 50,
+    "entrySize": 40,
+    "addSize": 45,
     "latestResult": 509.93,
     "totalTrades": 498,
     "percentProfitable": 68.47,

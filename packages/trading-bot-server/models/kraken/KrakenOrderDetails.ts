@@ -155,18 +155,25 @@ export default class KrakenOrderDetails {
   private getTradeVolume(): number {
     let volume = 0;
     if (this.entrySize) {
-      // if there's leverage available, handle it
-      return this.superParseFloat(
-        (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
-        this.volumeDecimals
-      );
+      if (this.action === 'sell') {
+        return this.balanceOfBase;
+      } else {
+        return this.superParseFloat(
+          (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+          this.volumeDecimals
+        );
+      }
     } else {
       console.log('No size to enter. Using default. Fix please');
-      volume = this.superParseFloat(
-        (80 * (this.leverageAmount || 1)) / this.usdValueOfBase,
-        this.volumeDecimals
-      );
-      return volume > this.minVolume ? volume : this.minVolume;
+      if (this.action === 'sell') {
+        return this.balanceOfBase;
+      } else {
+        volume = this.superParseFloat(
+          (80 * (this.leverageAmount || 1)) / this.usdValueOfBase,
+          this.volumeDecimals
+        );
+        return volume > this.minVolume ? volume : this.minVolume;
+      }
     }
   }
 
