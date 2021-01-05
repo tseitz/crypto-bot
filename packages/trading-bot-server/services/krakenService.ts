@@ -236,7 +236,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar < order.maxVolumeInDollar || order.buyBags) {
+      if (order.balanceInDollar < order.maxVolumeInDollar - 3 || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log(`New Entry: ${order.tradeVolumeInDollar}`);
           result = await this.kraken.setAddOrder({
@@ -331,7 +331,7 @@ class KrakenService {
     } else if (order.sellBags) {
       // sell 75% worth of currency available
       // if not enough free margin, sell what free margin is available
-      closingVolume = order.superParseFloat(order.balanceOfBase * 0.75, order.volumeDecimals);
+      order.tradeVolume = order.superParseFloat(order.balanceOfBase * 0.5, order.volumeDecimals);
 
       // get right to it, we don't care about margin free
       result = await this.handleNonLeveragedOrder(order);
