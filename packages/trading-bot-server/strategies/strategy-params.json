@@ -42,8 +42,8 @@
   "CRVUSDT": {
     "name": "CRVUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
-    "addSize": 25,
+    "entrySize": 20,
+    "addSize": 20,
     "latestResult": 371.30,
     "totalTrades": 286,
     "percentProfitable": 60.49,
@@ -52,7 +52,7 @@
   "DOTUSDT": {
     "name": "DOTUSDT",
     "timeframe": "5m",
-    "entrySize": 20,
+    "entrySize": 25,
     "addSize": 25,
     "latestResult": 583.22,
     "totalTrades": 448,
@@ -125,7 +125,7 @@
     "name": "YFIUSDT",
     "timeframe": "5m",
     "entrySize": 20,
-    "addSize": 25,
+    "addSize": 20,
     "latestResult": 482.38,
     "totalTrades": 505,
     "percentProfitable": 59.01,
