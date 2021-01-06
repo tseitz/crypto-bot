@@ -52,8 +52,8 @@
   "DOTUSDT": {
     "name": "DOTUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
-    "addSize": 35,
+    "entrySize": 20,
+    "addSize": 25,
     "latestResult": 583.22,
     "totalTrades": 448,
     "percentProfitable": 63.39,
