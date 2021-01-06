@@ -3,7 +3,7 @@
     "name": "ADAUSDT",
     "timeframe": "5m",
     "entrySize": 35,
-    "addSize": 45,
+    "addSize": 50,
     "latestResult": 830.61,
     "totalTrades": 512,
     "percentProfitable": 60.55,
