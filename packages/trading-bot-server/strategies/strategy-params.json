@@ -13,7 +13,7 @@
     "name": "ATOMUSDT",
     "timeframe": "5m",
     "entrySize": 30,
-    "addSize": 40,
+    "addSize": 35,
     "latestResult": 578.48,
     "totalTrades": 256,
     "percentProfitable": 73.44,
