@@ -32,8 +32,8 @@
   "BTCUSDT": {
     "name": "BTCUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
-    "addSize": 40,
+    "entrySize": 30,
+    "addSize": 45,
     "latestResult": 343.09,
     "totalTrades": 516,
     "percentProfitable": 67.64,
