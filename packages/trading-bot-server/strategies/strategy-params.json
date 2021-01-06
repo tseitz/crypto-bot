@@ -4,19 +4,19 @@
     "timeframe": "5m",
     "entrySize": 40,
     "addSize": 55,
-    "latestResult": 830.61,
-    "totalTrades": 512,
-    "percentProfitable": 60.55,
-    "avgTrade": 1.62
+    "latestResult": 905.67,
+    "totalTrades": 513,
+    "percentProfitable": 61.99,
+    "avgTrade": 1.77
   },
   "ATOMUSDT": {
     "name": "ATOMUSDT",
     "timeframe": "5m",
     "entrySize": 30,
     "addSize": 40,
-    "latestResult": 578.48,
-    "totalTrades": 256,
-    "percentProfitable": 73.44,
+    "latestResult": 569.76,
+    "totalTrades": 252,
+    "percentProfitable": 74.21,
     "avgTrade": 2.26
   },
   "BCHUSDT": {
@@ -24,50 +24,50 @@
     "timeframe": "5m",
     "entrySize": 35,
     "addSize": 45,
-    "latestResult": 786.79,
-    "totalTrades": 498,
-    "percentProfitable": 66.47,
-    "avgTrade": 1.58
+    "latestResult": 809.56,
+    "totalTrades": 534,
+    "percentProfitable": 68.54,
+    "avgTrade": 1.52
   },
   "BTCUSDT": {
     "name": "BTCUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
-    "addSize": 55,
-    "latestResult": 343.09,
-    "totalTrades": 516,
-    "percentProfitable": 67.64,
-    "avgTrade": 0.66
+    "entrySize": 40,
+    "addSize": 50,
+    "latestResult": 418.36,
+    "totalTrades": 551,
+    "percentProfitable": 69.33,
+    "avgTrade": 0.76
   },
   "CRVUSDT": {
     "name": "CRVUSDT",
     "timeframe": "5m",
     "entrySize": 20,
     "addSize": 20,
-    "latestResult": 371.30,
-    "totalTrades": 286,
-    "percentProfitable": 60.49,
-    "avgTrade": 1.30
+    "latestResult": 477.70,
+    "totalTrades": 346,
+    "percentProfitable": 61.27,
+    "avgTrade": 1.38
   },
   "DOTUSDT": {
     "name": "DOTUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
-    "addSize": 30,
-    "latestResult": 583.22,
-    "totalTrades": 448,
-    "percentProfitable": 63.39,
-    "avgTrade": 1.30
+    "entrySize": 30,
+    "addSize": 37,
+    "latestResult": 705.59,
+    "totalTrades": 522,
+    "percentProfitable": 64.37,
+    "avgTrade": 1.35
   },
   "EOSUSDT": {
     "name": "EOSUSDT",
     "timeframe": "5m",
     "entrySize": 30,
     "addSize": 35,
-    "latestResult": 491.41,
-    "totalTrades": 526,
-    "percentProfitable": 68.82,
-    "avgTrade": 0.93
+    "latestResult": 576.58,
+    "totalTrades": 586,
+    "percentProfitable": 70.48,
+    "avgTrade": 0.98
   },
   "ETHUSDT": {
     "name": "ETHUSDT",
@@ -83,52 +83,50 @@
     "name": "KSMUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 20,
-    "latestResult": 339.89,
-    "totalTrades": 377,
-    "percentProfitable": 58.36,
-    "avgTrade": 0.90
+    "addSize": 25,
+    "latestResult": 374.46,
+    "totalTrades": 384,
+    "percentProfitable": 59.9,
+    "avgTrade": 0.98
   },
   "LINKUSDT": {
     "name": "LINKUSDT",
     "timeframe": "5m",
     "entrySize": 35,
     "addSize": 35,
-    "latestResult": 491.28,
-    "totalTrades": 550,
-    "percentProfitable": 66.91,
-    "avgTrade": 0.89
+    "latestResult": 550.58,
+    "totalTrades": 541,
+    "percentProfitable": 71.53,
+    "avgTrade": 1.02
   },
   "LTCUSDT": {
     "name": "LTCUSDT",
     "timeframe": "5m",
-    "longStop": 11,
-    "shortStop": 3,
     "entrySize": 45,
     "addSize": 60,
-    "latestResult": 989.25,
-    "totalTrades": 591,
-    "percentProfitable": 67.85,
-    "avgTrade": 1.67
+    "latestResult": 1049.21,
+    "totalTrades": 592,
+    "percentProfitable": 69.09,
+    "avgTrade": 1.77
   },
   "SNXUSDT": {
     "name": "SNXUSDT",
     "timeframe": "5m",
     "entrySize": 45,
     "addSize": 40,
-    "latestResult": 1139.92,
-    "totalTrades": 372,
-    "percentProfitable": 78.76,
-    "avgTrade": 3.06
+    "latestResult": 1020.85,
+    "totalTrades": 369,
+    "percentProfitable": 78.86,
+    "avgTrade": 2.77
   },
   "YFIUSDT": {
     "name": "YFIUSDT",
     "timeframe": "5m",
     "entrySize": 20,
     "addSize": 25,
-    "latestResult": 482.38,
-    "totalTrades": 505,
-    "percentProfitable": 59.01,
-    "avgTrade": 0.96
+    "latestResult": 490.48,
+    "totalTrades": 536,
+    "percentProfitable": 59.89,
+    "avgTrade": 0.92
   }
 }
