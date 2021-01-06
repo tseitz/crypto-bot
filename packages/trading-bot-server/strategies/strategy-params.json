@@ -114,8 +114,8 @@
   "SNXUSDT": {
     "name": "SNXUSDT",
     "timeframe": "5m",
-    "entrySize": 60,
-    "addSize": 50,
+    "entrySize": 50,
+    "addSize": 45,
     "latestResult": 1139.92,
     "totalTrades": 372,
     "percentProfitable": 78.76,
