@@ -236,7 +236,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar < order.maxVolumeInDollar - 3 || order.buyBags) {
+      if (order.balanceInDollar < order.maxVolumeInDollar - 4 || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log(`New Entry: ${order.tradeVolumeInDollar}`);
           result = await this.kraken.setAddOrder({

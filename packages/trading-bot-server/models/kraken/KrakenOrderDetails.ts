@@ -134,7 +134,7 @@ export default class KrakenOrderDetails {
     this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
-    this.addCount = 6;
+    this.addCount = 8;
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
 
     console.log(
