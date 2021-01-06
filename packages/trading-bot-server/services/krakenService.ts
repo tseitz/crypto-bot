@@ -236,7 +236,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar < order.maxVolumeInDollar - 4 || order.buyBags) {
+      if (order.balanceInDollar < order.maxVolumeInDollar || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log(`New Entry: ${order.tradeVolumeInDollar}`);
           result = await this.kraken.setAddOrder({
@@ -259,8 +259,8 @@ class KrakenService {
                     ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(
                       0
                     )
-                  ) - 3
-                }/${order.addCount}: ${order.addSize}`
+                  ) + 1
+                }/${order.noLeverage ? order.addCount - 4 : order.addCount}: ${order.addSize}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
