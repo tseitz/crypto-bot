@@ -259,7 +259,7 @@ class KrakenService {
                     ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(
                       0
                     )
-                  ) + 1
+                  ) - 3
                 }/${order.addCount}: ${order.addSize}`
           );
           result = await this.kraken.setAddOrder({
@@ -283,8 +283,9 @@ class KrakenService {
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
-    let result = await this.handleLeveragedOrder(order);
     let closingVolume;
+    let result = await this.handleLeveragedOrder(order);
+    logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
 
     if (order.buyBags) {
       // buy 40% worth of my usd available
