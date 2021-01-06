@@ -2,8 +2,8 @@
   "ADAUSDT": {
     "name": "ADAUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
-    "addSize": 50,
+    "entrySize": 40,
+    "addSize": 55,
     "latestResult": 830.61,
     "totalTrades": 512,
     "percentProfitable": 60.55,
@@ -32,8 +32,8 @@
   "BTCUSDT": {
     "name": "BTCUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
-    "addSize": 45,
+    "entrySize": 35,
+    "addSize": 50,
     "latestResult": 343.09,
     "totalTrades": 516,
     "percentProfitable": 67.64,
@@ -72,8 +72,8 @@
   "ETHUSDT": {
     "name": "ETHUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
-    "addSize": 50,
+    "entrySize": 35,
+    "addSize": 55,
     "latestResult": 819.65,
     "totalTrades": 477,
     "percentProfitable": 67.71,
