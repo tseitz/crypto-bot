@@ -2,8 +2,8 @@
   "ADAUSDT": {
     "name": "ADAUSDT",
     "timeframe": "5m",
-    "entrySize": 45,
-    "addSize": 60,
+    "entrySize": 40,
+    "addSize": 50,
     "latestResult": 905.67,
     "totalTrades": 513,
     "percentProfitable": 61.99,
@@ -34,10 +34,10 @@
     "timeframe": "5m",
     "entrySize": 45,
     "addSize": 55,
-    "latestResult": 418.36,
-    "totalTrades": 551,
-    "percentProfitable": 69.33,
-    "avgTrade": 0.76
+    "latestResult": 420.34,
+    "totalTrades": 591,
+    "percentProfitable": 70.22,
+    "avgTrade": 0.71
   },
   "CRVUSDT": {
     "name": "CRVUSDT",
@@ -52,8 +52,8 @@
   "DOTUSDT": {
     "name": "DOTUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
-    "addSize": 45,
+    "entrySize": 30,
+    "addSize": 40,
     "latestResult": 705.59,
     "totalTrades": 522,
     "percentProfitable": 64.37,
