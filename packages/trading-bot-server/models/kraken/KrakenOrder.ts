@@ -7,6 +7,7 @@ export class KrakenOrder {
   requestBody: TradingViewBody;
   tradingViewTicker: string;
   krakenTicker: string;
+  order?: KrakenOrderDetails;
 
   constructor(requestBody: TradingViewBody) {
     this.requestBody = requestBody;
@@ -64,7 +65,7 @@ export class KrakenOrder {
     const { result: tradeBalance } = await kraken.kraken.getTradeBalance();
 
     // set up the order
-    const order = new KrakenOrderDetails(
+    this.order = new KrakenOrderDetails(
       this.requestBody,
       this.krakenTicker,
       pair,
@@ -76,6 +77,6 @@ export class KrakenOrder {
     );
 
     // execute the order
-    return await kraken.openOrder(order);
+    return await kraken.openOrder(this.order);
   }
 }

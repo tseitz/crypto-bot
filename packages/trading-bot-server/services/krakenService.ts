@@ -331,8 +331,7 @@ class KrakenService {
       }
     } else if (order.sellBags) {
       // sell 75% worth of currency available
-      // if not enough free margin, sell what free margin is available
-      order.tradeVolume = order.superParseFloat(order.balanceOfBase * 0.5, order.volumeDecimals);
+      order.tradeVolume = order.superParseFloat(order.balanceOfBase * 0.75, order.volumeDecimals);
 
       // get right to it, we don't care about margin free
       result = await this.handleNonLeveragedOrder(order);

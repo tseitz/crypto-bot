@@ -2,13 +2,13 @@
 strategy("Longs Only", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
-daysBackMax = 60 // input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
 daysBackMin = 0
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-longStopPerc = input(20, title='Long Stop %', type=input.float, step=1) / 100
+longStopPerc = input(25, title='Long Stop %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
@@ -20,11 +20,10 @@ hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=5)
 loneCloseLong = input(defval=73, title="Lone Close Long", minval=0, step=1)
 highestMacdCloseLong = input(defval=75, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=61, title="Close Long In Short Zone RSI", minval=0, step=1)
-maxAdds = input(defval=6, title="Max Adds", minval=0, step=1)
-allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool) // true
-fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool) // true
-// lowestMacdBottoms = input(defval=true, title="Lowest MACD Bottoms?", type=input.bool)
 macdLength = input(defval=50, title="MACD Bars", minval=0, step=10)
+maxAdds = input(defval=6, title="Max Adds", minval=0, step=1)
+fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool) // true
+allowShorts = input(defval=false, title="Allow shorts?", type=input.bool) // true
 
 var isLong = false
 var isShort = false
@@ -172,18 +171,17 @@ lowestPrevMacd = lowerMacd2 and macd > lowestMacd
 highestPrevMacd = higherMacd2 and macd < highestMacd
 // possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
 
-// openLong = not isLong and (longZone)
-openShort = allowShorts and not isShort and shortZone
-
+shortAllowed = allowShorts and not isShort and shortZone
+shorting = allowShorts and isShort and shortZone
 stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
 
 // long = not isLong and longZone and ((macdBottomed))
 long = not isLong and ((longZone and ((newLow) or (fastMacdBottoms and macdBottomed) or (rsiBottomed and lowerMacd2))) or (shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd))
-short = openShort and ((twoNewHighs) or (fastMacdBottoms and macdTopped))
-addShort = allowShorts and isShort and ((shortZone and newHigh and not higherMacd) or (highestPrevMacd)) // and close > entryPrice
 addLong = isLong and ((longZone and ((rsiBottomed and (newLow or (rsiIncreasing and (lowerMacd2 or rsi1 < 41)))))) or (shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsiClose < 30 or rsi1 < 28)))) // and close < entryPrice
 closeLong = isLong and ((rsiTopped and rsiDecreasing and ((rsi1 > loneCloseLong and not higherMacd2) or (rsi1 > highestMacdCloseLong and higherMacd2))) or (shortZone and rsiTopped and rsi1 > closeLongInShortZone) or (shortZone and highestPrevMacd) or (stopped))
-closeShort = allowShorts and isShort and ((rsiBottomed and rsiIncreasing and (rsiClose < 32 or rsi1 < 30)) or (lowestPrevMacd) or (stopped))
+short = shortAllowed and closeLong
+addShort = shorting and ((rsiTopped and ((higherMacd2 and higherMacd))))
+closeShort = shorting and long
 
 // shortMacdTrigger = short and macdTrigger
 
@@ -240,24 +238,6 @@ if firstAction and longZone and long
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
 strategy.close("long", when=closeLong and isWithinTimeBounds)
-// strategy.entry("short", long=false, when=allowShorts and short and isWithinTimeBounds)
-// strategy.order("short", long=false, when=allowShorts and addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
-// strategy.close("short", when=allowShorts and (closeShort or long) and isWithinTimeBounds)
-
-// if (strategy.position_size > 0)
-//     if low <= longStopPrice
-//         isLong := false
-//         longCount := 0
-//         lastMacd := 0.0
-//         lastRsi := 0.0
-//         entryPrice := 0.0
-//     strategy.exit("close long", "long", stop=longStopPrice)
-
-// if (strategy.position_size < 0)
-//     if high >= shortStopPrice and allowShorts
-//         isShort := false
-//         shortCount := 0
-//         lastMacd := 0.0
-//         lastRsi := 0.0
-//         entryPrice := 0.0
-//     strategy.exit("close short", "short", stop=shortStopPrice)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+strategy.order("short", long=false, when=addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
+strategy.close("short", when=closeShort and isWithinTimeBounds)

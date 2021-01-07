@@ -53,6 +53,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
       );
       const order = new KrakenOrder(request.body);
       try {
+        console.log('Margin Free: ', order.order?.marginFree);
         request.res.send(await order.placeOrder());
       } catch (error) {
         console.log(error);
