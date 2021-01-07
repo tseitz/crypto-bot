@@ -8,17 +8,17 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-longStopPerc = input(12, title='Long Stop %', type=input.float, step=1) / 100
+longStopPerc = input(20, title='Long Stop %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
-shortStopPerc = 12 // input(12, title='Short Stop %', type=input.float, step=1) / 100
+shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
 hiLowMed = 60 // input(defval=60, title="Hi Low Medium", minval=0, step=5)
 hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=5)
 
-loneCloseLong = input(defval=70, title="Lone Close Long", minval=0, step=1)
-highestMacdCloseLong = input(defval=68, title="Highest MACD Close Long", minval=0, step=1)
+loneCloseLong = input(defval=73, title="Lone Close Long", minval=0, step=1)
+highestMacdCloseLong = input(defval=75, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=61, title="Close Long In Short Zone RSI", minval=0, step=1)
 maxAdds = input(defval=6, title="Max Adds", minval=0, step=1)
 allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool) // true
@@ -157,7 +157,7 @@ lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
 bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
 
-macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and (longZone or macd < 0)
+macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and ((longZone and (macd3 - macd2 > macd2 - macd1) or (macd1 > macd2 and macd2 < macd3)) or macd < 0)
 macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 and macd1 > macd2)) and macd > 0
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
