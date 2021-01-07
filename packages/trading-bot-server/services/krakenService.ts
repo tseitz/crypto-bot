@@ -236,7 +236,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar < order.maxVolumeInDollar - 4 || order.buyBags) {
+      if (order.balanceInDollar < order.maxVolumeInDollar || order.buyBags) {
         if (order.balanceOfBase < 1e-5) {
           console.log(`New Entry: ${order.tradeVolumeInDollar}`);
           result = await this.kraken.setAddOrder({
@@ -260,7 +260,7 @@ class KrakenService {
                       0
                     )
                   ) + 1
-                }/${order.addCount}: ${order.addSize}`
+                }/${order.noLeverage ? order.addCount - 4 : order.addCount}: ${order.addSize}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
@@ -283,8 +283,9 @@ class KrakenService {
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
-    let result = await this.handleLeveragedOrder(order);
     let closingVolume;
+    let result = await this.handleLeveragedOrder(order);
+    logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
 
     if (order.buyBags) {
       // buy 40% worth of my usd available
