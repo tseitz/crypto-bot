@@ -5,7 +5,7 @@ export function logOrderResult(
   response: KrakenOrderResponse | undefined,
   ticker?: string
 ) {
-  if (response && response.error.length > 0) {
+  if (response && response.error?.length > 0) {
     console.log(`${ticker ? ticker : 'Hi There'}: ${response?.error}`);
   } else if (response?.result?.descr.order) {
     console.log(`${comment}: ${response?.result?.descr.order}`);
