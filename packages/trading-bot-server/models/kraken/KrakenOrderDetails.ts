@@ -202,7 +202,7 @@ export default class KrakenOrderDetails {
   //     this.action === 'sell'
   //       ? this.currentBid * (1 + this.stopPercent / 100)
   //       : this.currentBid * (1 - this.stopPercent / 100);
-  //   return Number.parseFloat(stop.toFixed(this.priceDecimals));
+  //   return parseFloat(stop.toFixed(this.priceDecimals));
   // }
 
   private getBid(): number {
@@ -231,8 +231,8 @@ export default class KrakenOrderDetails {
         } else {
           return this.superParseFloat((this.currentBid + this.currentAsk) / 2, this.priceDecimals);
         }
-        // return Number.parseFloat(
-        //   Number.parseFloat(
+        // return parseFloat(
+        //   parseFloat(
         //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
         //   ).toFixed(this.priceDecimals)
         // );

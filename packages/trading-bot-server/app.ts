@@ -107,7 +107,7 @@ async function getBalances() {
 ---------------------------
   Balance: $${balances.result.eb}
   Open:    $${balances.result.n}
-  Total:   $${Number.parseFloat(balances.result.eb) + Number.parseFloat(balances.result.n)}
+  Total:   $${parseFloat(balances.result.eb) + parseFloat(balances.result.n)}
 ---------------------------`);
 }
 
