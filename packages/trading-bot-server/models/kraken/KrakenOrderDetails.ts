@@ -142,13 +142,13 @@ export default class KrakenOrderDetails {
       ? this.entrySize + this.addSize * (this.addCount - 4)
       : this.entrySize + this.addSize * this.addCount;
 
-    console.log('Margin Free: ', this.marginFree);
     console.log(
       `${this.action.toUpperCase()} TradingView Price: ${this.superParseFloat(
         body.strategy.price,
         this.priceDecimals
       )}, Bid: ${this.currentBid}, Ask: ${this.currentAsk}, My Bid: ${this.bidPrice}`
     );
+    console.log('Margin Available: ', this.marginFree);
   }
 
   public superParseFloat(floatString: number | string, decimals?: number) {
