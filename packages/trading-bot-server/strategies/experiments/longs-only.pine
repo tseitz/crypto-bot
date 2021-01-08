@@ -166,7 +166,7 @@ shorting = allowShorts and isShort and shortZone
 
 buyLongZoneSetup = longZone and ((newLow) or (fastMacdBottoms and macdBottomed) or (rsiBottomed and lowerMacd2))
 buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd
-addBuyLongZoneSetup = longZone and ((rsiBottomed and (newLow or (rsiIncreasing and (lowerMacd2 or rsi1 < 41)))))
+addBuyLongZoneSetup = longZone and ((rsiBottomed and (newLow or (rsiIncreasing and lowerMacd2))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsiClose < 30 or rsi1 < 28))
 closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
 closeMacdCloseSetup = rsi1 > highestMacdCloseLong and higherMacd2

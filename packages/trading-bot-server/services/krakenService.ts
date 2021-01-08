@@ -283,9 +283,9 @@ class KrakenService {
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    let closingVolume;
-    let result;
+    let tradeVolumeInDollar, result;
 
+    // local meaning don't close leverage orders
     if (!order.localOnly) {
       result = await this.handleLeveragedOrder(order);
       logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
@@ -294,53 +294,47 @@ class KrakenService {
     if (order.buyBags) {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
-      const buyVolumeInDollar = order.superParseFloat(
-        order.balanceOfQuote * 0.4,
+      tradeVolumeInDollar = order.superParseFloat(order.balanceOfQuote * 0.4, order.volumeDecimals);
+    } else {
+      // sell 80% worth of currency available
+      tradeVolumeInDollar = order.superParseFloat(
+        order.balanceOfBase * order.usdValueOfBase * 0.8,
         order.volumeDecimals
       );
-      let volumeBoughtInDollar = 0;
-      let i = 1;
+    }
+    let volumeTradedInDollar = 0;
+    let i = 1;
 
-      while (volumeBoughtInDollar < buyVolumeInDollar) {
-        order.tradeVolume =
-          order.marginFree < buyVolumeInDollar
-            ? order.superParseFloat(
-                (order.marginFree * 0.98) / order.usdValueOfBase,
-                order.volumeDecimals
-              )
-            : buyVolumeInDollar / order.usdValueOfBase;
-        volumeBoughtInDollar += order.tradeVolume * order.usdValueOfBase;
-        if (order.tradeVolume < order.minVolume) break;
-        if (i > 8) {
-          console.log(`Something went wrong buying bags, canceling`);
-          volumeBoughtInDollar = buyVolumeInDollar;
-        }
-
-        // no way of knowing when the leveraged order is filled, so we'll wait
-        setTimeout(async () => {
-          result = await this.handleNonLeveragedOrder(order);
-          logOrderResult(`Bagged Result`, result, order.krakenizedTradingViewTicker);
-          console.log('-'.repeat(20));
-
-          // if (result.error.length === 0) {
-          //   const orderResult = result.result?.descr.order;
-          //   if (!orderResult) return;
-
-          //   const match = orderResult.match(/(\d+\.+\d+)\s/);
-          //   const filled = match ? match[0].trim() : 0;
-
-          //   volumeBoughtInDollar += order.superParseFloat(filled, order.volumeDecimals) || 0;
-          // }
-        }, 1000 * i++);
+    while (volumeTradedInDollar < tradeVolumeInDollar) {
+      order.tradeVolume =
+        order.marginFree < tradeVolumeInDollar
+          ? order.superParseFloat(
+              (order.marginFree * 0.98) / order.usdValueOfBase,
+              order.volumeDecimals
+            )
+          : tradeVolumeInDollar / order.usdValueOfBase;
+      volumeTradedInDollar += order.tradeVolume * order.usdValueOfBase;
+      if (order.tradeVolume < order.minVolume) break;
+      if (i > 8) {
+        console.log(`Something went wrong buying bags, canceling`);
+        volumeTradedInDollar = tradeVolumeInDollar;
       }
-    } else if (order.sellBags) {
-      // sell 75% worth of currency available
-      order.tradeVolume = order.superParseFloat(order.balanceOfBase * 0.75, order.volumeDecimals);
 
-      // get right to it, we don't care about margin free
-      result = await this.handleNonLeveragedOrder(order);
-    } else {
-      console.log('Idk how we got here');
+      // no way of knowing when the leveraged order is filled, so we'll wait
+      setTimeout(async () => {
+        result = await this.handleNonLeveragedOrder(order);
+        console.log('-'.repeat(20));
+
+        // if (result.error.length === 0) {
+        //   const orderResult = result.result?.descr.order;
+        //   if (!orderResult) return;
+
+        //   const match = orderResult.match(/(\d+\.+\d+)\s/);
+        //   const filled = match ? match[0].trim() : 0;
+
+        //   volumeTradedInDollar += order.superParseFloat(filled, order.volumeDecimals) || 0;
+        // }
+      }, 1000 * i++);
     }
 
     return result;
