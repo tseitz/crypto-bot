@@ -74,7 +74,7 @@ class KrakenService {
     return result;
   }
 
-  async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+  async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     // some orders might not have filled. cancel beforehand
     await this.cancelOpenOrdersForPair(order);
 
@@ -282,7 +282,7 @@ class KrakenService {
     return result;
   }
 
-  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let tradeVolumeInDollar, result;
 
     // local meaning don't close leverage orders
