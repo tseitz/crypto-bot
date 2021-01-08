@@ -13,6 +13,7 @@ export default class KrakenOrderDetails {
   action: string;
   oppositeAction: string;
   close: boolean;
+  localOnly: boolean;
   minVolume: number;
   baseOfPair: string;
   quoteOfPair: string;
@@ -82,6 +83,7 @@ export default class KrakenOrderDetails {
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
+    this.localOnly = this.close && body.strategy.description.toLowerCase().includes('local');
     this.txId = body.strategy.txId;
     this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;
     this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;

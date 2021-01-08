@@ -74,7 +74,7 @@ class KrakenService {
     return result;
   }
 
-  async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+  async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     // some orders might not have filled. cancel beforehand
     await this.cancelOpenOrdersForPair(order);
 
@@ -282,10 +282,14 @@ class KrakenService {
     return result;
   }
 
-  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     let closingVolume;
-    let result = await this.handleLeveragedOrder(order);
-    logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
+    let result;
+
+    if (!order.localOnly) {
+      result = await this.handleLeveragedOrder(order);
+      logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
+    }
 
     if (order.buyBags) {
       // buy 40% worth of my usd available
