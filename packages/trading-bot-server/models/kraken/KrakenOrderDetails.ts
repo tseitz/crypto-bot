@@ -140,6 +140,7 @@ export default class KrakenOrderDetails {
       ? this.entrySize + this.addSize * (this.addCount - 4)
       : this.entrySize + this.addSize * this.addCount;
 
+    console.log('Margin Free: ', this.marginFree);
     console.log(
       `${this.action.toUpperCase()} TradingView Price: ${this.superParseFloat(
         body.strategy.price,
