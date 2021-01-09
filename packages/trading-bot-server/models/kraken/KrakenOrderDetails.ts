@@ -214,6 +214,7 @@ export default class KrakenOrderDetails {
       isNaN(this.tradingViewPrice) ||
       this.tradingViewTicker === 'DOTUSDT' ||
       this.tradingViewTicker === 'ATOMUSDT' ||
+      this.tradingViewTicker === 'ADAUSDT' ||
       // this.tradingViewTicker === 'LINKUSDT' ||
       this.tradingViewTicker === 'LTCUSDT' ||
       this.tradingViewTicker === 'YFIUSDT' ||

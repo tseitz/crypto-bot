@@ -70,10 +70,10 @@
     "entrySize": 25,
     "addSize": 15,
     "maxAdds": 24,
-    "latestResult": 1000.87,
-    "totalTrades": 219,
-    "percentProfitable": 91.32,
-    "avgTrade": 4.57
+    "latestResult": 1073.18,
+    "totalTrades": 249,
+    "percentProfitable": 89.16,
+    "avgTrade": 4.31
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
