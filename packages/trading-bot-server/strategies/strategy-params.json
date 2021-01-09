@@ -1,33 +1,30 @@
 {
   "ADAUSDT": {
-    "name": "ADAUSDT",
-    "timeframe": "5m",
-    "entrySize": 40,
-    "addSize": 50,
-    "latestResult": 905.67,
-    "totalTrades": 513,
-    "percentProfitable": 61.99,
-    "avgTrade": 1.77
+    "entrySize": 35,
+    "addSize": 15,
+    "maxAdds": 29,
+    "latestResult": 1672.64,
+    "totalTrades": 259,
+    "percentProfitable": 69.5,
+    "avgTrade": 6.46
   },
   "ATOMUSDT": {
-    "name": "ATOMUSDT",
-    "timeframe": "5m",
-    "entrySize": 40,
-    "addSize": 45,
-    "latestResult": 569.76,
-    "totalTrades": 252,
-    "percentProfitable": 74.21,
-    "avgTrade": 2.26
+    "entrySize": 30,
+    "addSize": 35,
+    "maxAdds": 7,
+    "latestResult": 538.10,
+    "totalTrades": 253,
+    "percentProfitable": 75.1,
+    "avgTrade": 2.13
   },
   "BCHUSDT": {
-    "name": "BCHUSDT",
-    "timeframe": "5m",
-    "entrySize": 40,
-    "addSize": 50,
-    "latestResult": 809.56,
-    "totalTrades": 534,
-    "percentProfitable": 68.54,
-    "avgTrade": 1.52
+    "entrySize": 30,
+    "addSize": 10,
+    "maxAdds": 19,
+    "latestResult": 843.50,
+    "totalTrades": 255,
+    "percentProfitable": 81.96,
+    "avgTrade": 3.31
   },
   "BTCUSDT": {
     "name": "BTCUSDT",
@@ -72,12 +69,13 @@
   "ETHUSDT": {
     "name": "ETHUSDT",
     "timeframe": "5m",
-    "entrySize": 45,
-    "addSize": 60,
-    "latestResult": 819.65,
-    "totalTrades": 477,
-    "percentProfitable": 67.71,
-    "avgTrade": 1.72
+    "entrySize": 25,
+    "addSize": 15,
+    "maxAdds": 24,
+    "latestResult": 1000.87,
+    "totalTrades": 219,
+    "percentProfitable": 91.32,
+    "avgTrade": 4.57
   },
   "KSMUSDT": {
     "name": "KSMUSDT",

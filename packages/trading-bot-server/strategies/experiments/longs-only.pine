@@ -2,7 +2,7 @@
 strategy("Longs Only", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
-daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMax = input(defval=15, title="Max Days Back to Test", minval=0)
 daysBackMin = 0
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
@@ -13,15 +13,15 @@ longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
-hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=1)
-hiLowSlow = input(defval=180, title="Hi Low Long", minval=0, step=5)
+hiLowFast = input(defval=110, title="Hi Low Short", minval=0, step=10)
+hiLowSlow = input(defval=950, title="Hi Low Long", minval=0, step=25)
 
-loneCloseLong = input(defval=73, title="Lone Close Long", minval=0, step=1)
-highestMacdCloseLong = input(defval=75, title="Highest MACD Close Long", minval=0, step=1)
-closeLongInShortZone = input(defval=61, title="Close Long In Short Zone RSI", minval=0, step=1)
-macdLength = input(defval=50, title="MACD Bars", minval=0, step=10)
-maxAdds = input(defval=6, title="Max Adds", minval=0, step=1)
-fastMacdBottoms = input(defval=true, title="Fast MACD Bottoms?", type=input.bool)
+loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
+highestMacdCloseLong = input(defval=80, title="Highest MACD Close Long", minval=0, step=1)
+closeLongInShortZone = input(defval=65, title="Close Long In Short Zone RSI", minval=0, step=1)
+macdLength = input(defval=250, title="MACD Bars", minval=0, step=10)
+maxAdds = input(defval=10, title="Max Adds", minval=0, step=1)
+fastMacdBottoms = input(defval=false, title="Fast MACD Bottoms?", type=input.bool)
 allowShorts = input(defval=false, title="Allow shorts?", type=input.bool)
 
 var isLong = false
