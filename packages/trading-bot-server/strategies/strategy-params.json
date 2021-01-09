@@ -67,8 +67,6 @@
     "avgTrade": 0.98
   },
   "ETHUSDT": {
-    "name": "ETHUSDT",
-    "timeframe": "5m",
     "entrySize": 25,
     "addSize": 15,
     "maxAdds": 24,

@@ -3,15 +3,9 @@ export interface StrategyParamsJson {
 }
 
 export interface StrategyParams {
-  name: string;
-  timeframe: string;
-  allowShorts: boolean;
-  addLong: boolean;
-  reopenLong: boolean;
-  rsiEntry: number;
-  addLongRsi: number;
   entrySize: number;
   addSize: number;
+  maxAdds?: number;
   latestResult: number;
   totalTrades: number;
   percentProfitable: number;

@@ -74,7 +74,7 @@ class KrakenService {
     return result;
   }
 
-  async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+  async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     // some orders might not have filled. cancel beforehand
     await this.cancelOpenOrdersForPair(order);
 
@@ -282,7 +282,7 @@ class KrakenService {
     return result;
   }
 
-  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     let tradeVolumeInDollar, result;
 
     // local meaning don't close leverage orders
@@ -302,9 +302,9 @@ class KrakenService {
         order.volumeDecimals
       );
     }
+
     let volumeTradedInDollar = 0;
     let i = 1;
-
     while (volumeTradedInDollar < tradeVolumeInDollar) {
       order.tradeVolume =
         order.marginFree < tradeVolumeInDollar
@@ -324,7 +324,6 @@ class KrakenService {
       setTimeout(async () => {
         result = await this.handleNonLeveragedOrder(order);
         console.log('-'.repeat(20));
-
         // if (result.error.length === 0) {
         //   const orderResult = result.result?.descr.order;
         //   if (!orderResult) return;
@@ -336,7 +335,6 @@ class KrakenService {
         // }
       }, 1000 * i++);
     }
-
     return result;
   }
 
