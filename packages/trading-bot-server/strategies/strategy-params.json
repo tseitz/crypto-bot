@@ -59,8 +59,8 @@
   "EOSUSDT": {
     "name": "EOSUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
-    "addSize": 40,
+    "entrySize": 25,
+    "addSize": 25,
     "latestResult": 576.58,
     "totalTrades": 586,
     "percentProfitable": 70.48,
