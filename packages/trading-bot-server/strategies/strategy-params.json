@@ -50,6 +50,7 @@
     "timeframe": "5m",
     "entrySize": 30,
     "addSize": 15,
+    "maxAdds": 30,
     "latestResult": 1212.62,
     "totalTrades": 272,
     "percentProfitable": 76.1,
