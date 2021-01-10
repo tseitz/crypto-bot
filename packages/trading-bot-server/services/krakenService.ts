@@ -286,7 +286,7 @@ class KrakenService {
     let tradeVolumeInDollar, result;
 
     // local meaning don't close leverage orders
-    if (!order.localOnly) {
+    if (!order.nonLeverageOnly) {
       result = await this.handleLeveragedOrder(order);
       logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
     }

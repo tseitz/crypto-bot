@@ -1,12 +1,12 @@
 {
   "ADAUSDT": {
-    "entrySize": 35,
+    "entrySize": 30,
     "addSize": 15,
-    "maxAdds": 29,
-    "latestResult": 1672.64,
-    "totalTrades": 259,
-    "percentProfitable": 69.5,
-    "avgTrade": 6.46
+    "maxAdds": 30,
+    "latestResult": 1834.38,
+    "totalTrades": 281,
+    "percentProfitable": 75.8,
+    "avgTrade": 6.53
   },
   "ATOMUSDT": {
     "entrySize": 30,
