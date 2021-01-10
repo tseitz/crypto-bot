@@ -304,7 +304,7 @@ class KrakenService {
     }
 
     let volumeTradedInDollar = 0;
-    let i = 1;
+    let i = 0;
     while (volumeTradedInDollar < tradeVolumeInDollar) {
       order.tradeVolume =
         order.marginFree < tradeVolumeInDollar
@@ -324,7 +324,8 @@ class KrakenService {
       setTimeout(async () => {
         result = await this.handleNonLeveragedOrder(order);
         console.log('-'.repeat(20));
-      }, 7500 * i++);
+      }, 15000 * i);
+      i++;
     }
     return result;
   }
