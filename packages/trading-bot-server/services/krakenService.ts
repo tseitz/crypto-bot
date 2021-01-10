@@ -324,16 +324,7 @@ class KrakenService {
       setTimeout(async () => {
         result = await this.handleNonLeveragedOrder(order);
         console.log('-'.repeat(20));
-        // if (result.error.length === 0) {
-        //   const orderResult = result.result?.descr.order;
-        //   if (!orderResult) return;
-
-        //   const match = orderResult.match(/(\d+\.+\d+)\s/);
-        //   const filled = match ? match[0].trim() : 0;
-
-        //   volumeTradedInDollar += order.superParseFloat(filled, order.volumeDecimals) || 0;
-        // }
-      }, 1000 * i++);
+      }, 7500 * i++);
     }
     return result;
   }
