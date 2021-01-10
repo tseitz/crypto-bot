@@ -69,11 +69,11 @@
   "ETHUSDT": {
     "entrySize": 25,
     "addSize": 15,
-    "maxAdds": 24,
-    "latestResult": 1073.18,
-    "totalTrades": 249,
-    "percentProfitable": 89.16,
-    "avgTrade": 4.31
+    "maxAdds": 30,
+    "latestResult": 1129.07,
+    "totalTrades": 269,
+    "percentProfitable": 84.76,
+    "avgTrade": 4.20
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
@@ -108,8 +108,8 @@
   "SNXUSDT": {
     "name": "SNXUSDT",
     "timeframe": "5m",
-    "entrySize": 45,
-    "addSize": 40,
+    "entrySize": 50,
+    "addSize": 45,
     "latestResult": 1020.85,
     "totalTrades": 369,
     "percentProfitable": 78.86,
