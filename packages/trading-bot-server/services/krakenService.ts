@@ -57,7 +57,9 @@ class KrakenService {
   // async setAddOrder() {}
 
   async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = true) {
-    const open = order.openOrders['open'];
+    const open = order.openOrders?.open;
+
+    if (!open) return;
 
     let result;
     for (const key in open) {
@@ -294,7 +296,7 @@ class KrakenService {
     if (order.buyBags) {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
-      tradeVolumeInDollar = order.superParseFloat(order.balanceOfQuote * 0.4, order.volumeDecimals);
+      tradeVolumeInDollar = order.superParseFloat(order.balanceOfQuote * 0.2, order.volumeDecimals);
     } else {
       // sell 80% worth of currency available
       tradeVolumeInDollar = order.superParseFloat(

@@ -23,7 +23,7 @@ export class KrakenOrder {
   async placeOrder() {
     // get pair data
     const { error: pairError, pair } = await kraken.getPair(this.krakenTicker);
-    if (pairError.length > 0) {
+    if (pairError?.length > 0) {
       console.log(`Pair data for ${this.krakenTicker} not available on Kraken`);
       return new KrakenOrderResult({
         error: [`Pair data for ${this.krakenTicker} not available on Kraken`],
@@ -32,7 +32,7 @@ export class KrakenOrder {
 
     // get pair price info for order
     const { error: priceError, price } = await kraken.getPrice(this.krakenTicker);
-    if (priceError.length > 0) {
+    if (priceError?.length > 0) {
       console.log(`Price info for ${this.krakenTicker} not available on Kraken`);
       return new KrakenOrderResult({
         error: [`Price info for ${this.krakenTicker} not available on Kraken`],
@@ -44,7 +44,7 @@ export class KrakenOrder {
     // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
     const assetClass = this.krakenTicker.includes('XBT') ? 'XBTUSDT' : 'ETHUSDT';
     const { error: assetClassError, price: assetClassPrice } = await kraken.getPrice(assetClass);
-    if (assetClassError.length > 0) {
+    if (assetClassError?.length > 0) {
       console.log(`Asset Class Price info for ${this.krakenTicker} not available on Kraken`);
       return new KrakenOrderResult({
         error: [`Asset Class Price info for ${this.krakenTicker} not available on Kraken`],
@@ -52,7 +52,7 @@ export class KrakenOrder {
     }
 
     const { error: balanceError, balances } = await kraken.getBalance();
-    if (balanceError.length > 0) {
+    if (balanceError?.length > 0) {
       console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
       return new KrakenOrderResult({
         error: [`Could not find balance info for ${this.krakenTicker} on Kraken`],

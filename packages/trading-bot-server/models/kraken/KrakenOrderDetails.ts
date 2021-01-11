@@ -74,7 +74,7 @@ export default class KrakenOrderDetails {
     this.assetClassTicker =
       Object.keys(assetClassPriceInfo)[0] === 'ETHUSDT' ? 'ETHUSDT' : 'XBTUSDT';
     this.openOrders = openOrders;
-    this.marginFree = this.superParseFloat(tradeBalance.mf);
+    this.marginFree = this.superParseFloat(tradeBalance?.mf);
 
     // setup params
     this.strategyParams = strategyParams[this.tradingViewTicker];
@@ -128,8 +128,10 @@ export default class KrakenOrderDetails {
     this.usdValueOfBase = this.convertBaseToDollar(this.currentPrice, this.usdValueOfQuote);
 
     // balance and order info
-    this.balanceOfBase = this.superParseFloat(myBalanceInfo[this.baseOfPair]);
-    this.balanceOfQuote = this.superParseFloat(myBalanceInfo[this.quoteOfPair]);
+    this.balanceOfBase = this.superParseFloat(this.baseOfPair ? myBalanceInfo[this.baseOfPair] : 0);
+    this.balanceOfQuote = this.superParseFloat(
+      this.quoteOfPair ? myBalanceInfo[this.quoteOfPair] : 0
+    );
     this.tradeBalance = this.action === 'sell' ? this.balanceOfBase : this.balanceOfQuote;
     this.balanceInDollar = this.convertBaseToDollar(this.balanceOfBase, this.usdValueOfBase);
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfQuote);
