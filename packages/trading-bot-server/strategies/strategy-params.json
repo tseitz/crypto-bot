@@ -98,8 +98,8 @@
   "LTCUSDT": {
     "name": "LTCUSDT",
     "timeframe": "5m",
-    "entrySize": 50,
-    "addSize": 60,
+    "entrySize": 40,
+    "addSize": 45,
     "latestResult": 1049.21,
     "totalTrades": 592,
     "percentProfitable": 69.09,
