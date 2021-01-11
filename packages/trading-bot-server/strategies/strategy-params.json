@@ -3,10 +3,10 @@
     "entrySize": 30,
     "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 1834.38,
-    "totalTrades": 281,
-    "percentProfitable": 75.8,
-    "avgTrade": 6.53
+    "latestResult": 1707.99,
+    "totalTrades": 285,
+    "percentProfitable": 72.98,
+    "avgTrade": 5.99
   },
   "ATOMUSDT": {
     "entrySize": 30,
@@ -18,13 +18,13 @@
     "avgTrade": 2.13
   },
   "BCHUSDT": {
-    "entrySize": 30,
+    "entrySize": 20,
     "addSize": 10,
-    "maxAdds": 19,
-    "latestResult": 977.42,
-    "totalTrades": 325,
-    "percentProfitable": 74.46,
-    "avgTrade": 3.01
+    "maxAdds": 30,
+    "latestResult": 612.59,
+    "totalTrades": 430,
+    "percentProfitable": 40.23,
+    "avgTrade": 1.42
   },
   "BTCUSDT": {
     "entrySize": 30,
@@ -51,10 +51,10 @@
     "entrySize": 30,
     "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 1212.62,
-    "totalTrades": 272,
-    "percentProfitable": 76.1,
-    "avgTrade": 4.46
+    "latestResult": 1483.50,
+    "totalTrades": 213,
+    "percentProfitable": 75.12,
+    "avgTrade": 6.96
   },
   "EOSUSDT": {
     "name": "EOSUSDT",
