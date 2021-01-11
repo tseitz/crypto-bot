@@ -324,7 +324,7 @@ class KrakenService {
       setTimeout(async () => {
         result = await this.handleNonLeveragedOrder(order);
         console.log('-'.repeat(20));
-      }, 15000 * i);
+      }, 20000 * i);
       i++;
     }
     return result;
