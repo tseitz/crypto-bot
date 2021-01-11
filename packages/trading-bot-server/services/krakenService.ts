@@ -294,10 +294,7 @@ class KrakenService {
     if (order.buyBags) {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
-      tradeVolumeInDollar = order.superParseFloat(
-        order.balanceOfQuote * 0.25,
-        order.volumeDecimals
-      );
+      tradeVolumeInDollar = order.superParseFloat(order.balanceOfQuote * 0.4, order.volumeDecimals);
     } else {
       // sell 80% worth of currency available
       tradeVolumeInDollar = order.superParseFloat(
