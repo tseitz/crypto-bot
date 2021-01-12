@@ -49,7 +49,7 @@
     "name": "DOTUSDT",
     "timeframe": "5m",
     "entrySize": 30,
-    "addSize": 15,
+    "addSize": 17,
     "maxAdds": 30,
     "latestResult": 1483.50,
     "totalTrades": 213,
