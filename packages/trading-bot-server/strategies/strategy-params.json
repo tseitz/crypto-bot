@@ -88,22 +88,22 @@
   "LINKUSDT": {
     "name": "LINKUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
-    "addSize": 45,
-    "latestResult": 550.58,
-    "totalTrades": 541,
-    "percentProfitable": 71.53,
-    "avgTrade": 1.02
+    "entrySize": 25,
+    "addSize": 17,
+    "latestResult": 1316.93,
+    "totalTrades": 392,
+    "percentProfitable": 65.56,
+    "avgTrade": 3.36
   },
   "LTCUSDT": {
     "name": "LTCUSDT",
     "timeframe": "5m",
-    "entrySize": 40,
-    "addSize": 45,
-    "latestResult": 1049.21,
-    "totalTrades": 592,
-    "percentProfitable": 69.09,
-    "avgTrade": 1.77
+    "entrySize": 25,
+    "addSize": 15,
+    "latestResult": 845.36,
+    "totalTrades": 398,
+    "percentProfitable": 77.14,
+    "avgTrade": 2.12
   },
   "SNXUSDT": {
     "name": "SNXUSDT",
