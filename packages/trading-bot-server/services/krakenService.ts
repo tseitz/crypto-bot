@@ -154,14 +154,14 @@ class KrakenService {
       let { openPositions } = await this.getOpenPositions();
 
       let add = false;
-      let positionMargin = 0,
-        totalPosition = 0;
+      let positionMargin = 0;
+      // totalPosition = 0;
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
           positionMargin += parseFloat(position.margin);
-          totalPosition += parseFloat(position.cost);
+          // totalPosition += parseFloat(position.cost);
           // console.log(
           //   `Adding ${order.krakenizedTradingViewTicker}, My Margin: ${positionMargin}, Total Position: ${totalPosition}`
           // );
@@ -180,12 +180,15 @@ class KrakenService {
           : positionMargin >= 175;
 
         if (!tooMuch) {
+          const addCount =
+            parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) +
+            1;
+          const incrementalAdd = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+            order.volumeDecimals
+          );
+          console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
           console.log(
-            `Adding ${
-              parseInt(
-                ((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)
-              ) + 1
-            }/${order.addCount}: ${order.addSize}`
+            `Original: ${order.addSize}, Incremental: ${order.addSize * (1 + addCount * 0.02)}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
@@ -193,7 +196,7 @@ class KrakenService {
             ordertype: 'limit',
             // ordertype: 'market',
             price: order.bidPrice,
-            volume: order.addVolume,
+            volume: incrementalAdd,
             leverage: order.leverageAmount,
             // validate: true,
           });
@@ -296,7 +299,7 @@ class KrakenService {
     if (order.buyBags) {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
-      tradeVolumeInDollar = order.superParseFloat(order.balanceOfQuote * 0.2, order.volumeDecimals);
+      tradeVolumeInDollar = order.superParseFloat(order.balanceOfQuote * 0.1, order.volumeDecimals);
     } else {
       // sell 80% worth of currency available
       tradeVolumeInDollar = order.superParseFloat(
