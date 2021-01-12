@@ -183,20 +183,21 @@ class KrakenService {
           const addCount =
             parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) +
             1;
-          const incrementalAdd = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+          const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
             order.volumeDecimals
           );
-          console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
-          console.log(
-            `Original: ${order.addSize}, Incremental: ${order.addSize * (1 + addCount * 0.02)}`
+          const incrementalAddDollar = (order.addSize * (1 + addCount * 0.02)).toFixed(
+            order.priceDecimals
           );
+          console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
+          console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
             ordertype: 'limit',
             // ordertype: 'market',
             price: order.bidPrice,
-            volume: incrementalAdd,
+            volume: incrementalAddVolume,
             leverage: order.leverageAmount,
             // validate: true,
           });
