@@ -305,7 +305,7 @@ class KrakenService {
     } else {
       // sell 80% worth of currency available
       tradeVolumeInDollar = order.superParseFloat(
-        order.balanceOfBase * order.usdValueOfBase * 0.8,
+        order.balanceOfBase * order.usdValueOfBase * 0.3,
         order.volumeDecimals
       );
     }
@@ -331,7 +331,7 @@ class KrakenService {
       setTimeout(async () => {
         result = await this.handleNonLeveragedOrder(order);
         console.log('-'.repeat(20));
-      }, 20000 * i);
+      }, 15000 * i);
       i++;
     }
     return result;

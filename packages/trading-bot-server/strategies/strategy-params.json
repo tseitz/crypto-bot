@@ -39,7 +39,7 @@
     "name": "CRVUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 20,
     "latestResult": 477.70,
     "totalTrades": 346,
     "percentProfitable": 61.27,
