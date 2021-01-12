@@ -100,10 +100,10 @@
     "timeframe": "5m",
     "entrySize": 30,
     "addSize": 15,
-    "latestResult": 845.36,
-    "totalTrades": 398,
-    "percentProfitable": 77.14,
-    "avgTrade": 2.12
+    "latestResult": 970.43,
+    "totalTrades": 381,
+    "percentProfitable": 74.02,
+    "avgTrade": 2.55
   },
   "SNXUSDT": {
     "name": "SNXUSDT",
