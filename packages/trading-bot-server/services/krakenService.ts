@@ -183,10 +183,10 @@ class KrakenService {
           const addCount =
             parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) +
             1;
-          const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+          const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.01)).toFixed(
             order.volumeDecimals
           );
-          const incrementalAddDollar = (order.addSize * (1 + addCount * 0.02)).toFixed(2);
+          const incrementalAddDollar = (order.addSize * (1 + addCount * 0.01)).toFixed(2);
           console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           result = await this.kraken.setAddOrder({
