@@ -54,6 +54,7 @@ export default class KrakenOrderDetails {
   maxVolumeInDollar: number;
   addCount: number;
   bagIt: boolean;
+  bagAmount: number;
 
   constructor(
     body: TradingViewBody,
@@ -87,6 +88,7 @@ export default class KrakenOrderDetails {
     this.txId = body.strategy.txId;
     this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;
     this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;
+    this.bagAmount = parseFloat(body.strategy.bagAmount?.toString() || '0');
 
     // pair info
     this.minVolume = this.superParseFloat(pairData[this.krakenTicker]['ordermin']);

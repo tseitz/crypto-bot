@@ -15,4 +15,5 @@ export interface TradingViewStrategyBody {
   txId?: string;
   buyBags?: number;
   sellBags?: number;
+  bagAmount?: number;
 }

@@ -264,7 +264,7 @@ class KrakenService {
                       0
                     )
                   ) + 1
-                }/${order.noLeverage ? order.addCount - 4 : order.addCount}: ${order.addSize}`
+                }/${order.noLeverage ? order.addCount - 5 : order.addCount}: ${order.addSize}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
@@ -298,14 +298,16 @@ class KrakenService {
     if (order.buyBags) {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
+      const bagAmount = order.bagAmount ? order.bagAmount : 0.4;
       tradeVolumeInDollar = order.superParseFloat(
-        order.balanceOfQuote * 0.25,
+        order.balanceOfQuote * bagAmount,
         order.volumeDecimals
       );
     } else {
       // sell 80% worth of currency available
+      const bagAmount = order.bagAmount ? order.bagAmount : 0.75;
       tradeVolumeInDollar = order.superParseFloat(
-        order.balanceOfBase * order.usdValueOfBase * 0.3,
+        order.balanceOfBase * order.usdValueOfBase * bagAmount,
         order.volumeDecimals
       );
     }
@@ -316,7 +318,7 @@ class KrakenService {
       order.tradeVolume =
         order.marginFree < tradeVolumeInDollar
           ? order.superParseFloat(
-              (order.marginFree * 0.98) / order.usdValueOfBase,
+              (order.marginFree * 0.8) / order.usdValueOfBase,
               order.volumeDecimals
             )
           : tradeVolumeInDollar / order.usdValueOfBase;
@@ -329,6 +331,19 @@ class KrakenService {
 
       // no way of knowing when the leveraged order is filled, so we'll wait
       setTimeout(async () => {
+        // update bid price
+        const { price } = await kraken.getPrice(order.krakenTicker);
+        const currentBid = order.superParseFloat(
+          price[order.krakenTicker]['b'][0],
+          order.priceDecimals
+        );
+        const currentAsk = order.superParseFloat(
+          price[order.krakenTicker]['a'][0],
+          order.priceDecimals
+        );
+        order.bidPrice = order.action === 'buy' ? currentAsk : currentBid;
+
+        // order
         result = await this.handleNonLeveragedOrder(order);
         console.log('-'.repeat(20));
       }, 15000 * i);
