@@ -98,7 +98,7 @@
   "LTCUSDT": {
     "name": "LTCUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
+    "entrySize": 30,
     "addSize": 15,
     "latestResult": 845.36,
     "totalTrades": 398,
