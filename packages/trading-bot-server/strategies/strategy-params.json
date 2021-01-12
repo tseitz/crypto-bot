@@ -49,7 +49,7 @@
     "name": "DOTUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 17,
+    "addSize": 15,
     "maxAdds": 30,
     "latestResult": 1483.50,
     "totalTrades": 213,
@@ -68,12 +68,12 @@
   },
   "ETHUSDT": {
     "entrySize": 30,
-    "addSize": 17,
+    "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 1129.26,
-    "totalTrades": 353,
-    "percentProfitable": 81.59,
-    "avgTrade": 3.20
+    "latestResult": 1091.93,
+    "totalTrades": 327,
+    "percentProfitable": 81.35,
+    "avgTrade": 3.34
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
@@ -89,7 +89,7 @@
     "name": "LINKUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 17,
+    "addSize": 15,
     "latestResult": 1316.93,
     "totalTrades": 392,
     "percentProfitable": 65.56,

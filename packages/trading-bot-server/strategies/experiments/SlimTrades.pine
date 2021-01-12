@@ -169,7 +169,7 @@ shortAllowed = allowShorts and not isShort and shortZone
 shorting = allowShorts and isShort and shortZone
 
 buyLongZoneSetup = longZone and ((newLow) or (fastMacdBottoms and macdBottomed) or (rsiBottomed and lowerMacd2))
-buyShortZoneSetup = shortZone and rsiBottomed and lowerMacd2
+buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2
 addBuyLongZoneSetup = longZone and ((rsiBottomed and (newLow or (rsiIncreasing and lowerMacd) or (lowerMacd2 and macdBottomed))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsiClose < 31 or rsi1 < 30))
 closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
