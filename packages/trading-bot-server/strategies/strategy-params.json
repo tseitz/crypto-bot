@@ -48,7 +48,7 @@
   "DOTUSDT": {
     "name": "DOTUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
+    "entrySize": 25,
     "addSize": 17,
     "maxAdds": 30,
     "latestResult": 1483.50,
@@ -68,7 +68,7 @@
   },
   "ETHUSDT": {
     "entrySize": 30,
-    "addSize": 20,
+    "addSize": 17,
     "maxAdds": 30,
     "latestResult": 1131.92,
     "totalTrades": 259,
