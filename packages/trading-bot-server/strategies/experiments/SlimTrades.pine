@@ -13,12 +13,12 @@ longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
-hiLowFast = input(defval=45, title="Hi Low Short", minval=0, step=5)
+hiLowFast = input(defval=35, title="Hi Low Short", minval=0, step=5)
 hiLowSlow = input(defval=1050, title="Hi Low Long", minval=0, step=25)
 
-loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
-highestMacdCloseLong = input(defval=80, title="Highest MACD Close Long", minval=0, step=1)
-closeLongInShortZone = input(defval=65, title="Close Long In Short Zone RSI", minval=0, step=1)
+loneCloseLong = input(defval=84, title="Lone Close Long", minval=0, step=1)
+highestMacdCloseLong = input(defval=86, title="Highest MACD Close Long", minval=0, step=1)
+closeLongInShortZone = input(defval=70, title="Close Long In Short Zone RSI", minval=0, step=1)
 macdLength = input(defval=125, title="MACD Bars", minval=0, step=5)
 maxAdds = input(defval=30, title="Max Adds", minval=0, step=1)
 fastMacdBottoms = input(defval=false, title="Fast MACD Bottoms?", type=input.bool)
@@ -95,6 +95,8 @@ plot(series=lowestSlow1, color=color.red, linewidth=3)
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
 oneSlowLow = low < lowestSlow2
 oneSlowHigh = high > highestSlow2
+twoSlowLows = low[1] < lowestSlow3 and oneSlowLow
+twoSlowHighs = high[1] > highestSlow3 and oneSlowHigh
 oneFastLow = longZone and low < lowestFast2
 oneFastHigh = shortZone and high > highestFast2
 
@@ -110,7 +112,7 @@ if oneFastLow
 if oneFastHigh
     highFastCount := highFastCount + 1
 
-if oneSlowLow
+if twoSlowLows
     firstAction := longZone or firstAction
     shortZone := true
     longZone := false
@@ -119,7 +121,7 @@ if oneSlowLow
     highFastCount := 0
     lowFastCount := 0
 
-if oneSlowHigh
+if twoSlowHighs
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
@@ -172,7 +174,7 @@ addBuyLongZoneSetup = longZone and ((rsiBottomed and (newLow or (rsiIncreasing a
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsiClose < 31 or rsi1 < 30))
 closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
 closeMacdCloseSetup = rsi1 > highestMacdCloseLong and higherMacd2
-closeLongInShortZoneSetup = (shortZone and rsiTopped and rsi1 > closeLongInShortZone) // or (shortZone and highestPrevMacd)
+closeLongInShortZoneSetup = (shortZone and rsiTopped and rsiDecreasing and rsi1 > closeLongInShortZone) // or (shortZone and highestPrevMacd)
 stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
 
 long = not isLong and (buyLongZoneSetup or buyShortZoneSetup)
