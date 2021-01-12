@@ -10,7 +10,7 @@
   },
   "ATOMUSDT": {
     "entrySize": 30,
-    "addSize": 35,
+    "addSize": 30,
     "maxAdds": 7,
     "latestResult": 538.10,
     "totalTrades": 253,
@@ -27,7 +27,7 @@
     "avgTrade": 1.42
   },
   "BTCUSDT": {
-    "entrySize": 30,
+    "entrySize": 25,
     "addSize": 15,
     "maxAdds": 30,
     "latestResult": 894.53,
@@ -60,7 +60,7 @@
     "name": "EOSUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 20,
     "latestResult": 576.58,
     "totalTrades": 586,
     "percentProfitable": 70.48,
@@ -98,7 +98,7 @@
   "LTCUSDT": {
     "name": "LTCUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
+    "entrySize": 25,
     "addSize": 15,
     "latestResult": 970.43,
     "totalTrades": 381,
@@ -108,8 +108,8 @@
   "SNXUSDT": {
     "name": "SNXUSDT",
     "timeframe": "5m",
-    "entrySize": 50,
-    "addSize": 45,
+    "entrySize": 45,
+    "addSize": 40,
     "latestResult": 1020.85,
     "totalTrades": 369,
     "percentProfitable": 78.86,
@@ -118,8 +118,8 @@
   "YFIUSDT": {
     "name": "YFIUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
-    "addSize": 30,
+    "entrySize": 25,
+    "addSize": 25,
     "latestResult": 490.48,
     "totalTrades": 536,
     "percentProfitable": 59.89,
