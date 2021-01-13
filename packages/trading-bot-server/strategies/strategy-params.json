@@ -10,7 +10,7 @@
   },
   "BTCUSDT": {
     "entrySize": 25,
-    "addSize": 20,
+    "addSize": 15,
     "maxAdds": 30,
     "latestResult": 1094.42,
     "totalTrades": 279,
@@ -49,8 +49,8 @@
     "avgTrade": 0.98
   },
   "ETHUSDT": {
-    "entrySize": 30,
-    "addSize": 20,
+    "entrySize": 25,
+    "addSize": 17,
     "maxAdds": 30,
     "latestResult": 630.78,
     "totalTrades": 177,
@@ -60,7 +60,7 @@
   "KSMUSDT": {
     "name": "KSMUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
+    "entrySize": 20,
     "addSize": 25,
     "latestResult": 374.46,
     "totalTrades": 384,
