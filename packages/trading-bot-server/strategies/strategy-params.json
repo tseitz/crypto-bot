@@ -8,32 +8,14 @@
     "percentProfitable": 67.68,
     "avgTrade": 8.22
   },
-  "ATOMUSDT": {
-    "entrySize": 30,
-    "addSize": 30,
-    "maxAdds": 7,
-    "latestResult": 538.10,
-    "totalTrades": 253,
-    "percentProfitable": 75.1,
-    "avgTrade": 2.13
-  },
-  "BCHUSDT": {
-    "entrySize": 20,
-    "addSize": 10,
-    "maxAdds": 30,
-    "latestResult": 612.59,
-    "totalTrades": 430,
-    "percentProfitable": 40.23,
-    "avgTrade": 1.42
-  },
   "BTCUSDT": {
     "entrySize": 25,
-    "addSize": 12,
+    "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 894.53,
-    "totalTrades": 270,
-    "percentProfitable": 68.15,
-    "avgTrade": 3.31
+    "latestResult": 1094.42,
+    "totalTrades": 279,
+    "percentProfitable": 71.33,
+    "avgTrade": 3.92
   },
   "CRVUSDT": {
     "name": "CRVUSDT",
@@ -68,7 +50,7 @@
   },
   "ETHUSDT": {
     "entrySize": 30,
-    "addSize": 15,
+    "addSize": 17,
     "maxAdds": 30,
     "latestResult": 630.78,
     "totalTrades": 177,
