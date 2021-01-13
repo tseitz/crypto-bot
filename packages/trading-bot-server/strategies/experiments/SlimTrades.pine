@@ -8,21 +8,23 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
+showSlow = input(defval=true, title="Show Slow?", type=input.bool)
+
 longStopPerc = input(35, title='Long Stop %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
-hiLowFast = input(defval=35, title="Hi Low Short", minval=0, step=5)
+hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=5)
 hiLowSlow = input(defval=1050, title="Hi Low Long", minval=0, step=25)
 
-loneCloseLong = input(defval=84, title="Lone Close Long", minval=0, step=1)
-highestMacdCloseLong = input(defval=86, title="Highest MACD Close Long", minval=0, step=1)
+loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
+highestMacdCloseLong = input(defval=80, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=70, title="Close Long In Short Zone RSI", minval=0, step=1)
-macdLength = input(defval=125, title="MACD Bars", minval=0, step=5)
+macdLength = input(defval=65, title="MACD Bars", minval=0, step=5)
 maxAdds = input(defval=30, title="Max Adds", minval=0, step=1)
-fastMacdBottoms = input(defval=false, title="Fast MACD Bottoms?", type=input.bool)
-allowShorts = input(defval=false, title="Allow shorts?", type=input.bool)
+addOnLows = input(defval=false, title="Add On Lows?", type=input.bool)
+allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool)
 
 var isLong = false
 var isShort = false
@@ -89,8 +91,8 @@ lowestSlow3 = getLowest(3, hiLowSlow)
 
 plot(series=highestFast1, color=color.green, linewidth=1)
 plot(series=lowestFast1, color=color.red, linewidth=1)
-plot(series=highestSlow1, color=color.green, linewidth=3)
-plot(series=lowestSlow1, color=color.red, linewidth=3)
+plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=3)
+plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=3)
 
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
 oneSlowLow = low < lowestSlow2
@@ -167,10 +169,11 @@ highestPrevMacd = higherMacd2 and macd < highestMacd
 
 shortAllowed = allowShorts and not isShort and shortZone
 shorting = allowShorts and isShort and shortZone
+addLows = addOnLows and newLow
 
-buyLongZoneSetup = longZone and ((newLow) or (fastMacdBottoms and macdBottomed) or (rsiBottomed and lowerMacd2))
+buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2))
 buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2
-addBuyLongZoneSetup = longZone and ((rsiBottomed and (newLow or (rsiIncreasing and lowerMacd) or (lowerMacd2 and macdBottomed))))
+addBuyLongZoneSetup = longZone and ((addOnLows and newLow and not lowerMacd) or (rsiBottomed and not addLows and ((lowerMacd2 and lowerMacd and macdBottomed) or (rsiClose < 31 or rsi1 < 30))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsiClose < 31 or rsi1 < 30))
 closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
 closeMacdCloseSetup = rsi1 > highestMacdCloseLong and higherMacd2

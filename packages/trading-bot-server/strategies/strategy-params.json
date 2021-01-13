@@ -70,10 +70,10 @@
     "entrySize": 30,
     "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 1091.93,
-    "totalTrades": 327,
-    "percentProfitable": 81.35,
-    "avgTrade": 3.34
+    "latestResult": 630.78,
+    "totalTrades": 177,
+    "percentProfitable": 81.36,
+    "avgTrade": 3.56
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
@@ -119,7 +119,7 @@
     "name": "YFIUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 22,
     "latestResult": 490.48,
     "totalTrades": 536,
     "percentProfitable": 59.89,
