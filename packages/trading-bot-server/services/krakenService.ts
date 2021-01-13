@@ -264,7 +264,7 @@ class KrakenService {
                       0
                     )
                   ) + 1
-                }/${order.noLeverage ? order.addCount - 5 : order.addCount}: ${order.addSize}`
+                }/${order.addCount}: ${order.addSize}`
           );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
