@@ -73,7 +73,7 @@
     "name": "LINKUSDT",
     "timeframe": "5m",
     "entrySize": 30,
-    "addSize": 20,
+    "addSize": 17,
     "maxAdds": 30,
     "latestResult": 1316.93,
     "totalTrades": 392,
