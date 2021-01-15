@@ -30,24 +30,13 @@
   "DOTUSDT": {
     "name": "DOTUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
+    "entrySize": 25,
     "addSize": 17,
     "maxAdds": 30,
-    "latestResult": 1483.50,
-    "totalTrades": 213,
-    "percentProfitable": 75.12,
-    "avgTrade": 6.96
-  },
-  "EOSUSDT": {
-    "name": "EOSUSDT",
-    "timeframe": "5m",
-    "entrySize": 25,
-    "addSize": 20,
-    "maxAdds": 7,
-    "latestResult": 576.58,
-    "totalTrades": 586,
-    "percentProfitable": 70.48,
-    "avgTrade": 0.98
+    "latestResult": 1227.23,
+    "totalTrades": 103,
+    "percentProfitable": 93.2,
+    "avgTrade": 11.91
   },
   "ETHUSDT": {
     "entrySize": 30,
@@ -64,53 +53,53 @@
     "entrySize": 20,
     "addSize": 17,
     "maxAdds": 5,
-    "latestResult": 374.46,
-    "totalTrades": 384,
-    "percentProfitable": 59.9,
-    "avgTrade": 0.98
+    "latestResult": 121.94,
+    "totalTrades": 38,
+    "percentProfitable": 81.58,
+    "avgTrade": 3.21
   },
   "LINKUSDT": {
     "name": "LINKUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
+    "entrySize": 25,
     "addSize": 17,
     "maxAdds": 30,
-    "latestResult": 1316.93,
-    "totalTrades": 392,
-    "percentProfitable": 65.56,
-    "avgTrade": 3.36
+    "latestResult": 2071.25,
+    "totalTrades": 194,
+    "percentProfitable": 72.68,
+    "avgTrade": 10.68
   },
   "LTCUSDT": {
     "name": "LTCUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
-    "addSize": 15,
-    "maxAdds": 15,
-    "latestResult": 970.43,
-    "totalTrades": 381,
-    "percentProfitable": 74.02,
-    "avgTrade": 2.55
+    "entrySize": 20,
+    "addSize": 17,
+    "maxAdds": 12,
+    "latestResult": 325.88,
+    "totalTrades": 141,
+    "percentProfitable": 77.3,
+    "avgTrade": 2.31
   },
   "SNXUSDT": {
     "name": "SNXUSDT",
     "timeframe": "5m",
     "entrySize": 60,
-    "addSize": 70,
-    "maxAdds": 6,
-    "latestResult": 1020.85,
-    "totalTrades": 369,
-    "percentProfitable": 78.86,
-    "avgTrade": 2.77
+    "addSize": 45,
+    "maxAdds": 8,
+    "latestResult": 790.39,
+    "totalTrades": 38,
+    "percentProfitable": 94.74,
+    "avgTrade": 20.80
   },
   "YFIUSDT": {
     "name": "YFIUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 20,
     "maxAdds": 5,
-    "latestResult": 490.48,
-    "totalTrades": 536,
-    "percentProfitable": 59.89,
-    "avgTrade": 0.92
+    "latestResult": 218.49,
+    "totalTrades": 56,
+    "percentProfitable": 76.79,
+    "avgTrade": 3.90
   }
 }
