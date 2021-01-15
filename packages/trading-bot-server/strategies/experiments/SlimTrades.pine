@@ -154,7 +154,8 @@ lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
 bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
 
-macdBottomed = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and ((longZone and (macd3 - macd2 > macd2 - macd1) or (macd1 > macd2 and macd2 < macd3)) or macd < 0)
+possibleMacdBottom = macd < signal and ((macd2 - macd1 > macd1 - macd) or (macd > macd1 and macd1 < macd2)) and ((longZone and (macd3 - macd2 > macd2 - macd1) or (macd1 > macd2 and macd2 < macd3)) or macd < 0)
+macdBottomed = macd > macd1 and macd1 < macd2 and macd < signal and macd1 < 0
 macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 and macd1 > macd2)) and macd > 0
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
@@ -171,11 +172,11 @@ highestPrevMacd = higherMacd2 and macd < highestMacd
 shortAllowed = allowShorts and not isShort and shortZone
 shorting = allowShorts and isShort and shortZone
 addLows = addOnLows and newLow
-addLow = (addOnLows and newLow and not lowerMacd and macdBottomed)
+addLow = (addOnLows and newLow and not lowerMacd and possibleMacdBottom)
 
 buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2))
 buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2
-addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and rsiIncreasing and (((lowerMacd) and macdBottomed) or (rsiClose < 31 or rsi1 < 30))))
+addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and rsiIncreasing and (((lowerMacd) and possibleMacdBottom) or (macdBottomed) or (rsiClose < 31 or rsi1 < 30))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsi1 < shortZoneRsi))
 closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
 closeMacdCloseSetup = rsi1 > highestMacdCloseLong and higherMacd2

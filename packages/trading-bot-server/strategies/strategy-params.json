@@ -1,12 +1,12 @@
 {
   "ADAUSDT": {
-    "entrySize": 28,
-    "addSize": 15,
+    "entrySize": 25,
+    "addSize": 17,
     "maxAdds": 30,
-    "latestResult": 3254.58,
-    "totalTrades": 396,
-    "percentProfitable": 67.68,
-    "avgTrade": 8.22
+    "latestResult": 1999.14,
+    "totalTrades": 241,
+    "percentProfitable": 81.33,
+    "avgTrade": 8.30
   },
   "BTCUSDT": {
     "entrySize": 30,
