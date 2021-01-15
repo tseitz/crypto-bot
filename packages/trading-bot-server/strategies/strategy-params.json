@@ -12,10 +12,10 @@
     "entrySize": 30,
     "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 1094.42,
-    "totalTrades": 279,
-    "percentProfitable": 71.33,
-    "avgTrade": 3.92
+    "latestResult": 770.08,
+    "totalTrades": 272,
+    "percentProfitable": 74.63,
+    "avgTrade": 2.83
   },
   "CRVUSDT": {
     "name": "CRVUSDT",
