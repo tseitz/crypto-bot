@@ -107,7 +107,7 @@ class KrakenService {
       for (const key in openPositions) {
         const position = openPositions[key];
         if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
-          this.settleTxId(position, order);
+          latestResult = await this.settleTxId(position, order);
         }
       }
     } else {
