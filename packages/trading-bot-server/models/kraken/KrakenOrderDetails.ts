@@ -1,5 +1,11 @@
 import { TradingViewBody } from '../TradingViewBody';
-import { KrakenTradeablePair, KrakenPrice, KrakenBalance, KrakenOpenOrders } from './KrakenResults';
+import {
+  KrakenTradeablePair,
+  KrakenPrice,
+  KrakenBalance,
+  KrakenOpenOrders,
+  KrakenOrderResult,
+} from './KrakenResults';
 import { StrategyParams, StrategyParamsJson } from '../StrategyParams';
 const strategyParams: StrategyParamsJson = require('../../strategies/strategy-params');
 
@@ -56,6 +62,8 @@ export default class KrakenOrderDetails {
   bagIt: boolean;
   bagAmount: number;
   positionSize: number | undefined;
+  result: KrakenOrderResult | undefined;
+  validate: boolean;
 
   constructor(
     body: TradingViewBody,
@@ -91,6 +99,7 @@ export default class KrakenOrderDetails {
     this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;
     this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;
     this.bagAmount = parseFloat(body.strategy.bagSize?.toString() || '0');
+    this.validate = body.strategy.validate || false;
 
     // pair info
     this.minVolume = this.superParseFloat(pairData[this.krakenTicker]['ordermin']);

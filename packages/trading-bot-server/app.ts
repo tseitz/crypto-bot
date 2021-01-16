@@ -110,5 +110,4 @@ async function getBalances() {
   Total:   $${parseFloat(balances.result.eb) + parseFloat(balances.result.n)}
 ---------------------------`);
 }
-
 // getBalances();
