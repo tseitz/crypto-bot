@@ -1,4 +1,3 @@
-import { KrakenOpenPosition } from './KrakenResults';
 // Response is what we receive from Kraken
 // Result is what we handle internally
 // currently do it this way so we can destructure result to human readable form e.g. { balance } = getBalance
