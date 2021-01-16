@@ -198,7 +198,7 @@ class KrakenService {
           price: order.bidPrice,
           volume: incrementalAddVolume,
           leverage: order.leverageAmount,
-          validate: order.validate,
+          // validate: order.validate,
         });
       } else if (!add) {
         console.log(`New Entry: ${order.tradeVolumeInDollar} @ ${order.leverageAmount}:1 leverage`);
@@ -209,7 +209,7 @@ class KrakenService {
           price: order.bidPrice,
           volume: order.tradeVolume,
           leverage: order.leverageAmount,
-          validate: order.validate,
+          // validate: order.validate,
         });
       }
 
@@ -234,7 +234,7 @@ class KrakenService {
           ordertype: 'limit',
           price: order.bidPrice,
           volume: order.tradeVolume,
-          validate: order.validate,
+          // validate: order.validate,
         });
       }
     } else {
@@ -247,7 +247,7 @@ class KrakenService {
             ordertype: 'limit',
             price: order.bidPrice,
             volume: order.tradeVolume,
-            validate: order.validate,
+            // validate: order.validate,
           });
         } else {
           console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
@@ -270,7 +270,7 @@ class KrakenService {
             ordertype: 'limit',
             price: order.bidPrice,
             volume: order.buyBags ? order.tradeVolume : order.addVolume,
-            validate: order.validate,
+            // validate: order.validate,
           });
         }
       } else {
@@ -381,7 +381,7 @@ class KrakenService {
       price: bidPrice,
       volume: volumeToClose,
       leverage: leverageAmount,
-      validate: order.validate,
+      // validate: order.validate,
     });
     logOrderResult(`Settled Position`, result, order.krakenizedTradingViewTicker);
 
