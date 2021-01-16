@@ -1,4 +1,5 @@
 const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
+import { mongoClient, logKrakenResult } from './mongoDbService';
 import KrakenOrderDetails from '../models/kraken/KrakenOrderDetails';
 import { logOrderResult } from './logger';
 import {
@@ -56,8 +57,6 @@ class KrakenService {
     return { orderBookError, orderBookData };
   }
 
-  // async setAddOrder() {}
-
   async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = true) {
     const open = order.openOrders?.open;
 
@@ -97,13 +96,13 @@ class KrakenService {
   async settleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let latestResult;
 
-    // cancel open add order for this run. Some might not have been picked up
+    // cancel open add order for this group. Some might not have been picked up
     await this.cancelOpenOrdersForPair(order);
 
     const { openPositions } = await this.getOpenPositions();
     if (order.txId) {
       // close out specific transaction only (at least the value of it since we can't specify closing by id)
-      // we do not break the for loop after close because there may be 2 or more orders filled in a transaction
+      // we don't break the for loop because there may be 2 or more orders filled in a transaction
       for (const key in openPositions) {
         const position = openPositions[key];
         if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
@@ -122,7 +121,7 @@ class KrakenService {
             price: order.bidPrice,
             volume: 0, // 0 for close all
             leverage: order.leverageAmount,
-            // validate: true,
+            validate: order.validate,
           });
           logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
           break;
@@ -196,11 +195,10 @@ class KrakenService {
           pair: order.krakenTicker,
           type: order.action,
           ordertype: 'limit',
-          // ordertype: 'market',
           price: order.bidPrice,
           volume: incrementalAddVolume,
           leverage: order.leverageAmount,
-          // validate: true,
+          validate: order.validate,
         });
       } else if (!add) {
         console.log(`New Entry: ${order.tradeVolumeInDollar} @ ${order.leverageAmount}:1 leverage`);
@@ -211,7 +209,7 @@ class KrakenService {
           price: order.bidPrice,
           volume: order.tradeVolume,
           leverage: order.leverageAmount,
-          // validate: true,
+          validate: order.validate,
         });
       }
 
@@ -236,7 +234,7 @@ class KrakenService {
           ordertype: 'limit',
           price: order.bidPrice,
           volume: order.tradeVolume,
-          // validate: true,
+          validate: order.validate,
         });
       }
     } else {
@@ -249,7 +247,7 @@ class KrakenService {
             ordertype: 'limit',
             price: order.bidPrice,
             volume: order.tradeVolume,
-            // validate: true,
+            validate: order.validate,
           });
         } else {
           console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
@@ -272,7 +270,7 @@ class KrakenService {
             ordertype: 'limit',
             price: order.bidPrice,
             volume: order.buyBags ? order.tradeVolume : order.addVolume,
-            // validate: true,
+            validate: order.validate,
           });
         }
       } else {
@@ -283,6 +281,7 @@ class KrakenService {
     }
 
     logOrderResult(`Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
+    await logKrakenResult(order, result);
     return result;
   }
 
@@ -382,7 +381,7 @@ class KrakenService {
       price: bidPrice,
       volume: volumeToClose,
       leverage: leverageAmount,
-      // validate: true,
+      validate: order.validate,
     });
     logOrderResult(`Settled Position`, result, order.krakenizedTradingViewTicker);
 

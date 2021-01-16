@@ -16,4 +16,5 @@ export interface TradingViewStrategyBody {
   sellBags?: number;
   bagSize?: number;
   positionSize?: number;
+  validate?: boolean;
 }

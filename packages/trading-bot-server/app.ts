@@ -5,13 +5,10 @@ import { kraken } from './services/krakenService';
 // import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
 import { OrderQueue } from './models/OrderQueue';
-import { MongoClient } from 'mongodb';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
 const PORT = process.env.PORT || 3000;
-
-const mongoClient = new MongoClient(process.env.MONGO_CONNECTION_STRING || '');
 
 const app = express();
 
@@ -114,21 +111,3 @@ async function getBalances() {
 ---------------------------`);
 }
 // getBalances();
-
-async function run() {
-  try {
-    await mongoClient.connect();
-    // const database = mongoClient.db('trades');
-    // const collection = database.collection('kraken');
-    const database = mongoClient.db('sample_mflix');
-    const collection = database.collection('movies');
-    // Query for a movie that has the title 'Back to the Future'
-    const query = { title: 'Back to the Future' };
-    const movie = await collection.findOne(query);
-    console.log(movie);
-  } finally {
-    // Ensures that the mongoClient will close when you finish/error
-    await mongoClient.close();
-  }
-}
-run().catch(console.dir);
