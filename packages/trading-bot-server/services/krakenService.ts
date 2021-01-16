@@ -95,12 +95,12 @@ class KrakenService {
   }
 
   async settleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
-    const { openPositions } = await this.getOpenPositions();
+    let latestResult;
 
     // cancel open add order for this run. Some might not have been picked up
     await this.cancelOpenOrdersForPair(order);
 
-    let latestResult;
+    const { openPositions } = await this.getOpenPositions();
     if (order.txId) {
       // close out specific transaction only (at least the value of it since we can't specify closing by id)
       // we do not break the for loop after close because there may be 2 or more orders filled in a transaction
@@ -182,7 +182,10 @@ class KrakenService {
           const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
             order.volumeDecimals
           );
-          const incrementalAddDollar = (order.addSize * (1 + addCount * 0.02)).toFixed(2);
+          const incrementalAddDollar = (
+            (order.positionSize || order.addSize) *
+            (1 + addCount * 0.02)
+          ).toFixed(2);
           console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           result = await this.kraken.setAddOrder({

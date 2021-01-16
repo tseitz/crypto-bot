@@ -55,6 +55,7 @@ export default class KrakenOrderDetails {
   addCount: number;
   bagIt: boolean;
   bagAmount: number;
+  positionSize: number | undefined;
 
   constructor(
     body: TradingViewBody,
@@ -79,6 +80,7 @@ export default class KrakenOrderDetails {
 
     // setup params
     this.strategyParams = strategyParams[this.tradingViewTicker];
+    this.positionSize = body.strategy?.positionSize;
     this.entrySize = this.strategyParams?.entrySize;
     this.addSize = this.strategyParams?.addSize;
     this.action = body.strategy.action;
@@ -88,7 +90,7 @@ export default class KrakenOrderDetails {
     this.txId = body.strategy.txId;
     this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;
     this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;
-    this.bagAmount = parseFloat(body.strategy.bagAmount?.toString() || '0');
+    this.bagAmount = parseFloat(body.strategy.bagSize?.toString() || '0');
 
     // pair info
     this.minVolume = this.superParseFloat(pairData[this.krakenTicker]['ordermin']);
@@ -162,12 +164,14 @@ export default class KrakenOrderDetails {
 
   private getTradeVolume(): number {
     let volume = 0;
-    if (this.entrySize) {
+    const size = this.positionSize || this.entrySize;
+
+    if (size) {
       if (this.action === 'sell') {
         return this.balanceOfBase;
       } else {
         return this.superParseFloat(
-          (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+          (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
           this.volumeDecimals
         );
       }
@@ -187,9 +191,11 @@ export default class KrakenOrderDetails {
 
   private getAddVolume(): number {
     let volume = 0;
-    if (this.addSize) {
+    const size = this.positionSize || this.addSize;
+
+    if (size) {
       volume = this.superParseFloat(
-        (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
         this.volumeDecimals
       );
     } else {

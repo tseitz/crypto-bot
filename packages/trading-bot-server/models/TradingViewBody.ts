@@ -11,9 +11,9 @@ export interface TradingViewStrategyBody {
   action: string;
   description: string;
   price: string;
-  positionSize?: number;
   txId?: string;
   buyBags?: number;
   sellBags?: number;
-  bagAmount?: number;
+  bagSize?: number;
+  positionSize?: number;
 }
