@@ -167,8 +167,6 @@ class KrakenService {
       }
 
       if (add) {
-        console.log(`Margin on ${order.baseOfPair}: ${positionMargin.toFixed(2)}`);
-        console.log(`Margin After: ${(positionMargin + order.addSize).toFixed(2)}`);
         const tooMuch = order.entrySize
           ? positionMargin >= order.maxVolumeInDollar
           : positionMargin >= 175;
@@ -182,7 +180,9 @@ class KrakenService {
           (order.positionSize || order.addSize) *
           (1 + addCount * 0.03)
         ).toFixed(2);
-        console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
+        console.log(`Open Margin: ${positionMargin.toFixed(2)}`);
+        console.log(`Margin After: ${positionMargin + incrementalAddDollar}`);
+        console.log(`Adding ${addCount}/${order.addCount}`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
 
         if (tooMuch) {
