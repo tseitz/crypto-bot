@@ -1,5 +1,5 @@
 const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
-import { mongoClient, logKrakenResult } from './mongoDbService';
+// import { mongoClient, logKrakenResult } from './mongoDbService';
 import KrakenOrderDetails from '../models/kraken/KrakenOrderDetails';
 import { logOrderResult } from './logger';
 import {
@@ -281,7 +281,7 @@ class KrakenService {
     }
 
     logOrderResult(`Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
-    await logKrakenResult(order, result);
+    // await logKrakenResult(order, result);
     return result;
   }
 
