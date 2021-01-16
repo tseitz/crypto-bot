@@ -121,7 +121,7 @@ class KrakenService {
             price: order.bidPrice,
             volume: 0, // 0 for close all
             leverage: order.leverageAmount,
-            validate: order.validate,
+            // validate: order.validate,
           });
           logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
           break;
