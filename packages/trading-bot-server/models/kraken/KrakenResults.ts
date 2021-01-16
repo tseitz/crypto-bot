@@ -1,3 +1,4 @@
+import { KrakenOpenPosition } from './KrakenResults';
 // Response is what we receive from Kraken
 // Result is what we handle internally
 // currently do it this way so we can destructure result to human readable form e.g. { balance } = getBalance
@@ -51,11 +52,11 @@ export class KrakenBalanceResult {
 
 export interface KrakenOpenPositionResponse {
   error: string[];
-  result: KrakenOpenPosition;
+  result: KrakenOpenPositions;
 }
 export class KrakenOpenPositionResult {
   error: string[];
-  openPositions: KrakenOpenPosition;
+  openPositions: KrakenOpenPositions;
 
   constructor(response: KrakenOpenPositionResponse) {
     this.error = response.error;
@@ -141,24 +142,26 @@ export interface KrakenBalance {
   [index: string]: string;
 }
 
+export interface KrakenOpenPositions {
+  [index: string]: KrakenOpenPosition;
+}
+
 export interface KrakenOpenPosition {
-  [index: string]: {
-    cost: string;
-    fee: string;
-    margin: string;
-    misc: string;
-    oflags: string;
-    ordertxid: string;
-    ordertype: string;
-    pair: string;
-    posstatus: string;
-    rollovertm: string;
-    terms: string;
-    time: number;
-    type: string;
-    vol: string;
-    vol_closed: string;
-  };
+  cost: string;
+  fee: string;
+  margin: string;
+  misc: string;
+  oflags: string;
+  ordertxid: string;
+  ordertype: string;
+  pair: string;
+  posstatus: string;
+  rollovertm: string;
+  terms: string;
+  time: number;
+  type: string;
+  vol: string;
+  vol_closed: string;
 }
 
 // error:(0) []

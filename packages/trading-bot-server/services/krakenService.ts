@@ -9,6 +9,8 @@ import {
   KrakenOpenOrderResult,
   KrakenOrderResult,
   KrakenOrderResponse,
+  KrakenOpenPositions,
+  KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
 
 class KrakenService {
@@ -105,18 +107,7 @@ class KrakenService {
       for (const key in openPositions) {
         const position = openPositions[key];
         if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
-          const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-          const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
-          latestResult = await this.kraken.setAddOrder({
-            pair: order.krakenTicker,
-            type: closeAction,
-            ordertype: 'limit',
-            price: order.bidPrice,
-            volume: volumeToClose,
-            leverage: order.leverageAmount,
-            // validate: true,
-          });
-          logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
+          this.settleTxId(position, order);
         }
       }
     } else {
@@ -169,6 +160,10 @@ class KrakenService {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
           await this.settleLeveragedOrder(order);
         }
+      }
+
+      if (order.marginFree < 85) {
+        await this.sellOldestOrder(order, openPositions);
       }
 
       if (add) {
@@ -350,6 +345,63 @@ class KrakenService {
       i++;
     }
     return result;
+  }
+
+  async settleTxId(position: KrakenOpenPosition, order: KrakenOrderDetails) {
+    const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+    const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
+    let bidPrice = order.bidPrice;
+    let leverageAmount = order.leverageAmount;
+
+    // if tx is not this pair, get data for it. used mostly in settle oldest transaction
+    if (position.pair !== order.krakenTicker) {
+      const { price } = await kraken.getPrice(position.pair);
+      const { pair } = await kraken.getPair(position.pair);
+
+      const currentBid = price[position.pair]['b'][0];
+      const currentAsk = price[position.pair]['a'][0];
+      const leverageBuyAmounts = pair[position.pair]['leverage_buy'];
+      const leverageSellAmounts = pair[position.pair]['leverage_sell'];
+
+      bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
+      leverageAmount =
+        position.type === 'buy'
+          ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
+          : leverageSellAmounts[leverageSellAmounts.length - 1];
+    }
+
+    const result = await this.kraken.setAddOrder({
+      pair: position.pair,
+      type: closeAction,
+      ordertype: 'limit',
+      price: bidPrice,
+      volume: volumeToClose,
+      leverage: leverageAmount,
+      // validate: true,
+    });
+    logOrderResult(`Settled Position`, result, order.krakenizedTradingViewTicker);
+
+    return result;
+  }
+
+  async sellOldestOrder(order: KrakenOrderDetails, openPositions?: KrakenOpenPositions) {
+    if (!openPositions) {
+      const positionResult = await this.getOpenPositions();
+      openPositions = positionResult.openPositions;
+    }
+
+    let positionToClose;
+    for (const key in openPositions) {
+      const position = openPositions[key];
+      if (order.action === position.type) {
+        positionToClose =
+          positionToClose && position.time > positionToClose.time ? positionToClose : position;
+      }
+    }
+
+    if (positionToClose) {
+      await this.settleTxId(positionToClose, order);
+    }
   }
 
   async balancePortfolio() {

@@ -96,10 +96,10 @@ plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=3)
 plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=3)
 
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
-oneSlowLow = low < lowestSlow2
-oneSlowHigh = high > highestSlow2
-twoSlowLows = low[1] < lowestSlow3 and oneSlowLow
-twoSlowHighs = high[1] > highestSlow3 and oneSlowHigh
+oneSlowLow = low < lowestSlow1 and low < lowestSlow2
+oneSlowHigh = high > highestSlow1 and high > highestSlow2
+twoSlowLows = low[1] < lowestSlow2 and oneSlowLow
+twoSlowHighs = high[1] > highestSlow2 and oneSlowHigh
 oneFastLow = longZone and low < lowestFast2
 oneFastHigh = shortZone and high > highestFast2
 
@@ -115,7 +115,7 @@ if oneFastLow
 if oneFastHigh
     highFastCount := highFastCount + 1
 
-if oneSlowLow
+if twoSlowLows
     firstAction := longZone or firstAction
     shortZone := true
     longZone := false
@@ -124,7 +124,7 @@ if oneSlowLow
     highFastCount := 0
     lowFastCount := 0
 
-if oneSlowHigh
+if twoSlowHighs
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
@@ -160,7 +160,7 @@ macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
 rsiDecreasing = rsiClose < rsi2
-rsiIncreasing = ((rsiClose > rsi2 and rsi1 < rsi2) or (rsiClose > rsi3 and rsi2 < rsi3))
+rsiIncreasing = ((rsiClose > rsi2 and rsi1 < rsi2))
 newLow = low < lowestFast1 and high > lowestFast0
 newHigh = high > highestFast1 and low < highestFast0
 twoNewHighs = high[2] > highestFast3 and newHigh
@@ -176,7 +176,7 @@ addLow = (addOnLows and newLow and not lowerMacd and possibleMacdBottom)
 
 buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2))
 buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2
-addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and rsiIncreasing and (((lowerMacd) and possibleMacdBottom) or (macdBottomed) or (rsiClose < 31 or rsi1 < 30))))
+addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and rsiIncreasing and ((lowerMacd and possibleMacdBottom) or (rsiClose < 31 or rsi1 < 30))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsi1 < shortZoneRsi))
 closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
 closeMacdCloseSetup = rsi1 > highestMacdCloseLong and higherMacd2
