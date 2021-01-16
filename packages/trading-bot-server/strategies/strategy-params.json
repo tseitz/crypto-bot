@@ -12,10 +12,10 @@
     "entrySize": 30,
     "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 770.08,
-    "totalTrades": 272,
-    "percentProfitable": 74.63,
-    "avgTrade": 2.83
+    "latestResult": 1093.19,
+    "totalTrades": 387,
+    "percentProfitable": 67.96,
+    "avgTrade": 2.82
   },
   "CRVUSDT": {
     "name": "CRVUSDT",
@@ -42,10 +42,10 @@
     "entrySize": 30,
     "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 819.76,
-    "totalTrades": 132,
-    "percentProfitable": 81.82,
-    "avgTrade": 6.21
+    "latestResult": 825.25,
+    "totalTrades": 181,
+    "percentProfitable": 85.08,
+    "avgTrade": 4.56
   },
   "KSMUSDT": {
     "name": "KSMUSDT",

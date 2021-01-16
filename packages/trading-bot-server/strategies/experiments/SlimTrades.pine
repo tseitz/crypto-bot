@@ -2,7 +2,7 @@
 strategy("SlimTrades", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
-daysBackMax = input(defval=15, title="Max Days Back to Test", minval=0)
+daysBackMax = input(defval=21, title="Max Days Back to Test", minval=0)
 daysBackMin = 0
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
@@ -16,11 +16,11 @@ shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) 
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=5)
-hiLowSlow = input(defval=1050, title="Hi Low Long", minval=0, step=25)
+hiLowSlow = input(defval=720, title="Hi Low Long", minval=0, step=25)
 
 loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
-highestMacdCloseLong = input(defval=80, title="Highest MACD Close Long", minval=0, step=1)
-closeLongInShortZone = input(defval=70, title="Close Long In Short Zone RSI", minval=0, step=1)
+highestMacdCloseLong = input(defval=84, title="Highest MACD Close Long", minval=0, step=1)
+closeLongInShortZone = input(defval=75, title="Close Long In Short Zone RSI", minval=0, step=1)
 shortZoneRsi = input(defval=32, title="Buy Short Zone RSI", minval=0, step=1)
 macdLength = input(defval=65, title="MACD Bars", minval=0, step=5)
 maxAdds = input(defval=30, title="Max Adds", minval=0, step=1)
@@ -160,7 +160,7 @@ macdTopped = macd > signal and ((macd2 - macd1 < macd1 - macd) or (macd < macd1 
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi1 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
 rsiDecreasing = rsiClose < rsi2
-rsiIncreasing = ((rsiClose > rsi2 and rsi1 < rsi2))
+rsiIncreasing = (rsiClose > rsi2 and rsi1 < rsi2)
 newLow = low < lowestFast1 and high > lowestFast0
 newHigh = high > highestFast1 and low < highestFast0
 twoNewHighs = high[2] > highestFast3 and newHigh
