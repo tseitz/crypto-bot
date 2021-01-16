@@ -175,32 +175,33 @@ class KrakenService {
           ? positionMargin >= order.maxVolumeInDollar
           : positionMargin >= 175;
 
-        if (!tooMuch) {
-          const addCount =
-            parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) +
-            1;
-          const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
-            order.volumeDecimals
-          );
-          const incrementalAddDollar = (
-            (order.positionSize || order.addSize) *
-            (1 + addCount * 0.02)
-          ).toFixed(2);
-          console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
-          console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-          result = await this.kraken.setAddOrder({
-            pair: order.krakenTicker,
-            type: order.action,
-            ordertype: 'limit',
-            // ordertype: 'market',
-            price: order.bidPrice,
-            volume: incrementalAddVolume,
-            leverage: order.leverageAmount,
-            // validate: true,
-          });
-        } else {
-          console.log('Easy there buddy');
+        const addCount =
+          parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
+        const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+          order.volumeDecimals
+        );
+        const incrementalAddDollar = (
+          (order.positionSize || order.addSize) *
+          (1 + addCount * 0.02)
+        ).toFixed(2);
+        console.log(`Adding ${addCount}/${order.addCount}: ${order.addSize}`);
+        console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
+
+        if (tooMuch) {
+          console.log('Selling Oldest Position First');
+          await this.sellOldestOrder(order, openPositions, true);
         }
+
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          // ordertype: 'market',
+          price: order.bidPrice,
+          volume: incrementalAddVolume,
+          leverage: order.leverageAmount,
+          // validate: true,
+        });
       } else if (!add) {
         console.log(`New Entry: ${order.tradeVolumeInDollar} @ ${order.leverageAmount}:1 leverage`);
         result = await this.kraken.setAddOrder({
@@ -388,7 +389,11 @@ class KrakenService {
     return result;
   }
 
-  async sellOldestOrder(order: KrakenOrderDetails, openPositions?: KrakenOpenPositions) {
+  async sellOldestOrder(
+    order: KrakenOrderDetails,
+    openPositions?: KrakenOpenPositions,
+    pairOnly?: boolean
+  ) {
     if (!openPositions) {
       const positionResult = await this.getOpenPositions();
       openPositions = positionResult.openPositions;
@@ -397,7 +402,7 @@ class KrakenService {
     let positionToClose;
     for (const key in openPositions) {
       const position = openPositions[key];
-      if (order.action === position.type) {
+      if (order.action === position.type && (!pairOnly || order.krakenTicker === position.pair)) {
         positionToClose =
           positionToClose && position.time > positionToClose.time ? positionToClose : position;
       }
