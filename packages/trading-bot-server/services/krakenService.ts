@@ -251,7 +251,6 @@ class KrakenService {
         } else {
           console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
           console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
-          console.log(`Total Allowed: ${order.maxVolumeInDollar}`);
           console.log(
             order.buyBags
               ? 'Buying Bags'
