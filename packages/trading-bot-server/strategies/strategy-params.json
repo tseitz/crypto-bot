@@ -50,8 +50,8 @@
   "KSMUSDT": {
     "name": "KSMUSDT",
     "timeframe": "5m",
-    "entrySize": 35,
-    "addSize": 32,
+    "entrySize": 50,
+    "addSize": 30,
     "maxAdds": 5,
     "latestResult": 452.12,
     "totalTrades": 84,
