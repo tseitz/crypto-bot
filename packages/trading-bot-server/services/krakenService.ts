@@ -168,7 +168,7 @@ class KrakenService {
 
       if (add) {
         console.log(`Current Margin: ${positionMargin.toFixed(2)}`);
-        console.log(`Margin After: ${(positionMargin + order.addSize).toFixed(2)}`);
+        console.log(`Margin After: ${parseFloat(`${positionMargin + order.addSize}`).toFixed(2)}`);
         console.log(`Total Allowed: ${order.maxVolumeInDollar}`);
         const tooMuch = order.entrySize
           ? positionMargin >= order.maxVolumeInDollar
