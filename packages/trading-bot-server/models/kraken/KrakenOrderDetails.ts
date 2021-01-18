@@ -161,7 +161,7 @@ export default class KrakenOrderDetails {
         this.priceDecimals
       )}, Bid: ${this.currentBid}, Ask: ${this.currentAsk}, My Bid: ${this.bidPrice}`
     );
-    console.log('Margin Available: ', this.marginFree);
+    console.log('Total Margin Available: ', this.marginFree);
   }
 
   public superParseFloat(floatString: number | string, decimals?: number) {
