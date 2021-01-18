@@ -1,7 +1,7 @@
 {
   "ADAUSDT": {
     "entrySize": 25,
-    "addSize": 17,
+    "addSize": 16,
     "maxAdds": 30,
     "latestResult": 2206.71,
     "totalTrades": 289,
@@ -10,7 +10,7 @@
   },
   "BTCUSDT": {
     "entrySize": 30,
-    "addSize": 20,
+    "addSize": 18,
     "maxAdds": 30,
     "latestResult": 1093.19,
     "totalTrades": 387,
@@ -31,7 +31,7 @@
     "name": "DOTUSDT",
     "timeframe": "5m",
     "entrySize": 30,
-    "addSize": 18,
+    "addSize": 17,
     "maxAdds": 30,
     "latestResult": 1227.23,
     "totalTrades": 103,
@@ -43,7 +43,7 @@
     "addSize": 20,
     "maxAdds": 30,
     "latestResult": 825.25,
-    "totalTrades": 181,
+    "totalTrades": 171,
     "percentProfitable": 85.08,
     "avgTrade": 4.56
   },
@@ -62,7 +62,7 @@
     "name": "LINKUSDT",
     "timeframe": "5m",
     "entrySize": 25,
-    "addSize": 18,
+    "addSize": 17,
     "maxAdds": 30,
     "latestResult": 2071.25,
     "totalTrades": 194,
@@ -97,7 +97,7 @@
     "entrySize": 35,
     "addSize": 32,
     "maxAdds": 6,
-    "latestResult": 218.49,
+    "latestResult": 217.49,
     "totalTrades": 56,
     "percentProfitable": 76.79,
     "avgTrade": 3.90
