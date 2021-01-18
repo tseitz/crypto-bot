@@ -180,12 +180,12 @@ class KrakenService {
           (order.positionSize || order.addSize) *
           (1 + addCount * 0.03)
         ).toFixed(2);
+        console.log(`Adding ${addCount}/${order.addCount}`);
+        console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(`Open Margin: ${positionMargin.toFixed(2)}`);
         console.log(
           `Margin After: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
         );
-        console.log(`Adding ${addCount}/${order.addCount}`);
-        console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
 
         if (tooMuch) {
           console.log('Selling Oldest Position First');
