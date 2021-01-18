@@ -50,13 +50,13 @@
   "KSMUSDT": {
     "name": "KSMUSDT",
     "timeframe": "5m",
-    "entrySize": 30,
+    "entrySize": 50,
     "addSize": 30,
     "maxAdds": 5,
-    "latestResult": 121.94,
-    "totalTrades": 38,
-    "percentProfitable": 81.58,
-    "avgTrade": 3.21
+    "latestResult": 452.12,
+    "totalTrades": 84,
+    "percentProfitable": 88.1,
+    "avgTrade": 5.38
   },
   "LINKUSDT": {
     "name": "LINKUSDT",
@@ -84,7 +84,7 @@
     "name": "SNXUSDT",
     "timeframe": "5m",
     "entrySize": 60,
-    "addSize": 50,
+    "addSize": 55,
     "maxAdds": 8,
     "latestResult": 790.39,
     "totalTrades": 38,
@@ -95,7 +95,7 @@
     "name": "YFIUSDT",
     "timeframe": "5m",
     "entrySize": 35,
-    "addSize": 30,
+    "addSize": 32,
     "maxAdds": 6,
     "latestResult": 218.49,
     "totalTrades": 56,
