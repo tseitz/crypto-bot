@@ -53,10 +53,10 @@
     "entrySize": 35,
     "addSize": 32,
     "maxAdds": 5,
-    "latestResult": 121.94,
-    "totalTrades": 38,
-    "percentProfitable": 81.58,
-    "avgTrade": 3.21
+    "latestResult": 452.12,
+    "totalTrades": 84,
+    "percentProfitable": 88.1,
+    "avgTrade": 5.38
   },
   "LINKUSDT": {
     "name": "LINKUSDT",
