@@ -40,12 +40,12 @@
   },
   "ETHUSDT": {
     "entrySize": 30,
-    "addSize": 22,
+    "addSize": 25,
     "maxAdds": 25,
-    "latestResult": 825.25,
-    "totalTrades": 171,
-    "percentProfitable": 85.08,
-    "avgTrade": 4.56
+    "latestResult": 1327.28,
+    "totalTrades": 247,
+    "percentProfitable": 86.23,
+    "avgTrade": 5.37
   },
   "KSMUSDT": {
     "name": "KSMUSDT",
