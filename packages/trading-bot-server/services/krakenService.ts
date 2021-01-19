@@ -161,7 +161,7 @@ class KrakenService {
         }
       }
 
-      if (order.marginFree < 85) {
+      if (order.marginFree < 100) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, openPositions);
       }
