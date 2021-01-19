@@ -161,7 +161,7 @@ class KrakenService {
         }
       }
 
-      if (order.marginFree < 100) {
+      if (order.marginFree < 125) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, openPositions);
       }
@@ -220,7 +220,14 @@ class KrakenService {
     return result;
   }
 
-  async handleNonLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+  async handleNonLeveragedOrder(
+    order: KrakenOrderDetails
+  ): Promise<KrakenOrderResponse | undefined> {
+    if (order.marginFree < 125) {
+      console.log('Margin level too low. No non leveraged orders.');
+      return;
+    }
+
     let result;
     if (order.action === 'sell') {
       if (isNaN(order.balanceOfBase) || order.balanceOfBase < 1e-5) {
