@@ -20,12 +20,13 @@
   "CRVUSDT": {
     "name": "CRVUSDT",
     "timeframe": "5m",
-    "entrySize": 25,
+    "entrySize": 35,
     "addSize": 20,
-    "latestResult": 477.70,
-    "totalTrades": 346,
-    "percentProfitable": 61.27,
-    "avgTrade": 1.38
+    "maxAdds": 6,
+    "latestResult": 1597.29,
+    "totalTrades": 144,
+    "percentProfitable": 85.42,
+    "avgTrade": 11.09
   },
   "DOTUSDT": {
     "name": "DOTUSDT",
