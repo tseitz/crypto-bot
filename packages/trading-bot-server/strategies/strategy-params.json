@@ -80,6 +80,17 @@
     "percentProfitable": 77.3,
     "avgTrade": 2.31
   },
+  "OMGUSDT": {
+    "name": "OMGUSDT",
+    "timeframe": "5m",
+    "entrySize": 25,
+    "addSize": 15,
+    "maxAdds": 10,
+    "latestResult": 325.88,
+    "totalTrades": 141,
+    "percentProfitable": 77.3,
+    "avgTrade": 2.31
+  },
   "SNXUSDT": {
     "name": "SNXUSDT",
     "timeframe": "5m",
