@@ -96,12 +96,12 @@
     "name": "SNXUSDT",
     "timeframe": "5m",
     "entrySize": 60,
-    "addSize": 55,
+    "addSize": 45,
     "maxAdds": 8,
-    "latestResult": 790.39,
-    "totalTrades": 38,
-    "percentProfitable": 94.74,
-    "avgTrade": 20.80
+    "latestResult": 531.43,
+    "totalTrades": 53,
+    "percentProfitable": 84.91,
+    "avgTrade": 10.03
   },
   "YFIUSDT": {
     "name": "YFIUSDT",
