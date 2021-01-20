@@ -57,7 +57,7 @@ class KrakenService {
     return { orderBookError, orderBookData };
   }
 
-  async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = true) {
+  async cancelOpenOrdersForPair(order: KrakenOrderDetails) {
     const open = order.openOrders?.open;
 
     if (!open) return;
@@ -66,9 +66,10 @@ class KrakenService {
     for (const key in open) {
       const pair = open[key]['descr']['pair'];
       const type = open[key]['descr']['type'];
-      const action = opposite ? order.oppositeAction : order.action;
+      // const action = opposite ? order.oppositeAction : order.action;
 
-      if (pair === order.krakenizedTradingViewTicker && type === action) {
+      if (pair === order.krakenizedTradingViewTicker) {
+        //  && type === action
         console.log(`Canceling ${type} order`);
         result = await this.kraken.setCancelOrder({ txid: key });
       }
