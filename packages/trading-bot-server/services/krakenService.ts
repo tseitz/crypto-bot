@@ -211,7 +211,9 @@ class KrakenService {
         });
       }
 
-      logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
+      if (result) {
+        logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
+      }
     }
 
     return result;
@@ -303,7 +305,10 @@ class KrakenService {
       }
     }
 
-    logOrderResult(`Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
+    if (result) {
+      logOrderResult(`Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
+    }
+
     // await logKrakenResult(order, result);
     return result;
   }
