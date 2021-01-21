@@ -165,7 +165,7 @@ class KrakenService {
         }
       }
 
-      if (order.marginFree < 135) {
+      if (order.marginFree < 150) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, openPositions);
       }
@@ -230,11 +230,6 @@ class KrakenService {
   async handleNonLeveragedOrder(
     order: KrakenOrderDetails
   ): Promise<KrakenOrderResponse | undefined> {
-    if (order.marginFree < 135) {
-      console.log('Margin level too low. No non leveraged orders.');
-      return;
-    }
-
     let result;
     if (order.action === 'sell') {
       if (order.balanceInDollar === 0) {
@@ -253,7 +248,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar === 0) {
+      if (order.balanceInDollar === 0 && order.marginFree > 150) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -287,7 +282,7 @@ class KrakenService {
           );
         }
 
-        if (!order.buyBags && addCount > order.addCount) {
+        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 150) {
           console.log('Selling Some First');
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
