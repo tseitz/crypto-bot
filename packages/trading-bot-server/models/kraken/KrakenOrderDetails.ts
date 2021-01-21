@@ -91,6 +91,7 @@ export default class KrakenOrderDetails {
     this.positionSize = body.strategy?.positionSize;
     this.entrySize = this.strategyParams?.entrySize;
     this.addSize = this.strategyParams?.addSize;
+    this.addCount = this.strategyParams.maxAdds ? this.strategyParams.maxAdds : 6;
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
@@ -151,7 +152,6 @@ export default class KrakenOrderDetails {
     this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
-    this.addCount = this.strategyParams.maxAdds ? this.strategyParams.maxAdds : 6;
     // if no leverage, 4 less add counts
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
 

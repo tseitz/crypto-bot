@@ -168,10 +168,6 @@ class KrakenService {
       }
 
       if (add) {
-        const tooMuch = order.entrySize
-          ? positionMargin >= order.maxVolumeInDollar
-          : positionMargin >= 175;
-
         const addCount =
           parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
         const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
@@ -188,7 +184,7 @@ class KrakenService {
           `Margin After: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
         );
 
-        if (tooMuch) {
+        if (addCount > order.addCount) {
           console.log('Selling Oldest Position First');
           await this.sellOldestOrder(order, openPositions, true);
         }
@@ -229,9 +225,13 @@ class KrakenService {
       return;
     }
 
+    if (isNaN(order.balanceInDollar)) {
+      order.balanceInDollar = 0;
+    }
+
     let result;
     if (order.action === 'sell') {
-      if (isNaN(order.balanceOfBase) || order.balanceOfBase < 1e-5) {
+      if (order.balanceOfBase < 1e-5) {
         result = new KrakenOrderResult({
           error: [`${order.action.toUpperCase()} balance is too small`],
         });
@@ -274,6 +274,19 @@ class KrakenService {
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
           console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
+
+          if (!order.buyBags && addCount > order.addCount) {
+            console.log('Selling Some First');
+            result = await this.kraken.setAddOrder({
+              pair: order.krakenTicker,
+              type: order.action,
+              ordertype: 'limit',
+              price: order.bidPrice,
+              volume: order.tradeVolume,
+              // validate: order.validate,
+            });
+          }
+
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
