@@ -89,6 +89,24 @@
     "percentProfitable": 87.57,
     "avgTrade": 21.35
   },
+  "XLMUSDT": {
+    "entrySize": 15,
+    "addSize": 15,
+    "maxAdds": 25,
+    "latestResult": 4118.50,
+    "totalTrades": 336,
+    "percentProfitable": 73.21,
+    "avgTrade": 12.26
+  },
+  "XTZUSDT": {
+    "entrySize": 15,
+    "addSize": 10,
+    "maxAdds": 15,
+    "latestResult": 2694.01,
+    "totalTrades": 348,
+    "percentProfitable": 87.93,
+    "avgTrade": 7.74
+  },
   "YFIUSDT": {
     "entrySize": 15,
     "addSize": 15,
