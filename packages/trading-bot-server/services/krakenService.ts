@@ -277,7 +277,7 @@ class KrakenService {
           console.log('Selling Some First');
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
-            type: order.action,
+            type: 'sell',
             ordertype: 'limit',
             price: order.bidPrice,
             volume: order.tradeVolume,
