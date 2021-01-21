@@ -15,7 +15,7 @@ longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
 shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
-hiLowFast = input(defval=20, title="Hi Low Short", minval=0, step=5)
+hiLowFast = input(defval=35, title="Hi Low Short", minval=0, step=5)
 hiLowSlow = input(defval=720, title="Hi Low Long", minval=0, step=25)
 
 loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
@@ -23,8 +23,8 @@ highestMacdCloseLong = input(defval=84, title="Highest MACD Close Long", minval=
 closeLongInShortZone = input(defval=75, title="Close Long In Short Zone RSI", minval=0, step=1)
 shortZoneRsi = input(defval=32, title="Buy Short Zone RSI", minval=0, step=1)
 macdLength = input(defval=65, title="MACD Bars", minval=0, step=5)
-maxAdds = input(defval=30, title="Max Adds", minval=0, step=1)
-addOnLows = input(defval=false, title="Add On Lows?", type=input.bool)
+maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
+addOnLows = input(defval=true, title="Add On Lows?", type=input.bool)
 allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool)
 
 var isLong = false
