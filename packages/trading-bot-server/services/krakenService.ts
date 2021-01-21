@@ -269,9 +269,17 @@ class KrakenService {
           (order.positionSize || order.addSize) *
           (1 + addCount * 0.02)
         ).toFixed(2);
-        console.log(order.buyBags ? 'Buying Bags' : `Adding ${addCount}/${order.addCount}`);
-        console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-        console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
+
+        if (!order.buyBags) {
+          console.log(`Adding ${addCount}/${order.addCount}`);
+          console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
+          console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
+        } else {
+          console.log('Buying Bags');
+          console.log(
+            `Balance After: ${(order.balanceInDollar + order.tradeVolumeInDollar).toFixed(2)}`
+          );
+        }
 
         if (!order.buyBags && addCount > order.addCount) {
           console.log('Selling Some First');
