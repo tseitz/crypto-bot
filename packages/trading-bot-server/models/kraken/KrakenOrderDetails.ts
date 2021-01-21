@@ -91,7 +91,7 @@ export default class KrakenOrderDetails {
     this.positionSize = body.strategy?.positionSize;
     this.entrySize = this.strategyParams?.entrySize;
     this.addSize = this.strategyParams?.addSize;
-    this.addCount = this.strategyParams.maxAdds ? this.strategyParams.maxAdds : 6;
+    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 6;
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;

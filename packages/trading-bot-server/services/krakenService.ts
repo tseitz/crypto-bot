@@ -227,13 +227,9 @@ class KrakenService {
       return;
     }
 
-    if (isNaN(order.balanceInDollar)) {
-      order.balanceInDollar = 0;
-    }
-
     let result;
     if (order.action === 'sell') {
-      if (order.balanceOfBase < 1e-5) {
+      if (order.balanceInDollar === 0) {
         result = new KrakenOrderResult({
           error: [`${order.action.toUpperCase()} balance is too small`],
         });
@@ -249,7 +245,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceOfBase < 1e-5) {
+      if (order.balanceInDollar === 0) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -262,7 +258,7 @@ class KrakenService {
       } else {
         const addCount =
           parseInt(
-            ((Math.floor(order.balanceOfBase) - order.entrySize) / order.addSize).toFixed(0)
+            ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(0)
           ) + 1;
         const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
           order.volumeDecimals
