@@ -57,7 +57,7 @@ class KrakenService {
     return { orderBookError, orderBookData };
   }
 
-  async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = false) {
+  async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = true) {
     const open = order.openOrders?.open;
 
     if (!open) return;
@@ -78,7 +78,7 @@ class KrakenService {
     // this occurs when we sell oldest order, and it does not fill
     // this resulted in a short position that lost 15% -_- never again
     if (order.close) {
-      await this.cancelOpenOrdersForPair(order, true);
+      await this.cancelOpenOrdersForPair(order, false);
     }
 
     return result;
