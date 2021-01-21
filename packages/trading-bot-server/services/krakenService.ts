@@ -146,16 +146,13 @@ class KrakenService {
 
       let add = false;
       let positionMargin = 0;
-      // totalPosition = 0;
+      let totalPosition = 0;
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
           positionMargin += parseFloat(position.margin);
-          // totalPosition += parseFloat(position.cost);
-          // console.log(
-          //   `Adding ${order.krakenizedTradingViewTicker}, My Margin: ${positionMargin}, Total Position: ${totalPosition}`
-          // );
+          totalPosition += parseFloat(position.cost);
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
           await this.settleLeveragedOrder(order);
@@ -179,9 +176,13 @@ class KrakenService {
         ).toFixed(2);
         console.log(`Adding ${addCount}/${order.addCount}`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-        console.log(`Open Margin: ${positionMargin.toFixed(2)}`);
         console.log(
           `Margin After: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
+        );
+        console.log(
+          `Position Size After: ${
+            totalPosition + parseFloat(incrementalAddDollar) * (order.leverageAmount || 1)
+          }`
         );
 
         if (addCount > order.addCount) {
@@ -199,7 +200,7 @@ class KrakenService {
           // validate: order.validate,
         });
       } else if (!add) {
-        console.log(`New Entry: ${order.tradeVolumeInDollar} @ ${order.leverageAmount}:1 leverage`);
+        console.log(`New Entry: ${order.entrySize}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -269,7 +270,6 @@ class KrakenService {
         ).toFixed(2);
         console.log(order.buyBags ? 'Buying Bags' : `Adding ${addCount}/${order.addCount}`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-        console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
         console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
 
         if (!order.buyBags && addCount > order.addCount) {
