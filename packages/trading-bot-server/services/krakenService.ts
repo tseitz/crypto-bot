@@ -180,9 +180,10 @@ class KrakenService {
           `Margin After: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
         );
         console.log(
-          `Position Size After: ${
-            totalPosition + parseFloat(incrementalAddDollar) * (order.leverageAmount || 1)
-          }`
+          `Position Size After: ${(
+            totalPosition +
+            parseFloat(incrementalAddDollar) * (order.leverageAmount || 1)
+          ).toFixed(2)}`
         );
 
         if (addCount > order.addCount) {
@@ -223,7 +224,7 @@ class KrakenService {
   async handleNonLeveragedOrder(
     order: KrakenOrderDetails
   ): Promise<KrakenOrderResponse | undefined> {
-    if (order.marginFree < 100) {
+    if (order.marginFree < 135) {
       console.log('Margin level too low. No non leveraged orders.');
       return;
     }
@@ -282,6 +283,7 @@ class KrakenService {
             volume: order.tradeVolume,
             // validate: order.validate,
           });
+          logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
         }
 
         result = await this.kraken.setAddOrder({
