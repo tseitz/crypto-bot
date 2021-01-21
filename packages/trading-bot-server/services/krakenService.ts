@@ -224,7 +224,7 @@ class KrakenService {
   async handleNonLeveragedOrder(
     order: KrakenOrderDetails
   ): Promise<KrakenOrderResponse | undefined> {
-    if (order.marginFree < 135) {
+    if (order.marginFree < 100) {
       console.log('Margin level too low. No non leveraged orders.');
       return;
     }
@@ -259,25 +259,27 @@ class KrakenService {
             // validate: order.validate,
           });
         } else {
+          const addCount =
+            parseInt(
+              ((Math.floor(order.balanceOfBase) - order.entrySize) / order.addSize).toFixed(0)
+            ) + 1;
+          const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+            order.volumeDecimals
+          );
+          const incrementalAddDollar = (
+            (order.positionSize || order.addSize) *
+            (1 + addCount * 0.02)
+          ).toFixed(2);
+          console.log(order.buyBags ? 'Buying Bags' : `Adding ${addCount}/${order.addCount}`);
+          console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
           console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
-          console.log(
-            order.buyBags
-              ? 'Buying Bags'
-              : `Adding ${
-                  parseInt(
-                    ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(
-                      0
-                    )
-                  ) + 1
-                }/${order.addCount}: ${order.addSize}`
-          );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
             ordertype: 'limit',
             price: order.bidPrice,
-            volume: order.buyBags ? order.tradeVolume : order.addVolume,
+            volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
             // validate: order.validate,
           });
         }
