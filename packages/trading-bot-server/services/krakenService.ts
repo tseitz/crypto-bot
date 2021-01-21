@@ -249,9 +249,35 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar < order.maxVolumeInDollar || order.buyBags) {
-        if (order.balanceOfBase < 1e-5) {
-          console.log(`New Entry: ${order.tradeVolumeInDollar}`);
+      if (order.balanceOfBase < 1e-5) {
+        console.log(`New Entry: ${order.tradeVolumeInDollar}`);
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          price: order.bidPrice,
+          volume: order.tradeVolume,
+          // validate: order.validate,
+        });
+      } else {
+        const addCount =
+          parseInt(
+            ((Math.floor(order.balanceOfBase) - order.entrySize) / order.addSize).toFixed(0)
+          ) + 1;
+        const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+          order.volumeDecimals
+        );
+        const incrementalAddDollar = (
+          (order.positionSize || order.addSize) *
+          (1 + addCount * 0.02)
+        ).toFixed(2);
+        console.log(order.buyBags ? 'Buying Bags' : `Adding ${addCount}/${order.addCount}`);
+        console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
+        console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
+        console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
+
+        if (!order.buyBags && addCount > order.addCount) {
+          console.log('Selling Some First');
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
@@ -260,48 +286,16 @@ class KrakenService {
             volume: order.tradeVolume,
             // validate: order.validate,
           });
-        } else {
-          const addCount =
-            parseInt(
-              ((Math.floor(order.balanceOfBase) - order.entrySize) / order.addSize).toFixed(0)
-            ) + 1;
-          const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
-            order.volumeDecimals
-          );
-          const incrementalAddDollar = (
-            (order.positionSize || order.addSize) *
-            (1 + addCount * 0.02)
-          ).toFixed(2);
-          console.log(order.buyBags ? 'Buying Bags' : `Adding ${addCount}/${order.addCount}`);
-          console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-          console.log(`Current Balance: ${order.balanceInDollar.toFixed(2)}`);
-          console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
-
-          if (!order.buyBags && addCount > order.addCount) {
-            console.log('Selling Some First');
-            result = await this.kraken.setAddOrder({
-              pair: order.krakenTicker,
-              type: order.action,
-              ordertype: 'limit',
-              price: order.bidPrice,
-              volume: order.tradeVolume,
-              // validate: order.validate,
-            });
-          }
-
-          result = await this.kraken.setAddOrder({
-            pair: order.krakenTicker,
-            type: order.action,
-            ordertype: 'limit',
-            price: order.bidPrice,
-            volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
-            // validate: order.validate,
-          });
         }
-      } else {
-        console.log(
-          `Position size for ${order.krakenizedTradingViewTicker} is too large ${order.balanceInDollar}`
-        );
+
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          price: order.bidPrice,
+          volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
+          // validate: order.validate,
+        });
       }
     }
 
