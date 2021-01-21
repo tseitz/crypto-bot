@@ -8,6 +8,15 @@
     "percentProfitable": 83.33,
     "avgTrade": 7.88
   },
+  "AAVEUSDT": {
+    "entrySize": 15,
+    "addSize": 15,
+    "maxAdds": 15,
+    "latestResult": 1074.00,
+    "totalTrades": 85,
+    "percentProfitable": 98.82,
+    "avgTrade": 12.64
+  },
   "BALUSDT": {
     "entrySize": 15,
     "addSize": 12,
