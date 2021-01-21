@@ -57,7 +57,7 @@ class KrakenService {
     return { orderBookError, orderBookData };
   }
 
-  async cancelOpenOrdersForPair(order: KrakenOrderDetails) {
+  async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = false) {
     const open = order.openOrders?.open;
 
     if (!open) return;
@@ -66,13 +66,19 @@ class KrakenService {
     for (const key in open) {
       const pair = open[key]['descr']['pair'];
       const type = open[key]['descr']['type'];
-      // const action = opposite ? order.oppositeAction : order.action;
+      const action = opposite ? order.oppositeAction : order.action;
 
-      if (pair === order.krakenizedTradingViewTicker) {
-        //  && type === action
+      if (pair === order.krakenizedTradingViewTicker && type === action) {
         console.log(`Canceling ${type} order`);
         result = await this.kraken.setCancelOrder({ txid: key });
       }
+    }
+
+    // if closing order, make sure there are no leftovers sells as well
+    // this occurs when we sell oldest order, and it does not fill
+    // this resulted in a short position that lost 15% -_- never again
+    if (order.close) {
+      await this.cancelOpenOrdersForPair(order, true);
     }
 
     return result;
