@@ -173,12 +173,12 @@ class KrakenService {
       if (add) {
         const addCount =
           parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
-        const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+        const incrementalAddVolume = (order.addVolume * (1 + addCount * order.addBoost)).toFixed(
           order.volumeDecimals
         );
         const incrementalAddDollar = (
           (order.positionSize || order.addSize) *
-          (1 + addCount * 0.02)
+          (1 + addCount * order.addBoost)
         ).toFixed(2);
         console.log(`Adding ${addCount}/${order.addCount}`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
@@ -263,12 +263,12 @@ class KrakenService {
           parseInt(
             ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(0)
           ) + 1;
-        const incrementalAddVolume = (order.addVolume * (1 + addCount * 0.02)).toFixed(
+        const incrementalAddVolume = (order.addVolume * (1 + addCount * order.addBoost)).toFixed(
           order.volumeDecimals
         );
         const incrementalAddDollar = (
           (order.positionSize || order.addSize) *
-          (1 + addCount * 0.02)
+          (1 + addCount * order.addBoost)
         ).toFixed(2);
 
         if (!order.buyBags) {
