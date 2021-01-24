@@ -1,13 +1,4 @@
 {
-  "ADAUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
-    "maxAdds": 20,
-    "latestResult": 2835.25,
-    "totalTrades": 360,
-    "percentProfitable": 83.33,
-    "avgTrade": 7.88
-  },
   "AAVEWETH": {
     "entrySize": 15,
     "addSize": 15,
@@ -16,6 +7,15 @@
     "totalTrades": 80,
     "percentProfitable": 97.5,
     "avgTrade": 27.29
+  },
+  "ADAUSDT": {
+    "entrySize": 15,
+    "addSize": 15,
+    "maxAdds": 20,
+    "latestResult": 2835.25,
+    "totalTrades": 360,
+    "percentProfitable": 83.33,
+    "avgTrade": 7.88
   },
   "BALUSDT": {
     "entrySize": 15,
@@ -45,8 +45,8 @@
     "avgTrade": 13.22
   },
   "DOTUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 20,
+    "addSize": 18,
     "maxAdds": 30,
     "latestResult": 3326.22,
     "totalTrades": 357,
@@ -73,7 +73,7 @@
   },
   "LINKUSDT": {
     "entrySize": 20,
-    "addSize": 15,
+    "addSize": 18,
     "maxAdds": 30,
     "latestResult": 3780.67,
     "totalTrades": 294,
@@ -81,8 +81,8 @@
     "avgTrade": 12.86
   },
   "OMGUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 20,
+    "addSize": 17,
     "maxAdds": 20,
     "latestResult": 2878.96,
     "totalTrades": 188,
