@@ -180,7 +180,7 @@ export default class KrakenOrderDetails {
     const size = this.positionSize || this.entrySize;
 
     if (size) {
-      if (this.action === 'sell') {
+      if (this.action === 'sell' && this.close) {
         return this.balanceOfBase;
       } else {
         volume = this.superParseFloat(
@@ -195,7 +195,7 @@ export default class KrakenOrderDetails {
         return this.balanceOfBase;
       } else {
         volume = this.superParseFloat(
-          (80 * (this.leverageAmount || 1)) / this.usdValueOfBase,
+          (20 * (this.leverageAmount || 1)) / this.usdValueOfBase,
           this.volumeDecimals
         );
         return volume > this.minVolume ? volume : this.minVolume;
@@ -212,6 +212,7 @@ export default class KrakenOrderDetails {
         (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
         this.volumeDecimals
       );
+      return volume > this.minVolume ? volume : this.minVolume;
     } else {
       volume = this.superParseFloat(
         (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
