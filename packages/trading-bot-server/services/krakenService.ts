@@ -293,7 +293,7 @@ class KrakenService {
             type: newOrder.action,
             ordertype: 'limit',
             price: newOrder.bidPrice,
-            volume: newOrder.tradeVolume,
+            volume: incrementalAddVolume,
             // validate: order.validate,
           });
           logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
