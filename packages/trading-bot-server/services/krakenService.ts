@@ -237,7 +237,7 @@ class KrakenService {
           error: [`${order.action.toUpperCase()} balance is too small`],
         });
       } else {
-        console.log(order.sellBags ? `Selling Bags` : `Selling ${order.balanceInDollar}`);
+        console.log(order.sellBags ? `Selling Bags` : `Selling ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
@@ -400,6 +400,7 @@ class KrakenService {
       const leverageBuyAmounts = pair[position.pair]['leverage_buy'];
       const leverageSellAmounts = pair[position.pair]['leverage_sell'];
 
+      // TODO: Get bid from class
       bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
       leverageAmount =
         position.type === 'buy'

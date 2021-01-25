@@ -241,7 +241,8 @@ export default class KrakenOrderDetails {
       this.tradingViewTicker === 'LTCUSDT' ||
       this.tradingViewTicker === 'YFIUSDT' ||
       this.tradingViewTicker === 'SNXUSDT' ||
-      (this.action === 'sell' && this.tradingViewTicker === 'KSMUSDT')
+      (this.action === 'sell' && this.tradingViewTicker === 'KSMUSDT') ||
+      (this.action === 'sell' && this.tradingViewTicker === 'XLMUSDT')
     ) {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
     } else {
