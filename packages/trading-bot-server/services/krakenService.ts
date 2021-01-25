@@ -284,12 +284,16 @@ class KrakenService {
 
         if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 150) {
           console.log('Selling Some First');
+
+          const newOrder = order;
+          newOrder.action = 'sell';
+          newOrder.bidPrice = order.getBid(); // get new bid for sell
           result = await this.kraken.setAddOrder({
-            pair: order.krakenTicker,
-            type: 'sell',
+            pair: newOrder.krakenTicker,
+            type: newOrder.action,
             ordertype: 'limit',
-            price: order.bidPrice,
-            volume: order.tradeVolume,
+            price: newOrder.bidPrice,
+            volume: newOrder.tradeVolume,
             // validate: order.validate,
           });
           logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);

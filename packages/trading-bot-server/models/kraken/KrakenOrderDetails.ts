@@ -229,7 +229,7 @@ export default class KrakenOrderDetails {
   //   return parseFloat(stop.toFixed(this.priceDecimals));
   // }
 
-  private getBid(): number {
+  public getBid(): number {
     // return this.action === 'buy' ? this.currentAsk : this.currentBid; // give it to the ask
     // YFI doesn't get filled as often so giving
     if (

@@ -90,8 +90,8 @@
     "avgTrade": 15.31
   },
   "SNXUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 16,
+    "addSize": 16,
     "maxAdds": 20,
     "latestResult": 3949.46,
     "totalTrades": 185,
