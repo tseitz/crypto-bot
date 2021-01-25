@@ -285,7 +285,7 @@ class KrakenService {
         if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 150) {
           console.log('Selling Some First');
 
-          const newOrder = order;
+          const newOrder = { ...order };
           newOrder.action = 'sell';
           newOrder.bidPrice = order.getBid(); // get new bid for sell
           result = await this.kraken.setAddOrder({
