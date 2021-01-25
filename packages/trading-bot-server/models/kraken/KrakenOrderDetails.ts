@@ -137,6 +137,7 @@ export default class KrakenOrderDetails {
 
     this.spread = this.currentAsk - this.currentBid;
     this.bidPrice = this.getBid();
+    // Quote = USDT or ETH/BTC, Base = AAVE, ADA etc.
     this.usdValueOfQuote = this.usdPair
       ? 1
       : this.superParseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
@@ -182,10 +183,11 @@ export default class KrakenOrderDetails {
       if (this.action === 'sell') {
         return this.balanceOfBase;
       } else {
-        return this.superParseFloat(
+        volume = this.superParseFloat(
           (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
           this.volumeDecimals
         );
+        return volume > this.minVolume ? volume : this.minVolume;
       }
     } else {
       console.log('No size to enter. Using default. Fix please');
