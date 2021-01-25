@@ -46,7 +46,7 @@
   },
   "DOTUSDT": {
     "entrySize": 20,
-    "addSize": 18,
+    "addSize": 16,
     "maxAdds": 30,
     "latestResult": 3326.22,
     "totalTrades": 357,
