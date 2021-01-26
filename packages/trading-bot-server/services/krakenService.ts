@@ -384,7 +384,7 @@ class KrakenService {
     return result;
   }
 
-  async settleTxId(position: KrakenOpenPosition, order: KrakenOrderDetails) {
+  async settleTxId(position: KrakenOpenPosition, order: KrakenOrderDetails, immediate?: boolean) {
     const closeAction = position.type === 'sell' ? 'buy' : 'sell';
     const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
     let bidPrice = order.bidPrice;
@@ -401,7 +401,11 @@ class KrakenService {
       const leverageSellAmounts = pair[position.pair]['leverage_sell'];
 
       // TODO: Get bid from class
-      bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
+      if (!immediate) {
+        bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
+      } else {
+        bidPrice = parseFloat(currentBid);
+      }
       leverageAmount =
         position.type === 'buy'
           ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
@@ -442,7 +446,7 @@ class KrakenService {
     }
 
     if (positionToClose) {
-      await this.settleTxId(positionToClose, order);
+      await this.settleTxId(positionToClose, order, true);
     }
   }
 
