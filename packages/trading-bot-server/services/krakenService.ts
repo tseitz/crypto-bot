@@ -417,7 +417,7 @@ class KrakenService {
       console.log('Could not sell oldest. Selling oldest of pair. Please fix');
       await this.sellOldestOrder(order, undefined, true);
     }
-    logOrderResult(`Settled Position`, result, order.krakenizedTradingViewTicker);
+    logOrderResult(`Settled Position`, result, position.pair);
 
     return result;
   }
