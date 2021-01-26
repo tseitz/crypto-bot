@@ -7,6 +7,7 @@ import {
   KrakenOrderResult,
 } from './KrakenResults';
 import { StrategyParams, StrategyParamsJson } from '../StrategyParams';
+import { superParseFloat } from '../../scripts/common';
 const strategyParams: StrategyParamsJson = require('../../strategies/strategy-params');
 
 type AssetClassTicker = 'XBTUSDT' | 'ETHUSDT';
@@ -85,7 +86,7 @@ export default class KrakenOrderDetails {
     this.assetClassTicker =
       Object.keys(assetClassPriceInfo)[0] === 'ETHUSDT' ? 'ETHUSDT' : 'XBTUSDT';
     this.openOrders = openOrders;
-    this.marginFree = this.superParseFloat(tradeBalance?.mf);
+    this.marginFree = superParseFloat(tradeBalance?.mf);
 
     // setup params
     this.strategyParams = strategyParams[this.tradingViewTicker];
@@ -104,7 +105,7 @@ export default class KrakenOrderDetails {
     this.validate = body.strategy.validate || false;
 
     // pair info
-    this.minVolume = this.superParseFloat(pairData[this.krakenTicker]['ordermin']);
+    this.minVolume = superParseFloat(pairData[this.krakenTicker]['ordermin']);
     this.usdPair = !/XBT$|ETH$/.test(this.krakenTicker);
     this.priceDecimals = pairData[this.krakenTicker]['pair_decimals'];
     this.volumeDecimals = pairData[this.krakenTicker]['lot_decimals'];
@@ -121,34 +122,25 @@ export default class KrakenOrderDetails {
     this.bagIt = this.sellBags || this.buyBags;
 
     // current price info
-    this.tradingViewPrice = this.superParseFloat(body.strategy.price, this.priceDecimals);
-    this.currentPrice = this.superParseFloat(
+    this.tradingViewPrice = superParseFloat(body.strategy.price, this.priceDecimals);
+    this.currentPrice = superParseFloat(
       pairPriceInfo[this.krakenTicker]['c'][0],
       this.priceDecimals
     );
-    this.currentBid = this.superParseFloat(
-      pairPriceInfo[this.krakenTicker]['b'][0],
-      this.priceDecimals
-    );
-    this.currentAsk = this.superParseFloat(
-      pairPriceInfo[this.krakenTicker]['a'][0],
-      this.priceDecimals
-    );
+    this.currentBid = superParseFloat(pairPriceInfo[this.krakenTicker]['b'][0], this.priceDecimals);
+    this.currentAsk = superParseFloat(pairPriceInfo[this.krakenTicker]['a'][0], this.priceDecimals);
 
     this.spread = this.currentAsk - this.currentBid;
     this.bidPrice = this.getBid();
     // Quote = USDT or ETH/BTC, Base = AAVE, ADA etc.
     this.usdValueOfQuote = this.usdPair
       ? 1
-      : this.superParseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
+      : superParseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
     this.usdValueOfBase = this.convertBaseToDollar(this.currentPrice, this.usdValueOfQuote);
 
     // balance and order info
-    this.balanceOfBase =
-      this.superParseFloat(this.baseOfPair ? myBalanceInfo[this.baseOfPair] : 0) || 0;
-    this.balanceOfQuote = this.superParseFloat(
-      this.quoteOfPair ? myBalanceInfo[this.quoteOfPair] : 0
-    );
+    this.balanceOfBase = superParseFloat(this.baseOfPair ? myBalanceInfo[this.baseOfPair] : 0) || 0;
+    this.balanceOfQuote = superParseFloat(this.quoteOfPair ? myBalanceInfo[this.quoteOfPair] : 0);
     this.tradeBalance = this.action === 'sell' ? this.balanceOfBase : this.balanceOfQuote;
     this.balanceInDollar = this.convertBaseToDollar(this.balanceOfBase, this.usdValueOfBase);
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfQuote);
@@ -160,19 +152,12 @@ export default class KrakenOrderDetails {
     this.addBoost = 0.04;
 
     console.log(
-      `${this.action.toUpperCase()} TradingView Price: ${this.superParseFloat(
+      `${this.action.toUpperCase()} TradingView Price: ${superParseFloat(
         body.strategy.price,
         this.priceDecimals
       )}, Bid: ${this.currentBid}, Ask: ${this.currentAsk}, My Bid: ${this.bidPrice}`
     );
     console.log('Total Margin Available: ', this.marginFree);
-  }
-
-  public superParseFloat(floatString: number | string, decimals?: number) {
-    floatString = floatString?.toString();
-    return typeof decimals === 'undefined'
-      ? parseFloat(floatString)
-      : parseFloat(parseFloat(floatString).toFixed(decimals));
   }
 
   private getTradeVolume(): number {
@@ -183,7 +168,7 @@ export default class KrakenOrderDetails {
       if (this.action === 'sell' && this.close) {
         return this.balanceOfBase;
       } else {
-        volume = this.superParseFloat(
+        volume = superParseFloat(
           (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
           this.volumeDecimals
         );
@@ -194,7 +179,7 @@ export default class KrakenOrderDetails {
       if (this.action === 'sell') {
         return this.balanceOfBase;
       } else {
-        volume = this.superParseFloat(
+        volume = superParseFloat(
           (20 * (this.leverageAmount || 1)) / this.usdValueOfBase,
           this.volumeDecimals
         );
@@ -208,13 +193,13 @@ export default class KrakenOrderDetails {
     const size = this.positionSize || this.addSize;
 
     if (size) {
-      volume = this.superParseFloat(
+      volume = superParseFloat(
         (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
         this.volumeDecimals
       );
       return volume > this.minVolume ? volume : this.minVolume;
     } else {
-      volume = this.superParseFloat(
+      volume = superParseFloat(
         (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
         this.volumeDecimals
       );
@@ -256,7 +241,7 @@ export default class KrakenOrderDetails {
         ) {
           return this.tradingViewPrice;
         } else {
-          return this.superParseFloat((this.currentBid + this.currentAsk) / 2, this.priceDecimals);
+          return superParseFloat((this.currentBid + this.currentAsk) / 2, this.priceDecimals);
         }
         // return parseFloat(
         //   parseFloat(
@@ -267,7 +252,7 @@ export default class KrakenOrderDetails {
         if (this.tradingViewPrice <= this.currentBid) {
           return this.currentBid;
         } else {
-          return this.superParseFloat(
+          return superParseFloat(
             (this.tradingViewPrice + this.currentAsk + this.currentBid) / 3,
             this.priceDecimals
           );
@@ -277,6 +262,6 @@ export default class KrakenOrderDetails {
   }
 
   convertBaseToDollar(base: number, usd: number): number {
-    return this.superParseFloat(base * usd, 2);
+    return superParseFloat(base * usd, 2);
   }
 }
