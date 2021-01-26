@@ -413,6 +413,10 @@ class KrakenService {
       leverage: leverageAmount,
       // validate: order.validate,
     });
+    if (result.error.length) {
+      console.log('Could not sell oldest. Selling oldest of pair. Please fix');
+      await this.sellOldestOrder(order, undefined, true);
+    }
     logOrderResult(`Settled Position`, result, order.krakenizedTradingViewTicker);
 
     return result;
