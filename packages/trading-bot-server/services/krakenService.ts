@@ -13,6 +13,7 @@ import {
   KrakenOpenPositions,
   KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
+import { sleep } from '../scripts/common';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -168,6 +169,7 @@ class KrakenService {
       if (order.marginFree < 175) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, openPositions);
+        await sleep(2000);
       }
 
       if (add) {
@@ -195,6 +197,7 @@ class KrakenService {
         if (addCount > order.addCount) {
           console.log('Selling Oldest Position First');
           await this.sellOldestOrder(order, openPositions, true);
+          await sleep(2000);
         }
 
         result = await this.kraken.setAddOrder({
@@ -282,7 +285,7 @@ class KrakenService {
           );
         }
 
-        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 100) {
+        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 125) {
           console.log('Selling Some First');
 
           const newOrder = { ...order };
@@ -296,6 +299,7 @@ class KrakenService {
             volume: order.tradeVolume,
             // validate: order.validate,
           });
+          await sleep(2000);
           logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
         }
 
