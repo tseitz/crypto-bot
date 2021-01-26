@@ -165,7 +165,7 @@ class KrakenService {
         }
       }
 
-      if (order.marginFree < 150) {
+      if (order.marginFree < 175) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, openPositions);
       }
@@ -248,7 +248,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar === 0 && order.marginFree > 150) {
+      if (order.balanceInDollar === 0 && order.marginFree > 175) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -282,7 +282,7 @@ class KrakenService {
           );
         }
 
-        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 150) {
+        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 175) {
           console.log('Selling Some First');
 
           const newOrder = { ...order };
