@@ -13,7 +13,7 @@ import {
   KrakenOpenPositions,
   KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
-import { sleep } from '../scripts/common';
+import { sleep, superParseFloat } from '../scripts/common';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -296,7 +296,7 @@ class KrakenService {
             type: newOrder.action,
             ordertype: 'limit',
             price: newOrder.bidPrice,
-            volume: order.tradeVolume,
+            volume: order.addVolume,
             // validate: order.validate,
           });
           await sleep(2000);
@@ -335,14 +335,11 @@ class KrakenService {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
       const bagAmount = order.bagAmount ? order.bagAmount : 0.4;
-      tradeVolumeInDollar = order.superParseFloat(
-        order.balanceOfQuote * bagAmount,
-        order.volumeDecimals
-      );
+      tradeVolumeInDollar = superParseFloat(order.balanceOfQuote * bagAmount, order.volumeDecimals);
     } else {
       // sell 80% worth of currency available
       const bagAmount = order.bagAmount ? order.bagAmount : 0.75;
-      tradeVolumeInDollar = order.superParseFloat(
+      tradeVolumeInDollar = superParseFloat(
         order.balanceOfBase * order.usdValueOfBase * bagAmount,
         order.volumeDecimals
       );
@@ -353,10 +350,7 @@ class KrakenService {
     while (volumeTradedInDollar < tradeVolumeInDollar) {
       order.tradeVolume =
         order.marginFree < tradeVolumeInDollar
-          ? order.superParseFloat(
-              (order.marginFree * 0.8) / order.usdValueOfBase,
-              order.volumeDecimals
-            )
+          ? superParseFloat((order.marginFree * 0.8) / order.usdValueOfBase, order.volumeDecimals)
           : tradeVolumeInDollar / order.usdValueOfBase;
       volumeTradedInDollar += order.tradeVolume * order.usdValueOfBase;
       if (order.tradeVolume < order.minVolume) break;
@@ -369,14 +363,8 @@ class KrakenService {
       setTimeout(async () => {
         // update bid price
         const { price } = await kraken.getPrice(order.krakenTicker);
-        const currentBid = order.superParseFloat(
-          price[order.krakenTicker]['b'][0],
-          order.priceDecimals
-        );
-        const currentAsk = order.superParseFloat(
-          price[order.krakenTicker]['a'][0],
-          order.priceDecimals
-        );
+        const currentBid = superParseFloat(price[order.krakenTicker]['b'][0], order.priceDecimals);
+        const currentAsk = superParseFloat(price[order.krakenTicker]['a'][0], order.priceDecimals);
         order.bidPrice = order.action === 'buy' ? currentAsk : currentBid;
 
         // order
