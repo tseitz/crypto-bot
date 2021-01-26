@@ -86,7 +86,7 @@ class KrakenService {
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     // some orders might not have filled. cancel beforehand
-    await this.cancelOpenOrdersForPair(order);
+    // await this.cancelOpenOrdersForPair(order);
 
     let result;
     if (order.noLeverage) {
