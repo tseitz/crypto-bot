@@ -404,7 +404,7 @@ class KrakenService {
           : leverageSellAmounts[leverageSellAmounts.length - 1];
     }
 
-    const result = await this.kraken.setAddOrder({
+    let result = await this.kraken.setAddOrder({
       pair: position.pair,
       type: closeAction,
       ordertype: 'limit',
@@ -415,7 +415,7 @@ class KrakenService {
     });
     if (result.error.length) {
       console.log('Could not sell oldest. Selling oldest of pair. Please fix');
-      await this.sellOldestOrder(order, undefined, true);
+      result = await this.sellOldestOrder(order, undefined, true);
     }
     logOrderResult(`Settled Position`, result, position.pair);
 
