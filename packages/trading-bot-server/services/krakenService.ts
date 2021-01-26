@@ -282,7 +282,7 @@ class KrakenService {
           );
         }
 
-        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 150) {
+        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 100) {
           console.log('Selling Some First');
 
           const newOrder = { ...order };
