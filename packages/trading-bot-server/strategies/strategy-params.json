@@ -29,7 +29,7 @@
   "BTCUSDT": {
     "entrySize": 15,
     "addSize": 13,
-    "maxAdds": 20,
+    "maxAdds": 22,
     "latestResult": 502.61,
     "totalTrades": 381,
     "percentProfitable": 64.83,
