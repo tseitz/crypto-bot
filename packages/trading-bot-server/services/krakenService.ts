@@ -291,26 +291,30 @@ class KrakenService {
           const newOrder = { ...order };
           newOrder.action = 'sell';
           newOrder.bidPrice = order.currentBid; // just give it to bid for now // order.getBid(); get new bid for sell
-          result = await this.kraken.setAddOrder({
-            pair: newOrder.krakenTicker,
-            type: newOrder.action,
-            ordertype: 'limit',
-            price: newOrder.bidPrice,
-            volume: order.addVolume,
-            // validate: order.validate,
-          });
-          await sleep(2000);
-          logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
-        }
+          if (order.addVolume !== parseFloat(incrementalAddVolume)) {
+            result = await this.kraken.setAddOrder({
+              pair: newOrder.krakenTicker,
+              type: newOrder.action,
+              ordertype: 'limit',
+              price: newOrder.bidPrice,
+              volume: order.addVolume,
+              // validate: order.validate,
+            });
+            await sleep(2000);
+            logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
 
-        result = await this.kraken.setAddOrder({
-          pair: order.krakenTicker,
-          type: order.action,
-          ordertype: 'limit',
-          price: order.bidPrice,
-          volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
-          // validate: order.validate,
-        });
+            result = await this.kraken.setAddOrder({
+              pair: order.krakenTicker,
+              type: order.action,
+              ordertype: 'limit',
+              price: order.bidPrice,
+              volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
+              // validate: order.validate,
+            });
+          } else {
+            console.log('Order size is the same. No action needed');
+          }
+        }
       }
     }
 
