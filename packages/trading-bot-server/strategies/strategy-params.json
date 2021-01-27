@@ -98,6 +98,15 @@
     "percentProfitable": 87.57,
     "avgTrade": 21.35
   },
+  "UNIWETH": {
+    "entrySize": 25,
+    "addSize": 25,
+    "maxAdds": 12,
+    "latestResult": 3153.31,
+    "totalTrades": 223,
+    "percentProfitable": 98.64,
+    "avgTrade": 14.27
+  },
   "XLMUSDT": {
     "entrySize": 15,
     "addSize": 15,
