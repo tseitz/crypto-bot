@@ -279,7 +279,11 @@ class KrakenService {
         if (!order.buyBags) {
           console.log(`Adding ${addCount}/${order.addCount}`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-          console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
+          console.log(
+            `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
+              2
+            )}`
+          );
         } else {
           console.log('Buying Bags');
           console.log(
@@ -287,6 +291,7 @@ class KrakenService {
           );
         }
 
+        // sell some if add count too high or margin too low
         if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 125) {
           console.log('Selling Some First');
 
