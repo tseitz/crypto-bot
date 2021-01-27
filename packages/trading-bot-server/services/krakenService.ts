@@ -166,7 +166,7 @@ class KrakenService {
         }
       }
 
-      if (order.marginFree < 175) {
+      if (order.marginFree < 170) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, openPositions);
         await sleep(2000);
@@ -251,7 +251,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar === 0 && order.marginFree > 175) {
+      if (order.balanceInDollar === 0 && order.marginFree > 170) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -408,7 +408,7 @@ class KrakenService {
           : leverageSellAmounts[leverageSellAmounts.length - 1];
     }
 
-    const result = await this.kraken.setAddOrder({
+    let result = await this.kraken.setAddOrder({
       pair: position.pair,
       type: closeAction,
       ordertype: 'limit',
@@ -417,7 +417,11 @@ class KrakenService {
       leverage: leverageAmount,
       // validate: order.validate,
     });
-    logOrderResult(`Settled Position`, result, order.krakenizedTradingViewTicker);
+    if (result.error.length) {
+      console.log('Could not sell oldest. Selling oldest of pair. Please fix');
+      result = await this.sellOldestOrder(order, undefined, true);
+    }
+    logOrderResult(`Settled Position`, result, position.pair);
 
     return result;
   }
