@@ -304,19 +304,19 @@ class KrakenService {
             });
             await sleep(2000);
             logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
-
-            result = await this.kraken.setAddOrder({
-              pair: order.krakenTicker,
-              type: order.action,
-              ordertype: 'limit',
-              price: order.bidPrice,
-              volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
-              // validate: order.validate,
-            });
           } else {
             console.log('Order size is the same. No action taken.');
           }
         }
+
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          price: order.bidPrice,
+          volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
+          // validate: order.validate,
+        });
       }
     }
 
