@@ -451,36 +451,30 @@ class KrakenService {
     }
   }
 
-  async balancePortfolio() {
-    const { balances } = await this.getBalance();
-    console.log('USD Balance Before Rebalance:', balances['ZUSD']);
+  // async balancePortfolio() {
+  //   const { balances } = await this.getBalance();
+  //   console.log('USD Balance Before Rebalance:', balances['ZUSD']);
 
-    const { openPositions } = await this.getOpenPositions();
+  //   const { openPositions } = await this.getOpenPositions();
 
-    let longEthBtc, longBtcUsd, longEthUsd;
-    for (const key in openPositions) {
-      const pair = openPositions[key]['pair'];
-      const type = openPositions[key]['type'];
+  //   let longEthBtc, longBtcUsd, longEthUsd;
+  //   for (const key in openPositions) {
+  //     const pair = openPositions[key]['pair'];
+  //     const type = openPositions[key]['type'];
 
-      if (pair === 'XETHXXBT') {
-        longEthBtc = type === 'buy';
-      } else if (pair === 'XXBTZUSD') {
-        longBtcUsd = type === 'buy';
-      } else if (pair === 'XETHZUSD') {
-        longEthUsd = type === 'buy';
-      }
-    }
+  //     if (pair === 'XETHXXBT') {
+  //       longEthBtc = type === 'buy';
+  //     } else if (pair === 'XXBTZUSD') {
+  //       longBtcUsd = type === 'buy';
+  //     } else if (pair === 'XETHZUSD') {
+  //       longEthUsd = type === 'buy';
+  //     }
+  //   }
 
-    // if (longEthBtc && longBtcUsd) {
+  //   console.log(longEthBtc, longBtcUsd, longEthUsd);
 
-    // } else if () {
-
-    // }
-
-    console.log(longEthBtc, longBtcUsd, longEthUsd);
-
-    return balances;
-  }
+  //   return balances;
+  // }
 }
 
 const krakenApi = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_KEY);
