@@ -20,6 +20,8 @@ export default class KrakenOrderDetails {
   action: string;
   oppositeAction: string;
   close: boolean;
+  oldest: boolean;
+  oldestPair: boolean;
   nonLeverageOnly: boolean;
   minVolume: number;
   baseOfPair: string;
@@ -96,7 +98,9 @@ export default class KrakenOrderDetails {
     this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 6;
     this.action = body.strategy.action;
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
-    this.close = body.strategy.description.toLowerCase().includes('close') ? true : false;
+    this.close = body.strategy.description.toLowerCase().includes('close');
+    this.oldest = body.strategy.description.toLowerCase().includes('oldest');
+    this.oldestPair = this.oldest && body.strategy.description.toLowerCase().includes('pair');
     this.nonLeverageOnly = body.strategy.description.toLowerCase().includes('local');
     this.txId = body.strategy.txId;
     this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;

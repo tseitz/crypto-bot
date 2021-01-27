@@ -90,7 +90,9 @@ class KrakenService {
     // await this.cancelOpenOrdersForPair(order);
 
     let result;
-    if (order.noLeverage) {
+    if (order.oldest) {
+      result = await this.sellOldestOrder(order, order.oldestPair);
+    } else if (order.noLeverage) {
       result = await this.handleNonLeveragedOrder(order);
     } else if (order.bagIt) {
       result = await this.handleBags(order);
@@ -168,7 +170,7 @@ class KrakenService {
 
       if (order.marginFree < 170) {
         console.log('Margin Level too Low. Selling oldest order.');
-        await this.sellOldestOrder(order, openPositions);
+        await this.sellOldestOrder(order, false, openPositions);
         await sleep(2000);
       }
 
@@ -196,7 +198,7 @@ class KrakenService {
 
         if (addCount > order.addCount) {
           console.log('Selling Oldest Position First');
-          await this.sellOldestOrder(order, openPositions, true);
+          await this.sellOldestOrder(order, true, openPositions);
           await sleep(2000);
         }
 
@@ -312,7 +314,7 @@ class KrakenService {
               // validate: order.validate,
             });
           } else {
-            console.log('Order size is the same. No action needed');
+            console.log('Order size is the same. No action taken.');
           }
         }
       }
@@ -420,7 +422,7 @@ class KrakenService {
     });
     if (result.error.length) {
       console.log('Could not sell oldest. Selling oldest of pair. Please fix');
-      result = await this.sellOldestOrder(order, undefined, true);
+      result = await this.sellOldestOrder(order, true);
     }
     logOrderResult(`Settled Position`, result, position.pair);
 
@@ -429,8 +431,8 @@ class KrakenService {
 
   async sellOldestOrder(
     order: KrakenOrderDetails,
-    openPositions?: KrakenOpenPositions,
-    pairOnly?: boolean
+    pairOnly?: boolean,
+    openPositions?: KrakenOpenPositions
   ) {
     if (!openPositions) {
       const positionResult = await this.getOpenPositions();
@@ -446,9 +448,11 @@ class KrakenService {
       }
     }
 
+    let result;
     if (positionToClose) {
-      await this.settleTxId(positionToClose, order, true);
+      result = await this.settleTxId(positionToClose, order, true);
     }
+    return result;
   }
 
   // async balancePortfolio() {
