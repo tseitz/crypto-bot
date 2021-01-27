@@ -401,6 +401,7 @@ class KrakenService {
         bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
       } else {
         bidPrice = parseFloat(currentBid);
+        console.log(`Selling straight to bid. Current Bid: ${currentBid}, My Bid: ${bidPrice}`);
       }
       leverageAmount =
         position.type === 'buy'
