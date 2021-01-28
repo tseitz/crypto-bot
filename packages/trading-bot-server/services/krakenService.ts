@@ -90,7 +90,9 @@ class KrakenService {
     // await this.cancelOpenOrdersForPair(order);
 
     let result;
-    if (order.noLeverage) {
+    if (order.oldest) {
+      result = await this.sellOldestOrder(order, order.oldestPair);
+    } else if (order.noLeverage) {
       result = await this.handleNonLeveragedOrder(order);
     } else if (order.bagIt) {
       result = await this.handleBags(order);
@@ -168,7 +170,7 @@ class KrakenService {
 
       if (order.marginFree < 170) {
         console.log('Margin Level too Low. Selling oldest order.');
-        await this.sellOldestOrder(order, openPositions);
+        await this.sellOldestOrder(order, false, openPositions);
         await sleep(2000);
       }
 
@@ -196,7 +198,7 @@ class KrakenService {
 
         if (addCount > order.addCount) {
           console.log('Selling Oldest Position First');
-          await this.sellOldestOrder(order, openPositions, true);
+          await this.sellOldestOrder(order, true, openPositions);
           await sleep(2000);
         }
 
@@ -277,7 +279,11 @@ class KrakenService {
         if (!order.buyBags) {
           console.log(`Adding ${addCount}/${order.addCount}`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-          console.log(`Balance After: ${(order.balanceInDollar + order.addSize).toFixed(2)}`);
+          console.log(
+            `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
+              2
+            )}`
+          );
         } else {
           console.log('Buying Bags');
           console.log(
@@ -285,6 +291,7 @@ class KrakenService {
           );
         }
 
+        // sell some if add count too high or margin too low
         if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 125) {
           console.log('Selling Some First');
 
@@ -302,19 +309,19 @@ class KrakenService {
             });
             await sleep(2000);
             logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
-
-            result = await this.kraken.setAddOrder({
-              pair: order.krakenTicker,
-              type: order.action,
-              ordertype: 'limit',
-              price: order.bidPrice,
-              volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
-              // validate: order.validate,
-            });
           } else {
-            console.log('Order size is the same. No action needed');
+            console.log('Order size is the same. No action taken.');
           }
         }
+
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: order.action,
+          ordertype: 'limit',
+          price: order.bidPrice,
+          volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
+          // validate: order.validate,
+        });
       }
     }
 
@@ -401,7 +408,6 @@ class KrakenService {
         bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
       } else {
         bidPrice = parseFloat(currentBid);
-        console.log(`Selling straight to bid. Current Bid: ${currentBid}, My Bid: ${bidPrice}`);
       }
       leverageAmount =
         position.type === 'buy'
@@ -420,7 +426,7 @@ class KrakenService {
     });
     if (result.error.length) {
       console.log('Could not sell oldest. Selling oldest of pair. Please fix');
-      result = await this.sellOldestOrder(order, undefined, true);
+      result = await this.sellOldestOrder(order, true);
     }
     logOrderResult(`Settled Position`, result, position.pair);
 
@@ -429,8 +435,8 @@ class KrakenService {
 
   async sellOldestOrder(
     order: KrakenOrderDetails,
-    openPositions?: KrakenOpenPositions,
-    pairOnly?: boolean
+    pairOnly?: boolean,
+    openPositions?: KrakenOpenPositions
   ) {
     if (!openPositions) {
       const positionResult = await this.getOpenPositions();
@@ -446,41 +452,37 @@ class KrakenService {
       }
     }
 
+    let result;
     if (positionToClose) {
-      await this.settleTxId(positionToClose, order, true);
+      result = await this.settleTxId(positionToClose, order, true);
     }
+    return result;
   }
 
-  async balancePortfolio() {
-    const { balances } = await this.getBalance();
-    console.log('USD Balance Before Rebalance:', balances['ZUSD']);
+  // async balancePortfolio() {
+  //   const { balances } = await this.getBalance();
+  //   console.log('USD Balance Before Rebalance:', balances['ZUSD']);
 
-    const { openPositions } = await this.getOpenPositions();
+  //   const { openPositions } = await this.getOpenPositions();
 
-    let longEthBtc, longBtcUsd, longEthUsd;
-    for (const key in openPositions) {
-      const pair = openPositions[key]['pair'];
-      const type = openPositions[key]['type'];
+  //   let longEthBtc, longBtcUsd, longEthUsd;
+  //   for (const key in openPositions) {
+  //     const pair = openPositions[key]['pair'];
+  //     const type = openPositions[key]['type'];
 
-      if (pair === 'XETHXXBT') {
-        longEthBtc = type === 'buy';
-      } else if (pair === 'XXBTZUSD') {
-        longBtcUsd = type === 'buy';
-      } else if (pair === 'XETHZUSD') {
-        longEthUsd = type === 'buy';
-      }
-    }
+  //     if (pair === 'XETHXXBT') {
+  //       longEthBtc = type === 'buy';
+  //     } else if (pair === 'XXBTZUSD') {
+  //       longBtcUsd = type === 'buy';
+  //     } else if (pair === 'XETHZUSD') {
+  //       longEthUsd = type === 'buy';
+  //     }
+  //   }
 
-    // if (longEthBtc && longBtcUsd) {
+  //   console.log(longEthBtc, longBtcUsd, longEthUsd);
 
-    // } else if () {
-
-    // }
-
-    console.log(longEthBtc, longBtcUsd, longEthUsd);
-
-    return balances;
-  }
+  //   return balances;
+  // }
 }
 
 const krakenApi = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_KEY);

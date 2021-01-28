@@ -23,7 +23,7 @@ highestMacdCloseLong = input(defval=84, title="Highest MACD Close Long", minval=
 closeLongInShortZone = input(defval=75, title="Close Long In Short Zone RSI", minval=0, step=1)
 shortZoneRsi = input(defval=32, title="Buy Short Zone RSI", minval=0, step=1)
 macdLength = input(defval=65, title="MACD Bars", minval=0, step=5)
-maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
+// maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
 addOnLows = input(defval=true, title="Add On Lows?", type=input.bool)
 allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool)
 
@@ -238,8 +238,8 @@ if firstAction and longZone and long
     firstAction := false
 
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and longCount <= maxAdds and isWithinTimeBounds, comment="add")
+strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
 strategy.close("long", when=closeLong and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-strategy.order("short", long=false, when=addShort and shortCount <= maxAdds and isWithinTimeBounds, comment="add")
+strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
 strategy.close("short", when=closeShort and isWithinTimeBounds)

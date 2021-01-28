@@ -3,24 +3,24 @@
     "entrySize": 25,
     "addSize": 25,
     "maxAdds": 10,
-    "latestResult": 2182.86,
-    "totalTrades": 80,
-    "percentProfitable": 97.5,
-    "avgTrade": 27.29
+    "latestResult": 3185.17,
+    "totalTrades": 117,
+    "percentProfitable": 98.29,
+    "avgTrade": 27.22
   },
   "ADAUSDT": {
     "entrySize": 15,
     "addSize": 15,
     "maxAdds": 20,
-    "latestResult": 2835.25,
-    "totalTrades": 360,
-    "percentProfitable": 83.33,
-    "avgTrade": 7.88
+    "latestResult": 1256.68,
+    "totalTrades": 413,
+    "percentProfitable": 71.67,
+    "avgTrade": 3.04
   },
   "BALUSDT": {
     "entrySize": 15,
-    "addSize": 12,
-    "maxAdds": 12,
+    "addSize": 15,
+    "maxAdds": 10,
     "latestResult": 2304.78,
     "totalTrades": 163,
     "percentProfitable": 82.82,
@@ -28,21 +28,21 @@
   },
   "BTCUSDT": {
     "entrySize": 15,
-    "addSize": 12,
-    "maxAdds": 25,
-    "latestResult": 860.48,
-    "totalTrades": 299,
-    "percentProfitable": 74.58,
-    "avgTrade": 2.88
+    "addSize": 13,
+    "maxAdds": 22,
+    "latestResult": 502.61,
+    "totalTrades": 381,
+    "percentProfitable": 64.83,
+    "avgTrade": 1.32
   },
   "CRVUSDT": {
     "entrySize": 15,
     "addSize": 15,
     "maxAdds": 16,
-    "latestResult": 3925.52,
-    "totalTrades": 297,
-    "percentProfitable": 90.57,
-    "avgTrade": 13.22
+    "latestResult": 3316.71,
+    "totalTrades": 366,
+    "percentProfitable": 86.61,
+    "avgTrade": 9.06
   },
   "DOTUSDT": {
     "entrySize": 20,
@@ -101,7 +101,7 @@
   "UNIWETH": {
     "entrySize": 25,
     "addSize": 25,
-    "maxAdds": 10,
+    "maxAdds": 11,
     "latestResult": 3153.31,
     "totalTrades": 223,
     "percentProfitable": 98.64,
@@ -120,15 +120,15 @@
     "entrySize": 15,
     "addSize": 15,
     "maxAdds": 20,
-    "latestResult": 2694.01,
-    "totalTrades": 348,
-    "percentProfitable": 87.93,
-    "avgTrade": 7.74
+    "latestResult": 1730.71,
+    "totalTrades": 396,
+    "percentProfitable": 64.9,
+    "avgTrade": 4.37
   },
   "YFIUSDT": {
     "entrySize": 15,
     "addSize": 15,
-    "maxAdds": 10,
+    "maxAdds": 9,
     "latestResult": 1105.86,
     "totalTrades": 89,
     "percentProfitable": 95.51,
