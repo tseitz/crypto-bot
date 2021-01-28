@@ -2,7 +2,7 @@
   "AAVEWETH": {
     "entrySize": 25,
     "addSize": 25,
-    "maxAdds": 12,
+    "maxAdds": 10,
     "latestResult": 2182.86,
     "totalTrades": 80,
     "percentProfitable": 97.5,
@@ -20,7 +20,7 @@
   "BALUSDT": {
     "entrySize": 15,
     "addSize": 12,
-    "maxAdds": 15,
+    "maxAdds": 12,
     "latestResult": 2304.78,
     "totalTrades": 163,
     "percentProfitable": 82.82,
@@ -38,7 +38,7 @@
   "CRVUSDT": {
     "entrySize": 15,
     "addSize": 15,
-    "maxAdds": 18,
+    "maxAdds": 16,
     "latestResult": 3925.52,
     "totalTrades": 297,
     "percentProfitable": 90.57,
@@ -101,7 +101,7 @@
   "UNIWETH": {
     "entrySize": 25,
     "addSize": 25,
-    "maxAdds": 12,
+    "maxAdds": 10,
     "latestResult": 3153.31,
     "totalTrades": 223,
     "percentProfitable": 98.64,
