@@ -2,7 +2,7 @@
   "AAVEWETH": {
     "entrySize": 25,
     "addSize": 25,
-    "maxAdds": 13,
+    "maxAdds": 10,
     "latestResult": 3185.17,
     "totalTrades": 117,
     "percentProfitable": 98.29,
@@ -38,7 +38,7 @@
   "CRVUSDT": {
     "entrySize": 15,
     "addSize": 15,
-    "maxAdds": 18,
+    "maxAdds": 16,
     "latestResult": 3316.71,
     "totalTrades": 366,
     "percentProfitable": 86.61,
@@ -101,7 +101,7 @@
   "UNIWETH": {
     "entrySize": 25,
     "addSize": 25,
-    "maxAdds": 15,
+    "maxAdds": 11,
     "latestResult": 3153.31,
     "totalTrades": 223,
     "percentProfitable": 98.64,
