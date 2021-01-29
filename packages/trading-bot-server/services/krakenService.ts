@@ -13,7 +13,7 @@ import {
   KrakenOpenPositions,
   KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
-import { sleep, superParseFloat } from '../scripts/common';
+import { superParseFloat } from '../scripts/common';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -171,7 +171,6 @@ class KrakenService {
       if (order.marginFree < 170) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, false, openPositions);
-        await sleep(2000);
       }
 
       if (add) {
@@ -199,7 +198,6 @@ class KrakenService {
         if (addCount > order.addCount) {
           console.log('Selling Oldest Position First');
           await this.sellOldestOrder(order, true, openPositions);
-          await sleep(2000);
         }
 
         result = await this.kraken.setAddOrder({
@@ -307,7 +305,6 @@ class KrakenService {
               volume: order.addVolume,
               // validate: order.validate,
             });
-            await sleep(2000);
             logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
           } else {
             console.log('Order size is the same. No action taken.');
