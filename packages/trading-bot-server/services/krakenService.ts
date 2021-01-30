@@ -183,7 +183,7 @@ class KrakenService {
           (order.positionSize || order.addSize) *
           (1 + addCount * order.addBoost)
         ).toFixed(2);
-        console.log(`Adding ${addCount}/${order.addCount}`);
+        console.log(`Adding ${addCount}/${order.addCount} @ ${order.addBoost * 100}%`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(
           `Margin After: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
@@ -275,7 +275,7 @@ class KrakenService {
         ).toFixed(2);
 
         if (!order.buyBags) {
-          console.log(`Adding ${addCount}/${order.addCount}`);
+          console.log(`Adding ${addCount}/${order.addCount} @ ${order.addBoost * 100}%`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           console.log(
             `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
