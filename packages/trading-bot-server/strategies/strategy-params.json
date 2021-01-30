@@ -108,9 +108,9 @@
     "avgTrade": 14.27
   },
   "XLMUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
-    "maxAdds": 25,
+    "entrySize": 25,
+    "addSize": 25,
+    "maxAdds": 15,
     "latestResult": 4118.50,
     "totalTrades": 336,
     "percentProfitable": 73.21,
