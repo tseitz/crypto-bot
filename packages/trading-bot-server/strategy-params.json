@@ -1,7 +1,7 @@
 {
   "AAVEWETH": {
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 30,
     "maxAdds": 10,
     "latestResult": 3185.17,
     "totalTrades": 117,
@@ -19,7 +19,7 @@
   },
   "BALUSDT": {
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 27,
     "maxAdds": 6,
     "latestResult": 2304.78,
     "totalTrades": 163,
@@ -37,7 +37,7 @@
   },
   "CRVUSDT": {
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 30,
     "maxAdds": 10,
     "latestResult": 3316.71,
     "totalTrades": 366,
@@ -81,8 +81,8 @@
     "avgTrade": 16.31
   },
   "SNXUSDT": {
-    "entrySize": 16,
-    "addSize": 20,
+    "entrySize": 18,
+    "addSize": 22,
     "maxAdds": 16,
     "latestResult": 3949.46,
     "totalTrades": 185,
@@ -91,7 +91,7 @@
   },
   "UNIWETH": {
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 30,
     "maxAdds": 11,
     "latestResult": 3163.31,
     "totalTrades": 223,
