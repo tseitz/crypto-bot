@@ -8,7 +8,7 @@ import {
 } from './KrakenResults';
 import { StrategyParams, StrategyParamsJson } from '../StrategyParams';
 import { superParseFloat } from '../../scripts/common';
-const strategyParams: StrategyParamsJson = require('../../strategies/strategy-params');
+const strategyParams: StrategyParamsJson = require('../../strategy-params');
 
 type AssetClassTicker = 'XBTUSDT' | 'ETHUSDT';
 
