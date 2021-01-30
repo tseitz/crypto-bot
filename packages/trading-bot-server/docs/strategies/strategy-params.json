@@ -100,8 +100,8 @@
   },
   "XLMUSDT": {
     "entrySize": 15,
-    "addSize": 15,
-    "maxAdds": 22,
+    "addSize": 20,
+    "maxAdds": 17,
     "latestResult": 985.58,
     "totalTrades": 267,
     "percentProfitable": 69.29,
