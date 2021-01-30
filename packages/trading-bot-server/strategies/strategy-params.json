@@ -62,15 +62,6 @@
     "percentProfitable": 75.81,
     "avgTrade": 2.20
   },
-  "KSMUSDT": {
-    "entrySize": 25,
-    "addSize": 15,
-    "maxAdds": 10,
-    "latestResult": 653.57,
-    "totalTrades": 138,
-    "percentProfitable": 91.3,
-    "avgTrade": 4.74
-  },
   "LINKUSDT": {
     "entrySize": 20,
     "addSize": 16,
