@@ -18,9 +18,9 @@
     "avgTrade": 3.04
   },
   "BALUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
-    "maxAdds": 10,
+    "entrySize": 25,
+    "addSize": 25,
+    "maxAdds": 6,
     "latestResult": 2304.78,
     "totalTrades": 163,
     "percentProfitable": 82.82,
@@ -36,9 +36,9 @@
     "avgTrade": 1.32
   },
   "CRVUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
-    "maxAdds": 16,
+    "entrySize": 25,
+    "addSize": 25,
+    "maxAdds": 10,
     "latestResult": 3316.71,
     "totalTrades": 366,
     "percentProfitable": 86.61,
@@ -108,13 +108,13 @@
     "avgTrade": 14.27
   },
   "XLMUSDT": {
-    "entrySize": 20,
-    "addSize": 20,
-    "maxAdds": 20,
-    "latestResult": 4118.50,
-    "totalTrades": 336,
-    "percentProfitable": 73.21,
-    "avgTrade": 12.26
+    "entrySize": 15,
+    "addSize": 15,
+    "maxAdds": 22,
+    "latestResult": 985.58,
+    "totalTrades": 267,
+    "percentProfitable": 69.29,
+    "avgTrade": 3.69
   },
   "XTZUSD": {
     "entrySize": 15,
@@ -126,9 +126,9 @@
     "avgTrade": 4.37
   },
   "YFIUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
-    "maxAdds": 9,
+    "entrySize": 25,
+    "addSize": 25,
+    "maxAdds": 6,
     "latestResult": 1105.86,
     "totalTrades": 89,
     "percentProfitable": 95.51,
