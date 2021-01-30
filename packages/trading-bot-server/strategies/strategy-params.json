@@ -57,10 +57,10 @@
     "entrySize": 15,
     "addSize": 15,
     "maxAdds": 30,
-    "latestResult": 1709.57,
-    "totalTrades": 337,
-    "percentProfitable": 85.46,
-    "avgTrade": 5.07
+    "latestResult": 953.30,
+    "totalTrades": 434,
+    "percentProfitable": 75.81,
+    "avgTrade": 2.20
   },
   "KSMUSDT": {
     "entrySize": 25,
@@ -108,9 +108,9 @@
     "avgTrade": 14.27
   },
   "XLMUSDT": {
-    "entrySize": 25,
-    "addSize": 25,
-    "maxAdds": 15,
+    "entrySize": 20,
+    "addSize": 20,
+    "maxAdds": 20,
     "latestResult": 4118.50,
     "totalTrades": 336,
     "percentProfitable": 73.21,
