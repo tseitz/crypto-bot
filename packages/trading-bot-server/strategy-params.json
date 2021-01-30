@@ -9,8 +9,8 @@
     "avgTrade": 27.22
   },
   "ADAUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 16,
+    "addSize": 16,
     "maxAdds": 20,
     "latestResult": 1256.68,
     "totalTrades": 413,
@@ -27,8 +27,8 @@
     "avgTrade": 14.14
   },
   "BTCUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 16,
+    "addSize": 16,
     "maxAdds": 22,
     "latestResult": 502.61,
     "totalTrades": 381,
@@ -54,8 +54,8 @@
     "avgTrade": 9.32
   },
   "ETHUSDT": {
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 16,
+    "addSize": 16,
     "maxAdds": 30,
     "latestResult": 953.30,
     "totalTrades": 434,
@@ -78,12 +78,12 @@
     "latestResult": 2878.96,
     "totalTrades": 188,
     "percentProfitable": 96.81,
-    "avgTrade": 15.31
+    "avgTrade": 16.31
   },
   "SNXUSDT": {
     "entrySize": 16,
     "addSize": 20,
-    "maxAdds": 15,
+    "maxAdds": 16,
     "latestResult": 3949.46,
     "totalTrades": 185,
     "percentProfitable": 87.57,
@@ -93,13 +93,13 @@
     "entrySize": 25,
     "addSize": 25,
     "maxAdds": 11,
-    "latestResult": 3153.31,
+    "latestResult": 3163.31,
     "totalTrades": 223,
     "percentProfitable": 98.64,
     "avgTrade": 14.27
   },
   "XLMUSDT": {
-    "entrySize": 15,
+    "entrySize": 16,
     "addSize": 20,
     "maxAdds": 17,
     "latestResult": 985.58,
@@ -108,8 +108,8 @@
     "avgTrade": 3.69
   },
   "XTZUSD": {
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 16,
+    "addSize": 16,
     "maxAdds": 20,
     "latestResult": 1730.71,
     "totalTrades": 396,
