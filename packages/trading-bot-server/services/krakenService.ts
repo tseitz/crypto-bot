@@ -14,6 +14,7 @@ import {
   KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
 import { superParseFloat } from '../scripts/common';
+import { Pair } from '@uniswap/sdk';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -384,10 +385,15 @@ class KrakenService {
     return result;
   }
 
-  async settleTxId(position: KrakenOpenPosition, order: KrakenOrderDetails, immediate?: boolean) {
+  async settleTxId(
+    position: KrakenOpenPosition,
+    order: KrakenOrderDetails,
+    immediate?: boolean,
+    additionalVolume = 0
+  ) {
     const closeAction = position.type === 'sell' ? 'buy' : 'sell';
     // const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
-    const volumeToClose = parseFloat(position.vol);
+    const volumeToClose = parseFloat(position.vol) + additionalVolume;
     let bidPrice = order.bidPrice;
     let leverageAmount = order.leverageAmount;
 
@@ -422,12 +428,12 @@ class KrakenService {
       leverage: leverageAmount,
       // validate: order.validate,
     });
+
     if (result.error.length) {
-      console.log('Could not sell oldest. Selling oldest of pair. Please fix');
-      // const positions = await getOrdersForPair(position);
-      if (position.pair !== order.krakenTicker) {
-        result = await this.sellOldestOrder(order, true);
-      }
+      console.log('Could not sell oldest. Combining');
+      const positions = await this.getOrdersForPairByTimeAsc(position);
+
+      result = await this.settleTxId(positions[1], order, true, volumeToClose);
     }
     logOrderResult(`Settled Position`, result, position.pair);
 
@@ -460,31 +466,37 @@ class KrakenService {
     return result;
   }
 
-  // async getOrdersForPair(
-  //   pair: KrakenOpenPosition | KrakenOrderDetails,
-  //   openPositions?: KrakenOpenPositions
-  // ) {
-  //   if (!openPositions) {
-  //     const positionResult = await this.getOpenPositions();
-  //     openPositions = positionResult.openPositions;
-  //   }
+  async getOrdersForPairByTimeAsc(
+    pair: KrakenOpenPosition | KrakenOrderDetails,
+    openPositions?: KrakenOpenPositions
+  ): Promise<KrakenOpenPosition[]> {
+    if (!openPositions) {
+      const positionResult = await this.getOpenPositions();
+      openPositions = positionResult.openPositions;
+    }
 
-  //   const action = pair.type ?? pair.action;
+    const action = this.isOpenPosition(pair) ? pair.type : pair.action;
+    const pairTicker = this.isOpenPosition(pair) ? pair.pair : pair.krakenTicker;
 
-  //   let pairPositions = [];
-  //   for (const key in openPositions) {
-  //     const position = openPositions[key];
-  //     if (order.action === position.type && order.krakenTicker === position.pair) {
-  //       pairPositions.push(position);
-  //       // positionToClose =
-  //       //   positionToClose && position.time > positionToClose.time ? positionToClose : position;
-  //     }
-  //   }
+    let pairPositions = [];
+    for (const key in openPositions) {
+      const position = openPositions[key];
+      if (action === position.type && pairTicker === position.pair) {
+        pairPositions.push(position);
+      }
+    }
 
-  //   pairPositions.sort((a, b) => a.time - b.time);
-  //   console.log(pairPositions);
-  //   return pairPositions;
-  // }
+    return pairPositions.sort((a, b) => a.time - b.time);
+  }
+
+  isOpenPosition(
+    whatIsIt: KrakenOpenPosition | KrakenOrderDetails
+  ): whatIsIt is KrakenOpenPosition {
+    return (
+      (<KrakenOpenPosition>whatIsIt).type !== undefined &&
+      (<KrakenOpenPosition>whatIsIt).pair !== undefined
+    );
+  }
 
   // async balancePortfolio() {
   //   const { balances } = await this.getBalance();
