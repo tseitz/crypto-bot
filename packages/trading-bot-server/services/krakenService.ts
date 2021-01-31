@@ -276,7 +276,9 @@ class KrakenService {
         ).toFixed(2);
 
         if (!order.buyBags) {
-          console.log(`Adding ${addCount}/${order.addCount} @ ${order.addBoost * 100}%`);
+          console.log(
+            `Adding ${addCount}/${order.addCount} @ ${1 + addCount * order.addBoost * 100}%`
+          );
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           console.log(
             `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
