@@ -348,16 +348,16 @@ class KrakenService {
       logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
     }
 
-    if (order.buyBags) {
-      // buy 40% worth of my usd available
-      // currently morphing original order. Sorry immutability
+    // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
+    if (order.bagAmount && order.bagAmount > 1) {
+      totalVolumeToTradeInDollar = superParseFloat(order.bagAmount, order.volumeDecimals);
+    } else if (order.buyBags) {
       const bagAmount = order.bagAmount ? order.bagAmount : 0.4;
       totalVolumeToTradeInDollar = superParseFloat(
         order.balanceOfQuote * bagAmount,
         order.volumeDecimals
       );
     } else {
-      // sell 80% worth of currency available
       const bagAmount = order.bagAmount ? order.bagAmount : 0.75;
       totalVolumeToTradeInDollar = superParseFloat(
         order.balanceOfBase * order.usdValueOfBase * bagAmount,
@@ -367,18 +367,26 @@ class KrakenService {
 
     let volumeTradedInDollar = 0;
     let i = 0;
+    let volumeLeft = totalVolumeToTradeInDollar;
     while (volumeTradedInDollar < totalVolumeToTradeInDollar) {
-      const volumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
+      if (i > 8) {
+        console.log(`Something went wrong buying bags, canceling`);
+        break;
+      }
+
+      // if margin too low for volume, we'll sell 80% at a time
       order.tradeVolume =
         order.marginFree < volumeLeft
           ? superParseFloat((order.marginFree * 0.8) / order.usdValueOfBase, order.volumeDecimals)
           : volumeLeft / order.usdValueOfBase;
-      volumeTradedInDollar += order.tradeVolume * order.usdValueOfBase;
-      if (order.tradeVolume < order.minVolume) break;
-      if (i > 8) {
-        console.log(`Something went wrong buying bags, canceling`);
-        volumeTradedInDollar = totalVolumeToTradeInDollar;
+
+      if (order.tradeVolume < order.minVolume) {
+        console.log(`Trade volume too low. Ignoring the last bit. ${volumeTradedInDollar} Traded.`);
+        break;
       }
+
+      volumeTradedInDollar += order.tradeVolume * order.usdValueOfBase;
+      volumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
       console.log(
         `Traded ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${volumeLeft}`
       );
