@@ -93,10 +93,10 @@ class KrakenService {
     let result;
     if (order.oldest) {
       result = await this.sellOldestOrder(order, order.oldestPair);
-    } else if (order.noLeverage) {
-      result = await this.handleNonLeveragedOrder(order);
     } else if (order.bagIt) {
       result = await this.handleBags(order);
+    } else if (order.noLeverage) {
+      result = await this.handleNonLeveragedOrder(order);
     } else {
       result = await this.handleLeveragedOrder(order);
     }
