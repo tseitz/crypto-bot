@@ -9,8 +9,8 @@
     "avgTrade": 27.22
   },
   "ADAUSDT": {
-    "entrySize": 17,
-    "addSize": 17,
+    "entrySize": 18,
+    "addSize": 18,
     "maxAdds": 20,
     "latestResult": 1256.68,
     "totalTrades": 413,
@@ -27,8 +27,8 @@
     "avgTrade": 10.51
   },
   "BTCUSDT": {
-    "entrySize": 17,
-    "addSize": 17,
+    "entrySize": 16,
+    "addSize": 16,
     "maxAdds": 22,
     "latestResult": 502.61,
     "totalTrades": 381,
@@ -54,8 +54,8 @@
     "avgTrade": 9.32
   },
   "ETHUSDT": {
-    "entrySize": 17,
-    "addSize": 17,
+    "entrySize": 16,
+    "addSize": 16,
     "maxAdds": 30,
     "latestResult": 953.30,
     "totalTrades": 434,
@@ -100,7 +100,7 @@
   },
   "XLMUSDT": {
     "entrySize": 17,
-    "addSize": 20,
+    "addSize": 22,
     "maxAdds": 17,
     "latestResult": 985.58,
     "totalTrades": 267,
@@ -108,8 +108,8 @@
     "avgTrade": 3.69
   },
   "XTZUSD": {
-    "entrySize": 17,
-    "addSize": 17,
+    "entrySize": 18,
+    "addSize": 18,
     "maxAdds": 20,
     "latestResult": 1730.71,
     "totalTrades": 396,
