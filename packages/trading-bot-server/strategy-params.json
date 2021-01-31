@@ -9,8 +9,8 @@
     "avgTrade": 27.22
   },
   "ADAUSDT": {
-    "entrySize": 18,
-    "addSize": 18,
+    "entrySize": 15,
+    "addSize": 17,
     "maxAdds": 20,
     "latestResult": 1256.68,
     "totalTrades": 413,
@@ -56,7 +56,7 @@
   "ETHUSDT": {
     "entrySize": 20,
     "addSize": 20,
-    "maxAdds": 24,
+    "maxAdds": 20,
     "latestResult": 953.30,
     "totalTrades": 434,
     "percentProfitable": 75.81,
@@ -99,9 +99,9 @@
     "avgTrade": 14.27
   },
   "XLMUSDT": {
-    "entrySize": 17,
+    "entrySize": 15,
     "addSize": 22,
-    "maxAdds": 17,
+    "maxAdds": 15,
     "latestResult": 985.58,
     "totalTrades": 267,
     "percentProfitable": 69.29,
