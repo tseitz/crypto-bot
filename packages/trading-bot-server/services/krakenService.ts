@@ -386,7 +386,8 @@ class KrakenService {
 
   async settleTxId(position: KrakenOpenPosition, order: KrakenOrderDetails, immediate?: boolean) {
     const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-    const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
+    // const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
+    const volumeToClose = parseFloat(position.vol);
     let bidPrice = order.bidPrice;
     let leverageAmount = order.leverageAmount;
 
@@ -423,7 +424,9 @@ class KrakenService {
     });
     if (result.error.length) {
       console.log('Could not sell oldest. Selling oldest of pair. Please fix');
-      result = await this.sellOldestOrder(order, true);
+      if (position.pair !== order.krakenTicker) {
+        result = await this.sellOldestOrder(order, true);
+      }
     }
     logOrderResult(`Settled Position`, result, position.pair);
 
