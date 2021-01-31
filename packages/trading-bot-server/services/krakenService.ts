@@ -291,7 +291,7 @@ class KrakenService {
         }
 
         // sell some if add count too high or margin too low
-        if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 125) {
+        if (!order.buyBags && (addCount > order.addCount || order.marginFree < 125)) {
           console.log(`Selling Some First`);
 
           // cancel stagnant sell orders first. This prevents invalid volume error
