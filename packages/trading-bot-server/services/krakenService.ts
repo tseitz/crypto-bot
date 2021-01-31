@@ -332,7 +332,7 @@ class KrakenService {
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    let totalVolumeToTrade, result;
+    let totalVolumeToTradeInDollar, result;
 
     // local meaning don't close leverage orders
     if (!order.nonLeverageOnly) {
@@ -344,11 +344,14 @@ class KrakenService {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
       const bagAmount = order.bagAmount ? order.bagAmount : 0.4;
-      totalVolumeToTrade = superParseFloat(order.balanceOfQuote * bagAmount, order.volumeDecimals);
+      totalVolumeToTradeInDollar = superParseFloat(
+        order.balanceOfQuote * bagAmount,
+        order.volumeDecimals
+      );
     } else {
       // sell 80% worth of currency available
       const bagAmount = order.bagAmount ? order.bagAmount : 0.75;
-      totalVolumeToTrade = superParseFloat(
+      totalVolumeToTradeInDollar = superParseFloat(
         order.balanceOfBase * order.usdValueOfBase * bagAmount,
         order.volumeDecimals
       );
@@ -356,8 +359,8 @@ class KrakenService {
 
     let volumeTradedInDollar = 0;
     let i = 0;
-    while (volumeTradedInDollar < totalVolumeToTrade) {
-      const volumeLeft = totalVolumeToTrade - volumeTradedInDollar;
+    while (volumeTradedInDollar < totalVolumeToTradeInDollar) {
+      const volumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
       order.tradeVolume =
         order.marginFree < volumeLeft
           ? superParseFloat((order.marginFree * 0.8) / order.usdValueOfBase, order.volumeDecimals)
@@ -366,8 +369,11 @@ class KrakenService {
       if (order.tradeVolume < order.minVolume) break;
       if (i > 8) {
         console.log(`Something went wrong buying bags, canceling`);
-        volumeTradedInDollar = totalVolumeToTrade;
+        volumeTradedInDollar = totalVolumeToTradeInDollar;
       }
+      console.log(
+        `Sold ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${volumeLeft}`
+      );
 
       // no way of knowing when the leveraged order is filled, so we'll wait
       setTimeout(async () => {
