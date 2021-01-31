@@ -1,8 +1,8 @@
 {
   "AAVEWETH": {
     "entrySize": 25,
-    "addSize": 30,
-    "maxAdds": 10,
+    "addSize": 32,
+    "maxAdds": 9,
     "latestResult": 3185.17,
     "totalTrades": 117,
     "percentProfitable": 98.29,
@@ -19,7 +19,7 @@
   },
   "BALUSDT": {
     "entrySize": 25,
-    "addSize": 27,
+    "addSize": 28,
     "maxAdds": 6,
     "latestResult": 2304.78,
     "totalTrades": 163,
@@ -37,8 +37,8 @@
   },
   "CRVUSDT": {
     "entrySize": 25,
-    "addSize": 30,
-    "maxAdds": 10,
+    "addSize": 32,
+    "maxAdds": 9,
     "latestResult": 3316.71,
     "totalTrades": 366,
     "percentProfitable": 86.61,
@@ -82,8 +82,8 @@
   },
   "SNXUSDT": {
     "entrySize": 18,
-    "addSize": 22,
-    "maxAdds": 16,
+    "addSize": 25,
+    "maxAdds": 15,
     "latestResult": 3949.46,
     "totalTrades": 185,
     "percentProfitable": 87.57,
@@ -91,8 +91,8 @@
   },
   "UNIWETH": {
     "entrySize": 25,
-    "addSize": 30,
-    "maxAdds": 11,
+    "addSize": 35,
+    "maxAdds": 10,
     "latestResult": 3163.31,
     "totalTrades": 223,
     "percentProfitable": 98.64,
@@ -118,7 +118,7 @@
   },
   "YFIUSDT": {
     "entrySize": 25,
-    "addSize": 25,
+    "addSize": 27,
     "maxAdds": 6,
     "latestResult": 1105.86,
     "totalTrades": 89,
