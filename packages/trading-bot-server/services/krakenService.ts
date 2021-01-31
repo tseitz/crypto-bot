@@ -292,7 +292,7 @@ class KrakenService {
 
         // sell some if add count too high or margin too low
         if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 125) {
-          console.log('Selling Some First');
+          console.log(`Selling Some First ${order.addVolume}`);
 
           const newOrder = { ...order };
           newOrder.action = 'sell';
@@ -303,7 +303,7 @@ class KrakenService {
               type: newOrder.action,
               ordertype: 'limit',
               price: newOrder.bidPrice,
-              volume: order.addVolume,
+              volume: newOrder.addVolume,
               // validate: order.validate,
             });
             logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
