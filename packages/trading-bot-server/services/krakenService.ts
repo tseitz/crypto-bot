@@ -13,7 +13,7 @@ import {
   KrakenOpenPositions,
   KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
-import { superParseFloat } from '../scripts/common';
+import { sleep, superParseFloat } from '../scripts/common';
 import { Pair } from '@uniswap/sdk';
 
 class KrakenService {
@@ -307,6 +307,7 @@ class KrakenService {
               // validate: order.validate,
             });
             logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
+            await sleep(4000);
           } else {
             console.log('Order size is the same. No action taken.');
           }
