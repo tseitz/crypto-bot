@@ -372,7 +372,7 @@ class KrakenService {
         volumeTradedInDollar = totalVolumeToTradeInDollar;
       }
       console.log(
-        `Sold ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${volumeLeft}`
+        `Traded ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${volumeLeft}`
       );
 
       // no way of knowing when the leveraged order is filled, so we'll wait
