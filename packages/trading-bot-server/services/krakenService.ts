@@ -296,7 +296,7 @@ class KrakenService {
 
           const newOrder = { ...order };
           newOrder.action = 'sell';
-          newOrder.bidPrice = order.currentBid; // just give it to bid for now // order.getBid(); get new bid for sell
+          newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now
           if (order.addVolume !== parseFloat(incrementalAddVolume)) {
             result = await this.kraken.setAddOrder({
               pair: newOrder.krakenTicker,
