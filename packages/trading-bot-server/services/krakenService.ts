@@ -292,7 +292,10 @@ class KrakenService {
 
         // sell some if add count too high or margin too low
         if ((!order.buyBags && addCount > order.addCount) || order.marginFree < 125) {
-          console.log(`Selling Some First ${order.addVolume}`);
+          console.log(`Selling Some First`);
+
+          // cancel stagnant sell orders first. This prevents invalid volume error
+          await this.cancelOpenOrdersForPair(order);
 
           const newOrder = { ...order };
           newOrder.action = 'sell';
@@ -306,7 +309,11 @@ class KrakenService {
               volume: newOrder.addVolume,
               // validate: order.validate,
             });
-            logOrderResult(`Sell Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
+            logOrderResult(
+              `Sell Non Leveraged Order`,
+              result,
+              newOrder.krakenizedTradingViewTicker
+            );
             await sleep(4000);
           } else {
             console.log('Order size is the same. No action taken.');
