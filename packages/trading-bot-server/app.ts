@@ -29,7 +29,6 @@ const queue: OrderQueue[] = [];
 let locked = false;
 
 app.post('/webhook/kraken', jsonParser, async (req, res) => {
-  // console.log('Request Received, Current Queue: ', queue.length);
   // force body to be JSON
   const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {

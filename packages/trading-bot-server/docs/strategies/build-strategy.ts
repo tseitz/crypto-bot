@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-const config: any = require('./strategy-params.json'); // casting as any for now
+const config: any = require('../../strategy-params'); // casting as any for now
 import { ConfigPair } from './types';
 
 const myArgs = process.argv.slice(2);

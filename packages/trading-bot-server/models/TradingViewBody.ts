@@ -18,3 +18,15 @@ export interface TradingViewStrategyBody {
   positionSize?: number;
   validate?: boolean;
 }
+
+// TODO: remove optional params. extend instead
+// interface CloseTransactionIdBody extends TradingViewStrategyBody {
+//   description: 'Close';
+//   txId: string;
+// }
+
+// interface BagItBody extends TradingViewStrategyBody {
+//   buyBags: number;
+//   sellBags: number;
+//   bagSize: number;
+// }
