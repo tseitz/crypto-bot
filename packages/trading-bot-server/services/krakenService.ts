@@ -424,6 +424,7 @@ class KrakenService {
     });
     if (result.error.length) {
       console.log('Could not sell oldest. Selling oldest of pair. Please fix');
+      // const positions = await getOrdersForPair(position);
       if (position.pair !== order.krakenTicker) {
         result = await this.sellOldestOrder(order, true);
       }
@@ -458,6 +459,32 @@ class KrakenService {
     }
     return result;
   }
+
+  // async getOrdersForPair(
+  //   pair: KrakenOpenPosition | KrakenOrderDetails,
+  //   openPositions?: KrakenOpenPositions
+  // ) {
+  //   if (!openPositions) {
+  //     const positionResult = await this.getOpenPositions();
+  //     openPositions = positionResult.openPositions;
+  //   }
+
+  //   const action = pair.type ?? pair.action;
+
+  //   let pairPositions = [];
+  //   for (const key in openPositions) {
+  //     const position = openPositions[key];
+  //     if (order.action === position.type && order.krakenTicker === position.pair) {
+  //       pairPositions.push(position);
+  //       // positionToClose =
+  //       //   positionToClose && position.time > positionToClose.time ? positionToClose : position;
+  //     }
+  //   }
+
+  //   pairPositions.sort((a, b) => a.time - b.time);
+  //   console.log(pairPositions);
+  //   return pairPositions;
+  // }
 
   // async balancePortfolio() {
   //   const { balances } = await this.getBalance();
