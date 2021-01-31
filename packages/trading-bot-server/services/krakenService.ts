@@ -332,7 +332,7 @@ class KrakenService {
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    let tradeVolumeInDollar, result;
+    let totalVolumeToTrade, result;
 
     // local meaning don't close leverage orders
     if (!order.nonLeverageOnly) {
@@ -344,11 +344,11 @@ class KrakenService {
       // buy 40% worth of my usd available
       // currently morphing original order. Sorry immutability
       const bagAmount = order.bagAmount ? order.bagAmount : 0.4;
-      tradeVolumeInDollar = superParseFloat(order.balanceOfQuote * bagAmount, order.volumeDecimals);
+      totalVolumeToTrade = superParseFloat(order.balanceOfQuote * bagAmount, order.volumeDecimals);
     } else {
       // sell 80% worth of currency available
       const bagAmount = order.bagAmount ? order.bagAmount : 0.75;
-      tradeVolumeInDollar = superParseFloat(
+      totalVolumeToTrade = superParseFloat(
         order.balanceOfBase * order.usdValueOfBase * bagAmount,
         order.volumeDecimals
       );
@@ -356,16 +356,17 @@ class KrakenService {
 
     let volumeTradedInDollar = 0;
     let i = 0;
-    while (volumeTradedInDollar < tradeVolumeInDollar) {
+    while (volumeTradedInDollar < totalVolumeToTrade) {
+      const volumeLeft = totalVolumeToTrade - volumeTradedInDollar;
       order.tradeVolume =
-        order.marginFree < tradeVolumeInDollar
+        order.marginFree < volumeLeft
           ? superParseFloat((order.marginFree * 0.8) / order.usdValueOfBase, order.volumeDecimals)
-          : tradeVolumeInDollar / order.usdValueOfBase;
+          : volumeLeft / order.usdValueOfBase;
       volumeTradedInDollar += order.tradeVolume * order.usdValueOfBase;
       if (order.tradeVolume < order.minVolume) break;
       if (i > 8) {
         console.log(`Something went wrong buying bags, canceling`);
-        volumeTradedInDollar = tradeVolumeInDollar;
+        volumeTradedInDollar = totalVolumeToTrade;
       }
 
       // no way of knowing when the leveraged order is filled, so we'll wait
@@ -379,7 +380,7 @@ class KrakenService {
         // order
         result = await this.handleNonLeveragedOrder(order);
         console.log('-'.repeat(20));
-      }, 20000 * i);
+      }, 18000 * i);
       i++;
     }
     return result;
