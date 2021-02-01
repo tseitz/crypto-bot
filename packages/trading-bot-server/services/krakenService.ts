@@ -378,7 +378,7 @@ class KrakenService {
       order.tradeVolume =
         order.marginFree < volumeLeft
           ? superParseFloat((order.marginFree * 0.8) / order.usdValueOfBase, order.volumeDecimals)
-          : volumeLeft / order.usdValueOfBase;
+          : volumeLeft * order.usdValueOfBase;
 
       if (order.tradeVolume < order.minVolume) {
         console.log(`Trade volume too low. Ignoring the last bit. ${volumeTradedInDollar} Traded.`);
