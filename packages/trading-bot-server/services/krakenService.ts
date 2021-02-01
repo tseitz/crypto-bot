@@ -108,7 +108,7 @@ class KrakenService {
     let latestResult;
 
     // cancel open add order for this group. Some might not have been picked up
-    await this.cancelOpenOrdersForPair(order);
+    await this.cancelOpenOrdersForPair(order, false);
 
     const { openPositions } = await this.getOpenPositions();
     if (order.txId) {
@@ -340,7 +340,7 @@ class KrakenService {
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    let totalVolumeToTradeInDollar, result;
+    let totalVolumeToTradeInDollar: number, result;
 
     // local meaning don't close leverage orders
     if (!order.nonLeverageOnly) {
@@ -387,13 +387,14 @@ class KrakenService {
 
       volumeTradedInDollar += order.tradeVolume * order.usdValueOfBase;
       volumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
-      console.log(
-        `Traded ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${volumeLeft}`
-      );
 
       // no way of knowing when the leveraged order is filled, so we'll wait
       setTimeout(async () => {
         // update bid price
+        console.log(`Volume being executed ${order.tradeVolume}`);
+        console.log(
+          `Traded ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${volumeLeft}`
+        );
         const { price } = await kraken.getPrice(order.krakenTicker);
         const currentBid = superParseFloat(price[order.krakenTicker]['b'][0], order.priceDecimals);
         const currentAsk = superParseFloat(price[order.krakenTicker]['a'][0], order.priceDecimals);
