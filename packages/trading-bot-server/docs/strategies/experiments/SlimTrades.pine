@@ -175,7 +175,7 @@ shorting = allowShorts and isShort and shortZone
 addLows = addOnLows and newLow
 addLow = (addOnLows and newLow and not lowerMacd and possibleMacdBottom)
 
-buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2) or (high > highestFast2))
+buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2) or (high > highestSlow2))
 buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd and possibleMacdBottom
 addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and rsiIncreasing and ((lowerMacd and possibleMacdBottom) or (rsi1 < longZoneRsi))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd and possibleMacdBottom) or (rsi1 < shortZoneRsi))
