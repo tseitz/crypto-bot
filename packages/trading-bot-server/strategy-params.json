@@ -109,7 +109,7 @@
   },
   "XTZUSD": {
     "entrySize": 18,
-    "addSize": 18,
+    "addSize": 20,
     "maxAdds": 20,
     "latestResult": 1730.71,
     "totalTrades": 396,
