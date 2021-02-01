@@ -108,7 +108,7 @@ class KrakenService {
     let latestResult;
 
     // cancel open add order for this group. Some might not have been picked up
-    await this.cancelOpenOrdersForPair(order);
+    await this.cancelOpenOrdersForPair(order, false);
 
     const { openPositions } = await this.getOpenPositions();
     if (order.txId) {
@@ -184,7 +184,9 @@ class KrakenService {
           (order.positionSize || order.addSize) *
           (1 + addCount * order.addBoost)
         ).toFixed(2);
-        console.log(`Adding ${addCount}/${order.addCount} @ ${1 + addCount * order.addBoost}x`);
+        console.log(
+          `Adding ${addCount}/${order.addCount} @ ${(1 + addCount * order.addBoost).toFixed(2)}x`
+        );
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(
           `Margin After: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
@@ -276,7 +278,9 @@ class KrakenService {
         ).toFixed(2);
 
         if (!order.buyBags) {
-          console.log(`Adding ${addCount}/${order.addCount} @ ${1 + addCount * order.addBoost}x`);
+          console.log(
+            `Adding ${addCount}/${order.addCount} @ ${(1 + addCount * order.addBoost).toFixed(2)}x`
+          );
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           console.log(
             `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
@@ -340,7 +344,7 @@ class KrakenService {
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    let totalVolumeToTradeInDollar, result;
+    let totalVolumeToTradeInDollar: number, result;
 
     // local meaning don't close leverage orders
     if (!order.nonLeverageOnly) {
@@ -368,39 +372,50 @@ class KrakenService {
     let volumeTradedInDollar = 0;
     let i = 0;
     let volumeLeft = totalVolumeToTradeInDollar;
+    // for (let volumeLeft = totalVolumeToTradeInDollar, )
     while (volumeTradedInDollar < totalVolumeToTradeInDollar) {
       if (i > 8) {
         console.log(`Something went wrong buying bags, canceling`);
         break;
       }
-
       // if margin too low for volume, we'll sell 80% at a time
-      order.tradeVolume =
-        order.marginFree < volumeLeft
-          ? superParseFloat((order.marginFree * 0.8) / order.usdValueOfBase, order.volumeDecimals)
-          : volumeLeft / order.usdValueOfBase;
+      const newOrder = <KrakenOrderDetails>{ ...order };
+      newOrder.tradeVolume =
+        newOrder.marginFree < volumeLeft
+          ? superParseFloat(
+              (newOrder.marginFree * 0.8) / newOrder.usdValueOfBase,
+              newOrder.volumeDecimals
+            )
+          : volumeLeft / newOrder.usdValueOfBase;
 
-      if (order.tradeVolume < order.minVolume) {
+      if (newOrder.tradeVolume < newOrder.minVolume) {
         console.log(`Trade volume too low. Ignoring the last bit. ${volumeTradedInDollar} Traded.`);
-        break;
+        return;
       }
 
-      volumeTradedInDollar += order.tradeVolume * order.usdValueOfBase;
+      volumeTradedInDollar += newOrder.tradeVolume * newOrder.usdValueOfBase;
       volumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
+
+      console.log(`Volume being executed ${newOrder.tradeVolume}`);
       console.log(
         `Traded ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${volumeLeft}`
       );
 
       // no way of knowing when the leveraged order is filled, so we'll wait
       setTimeout(async () => {
-        // update bid price
-        const { price } = await kraken.getPrice(order.krakenTicker);
-        const currentBid = superParseFloat(price[order.krakenTicker]['b'][0], order.priceDecimals);
-        const currentAsk = superParseFloat(price[order.krakenTicker]['a'][0], order.priceDecimals);
-        order.bidPrice = order.action === 'buy' ? currentAsk : currentBid;
+        const { price } = await kraken.getPrice(newOrder.krakenTicker);
+        const currentBid = superParseFloat(
+          price[newOrder.krakenTicker]['b'][0],
+          newOrder.priceDecimals
+        );
+        const currentAsk = superParseFloat(
+          price[newOrder.krakenTicker]['a'][0],
+          newOrder.priceDecimals
+        );
+        newOrder.bidPrice = newOrder.action === 'buy' ? currentAsk : currentBid;
 
         // order
-        result = await this.handleNonLeveragedOrder(order);
+        result = await this.handleNonLeveragedOrder(newOrder);
         console.log('-'.repeat(20));
       }, 18000 * i);
       i++;
