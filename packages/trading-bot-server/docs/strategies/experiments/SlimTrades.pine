@@ -8,7 +8,7 @@ msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
-showSlow = input(defval=false, title="Show Slow?", type=input.bool)
+showSlow = input(defval=true, title="Show Slow?", type=input.bool)
 
 longStopPerc = input(35, title='Long Stop %', type=input.float, step=1) / 100
 longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
