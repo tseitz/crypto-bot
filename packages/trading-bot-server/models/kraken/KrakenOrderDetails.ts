@@ -160,7 +160,7 @@ export default class KrakenOrderDetails {
         this.bidPrice
       }, Bid: ${this.currentBid}, Ask: ${this.currentAsk}`
     );
-    console.log(`Total Margin Available: ${this.marginFree}`);
+    console.log(`Margin Available: ${this.marginFree}`);
   }
 
   private getTradeVolume(): number {
