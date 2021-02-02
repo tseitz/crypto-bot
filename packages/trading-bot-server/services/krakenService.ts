@@ -299,7 +299,7 @@ class KrakenService {
           console.log(`Selling Some First`);
 
           const newOrder = { ...order };
-          const addDiff = addCount - order.addCount;
+          const addDiff = addCount > order.addCount ? addCount - order.addCount : 1;
 
           newOrder.action = 'sell';
           newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now
@@ -309,7 +309,7 @@ class KrakenService {
               type: newOrder.action,
               ordertype: 'limit',
               price: newOrder.bidPrice,
-              volume: newOrder.addVolume * addDiff,
+              volume: superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals),
               // validate: order.validate,
             });
             logOrderResult(
