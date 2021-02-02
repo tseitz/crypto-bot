@@ -156,9 +156,9 @@ export default class KrakenOrderDetails {
     this.addBoost = 0.04;
 
     console.log(
-      `Price: ${superParseFloat(body.strategy.price, this.priceDecimals)}, My Bid: ${
-        this.bidPrice
-      }, Bid: ${this.currentBid}, Ask: ${this.currentAsk}`
+      `Price: ${superParseFloat(body.strategy.price, this.priceDecimals)}, Bid: ${
+        this.currentBid
+      }, My Bid: ${this.bidPrice}, Ask: ${this.currentAsk}`
     );
     console.log(`Margin Available: ${this.marginFree}`);
   }
