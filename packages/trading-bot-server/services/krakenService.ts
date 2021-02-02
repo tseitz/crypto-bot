@@ -485,10 +485,15 @@ class KrakenService {
       openPositions = positionResult.openPositions;
     }
 
+    const ignorePairArr = ['ETHUSD'];
     let positionToClose;
     for (const key in openPositions) {
       const position = openPositions[key];
-      if (order.action === position.type && (!pairOnly || order.krakenTicker === position.pair)) {
+      if (
+        order.action === position.type &&
+        (!pairOnly || order.krakenTicker === position.pair) &&
+        !ignorePairArr.includes(position.pair)
+      ) {
         positionToClose =
           positionToClose && position.time > positionToClose.time ? positionToClose : position;
       }
