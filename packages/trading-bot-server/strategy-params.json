@@ -55,8 +55,8 @@
   },
   "ETHUSDT": {
     "entrySize": 20,
-    "addSize": 20,
-    "maxAdds": 20,
+    "addSize": 25,
+    "maxAdds": 16,
     "latestResult": 953.30,
     "totalTrades": 434,
     "percentProfitable": 75.81,
