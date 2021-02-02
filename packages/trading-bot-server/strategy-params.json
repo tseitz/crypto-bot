@@ -10,8 +10,8 @@
   },
   "ADAUSDT": {
     "entrySize": 15,
-    "addSize": 20,
-    "maxAdds": 20,
+    "addSize": 24,
+    "maxAdds": 18,
     "latestResult": 1256.68,
     "totalTrades": 413,
     "percentProfitable": 71.67,
@@ -46,8 +46,8 @@
   },
   "DOTUSDT": {
     "entrySize": 20,
-    "addSize": 20,
-    "maxAdds": 20,
+    "addSize": 26,
+    "maxAdds": 16,
     "latestResult": 3326.22,
     "totalTrades": 357,
     "percentProfitable": 83.75,
@@ -64,8 +64,8 @@
   },
   "LINKUSDT": {
     "entrySize": 20,
-    "addSize": 24,
-    "maxAdds": 20,
+    "addSize": 26,
+    "maxAdds": 18,
     "latestResult": 3780.67,
     "totalTrades": 294,
     "percentProfitable": 81.63,
@@ -73,8 +73,8 @@
   },
   "OMGUSDT": {
     "entrySize": 20,
-    "addSize": 22,
-    "maxAdds": 18,
+    "addSize": 28,
+    "maxAdds": 14,
     "latestResult": 2878.96,
     "totalTrades": 188,
     "percentProfitable": 96.81,
@@ -100,7 +100,7 @@
   },
   "XLMUSDT": {
     "entrySize": 15,
-    "addSize": 25,
+    "addSize": 28,
     "maxAdds": 12,
     "latestResult": 985.58,
     "totalTrades": 267,
@@ -109,8 +109,8 @@
   },
   "XTZUSD": {
     "entrySize": 18,
-    "addSize": 22,
-    "maxAdds": 20,
+    "addSize": 24,
+    "maxAdds": 18,
     "latestResult": 1730.71,
     "totalTrades": 396,
     "percentProfitable": 64.9,
