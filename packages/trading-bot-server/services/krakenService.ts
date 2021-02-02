@@ -423,10 +423,9 @@ class KrakenService {
   async settleTxId(
     position: KrakenOpenPosition,
     order: KrakenOrderDetails,
-    immediate?: boolean,
+    immediate = false,
     additionalVolume = 0
   ) {
-    const closeAction = position.type === 'sell' ? 'buy' : 'sell';
     // const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
     const volumeToClose = parseFloat(position.vol) + additionalVolume;
     let bidPrice = order.bidPrice;
@@ -456,7 +455,7 @@ class KrakenService {
 
     let result = await this.kraken.setAddOrder({
       pair: position.pair,
-      type: closeAction,
+      type: 'sell',
       ordertype: 'limit',
       price: bidPrice,
       volume: volumeToClose,
