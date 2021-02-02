@@ -18,14 +18,15 @@ shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 hiLowFast = input(defval=70, title="Hi Low Short", minval=0, step=5)
 hiLowSlow = input(defval=720, title="Hi Low Long", minval=0, step=25)
 
-loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
-highestMacdCloseLong = input(defval=80, title="Highest MACD Close Long", minval=0, step=1)
+// loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
+macdCloseLong = input(defval=80, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=75, title="Close Long In Short Zone RSI", minval=0, step=1)
 longZoneRsi = input(defval=33, title="Buy Long Zone RSI", minval=0, step=1)
 shortZoneRsi = input(defval=34, title="Buy Short Zone RSI", minval=0, step=1)
 macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
 // maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
 addOnLows = input(defval=true, title="Add On Lows?", type=input.bool)
+reopenOnHighs = input(defval=true, title="Reopen on new highs?", type=input.bool)
 allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool)
 
 var isLong = false
@@ -175,18 +176,18 @@ shorting = allowShorts and isShort and shortZone
 addLows = addOnLows and newLow
 addLow = (addOnLows and newLow and not lowerMacd and possibleMacdBottom)
 
-buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2) or (high > highestSlow2))
+buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2) or (reopenOnHighs and high > highestSlow2))
 buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd and possibleMacdBottom
-addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and rsiIncreasing and ((lowerMacd and possibleMacdBottom) or (rsi1 < longZoneRsi))))
+addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and rsiIncreasing and ((lowerMacd or lowerMacd2) or (rsi1 < longZoneRsi))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd and possibleMacdBottom) or (rsi1 < shortZoneRsi))
-closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
-closeMacdCloseSetup = rsi1 > highestMacdCloseLong and higherMacd2
+// closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
+closeSetup = rsi1 > macdCloseLong
 closeLongInShortZoneSetup = (shortZone and rsiTopped and rsiDecreasing and rsi1 > closeLongInShortZone) // or (shortZone and highestPrevMacd)
 stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
 
 long = not isLong and (buyLongZoneSetup or buyShortZoneSetup)
 addLong = isLong and (addBuyLongZoneSetup or addBuyShortZoneSetup)
-closeLong = isLong and ((rsiTopped and rsiDecreasing and (closeLoneCloseSetup or closeMacdCloseSetup)) or closeLongInShortZoneSetup or stopped)
+closeLong = isLong and ((rsiTopped and rsiDecreasing and closeSetup) or closeLongInShortZoneSetup or stopped)
 short = shortAllowed and closeLong
 addShort = shorting and ((rsiTopped and ((higherMacd2 and higherMacd))))
 closeShort = shorting and long

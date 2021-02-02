@@ -298,10 +298,9 @@ class KrakenService {
         if (!order.buyBags && (addCount > order.addCount || order.marginFree < 125)) {
           console.log(`Selling Some First`);
 
-          // cancel stagnant sell orders first. This prevents invalid volume error
-          // await this.cancelOpenOrdersForPair(order);
-
           const newOrder = { ...order };
+          const addDiff = addCount - order.addCount;
+
           newOrder.action = 'sell';
           newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now
           if (order.addVolume !== parseFloat(incrementalAddVolume)) {
@@ -310,7 +309,7 @@ class KrakenService {
               type: newOrder.action,
               ordertype: 'limit',
               price: newOrder.bidPrice,
-              volume: newOrder.addVolume,
+              volume: newOrder.addVolume * addDiff,
               // validate: order.validate,
             });
             logOrderResult(
