@@ -38,7 +38,7 @@
   "CRVUSDT": {
     "entrySize": 25,
     "addSize": 35,
-    "maxAdds": 9,
+    "maxAdds": 10,
     "latestResult": 3316.71,
     "totalTrades": 366,
     "percentProfitable": 86.61,
