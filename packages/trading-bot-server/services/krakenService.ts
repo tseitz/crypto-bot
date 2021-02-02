@@ -299,7 +299,7 @@ class KrakenService {
           console.log(`Selling Some First`);
 
           // cancel stagnant sell orders first. This prevents invalid volume error
-          await this.cancelOpenOrdersForPair(order);
+          // await this.cancelOpenOrdersForPair(order);
 
           const newOrder = { ...order };
           newOrder.action = 'sell';

@@ -19,7 +19,7 @@
   },
   "BALUSDT": {
     "entrySize": 25,
-    "addSize": 28,
+    "addSize": 32,
     "maxAdds": 8,
     "latestResult": 3394.88,
     "totalTrades": 323,
@@ -73,7 +73,7 @@
   },
   "OMGUSDT": {
     "entrySize": 20,
-    "addSize": 20,
+    "addSize": 22,
     "maxAdds": 18,
     "latestResult": 2878.96,
     "totalTrades": 188,
@@ -109,7 +109,7 @@
   },
   "XTZUSD": {
     "entrySize": 18,
-    "addSize": 20,
+    "addSize": 22,
     "maxAdds": 20,
     "latestResult": 1730.71,
     "totalTrades": 396,
