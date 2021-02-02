@@ -426,6 +426,7 @@ class KrakenService {
     immediate = false,
     additionalVolume = 0
   ) {
+    const closeAction = position.type === 'sell' ? 'buy' : 'sell';
     // const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
     const volumeToClose = parseFloat(position.vol) + additionalVolume;
     let bidPrice = order.bidPrice;
@@ -441,12 +442,12 @@ class KrakenService {
       const leverageBuyAmounts = pair[position.pair]['leverage_buy'];
       const leverageSellAmounts = pair[position.pair]['leverage_sell'];
 
-      // TODO: Get bid from class
-      if (!immediate) {
-        bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
-      } else {
-        bidPrice = parseFloat(currentBid);
-      }
+      // TODO: Calculate this better
+      // if (!immediate) {
+      bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
+      // } else {
+      //   bidPrice = parseFloat(currentBid);
+      // }
       leverageAmount =
         position.type === 'buy'
           ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
@@ -455,7 +456,7 @@ class KrakenService {
 
     let result = await this.kraken.setAddOrder({
       pair: position.pair,
-      type: 'sell',
+      type: closeAction,
       ordertype: 'limit',
       price: bidPrice,
       volume: volumeToClose,
