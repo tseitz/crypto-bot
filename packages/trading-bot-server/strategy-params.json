@@ -10,7 +10,7 @@
   },
   "ADAUSDT": {
     "entrySize": 15,
-    "addSize": 18,
+    "addSize": 20,
     "maxAdds": 20,
     "latestResult": 1256.68,
     "totalTrades": 413,
@@ -28,8 +28,8 @@
   },
   "BTCUSDT": {
     "entrySize": 16,
-    "addSize": 16,
-    "maxAdds": 22,
+    "addSize": 20,
+    "maxAdds": 21,
     "latestResult": 1235.35,
     "totalTrades": 375,
     "percentProfitable": 73.07,
@@ -55,7 +55,7 @@
   },
   "ETHUSDT": {
     "entrySize": 22,
-    "addSize": 28,
+    "addSize": 30,
     "maxAdds": 15,
     "latestResult": 957.99,
     "totalTrades": 479,
@@ -64,8 +64,8 @@
   },
   "LINKUSDT": {
     "entrySize": 20,
-    "addSize": 18,
-    "maxAdds": 24,
+    "addSize": 24,
+    "maxAdds": 20,
     "latestResult": 3780.67,
     "totalTrades": 294,
     "percentProfitable": 81.63,
