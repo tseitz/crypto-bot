@@ -10,7 +10,7 @@
   },
   "ADAUSDT": {
     "entrySize": 15,
-    "addSize": 17,
+    "addSize": 18,
     "maxAdds": 20,
     "latestResult": 1256.68,
     "totalTrades": 413,
@@ -46,8 +46,8 @@
   },
   "DOTUSDT": {
     "entrySize": 20,
-    "addSize": 18,
-    "maxAdds": 24,
+    "addSize": 20,
+    "maxAdds": 20,
     "latestResult": 3326.22,
     "totalTrades": 357,
     "percentProfitable": 83.75,
@@ -55,8 +55,8 @@
   },
   "ETHUSDT": {
     "entrySize": 22,
-    "addSize": 30,
-    "maxAdds": 14,
+    "addSize": 28,
+    "maxAdds": 15,
     "latestResult": 957.99,
     "totalTrades": 479,
     "percentProfitable": 73.49,
