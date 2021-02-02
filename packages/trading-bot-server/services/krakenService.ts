@@ -188,9 +188,7 @@ class KrakenService {
           `Adding ${addCount}/${order.addCount} @ ${(1 + addCount * order.addBoost).toFixed(2)}x`
         );
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-        console.log(
-          `Margin After: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
-        );
+        console.log(`I'm In: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`);
         console.log(
           `Position Size After: ${(
             totalPosition +
