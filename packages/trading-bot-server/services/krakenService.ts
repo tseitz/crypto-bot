@@ -189,10 +189,9 @@ class KrakenService {
         );
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(
-          `My Position: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)}`
-        );
-        console.log(
-          `Total Position After: ${(
+          `Position: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(
+            2
+          )}, Position Margin: ${(
             totalPosition +
             parseFloat(incrementalAddDollar) * (order.leverageAmount || 1)
           ).toFixed(2)}`
