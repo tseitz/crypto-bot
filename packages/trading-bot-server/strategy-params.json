@@ -46,12 +46,12 @@
   },
   "DOTUSDT": {
     "entrySize": 20,
-    "addSize": 26,
-    "maxAdds": 16,
-    "latestResult": 3326.22,
-    "totalTrades": 357,
-    "percentProfitable": 83.75,
-    "avgTrade": 9.32
+    "addSize": 15,
+    "maxAdds": 20,
+    "latestResult": 2076.30,
+    "totalTrades": 558,
+    "percentProfitable": 69.18,
+    "avgTrade": 3.72
   },
   "ETHUSDT": {
     "entrySize": 22,
@@ -64,12 +64,12 @@
   },
   "LINKUSDT": {
     "entrySize": 20,
-    "addSize": 26,
-    "maxAdds": 18,
-    "latestResult": 3780.67,
-    "totalTrades": 294,
-    "percentProfitable": 81.63,
-    "avgTrade": 12.86
+    "addSize": 15,
+    "maxAdds": 25,
+    "latestResult": 4948.27,
+    "totalTrades": 481,
+    "percentProfitable": 93.14,
+    "avgTrade": 10.29
   },
   "OMGUSDT": {
     "entrySize": 20,
