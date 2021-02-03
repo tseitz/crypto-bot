@@ -1,7 +1,7 @@
 {
   "AAVEWETH": {
     "entrySize": 20,
-    "addSize": 15,
+    "addSize": 17,
     "maxAdds": 20,
     "latestResult": 2774.76,
     "totalTrades": 315,
@@ -20,7 +20,7 @@
   "BALUSDT": {
     "entrySize": 25,
     "addSize": 20,
-    "maxAdds": 15,
+    "maxAdds": 16,
     "latestResult": 2927.56,
     "totalTrades": 371,
     "percentProfitable": 85.71,
@@ -73,8 +73,8 @@
   },
   "OMGUSDT": {
     "entrySize": 20,
-    "addSize": 27,
-    "maxAdds": 14,
+    "addSize": 30,
+    "maxAdds": 12,
     "latestResult": 2878.96,
     "totalTrades": 188,
     "percentProfitable": 96.81,
