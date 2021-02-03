@@ -513,8 +513,6 @@ class KrakenService {
     let positionToClose;
     for (const key in openPositions) {
       const position = openPositions[key];
-      console.log(position.pair);
-      console.log(!ignorePairArr.includes(position.pair));
       if (
         order.action === position.type &&
         (!pairOnly || order.krakenTicker === position.pair) &&
