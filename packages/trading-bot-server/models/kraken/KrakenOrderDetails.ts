@@ -17,7 +17,7 @@ export default class KrakenOrderDetails {
   krakenizedTradingViewTicker: string;
   krakenTicker: string;
   assetClassTicker: AssetClassTicker;
-  action: string;
+  action: 'buy' | 'sell';
   oppositeAction: string;
   close: boolean;
   oldest: boolean;
@@ -96,7 +96,7 @@ export default class KrakenOrderDetails {
     this.entrySize = this.strategyParams?.entrySize;
     this.addSize = this.strategyParams?.addSize;
     this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 6;
-    this.action = body.strategy.action;
+    this.action = body.strategy.action === 'sell' ? 'sell' : 'buy'; // force it
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.close = body.strategy.description.toLowerCase().includes('close');
     this.oldest = body.strategy.description.toLowerCase().includes('oldest');

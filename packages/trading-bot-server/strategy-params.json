@@ -29,7 +29,7 @@
   "BTCUSDT": {
     "entrySize": 16,
     "addSize": 20,
-    "maxAdds": 21,
+    "maxAdds": 20,
     "latestResult": 1235.35,
     "totalTrades": 375,
     "percentProfitable": 73.07,
@@ -56,7 +56,7 @@
   "ETHUSDT": {
     "entrySize": 22,
     "addSize": 30,
-    "maxAdds": 15,
+    "maxAdds": 14,
     "latestResult": 957.99,
     "totalTrades": 479,
     "percentProfitable": 73.49,
@@ -73,7 +73,7 @@
   },
   "OMGUSDT": {
     "entrySize": 20,
-    "addSize": 28,
+    "addSize": 27,
     "maxAdds": 14,
     "latestResult": 2878.96,
     "totalTrades": 188,
@@ -110,7 +110,7 @@
   "XTZUSD": {
     "entrySize": 18,
     "addSize": 24,
-    "maxAdds": 18,
+    "maxAdds": 16,
     "latestResult": 1730.71,
     "totalTrades": 396,
     "percentProfitable": 64.9,

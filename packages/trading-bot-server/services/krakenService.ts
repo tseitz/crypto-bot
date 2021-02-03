@@ -59,7 +59,7 @@ class KrakenService {
     return { orderBookError, orderBookData };
   }
 
-  async cancelOpenOrdersForPair(order: KrakenOrderDetails, opposite = true) {
+  async cancelOpenOrdersForPair(order: KrakenOrderDetails, orderType: 'buy' | 'sell') {
     const open = order.openOrders?.open;
 
     if (!open) return;
@@ -68,9 +68,8 @@ class KrakenService {
     for (const key in open) {
       const pair = open[key]['descr']['pair'];
       const type = open[key]['descr']['type'];
-      const action = opposite ? order.oppositeAction : order.action;
 
-      if (pair === order.krakenizedTradingViewTicker && type === action) {
+      if (pair === order.krakenizedTradingViewTicker && type === orderType) {
         console.log(`Canceling ${type} order`);
         result = await this.kraken.setCancelOrder({ txid: key });
       }
@@ -108,7 +107,7 @@ class KrakenService {
     let latestResult;
 
     // cancel open add order for this group. Some might not have been picked up
-    await this.cancelOpenOrdersForPair(order, false);
+    await this.cancelOpenOrdersForPair(order, order.action);
 
     const { openPositions } = await this.getOpenPositions();
     if (order.txId) {
@@ -294,6 +293,9 @@ class KrakenService {
         // sell some if add count too high or margin too low
         if (!order.buyBags && (addCount > order.addCount || order.marginFree < 125)) {
           console.log(`Selling Some First`);
+
+          // cancel previous sell since we're bundling
+          await this.cancelOpenOrdersForPair(order, 'sell');
 
           const newOrder = { ...order };
           const addDiff = addCount > order.addCount ? addCount - order.addCount : 1;
