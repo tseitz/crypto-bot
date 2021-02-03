@@ -55,7 +55,7 @@
   },
   "ETHUSDT": {
     "entrySize": 22,
-    "addSize": 30,
+    "addSize": 27,
     "maxAdds": 14,
     "latestResult": 957.99,
     "totalTrades": 479,
