@@ -502,9 +502,7 @@ class KrakenService {
 
     let result;
     if (positionToClose) {
-      console.log(
-        `Position Cost: ${positionToClose.cost}, Position Margin: ${positionToClose.margin}`
-      );
+      console.log(`Dollar Sold: ${positionToClose.margin}`);
       result = await this.settleTxId(positionToClose, order, true);
     }
     return result;
