@@ -46,8 +46,8 @@
   },
   "DOTUSDT": {
     "entrySize": 20,
-    "addSize": 15,
-    "maxAdds": 20,
+    "addSize": 20,
+    "maxAdds": 16,
     "latestResult": 2076.30,
     "totalTrades": 558,
     "percentProfitable": 69.18,
