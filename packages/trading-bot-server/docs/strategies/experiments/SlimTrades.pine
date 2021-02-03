@@ -150,8 +150,8 @@ higherMacd = macd > highestMacd and macd > 0
 higherMacd2 = macd1 > highestMacd2 and macd1 > 0
 higherMacd3 = macd2 > highestMacd3 and macd2 > 0
 higherMacd4 = macd3 > highestMacd4 and macd3 > 0
-lowerMacd = macd < lowestMacd and macd < 0
-lowerMacd2 = macd1 < lowestMacd2 and macd1 < 0
+lowerMacd = (longZone and macd < lowestMacd) or (shortZone and macd < lowestMacd and macd < 0)
+lowerMacd2 = (longZone and macd1 < lowestMacd2) or (shortZone and macd1 < lowestMacd2 and macd1 < 0)
 lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
 bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)

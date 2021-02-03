@@ -59,32 +59,6 @@ class KrakenService {
     return { orderBookError, orderBookData };
   }
 
-  async cancelOpenOrdersForPair(order: KrakenOrderDetails, orderType: 'buy' | 'sell') {
-    const open = order.openOrders?.open;
-
-    if (!open) return;
-
-    let result;
-    for (const key in open) {
-      const pair = open[key]['descr']['pair'];
-      const type = open[key]['descr']['type'];
-
-      if (pair === order.krakenizedTradingViewTicker && type === orderType) {
-        console.log(`Canceling ${type} order`);
-        result = await this.kraken.setCancelOrder({ txid: key });
-      }
-    }
-
-    // if closing order, make sure there are no leftovers sells as well
-    // this occurs when we sell oldest order, and it does not fill
-    // this resulted in a short position that lost 15% -_- never again
-    // if (order.close) {
-    //   await this.cancelOpenOrdersForPair(order, false);
-    // }
-
-    return result;
-  }
-
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     // some orders might not have filled. cancel beforehand
     // await this.cancelOpenOrdersForPair(order);
@@ -101,49 +75,6 @@ class KrakenService {
     }
 
     return result;
-  }
-
-  async settleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
-    let latestResult;
-
-    // cancel open add order for this group. Some might not have been picked up
-    await this.cancelOpenOrdersForPair(order, order.action);
-
-    const { openPositions } = await this.getOpenPositions();
-    if (order.txId) {
-      // close out specific transaction only (at least the value of it since we can't specify closing by id)
-      // we don't break the for loop because there may be 2 or more orders filled in a transaction
-      for (const key in openPositions) {
-        const position = openPositions[key];
-        if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
-          latestResult = await this.settleTxId(position, order);
-        }
-      }
-    } else {
-      for (const key in openPositions) {
-        const position = openPositions[key];
-        if (position.pair === order.krakenTicker && order.action !== position.type) {
-          const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-          latestResult = await this.kraken.setAddOrder({
-            pair: order.krakenTicker,
-            type: closeAction,
-            ordertype: 'limit',
-            price: order.bidPrice,
-            volume: 0, // 0 for close all
-            leverage: order.leverageAmount,
-            // validate: order.validate,
-          });
-          logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
-          break;
-        }
-      }
-    }
-
-    if (!latestResult) {
-      console.log('Leveraged Order: Nothing to close');
-    }
-
-    return latestResult;
   }
 
   async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
@@ -341,6 +272,98 @@ class KrakenService {
     return result;
   }
 
+  async settleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+    let latestResult;
+
+    // cancel open add order for this group. Some might not have been picked up
+    await this.cancelOpenOrdersForPair(order, order.action);
+
+    const { openPositions } = await this.getOpenPositions();
+    if (order.txId) {
+      // close out specific transaction only (at least the value of it since we can't specify closing by id)
+      // we don't break the for loop because there may be 2 or more orders filled in a transaction
+      for (const key in openPositions) {
+        const position = openPositions[key];
+        if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
+          latestResult = await this.settleTxId(position, order);
+        }
+      }
+    } else {
+      for (const key in openPositions) {
+        const position = openPositions[key];
+        if (position.pair === order.krakenTicker && order.action !== position.type) {
+          const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+          latestResult = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: closeAction,
+            ordertype: 'limit',
+            price: order.bidPrice,
+            volume: 0, // 0 for close all
+            leverage: order.leverageAmount,
+            // validate: order.validate,
+          });
+          logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
+          break;
+        }
+      }
+    }
+
+    if (!latestResult) {
+      console.log('Leveraged Order: Nothing to close');
+    }
+
+    return latestResult;
+  }
+
+  async cancelOpenOrdersForPair(order: KrakenOrderDetails, orderType: 'buy' | 'sell') {
+    const open = order.openOrders?.open;
+
+    if (!open) return;
+
+    await this.cancelOrdersOlderThanLimit(order);
+
+    let result;
+    for (const key in open) {
+      const pair = open[key]['descr']['pair'];
+      const type = open[key]['descr']['type'];
+
+      if (pair === order.krakenizedTradingViewTicker && type === orderType) {
+        console.log(`Canceling ${type} order`);
+        result = await this.kraken.setCancelOrder({ txid: key });
+      }
+    }
+
+    // if closing order, make sure there are no leftovers sells as well
+    // this occurs when we sell oldest order, and it does not fill
+    // this resulted in a short position that lost 15% -_- never again
+    // if (order.close) {
+    //   await this.cancelOpenOrdersForPair(order, false);
+    // }
+
+    return result;
+  }
+
+  async cancelOrdersOlderThanLimit(order: KrakenOrderDetails) {
+    let result;
+    const open = order.openOrders?.open;
+
+    if (!open) return;
+
+    for (const key in open) {
+      const pair = open[key]['descr']['pair'];
+      const type = open[key]['descr']['type'];
+      const starttm = open[key]['opentm'];
+      const startDate = new Date(starttm * 1000).toUTCString();
+      const timeLimit = new Date(Date.now() - 30 * 60 * 1000).toUTCString(); // 30 min
+
+      if (startDate < timeLimit) {
+        console.log(`Old ${type} ${pair}. Cancelling.`);
+        result = await this.kraken.setCancelOrder({ txid: key });
+      }
+    }
+    return result;
+  }
+
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     let totalVolumeToTradeInDollar: number, result;
 
@@ -486,10 +509,12 @@ class KrakenService {
       openPositions = positionResult.openPositions;
     }
 
-    const ignorePairArr = ['ETHUSD'];
+    const ignorePairArr = ['XETHZUSD'];
     let positionToClose;
     for (const key in openPositions) {
       const position = openPositions[key];
+      console.log(position.pair);
+      console.log(!ignorePairArr.includes(position.pair));
       if (
         order.action === position.type &&
         (!pairOnly || order.krakenTicker === position.pair) &&
@@ -502,7 +527,9 @@ class KrakenService {
 
     let result;
     if (positionToClose) {
-      console.log(`${positionToClose.pair} Sell: ${positionToClose.cost}`);
+      console.log(
+        `${positionToClose.pair} Sell: ${positionToClose.margin}, ${positionToClose.cost}`
+      );
       result = await this.settleTxId(positionToClose, order, true);
     }
     return result;
