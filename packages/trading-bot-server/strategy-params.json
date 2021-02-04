@@ -64,8 +64,8 @@
   },
   "LINKUSDT": {
     "entrySize": 20,
-    "addSize": 24,
-    "maxAdds": 18,
+    "addSize": 28,
+    "maxAdds": 17,
     "latestResult": 4948.27,
     "totalTrades": 481,
     "percentProfitable": 93.14,
@@ -73,7 +73,7 @@
   },
   "OMGUSDT": {
     "entrySize": 20,
-    "addSize": 32,
+    "addSize": 34,
     "maxAdds": 12,
     "latestResult": 2878.96,
     "totalTrades": 188,
