@@ -1,8 +1,8 @@
 {
   "AAVEWETH": {
-    "entrySize": 20,
-    "addSize": 20,
-    "maxAdds": 20,
+    "entrySize": 25,
+    "addSize": 25,
+    "maxAdds": 16,
     "latestResult": 2774.76,
     "totalTrades": 315,
     "percentProfitable": 82.22,
