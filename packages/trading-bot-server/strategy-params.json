@@ -11,7 +11,7 @@
   "ADAUSDT": {
     "entrySize": 20,
     "addSize": 18,
-    "maxAdds": 22,
+    "maxAdds": 21,
     "latestResult": 2827.16,
     "totalTrades": 421,
     "percentProfitable": 94.06,
@@ -65,7 +65,7 @@
   "LINKUSDT": {
     "entrySize": 20,
     "addSize": 24,
-    "maxAdds": 17,
+    "maxAdds": 18,
     "latestResult": 4948.27,
     "totalTrades": 481,
     "percentProfitable": 93.14,
@@ -73,7 +73,7 @@
   },
   "OMGUSDT": {
     "entrySize": 20,
-    "addSize": 30,
+    "addSize": 32,
     "maxAdds": 12,
     "latestResult": 2878.96,
     "totalTrades": 188,
