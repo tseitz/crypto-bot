@@ -153,7 +153,7 @@ export default class KrakenOrderDetails {
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
     // if no leverage, 4 less add counts
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
-    this.addBoost = 0.025;
+    this.addBoost = 0; // 0.025;
 
     console.log(
       `Price: ${superParseFloat(body.strategy.price, this.priceDecimals)}, Bid: ${
