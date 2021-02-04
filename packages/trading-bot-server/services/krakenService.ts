@@ -223,8 +223,6 @@ class KrakenService {
 
         // sell some if add count too high or margin too low
         if (!order.buyBags && (addCount > order.addCount || order.marginFree < 125)) {
-          console.log(`Selling Some First`);
-
           // cancel previous sell since we're bundling
           await this.cancelOpenOrdersForPair(order, 'sell');
 
@@ -233,13 +231,16 @@ class KrakenService {
 
           newOrder.action = 'sell';
           newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now
+          const sellVolume = superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals);
+
+          console.log(`Selling Some First ${sellVolume}`);
           if (order.addVolume !== parseFloat(incrementalAddVolume)) {
             result = await this.kraken.setAddOrder({
               pair: newOrder.krakenTicker,
               type: newOrder.action,
               ordertype: 'limit',
               price: newOrder.bidPrice,
-              volume: superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals),
+              volume: sellVolume,
               // validate: order.validate,
             });
             logOrderResult(
