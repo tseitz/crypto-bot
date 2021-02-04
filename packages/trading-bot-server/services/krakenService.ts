@@ -277,7 +277,7 @@ class KrakenService {
     let latestResult;
 
     // cancel open add order for this group. Some might not have been picked up
-    await this.cancelOpenOrdersForPair(order, order.action);
+    await this.cancelOpenOrdersForPair(order, order.oppositeAction);
 
     const { openPositions } = await this.getOpenPositions();
     if (order.txId) {

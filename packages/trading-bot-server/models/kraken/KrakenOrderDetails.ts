@@ -18,7 +18,7 @@ export default class KrakenOrderDetails {
   krakenTicker: string;
   assetClassTicker: AssetClassTicker;
   action: 'buy' | 'sell';
-  oppositeAction: string;
+  oppositeAction: 'buy' | 'sell';
   close: boolean;
   oldest: boolean;
   oldestPair: boolean;

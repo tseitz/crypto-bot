@@ -2,7 +2,7 @@
   "AAVEWETH": {
     "entrySize": 25,
     "addSize": 25,
-    "maxAdds": 16,
+    "maxAdds": 15,
     "latestResult": 2774.76,
     "totalTrades": 315,
     "percentProfitable": 82.22,
@@ -65,7 +65,7 @@
   "LINKUSDT": {
     "entrySize": 20,
     "addSize": 24,
-    "maxAdds": 18,
+    "maxAdds": 17,
     "latestResult": 4948.27,
     "totalTrades": 481,
     "percentProfitable": 93.14,
@@ -110,7 +110,7 @@
   "XTZUSD": {
     "entrySize": 18,
     "addSize": 24,
-    "maxAdds": 16,
+    "maxAdds": 14,
     "latestResult": 1730.71,
     "totalTrades": 396,
     "percentProfitable": 64.9,
