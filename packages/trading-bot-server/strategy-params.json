@@ -1,7 +1,7 @@
 {
   "AAVEWETH": {
     "entrySize": 30,
-    "addSize": 35,
+    "addSize": 34,
     "maxAdds": 11,
     "latestResult": 2774.76,
     "totalTrades": 315,
@@ -73,8 +73,8 @@
   },
   "OMGUSDT": {
     "entrySize": 20,
-    "addSize": 34,
-    "maxAdds": 12,
+    "addSize": 30,
+    "maxAdds": 13,
     "latestResult": 2878.96,
     "totalTrades": 188,
     "percentProfitable": 96.81,
