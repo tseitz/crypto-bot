@@ -251,7 +251,7 @@ class KrakenService {
               result,
               newOrder.krakenizedTradingViewTicker
             );
-            await sleep(6000);
+            await sleep(5000);
           } else {
             console.log('Order size is the same. No action taken.');
           }
