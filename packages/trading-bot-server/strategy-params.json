@@ -64,8 +64,8 @@
   },
   "LINKUSDT": {
     "entrySize": 20,
-    "addSize": 30,
-    "maxAdds": 16,
+    "addSize": 34,
+    "maxAdds": 14,
     "latestResult": 4948.27,
     "totalTrades": 481,
     "percentProfitable": 93.14,
