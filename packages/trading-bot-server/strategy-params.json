@@ -19,8 +19,8 @@
   },
   "BALUSDT": {
     "entrySize": 32,
-    "addSize": 35,
-    "maxAdds": 12,
+    "addSize": 36,
+    "maxAdds": 11,
     "latestResult": 2927.56,
     "totalTrades": 371,
     "percentProfitable": 85.71,
@@ -38,7 +38,7 @@
   "CRVUSDT": {
     "entrySize": 32,
     "addSize": 38,
-    "maxAdds": 10,
+    "maxAdds": 11,
     "latestResult": 3316.71,
     "totalTrades": 366,
     "percentProfitable": 86.61,
