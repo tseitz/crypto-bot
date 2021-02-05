@@ -110,7 +110,7 @@
   "XTZUSD": {
     "entrySize": 25,
     "addSize": 28,
-    "maxAdds": 10,
+    "maxAdds": 8,
     "latestResult": 1730.71,
     "totalTrades": 396,
     "percentProfitable": 64.9,
