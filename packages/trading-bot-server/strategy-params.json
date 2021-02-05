@@ -10,8 +10,8 @@
   },
   "ADAUSDT": {
     "entrySize": 20,
-    "addSize": 18,
-    "maxAdds": 21,
+    "addSize": 22,
+    "maxAdds": 18,
     "latestResult": 2827.16,
     "totalTrades": 421,
     "percentProfitable": 94.06,
@@ -46,8 +46,8 @@
   },
   "DOTUSDT": {
     "entrySize": 20,
-    "addSize": 22,
-    "maxAdds": 18,
+    "addSize": 26,
+    "maxAdds": 16,
     "latestResult": 2076.30,
     "totalTrades": 558,
     "percentProfitable": 69.18,
@@ -64,8 +64,8 @@
   },
   "LINKUSDT": {
     "entrySize": 20,
-    "addSize": 28,
-    "maxAdds": 17,
+    "addSize": 30,
+    "maxAdds": 16,
     "latestResult": 4948.27,
     "totalTrades": 481,
     "percentProfitable": 93.14,
