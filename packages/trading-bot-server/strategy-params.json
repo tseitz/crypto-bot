@@ -83,7 +83,7 @@
   "SNXUSDT": {
     "entrySize": 25,
     "addSize": 35,
-    "maxAdds": 10,
+    "maxAdds": 11,
     "latestResult": 3949.46,
     "totalTrades": 185,
     "percentProfitable": 87.57,
