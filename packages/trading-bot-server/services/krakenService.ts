@@ -99,7 +99,7 @@ class KrakenService {
         }
       }
 
-      if (order.marginFree < 150) {
+      if (order.marginFree < order.lowestLeverageMargin) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, false, openPositions);
       }
@@ -181,7 +181,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar === 0 && order.marginFree > 170) {
+      if (order.balanceInDollar === 0 && order.marginFree > order.lowestNonLeverageMargin + 50) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -222,7 +222,10 @@ class KrakenService {
         }
 
         // sell some if add count too high or margin too low
-        if (!order.buyBags && (addCount > order.addCount || order.marginFree < 125)) {
+        if (
+          !order.buyBags &&
+          (addCount > order.addCount || order.marginFree < order.lowestNonLeverageMargin)
+        ) {
           // cancel previous sell since we're bundling
           await this.cancelOpenOrdersForPair(order, 'sell');
 

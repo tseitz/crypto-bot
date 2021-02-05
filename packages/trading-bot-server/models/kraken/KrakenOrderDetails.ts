@@ -68,6 +68,8 @@ export default class KrakenOrderDetails {
   result: KrakenOrderResult | undefined;
   validate: boolean;
   addBoost: number;
+  lowestNonLeverageMargin: number;
+  lowestLeverageMargin: number;
 
   constructor(
     body: TradingViewBody,
@@ -153,7 +155,11 @@ export default class KrakenOrderDetails {
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
     // if no leverage, 4 less add counts
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
+
+    // local configs
     this.addBoost = 0.015;
+    this.lowestNonLeverageMargin = 100;
+    this.lowestNonLeverageMargin = 75;
 
     console.log(
       `Price: ${superParseFloat(body.strategy.price, this.priceDecimals)}, Bid: ${
