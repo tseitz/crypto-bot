@@ -100,7 +100,7 @@
   },
   "XLMUSDT": {
     "entrySize": 25,
-    "addSize": 36,
+    "addSize": 34,
     "maxAdds": 8,
     "latestResult": 985.58,
     "totalTrades": 267,
