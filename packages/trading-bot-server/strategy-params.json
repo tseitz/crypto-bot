@@ -19,8 +19,8 @@
   },
   "BALUSDT": {
     "entrySize": 25,
-    "addSize": 22,
-    "maxAdds": 16,
+    "addSize": 26,
+    "maxAdds": 14,
     "latestResult": 2927.56,
     "totalTrades": 371,
     "percentProfitable": 85.71,
