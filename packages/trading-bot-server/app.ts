@@ -89,6 +89,7 @@ const cron = schedule.scheduleJob('0 0 * * *', async () => {
   getBalances();
 });
 
+let previousBalance = 0;
 async function getBalances() {
   // TODO - make this it's own thing
   // c:'2881.3240'
@@ -101,12 +102,17 @@ async function getBalances() {
   // tb:'1127.7219'
   // v:'2912.7724'
   const balances = await kraken.kraken.getTradeBalance();
+  const realizedBalance = balances.result.eb;
+  const openBalance = balances.result.n;
+  const unrealizedBalance = parseFloat(realizedBalance) + parseFloat(openBalance);
+  // const difference = balance - previousBalance;
+  // previousBalance = balances.result.eb;
 
   console.log(`Nightly Log
 ---------------------------
-  Balance: $${balances.result.eb}
-  Open:    $${balances.result.n}
-  Total:   $${parseFloat(balances.result.eb) + parseFloat(balances.result.n)}
+  Balance:      $${realizedBalance}
+  Open:         $${openBalance}
+  Unrealized:   $${unrealizedBalance}
 ---------------------------`);
 }
 // getBalances();
