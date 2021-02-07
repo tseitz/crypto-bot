@@ -129,7 +129,7 @@ export default class KrakenOrderDetails {
     this.noLeverage = typeof this.leverageAmount === 'undefined';
     this.bagIt = this.sellBags || this.buyBags;
     // reset leverage amount in short zone. TODO: functionalize this
-    this.leverageAmount = this.shortZone ? this.lowestLeverageAmount : this.leverageAmount;
+    // this.leverageAmount = this.shortZone ? this.lowestLeverageAmount : this.leverageAmount;
 
     // current price info
     this.tradingViewPrice = superParseFloat(body.strategy.price, this.priceDecimals);

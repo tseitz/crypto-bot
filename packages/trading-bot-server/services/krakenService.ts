@@ -283,6 +283,7 @@ class KrakenService {
     await this.cancelOpenOrdersForPair(order, order.oppositeAction);
 
     const { openPositions } = await this.getOpenPositions();
+    // cost * margin
     if (order.txId) {
       // close out specific transaction only (at least the value of it since we can't specify closing by id)
       // we don't break the for loop because there may be 2 or more orders filled in a transaction
