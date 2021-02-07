@@ -68,6 +68,7 @@ export default class KrakenOrderDetails {
   result: KrakenOrderResult | undefined;
   validate: boolean;
   addBoost: number;
+  shortZone: boolean;
 
   constructor(
     body: TradingViewBody,
@@ -115,6 +116,7 @@ export default class KrakenOrderDetails {
     this.volumeDecimals = pairData[this.krakenTicker]['lot_decimals'];
 
     // leverage info
+    this.shortZone = parseInt(body.strategy.shortzone?.toString() || '0') === 0 ? false : true;
     this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'];
     this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
     this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
@@ -124,6 +126,8 @@ export default class KrakenOrderDetails {
       this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
     this.noLeverage = typeof this.leverageAmount === 'undefined';
     this.bagIt = this.sellBags || this.buyBags;
+    // reset leverage amount in short zone. TODO: functionalize this
+    this.leverageAmount = this.shortZone ? this.lowestLeverageAmount : this.leverageAmount;
 
     // current price info
     this.tradingViewPrice = superParseFloat(body.strategy.price, this.priceDecimals);

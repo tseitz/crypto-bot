@@ -137,6 +137,7 @@ if twoSlowHighs
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
+plotshape(shortZone, title="shortzone", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
 highestMacd = highest(macd, macdLength)[1]
 highestMacd2 = highest(macd, macdLength)[2]
