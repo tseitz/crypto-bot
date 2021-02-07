@@ -99,7 +99,7 @@ class KrakenService {
         }
       }
 
-      if (order.marginFree < 150) {
+      if (order.marginFree < order.lowestLeverageMargin) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, false, openPositions);
       }
@@ -181,7 +181,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar === 0 && order.marginFree > 170) {
+      if (order.balanceInDollar === 0 && order.marginFree > order.lowestNonLeverageMargin + 50) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -222,7 +222,10 @@ class KrakenService {
         }
 
         // sell some if add count too high or margin too low
-        if (!order.buyBags && (addCount > order.addCount || order.marginFree < 125)) {
+        if (
+          !order.buyBags &&
+          (addCount > order.addCount || order.marginFree < order.lowestNonLeverageMargin)
+        ) {
           // cancel previous sell since we're bundling
           await this.cancelOpenOrdersForPair(order, 'sell');
 
@@ -248,7 +251,7 @@ class KrakenService {
               result,
               newOrder.krakenizedTradingViewTicker
             );
-            await sleep(4000);
+            await sleep(5000);
           } else {
             console.log('Order size is the same. No action taken.');
           }
@@ -355,7 +358,7 @@ class KrakenService {
       const type = open[key]['descr']['type'];
       const starttm = open[key]['opentm'];
       const startDate = new Date(starttm * 1000).toUTCString();
-      const timeLimit = new Date(Date.now() - 30 * 60 * 1000).toUTCString(); // 30 min
+      const timeLimit = new Date(Date.now() - 15 * 60 * 1000).toUTCString(); // 15 min
 
       if (startDate < timeLimit) {
         console.log(`Old ${type} ${pair}. Cancelling.`);
@@ -510,14 +513,14 @@ class KrakenService {
       openPositions = positionResult.openPositions;
     }
 
-    const ignorePairArr = ['XETHZUSD'];
+    // const ignorePairArr = ['XETHZUSD'];
     let positionToClose;
     for (const key in openPositions) {
       const position = openPositions[key];
       if (
         order.action === position.type &&
-        (!pairOnly || order.krakenTicker === position.pair) &&
-        !ignorePairArr.includes(position.pair)
+        (!pairOnly || order.krakenTicker === position.pair) // &&
+        // !ignorePairArr.includes(position.pair)
       ) {
         positionToClose =
           positionToClose && position.time > positionToClose.time ? positionToClose : position;

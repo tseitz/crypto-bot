@@ -69,6 +69,8 @@ export default class KrakenOrderDetails {
   validate: boolean;
   addBoost: number;
   shortZone: boolean;
+  lowestNonLeverageMargin: number;
+  lowestLeverageMargin: number;
 
   constructor(
     body: TradingViewBody,
@@ -157,7 +159,11 @@ export default class KrakenOrderDetails {
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
     // if no leverage, 4 less add counts
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
-    this.addBoost = 0.04;
+
+    // local configs
+    this.addBoost = 0.01;
+    this.lowestNonLeverageMargin = 110;
+    this.lowestLeverageMargin = 120;
 
     console.log(
       `Price: ${superParseFloat(body.strategy.price, this.priceDecimals)}, Bid: ${
@@ -234,10 +240,12 @@ export default class KrakenOrderDetails {
       this.tradingViewTicker === 'YFIUSDT' ||
       this.tradingViewTicker === 'SNXUSDT' ||
       this.tradingViewTicker === 'OMGUSDT' ||
+      this.tradingViewTicker === 'XTZUSDT' ||
       (this.action === 'sell' && this.tradingViewTicker === 'KSMUSDT') ||
       (this.action === 'sell' && this.tradingViewTicker === 'XLMUSDT') ||
       (this.action === 'sell' && this.tradingViewTicker === 'LINKUSDT') ||
-      (this.action === 'sell' && this.tradingViewTicker === 'UNIWETH')
+      (this.action === 'sell' && this.tradingViewTicker === 'UNIWETH') ||
+      (this.action === 'sell' && this.tradingViewTicker === 'AAVEWETH')
     ) {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
     } else {
