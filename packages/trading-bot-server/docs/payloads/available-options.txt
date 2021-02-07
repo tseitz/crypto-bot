@@ -21,6 +21,8 @@
         "market_position": "{{strategy.market_position}}",
         "market_position_size": {{strategy.market_position_size}},
         "prev_market_position": "{{strategy.prev_market_position}}",
-        "prev_market_position_size": {{strategy.prev_market_position_size}}
+        "prev_market_position_size": {{strategy.prev_market_position_size}},
+        "buyBags": {{plot("buybags")}},
+        "sellBags": {{plot("sellbags")}}
     }
 }
