@@ -28,7 +28,7 @@
   },
   "BTCUSDT": {
     "entrySize": 28,
-    "addSize": 30,
+    "addSize": 34,
     "maxAdds": 10,
     "latestResult": 1374.94,
     "totalTrades": 438,
