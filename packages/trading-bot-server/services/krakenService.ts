@@ -79,6 +79,8 @@ class KrakenService {
 
   async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let result;
+    await this.cancelOpenOrdersForPair(order, order.action);
+
     if (order.close) {
       result = await this.settleLeveragedOrder(order);
     } else {
