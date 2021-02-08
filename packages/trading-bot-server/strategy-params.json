@@ -1,7 +1,7 @@
 {
   "AAVEWETH": {
     "entrySize": 35,
-    "addSize": 38,
+    "addSize": 40,
     "maxAdds": 10,
     "latestResult": 2774.76,
     "totalTrades": 315,
@@ -9,8 +9,8 @@
     "avgTrade": 8.81
   },
   "ADAUSDT": {
-    "entrySize": 28,
-    "addSize": 34,
+    "entrySize": 30,
+    "addSize": 38,
     "maxAdds": 11,
     "latestResult": 2827.16,
     "totalTrades": 421,
@@ -19,7 +19,7 @@
   },
   "BALUSDT": {
     "entrySize": 32,
-    "addSize": 36,
+    "addSize": 38,
     "maxAdds": 11,
     "latestResult": 2927.56,
     "totalTrades": 371,
@@ -27,8 +27,8 @@
     "avgTrade": 7.89
   },
   "BTCUSDT": {
-    "entrySize": 25,
-    "addSize": 28,
+    "entrySize": 28,
+    "addSize": 30,
     "maxAdds": 10,
     "latestResult": 1374.94,
     "totalTrades": 438,
@@ -37,7 +37,7 @@
   },
   "CRVUSDT": {
     "entrySize": 32,
-    "addSize": 36,
+    "addSize": 38,
     "maxAdds": 11,
     "latestResult": 3316.71,
     "totalTrades": 366,
@@ -45,8 +45,8 @@
     "avgTrade": 9.06
   },
   "DOTUSDT": {
-    "entrySize": 28,
-    "addSize": 34,
+    "entrySize": 30,
+    "addSize": 38,
     "maxAdds": 12,
     "latestResult": 2076.30,
     "totalTrades": 558,
@@ -54,8 +54,8 @@
     "avgTrade": 3.72
   },
   "ETHUSDT": {
-    "entrySize": 28,
-    "addSize": 35,
+    "entrySize": 30,
+    "addSize": 38,
     "maxAdds": 11,
     "latestResult": 957.99,
     "totalTrades": 479,
@@ -100,8 +100,8 @@
   },
   "XLMUSDT": {
     "entrySize": 25,
-    "addSize": 36,
-    "maxAdds": 7,
+    "addSize": 38,
+    "maxAdds": 8,
     "latestResult": 985.58,
     "totalTrades": 267,
     "percentProfitable": 69.29,
@@ -109,7 +109,7 @@
   },
   "XTZUSD": {
     "entrySize": 25,
-    "addSize": 28,
+    "addSize": 30,
     "maxAdds": 9,
     "latestResult": 1730.71,
     "totalTrades": 396,
