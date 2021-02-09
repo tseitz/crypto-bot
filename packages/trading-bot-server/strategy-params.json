@@ -64,7 +64,7 @@
   },
   "LINKUSDT": {
     "entrySize": 35,
-    "addSize": 44,
+    "addSize": 42,
     "maxAdds": 10,
     "latestResult": 4948.27,
     "totalTrades": 481,
