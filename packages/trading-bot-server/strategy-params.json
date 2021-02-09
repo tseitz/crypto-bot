@@ -37,8 +37,8 @@
   },
   "CRVUSDT": {
     "entrySize": 32,
-    "addSize": 38,
-    "maxAdds": 10,
+    "addSize": 40,
+    "maxAdds": 9,
     "latestResult": 3316.71,
     "totalTrades": 366,
     "percentProfitable": 86.61,
@@ -82,17 +82,17 @@
   },
   "SNXUSDT": {
     "entrySize": 35,
-    "addSize": 40,
-    "maxAdds": 10,
+    "addSize": 48,
+    "maxAdds": 8,
     "latestResult": 3949.46,
     "totalTrades": 185,
     "percentProfitable": 87.57,
     "avgTrade": 21.35
   },
   "UNIWETH": {
-    "entrySize": 34,
-    "addSize": 40,
-    "maxAdds": 10,
+    "entrySize": 35,
+    "addSize": 45,
+    "maxAdds": 8,
     "latestResult": 3163.31,
     "totalTrades": 223,
     "percentProfitable": 98.64,
