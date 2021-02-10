@@ -108,19 +108,19 @@ class KrakenService {
         }
       }
 
-      let averagePrice = prices.reduce((a, b) => a + b) / prices.length;
-      const percentDiff =
-        (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100;
-      console.log(
-        `Bid ${order.bidPrice} : Average Price ${averagePrice} : Percent Diff ${percentDiff}`
-      );
-
       if (order.marginFree < order.lowestLeverageMargin) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, false, openPositions);
       }
 
       if (add) {
+        let averagePrice = prices.reduce((a, b) => a + b) / prices.length;
+        const percentDiff =
+          (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100;
+        console.log(
+          `Bid ${order.bidPrice} : Average Price ${averagePrice} : Percent Diff ${percentDiff}`
+        );
+
         const boost = order.bidPrice < averagePrice;
         const addCount =
           parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
