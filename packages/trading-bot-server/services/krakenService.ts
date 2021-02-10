@@ -117,7 +117,9 @@ class KrakenService {
         const percentDiff =
           (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100;
         console.log(
-          `Bid ${order.bidPrice} : Average Price ${averagePrice} : Percent Diff ${percentDiff}`
+          `Bid ${order.bidPrice} : Average Price ${averagePrice.toFixed(
+            order.priceDecimals
+          )} : Percent Diff ${percentDiff.toFixed(4)}%`
         );
 
         const boost = order.bidPrice < averagePrice;
