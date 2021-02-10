@@ -115,35 +115,35 @@ class KrakenService {
       if (add) {
         const addCount =
           parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
-        let averagePrice = prices.reduce((a, b) => a + b) / prices.length;
-        const boost = order.bidPrice < averagePrice;
-        const percentDiff =
-          (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100;
-        console.log(
-          `Bid ${order.bidPrice} : Average Price ${averagePrice.toFixed(
-            order.priceDecimals
-          )} : Percent Diff ${percentDiff.toFixed(4)}% : Would Boost ${
-            boost ? (1 + addCount * (percentDiff / 100)).toFixed(4) : 1
-          }`
+        let averagePrice = superParseFloat(
+          prices.reduce((a, b) => a + b) / prices.length,
+          order.priceDecimals
         );
-        const incrementalAddVolume = boost
-          ? (order.addVolume * (1 + addCount * order.addBoost)).toFixed(order.volumeDecimals)
+        const percentDiff = parseFloat(
+          (
+            (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) *
+            100
+          ).toFixed(4)
+        );
+        const shouldBoost = order.bidPrice < averagePrice;
+        const boost = shouldBoost ? parseFloat((1 + addCount * (percentDiff / 100)).toFixed(4)) : 1;
+
+        const incrementalAddVolume = shouldBoost
+          ? (order.addVolume * boost).toFixed(order.volumeDecimals)
           : order.addVolume;
-        const incrementalAddDollar = boost
-          ? ((order.positionSize || order.addSize) * (1 + addCount * order.addBoost)).toFixed(2)
+        const incrementalAddDollar = shouldBoost
+          ? ((order.positionSize || order.addSize) * boost).toFixed(2)
           : (order.positionSize || order.addSize).toFixed(2);
-        console.log(
-          `Adding: ${addCount}/${order.addCount} @ ${
-            boost ? (1 + addCount * order.addBoost).toFixed(2) : 1
-          }x`
-        );
+        const myPositionAfter = (positionMargin + parseFloat(incrementalAddDollar)).toFixed(2);
+        const marginPositionAfter = (
+          totalPosition +
+          parseFloat(incrementalAddDollar) * (order.leverageAmount || 1)
+        ).toFixed(2);
+
+        console.log(`Bid ${order.bidPrice} : Average ${averagePrice} : ${percentDiff}% Diff`);
+        console.log(`Adding: ${addCount}/${order.addCount} @ ${shouldBoost ? boost : 1}x`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
-        console.log(
-          `Position: ${(positionMargin + parseFloat(incrementalAddDollar)).toFixed(2)} : ${(
-            totalPosition +
-            parseFloat(incrementalAddDollar) * (order.leverageAmount || 1)
-          ).toFixed(2)}`
-        );
+        console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
           console.log('Too Many. Selling Oldest First');
