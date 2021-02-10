@@ -17,6 +17,7 @@ export class KrakenOrder {
     this.krakenTicker = this.tradingViewTicker
       .replace('BTC', 'XBT')
       .replace('WETH', 'ETH')
+      .replace('DOGE', 'XDG')
       .replace('USDT', 'USD');
   }
 
