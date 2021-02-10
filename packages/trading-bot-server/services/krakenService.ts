@@ -116,17 +116,16 @@ class KrakenService {
         const addCount =
           parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
         let averagePrice = prices.reduce((a, b) => a + b) / prices.length;
+        const boost = order.bidPrice < averagePrice;
         const percentDiff =
           (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100;
         console.log(
           `Bid ${order.bidPrice} : Average Price ${averagePrice.toFixed(
             order.priceDecimals
-          )} : Percent Diff ${percentDiff.toFixed(4)}% : Would Boost ${(
-            1 +
-            addCount * (percentDiff / 100)
-          ).toFixed(4)}`
+          )} : Percent Diff ${percentDiff.toFixed(4)}% : Would Boost ${
+            boost ? (1 + addCount * (percentDiff / 100)).toFixed(4) : 1
+          }`
         );
-        const boost = order.bidPrice < averagePrice;
         const incrementalAddVolume = boost
           ? (order.addVolume * (1 + addCount * order.addBoost)).toFixed(order.volumeDecimals)
           : order.addVolume;
