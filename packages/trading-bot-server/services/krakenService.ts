@@ -128,8 +128,8 @@ class KrakenService {
         );
 
         if (addCount > order.addCount) {
-          console.log('Selling Oldest Position First');
-          await this.sellOldestOrder(order, true, openPositions);
+          console.log('Too Many. Selling Oldest First');
+          await this.sellOldestOrder(order, true, openPositions, addCount - order.addCount);
         }
 
         result = await this.kraken.setAddOrder({
@@ -509,24 +509,37 @@ class KrakenService {
   async sellOldestOrder(
     order: KrakenOrderDetails,
     pairOnly?: boolean,
-    openPositions?: KrakenOpenPositions
+    openPositions?: KrakenOpenPositions,
+    count = 1
   ) {
     if (!openPositions) {
       const positionResult = await this.getOpenPositions();
       openPositions = positionResult.openPositions;
     }
 
+    const { openOrders } = await this.getOpenOrders();
+
     // const ignorePairArr = ['XETHZUSD'];
-    let positionToClose;
+    let positionToClose: KrakenOpenPosition = {} as KrakenOpenPosition;
     for (const key in openPositions) {
       const position = openPositions[key];
       if (
         order.action === position.type &&
-        (!pairOnly || order.krakenTicker === position.pair) // &&
-        // !ignorePairArr.includes(position.pair)
+        (!pairOnly || order.krakenTicker === position.pair) // && !ignorePairArr.includes(position.pair)
       ) {
+        const prevPosition = positionToClose;
         positionToClose =
           positionToClose && position.time > positionToClose.time ? positionToClose : position;
+
+        const open = openOrders?.open;
+        for (const orderId in open) {
+          const openOrder = open[orderId];
+          // if position to close is already open, go back to prev position
+          positionToClose =
+            openOrder.descr.pair === positionToClose.pair && openOrder.vol === positionToClose.vol
+              ? prevPosition
+              : positionToClose;
+        }
       }
     }
 
@@ -536,6 +549,9 @@ class KrakenService {
         `${positionToClose.pair} Sell: ${positionToClose.margin}, ${positionToClose.cost}`
       );
       result = await this.settleTxId(positionToClose, order, true);
+      if (count-- > 0) {
+        await this.sellOldestOrder(order, pairOnly, openPositions, count);
+      }
     }
     return result;
   }
