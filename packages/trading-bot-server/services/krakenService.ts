@@ -14,9 +14,7 @@ import {
   KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
 import { sleep, superParseFloat } from '../scripts/common';
-import { Pair } from '@uniswap/sdk';
 import { KrakenTradeBalanceResult } from '../models/kraken/KrakenResults';
-import { constants } from 'ethers';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -102,6 +100,7 @@ class KrakenService {
           add = true;
           positionMargin += parseFloat(position.margin);
           totalPosition += parseFloat(position.cost);
+          prices.push(parseFloat(position.cost) / parseFloat(position.vol));
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
           await this.settleLeveragedOrder(order);
