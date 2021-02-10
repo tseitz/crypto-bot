@@ -62,6 +62,15 @@
     "percentProfitable": 73.49,
     "avgTrade": 2.00
   },
+  "FILUSDT": {
+    "entrySize": 35,
+    "addSize": 45,
+    "maxAdds": 8,
+    "latestResult": 1896.68,
+    "totalTrades": 315,
+    "percentProfitable": 95.56,
+    "avgTrade": 6.02
+  },
   "LINKUSDT": {
     "entrySize": 35,
     "addSize": 42,
