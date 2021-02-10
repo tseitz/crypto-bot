@@ -80,6 +80,15 @@
     "percentProfitable": 95.56,
     "avgTrade": 6.02
   },
+  "GRTUSDT": {
+    "entrySize": 30,
+    "addSize": 35,
+    "maxAdds": 12,
+    "latestResult": 5790.01,
+    "totalTrades": 392,
+    "percentProfitable": 86.73,
+    "avgTrade": 14.77
+  },
   "LINKUSDT": {
     "entrySize": 35,
     "addSize": 42,
