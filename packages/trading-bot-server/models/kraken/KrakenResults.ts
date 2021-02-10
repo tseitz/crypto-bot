@@ -49,6 +49,71 @@ export class KrakenBalanceResult {
   }
 }
 
+export interface KrakenTradeBalanceResponse {
+  error: string[];
+  result: KrakenTradeBalance;
+}
+export class KrakenTradeBalanceResult {
+  error: string[];
+  balances: KrakenTradeBalance;
+
+  constructor(response: KrakenTradeBalanceResponse) {
+    this.error = response.error;
+    this.balances = this.getProperNamedTradeBalance(response.result);
+  }
+
+  // TODO: come back to this any
+  getProperNamedTradeBalance(result: KrakenPoorlyNamedTradeBalance | any) {
+    return new KrakenTradeBalance(result);
+  }
+}
+
+// great naming kraken
+interface KrakenPoorlyNamedTradeBalance {
+  c: string; // cost basis of open positions
+  e: string; // equity = trade balance + unrealized net profit/loss
+  eb: string; // equivalent balance (combined balance of all currencies)
+  m: string; // margin amount of open positions
+  mf: string; // free margin = equity - initial margin (maximum margin available to open new positions)
+  ml: string; // margin level = (equity / initial margin) * 100
+  n: string; // unrealized net profit/loss of open positions
+  tb: string; // trade balance (combined balance of all equity currencies)
+  v: string; // current floating valuation of open positions
+}
+
+export class KrakenTradeBalance {
+  costBasis: string; // cost basis of open positions
+  equity: string; // equity = trade balance + unrealized net profit/loss
+  totalBalances: string; // equivalent balance (combined balance of all currencies)
+  openPositionMargin: string; // margin amount of open positions
+  marginFree: string; // free margin = equity - initial margin (maximum margin available to open new positions)
+  marginLevel: string; // margin level = (equity / initial margin) * 100
+  unrealizedGains: string; // unrealized net profit/loss of open positions
+  tradeBalance: string; // trade balance (combined balance of all equity currencies)
+  openValuations: string; // current floating valuation of open positions
+
+  constructor(result: KrakenPoorlyNamedTradeBalance) {
+    this.costBasis = result.c;
+    this.equity = result.e;
+    this.totalBalances = result.eb;
+    this.openPositionMargin = result.m;
+    this.marginFree = result.mf;
+    this.marginLevel = result.ml;
+    this.unrealizedGains = result.n;
+    this.tradeBalance = result.tb;
+    this.openValuations = result.v;
+  }
+}
+
+// export class LogKrakenTradeBalance extends KrakenTradeBalance {
+//   date: string;
+
+//   constructor(balances: KrakenTradeBalance) {
+//     super(balances);
+//     this.date = Date.now();
+//   }
+// }
+
 export interface KrakenOpenPositionResponse {
   error: string[];
   result: KrakenOpenPositions;

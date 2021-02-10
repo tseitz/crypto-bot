@@ -15,6 +15,7 @@ import {
 } from '../models/kraken/KrakenResults';
 import { sleep, superParseFloat } from '../scripts/common';
 import { Pair } from '@uniswap/sdk';
+import { KrakenTradeBalanceResult } from '../models/kraken/KrakenResults';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -57,6 +58,10 @@ class KrakenService {
     });
 
     return { orderBookError, orderBookData };
+  }
+
+  async getTradeBalance(): Promise<KrakenTradeBalanceResult> {
+    return new KrakenTradeBalanceResult(await this.kraken.getTradeBalance());
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {

@@ -5,6 +5,7 @@ import { kraken } from './services/krakenService';
 // import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
 import { OrderQueue } from './models/OrderQueue';
+import { mongoClient, logNightlyResult } from './services/mongoDbService';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -91,28 +92,20 @@ const cron = schedule.scheduleJob('0 0 * * *', async () => {
 
 let previousBalance = 0;
 async function getBalances() {
-  // TODO - make this it's own thing
-  // c:'2881.3240'
-  // e:'1151.8423'
-  // eb:'2052.1541'
-  // m:'1095.7655'
-  // mf:'56.0768'
-  // ml:'105.11'
-  // n:'24.1204'
-  // tb:'1127.7219'
-  // v:'2912.7724'
-  const balances = await kraken.kraken.getTradeBalance();
-  const realizedBalance = balances.result.eb;
-  const openBalance = balances.result.n;
-  const unrealizedBalance = parseFloat(realizedBalance) + parseFloat(openBalance);
+  const { balances } = await kraken.getTradeBalance();
+  const realizedBalance = balances.totalBalances;
+  const unrealizedGains = balances.unrealizedGains;
+  const unrealizedBalance = parseFloat(realizedBalance) + parseFloat(unrealizedGains);
   // const difference = balance - previousBalance;
-  // previousBalance = balances.result.eb;
+  // previousBalance = balances.eb;
 
   console.log(`Nightly Log
 ---------------------------
   Balance:      $${realizedBalance}
-  Open:         $${openBalance}
+  Open:         $${unrealizedGains}
   Unrealized:   $${unrealizedBalance}
 ---------------------------`);
+
+  // await logNightlyResult(balances);
 }
-// getBalances();
+getBalances();
