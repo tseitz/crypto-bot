@@ -554,7 +554,8 @@ class KrakenService {
         `${positionToClose.pair} Sell: ${positionToClose.margin}, ${positionToClose.cost}`
       );
       result = await this.settleTxId(positionToClose, order, true);
-      if (count-- > 0) {
+      count -= 1;
+      if (count > 0) {
         await this.sellOldestOrder(order, pairOnly, openPositions, count);
       }
     }
