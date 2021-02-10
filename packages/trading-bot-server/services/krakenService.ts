@@ -122,7 +122,7 @@ class KrakenService {
           `Bid ${order.bidPrice} : Average Price ${averagePrice.toFixed(
             order.priceDecimals
           )} : Percent Diff ${percentDiff.toFixed(4)}% : Would Boost ${
-            1 + addCount * (percentDiff * 100)
+            1 + addCount * (percentDiff / 100)
           }`
         );
         const boost = order.bidPrice < averagePrice;
