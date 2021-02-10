@@ -551,7 +551,7 @@ class KrakenService {
     let result;
     if (positionToClose) {
       console.log(
-        `${positionToClose.pair} Sell: ${positionToClose.margin}, ${positionToClose.cost}`
+        `${count} ${positionToClose.pair} Sell: ${positionToClose.margin}, ${positionToClose.cost}`
       );
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
