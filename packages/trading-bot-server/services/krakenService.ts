@@ -380,7 +380,7 @@ class KrakenService {
       const type = open[key]['descr']['type'];
       const starttm = open[key]['opentm'];
       const startDate = new Date(starttm * 1000).toUTCString();
-      const timeLimit = new Date(Date.now() - 15 * 60 * 1000).toUTCString(); // 15 min
+      const timeLimit = new Date(Date.now() - 10 * 60 * 1000).toUTCString(); // 10 min
 
       if (startDate < timeLimit) {
         console.log(`Old ${type} ${pair}. Cancelling.`);
