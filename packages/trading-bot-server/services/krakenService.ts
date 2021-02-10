@@ -132,7 +132,7 @@ class KrakenService {
           : order.addVolume;
         const incrementalAddDollar = boost
           ? ((order.positionSize || order.addSize) * (1 + addCount * order.addBoost)).toFixed(2)
-          : order.tradeVolumeInDollar.toFixed(2);
+          : (order.positionSize || order.addSize).toFixed(2);
         console.log(
           `Adding: ${addCount}/${order.addCount} @ ${
             boost ? (1 + addCount * order.addBoost).toFixed(2) : 1
