@@ -109,7 +109,11 @@ class KrakenService {
       }
 
       let averagePrice = prices.reduce((a, b) => a + b) / prices.length;
-      console.log(`Bid ${order.bidPrice} : Average Price ${averagePrice}`);
+      const percentDiff =
+        (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100;
+      console.log(
+        `Bid ${order.bidPrice} : Average Price ${averagePrice} : Percent Diff ${percentDiff}`
+      );
 
       if (order.marginFree < order.lowestLeverageMargin) {
         console.log('Margin Level too Low. Selling oldest order.');
