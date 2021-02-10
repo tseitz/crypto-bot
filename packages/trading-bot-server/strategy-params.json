@@ -44,6 +44,15 @@
     "percentProfitable": 86.61,
     "avgTrade": 9.06
   },
+  "DOGEUSDT": {
+    "entrySize": 30,
+    "addSize": 40,
+    "maxAdds": 8,
+    "latestResult": 2666.73,
+    "totalTrades": 262,
+    "percentProfitable": 74.43,
+    "avgTrade": 10.18
+  },
   "DOTUSDT": {
     "entrySize": 30,
     "addSize": 42,
