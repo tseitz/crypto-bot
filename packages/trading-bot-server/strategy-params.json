@@ -55,7 +55,7 @@
   },
   "DOTUSDT": {
     "entrySize": 32,
-    "addSize": 43,
+    "addSize": 44,
     "maxAdds": 10,
     "latestResult": 2076.30,
     "totalTrades": 558,
@@ -126,7 +126,7 @@
     "avgTrade": 6.60
   },
   "XLMUSDT": {
-    "entrySize": 30,
+    "entrySize": 34,
     "addSize": 46,
     "maxAdds": 8,
     "latestResult": 985.58,
@@ -135,8 +135,8 @@
     "avgTrade": 3.69
   },
   "XTZUSD": {
-    "entrySize": 28,
-    "addSize": 38,
+    "entrySize": 30,
+    "addSize": 39,
     "maxAdds": 9,
     "latestResult": 1730.71,
     "totalTrades": 396,
