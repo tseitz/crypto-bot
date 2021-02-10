@@ -16,6 +16,7 @@ import {
 import { sleep, superParseFloat } from '../scripts/common';
 import { Pair } from '@uniswap/sdk';
 import { KrakenTradeBalanceResult } from '../models/kraken/KrakenResults';
+import { constants } from 'ethers';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -94,6 +95,7 @@ class KrakenService {
       let add = false;
       let positionMargin = 0;
       let totalPosition = 0;
+      let prices: number[] = [];
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
@@ -106,23 +108,28 @@ class KrakenService {
         }
       }
 
+      let averagePrice = prices.reduce((a, b) => a + b) / prices.length;
+      console.log(`Bid ${order.bidPrice} : Average Price ${averagePrice}`);
+
       if (order.marginFree < order.lowestLeverageMargin) {
         console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, false, openPositions);
       }
 
       if (add) {
+        const boost = order.bidPrice < averagePrice;
         const addCount =
           parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
-        const incrementalAddVolume = (order.addVolume * (1 + addCount * order.addBoost)).toFixed(
-          order.volumeDecimals
-        );
-        const incrementalAddDollar = (
-          (order.positionSize || order.addSize) *
-          (1 + addCount * order.addBoost)
-        ).toFixed(2);
+        const incrementalAddVolume = boost
+          ? (order.addVolume * (1 + addCount * order.addBoost)).toFixed(order.volumeDecimals)
+          : order.addVolume;
+        const incrementalAddDollar = boost
+          ? ((order.positionSize || order.addSize) * (1 + addCount * order.addBoost)).toFixed(2)
+          : order.tradeVolumeInDollar.toFixed(2);
         console.log(
-          `Adding: ${addCount}/${order.addCount} @ ${(1 + addCount * order.addBoost).toFixed(2)}x`
+          `Adding: ${addCount}/${order.addCount} @ ${
+            boost ? (1 + addCount * order.addBoost).toFixed(2) : 1
+          }x`
         );
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(
