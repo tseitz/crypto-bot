@@ -82,7 +82,7 @@
   },
   "FILUSDT": {
     "entrySize": 35,
-    "addSize": 50,
+    "addSize": 48,
     "maxAdds": 9,
     "latestResult": 1896.68,
     "totalTrades": 315,
