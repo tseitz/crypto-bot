@@ -17,6 +17,15 @@
     "percentProfitable": 94.06,
     "avgTrade": 6.72
   },
+  "ALGOUSD": {
+    "entrySize": 34,
+    "addSize": 35,
+    "maxAdds": 9,
+    "latestResult": 2909.27,
+    "totalTrades": 385,
+    "percentProfitable": 89.61,
+    "avgTrade": 7.56
+  },
   "BALUSDT": {
     "entrySize": 40,
     "addSize": 47,
@@ -146,10 +155,10 @@
   "YFIUSDT": {
     "entrySize": 25,
     "addSize": 27,
-    "maxAdds": 6,
-    "latestResult": 1105.86,
-    "totalTrades": 89,
-    "percentProfitable": 95.51,
-    "avgTrade": 12.43
+    "maxAdds": 8,
+    "latestResult": 1648.67,
+    "totalTrades": 226,
+    "percentProfitable": 91.15,
+    "avgTrade": 7.30
   }
 }
