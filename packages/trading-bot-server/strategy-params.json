@@ -45,8 +45,8 @@
     "avgTrade": 9.06
   },
   "DOGEUSDT": {
-    "entrySize": 30,
-    "addSize": 40,
+    "entrySize": 34,
+    "addSize": 45,
     "maxAdds": 8,
     "latestResult": 2666.73,
     "totalTrades": 262,
