@@ -83,7 +83,7 @@
   "FILUSDT": {
     "entrySize": 35,
     "addSize": 50,
-    "maxAdds": 8,
+    "maxAdds": 9,
     "latestResult": 1896.68,
     "totalTrades": 315,
     "percentProfitable": 95.56,
@@ -163,7 +163,7 @@
   },
   "YFIUSDT": {
     "entrySize": 30,
-    "addSize": 35,
+    "addSize": 40,
     "maxAdds": 8,
     "latestResult": 1648.67,
     "totalTrades": 226,
