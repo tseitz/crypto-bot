@@ -67,7 +67,7 @@ export default class KrakenOrderDetails {
   positionSize: number | undefined;
   result: KrakenOrderResult | undefined;
   validate: boolean;
-  addBoost: number;
+  // addBoost: number;
   shortZone: boolean;
   lowestNonLeverageMargin: number;
   lowestLeverageMargin: number;
@@ -161,9 +161,9 @@ export default class KrakenOrderDetails {
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
 
     // local configs
-    this.addBoost = 0.02;
-    this.lowestNonLeverageMargin = 110;
-    this.lowestLeverageMargin = 120;
+    // this.addBoost = 0.02;
+    this.lowestNonLeverageMargin = 115;
+    this.lowestLeverageMargin = 125;
 
     console.log(
       `Price: ${superParseFloat(body.strategy.price, this.priceDecimals)}, Bid: ${
