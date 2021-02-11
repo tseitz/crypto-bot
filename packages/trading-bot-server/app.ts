@@ -103,7 +103,7 @@ async function getBalances() {
 ---------------------------
   Balance:      $${realizedBalance}
   Open:         $${unrealizedGains}
-  Unrealized:   $${unrealizedBalance}
+  Unrealized:   $${unrealizedBalance.toFixed(4)}
 ---------------------------`);
 
   // await logNightlyResult(balances);
