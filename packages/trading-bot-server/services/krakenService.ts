@@ -139,7 +139,7 @@ class KrakenService {
           parseFloat(myPositionAfter) * (order.leverageAmount || 1)
         ).toFixed(2);
 
-        console.log(`Bid ${order.bidPrice} : Average ${averagePrice} : ${percentDiff}% Diff`);
+        console.log(`Bid/Average: ${order.bidPrice} : ${averagePrice} : ${percentDiff}% Diff`);
         console.log(`Adding: ${addCount}/${order.addCount} @ ${shouldBoost ? boost : 1}x`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
@@ -563,7 +563,7 @@ class KrakenService {
     let result;
     if (positionToClose) {
       console.log(
-        `${count} ${positionToClose.pair} Sell: ${positionToClose.margin}, ${positionToClose.cost}`
+        `${positionToClose.pair} Sell (${count}): ${positionToClose.margin}, ${positionToClose.cost}`
       );
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
