@@ -221,8 +221,8 @@ class KrakenService {
             100
           ).toFixed(2)
         );
-        // const boostPercentDiff = percentDiff * -3.15;
-        const boost = parseFloat((1 + percentDiff / 100).toFixed(2));
+        const boostPercentDiff = percentDiff * -1;
+        const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(2));
         const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
 
