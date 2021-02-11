@@ -83,7 +83,7 @@ class KrakenService {
 
   async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let result;
-    await this.cancelOpenOrdersForPair(order, order.action);
+    // await this.cancelOpenOrdersForPair(order, order.action);
 
     if (order.close) {
       result = await this.settleLeveragedOrder(order);
@@ -92,14 +92,12 @@ class KrakenService {
 
       let add = false;
       let positionMargin = 0;
-      let totalPosition = 0;
       let prices: number[] = [];
       for (const key in openPositions) {
         const position = openPositions[key];
         if (order.krakenTicker === position.pair && order.action === position.type) {
           add = true;
           positionMargin += parseFloat(position.margin);
-          totalPosition += parseFloat(position.cost);
           prices.push(parseFloat(position.cost) / parseFloat(position.vol));
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
@@ -303,6 +301,7 @@ class KrakenService {
     let latestResult;
 
     // cancel open add order for this group. Some might not have been picked up
+    await this.cancelOpenOrdersForPair(order, order.action);
     await this.cancelOpenOrdersForPair(order, order.oppositeAction);
 
     const { openPositions } = await this.getOpenPositions();
