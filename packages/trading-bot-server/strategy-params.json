@@ -18,9 +18,9 @@
     "avgTrade": 6.72
   },
   "BALUSDT": {
-    "entrySize": 32,
-    "addSize": 40,
-    "maxAdds": 10,
+    "entrySize": 40,
+    "addSize": 45,
+    "maxAdds": 8,
     "latestResult": 2927.56,
     "totalTrades": 371,
     "percentProfitable": 85.71,

@@ -115,16 +115,18 @@ class KrakenService {
       if (add) {
         const addCount =
           parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
+
+        // get average price of positions
         let averagePrice = superParseFloat(
           prices.reduce((a, b) => a + b) / prices.length,
           order.priceDecimals
         );
+        // average - bidPrice so if we're way ahead, it's negative, causing us to not add as much when way ahead
         const percentDiff = parseFloat(
           (((averagePrice - order.bidPrice) / ((order.bidPrice + averagePrice) / 2)) * 100).toFixed(
             4
           )
         );
-        // const shouldBoost = order.bidPrice < averagePrice;
         const boost = parseFloat((1 + percentDiff / 100).toFixed(4));
 
         const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
