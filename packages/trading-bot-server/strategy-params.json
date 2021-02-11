@@ -162,8 +162,8 @@
     "avgTrade": 4.37
   },
   "YFIUSDT": {
-    "entrySize": 25,
-    "addSize": 27,
+    "entrySize": 30,
+    "addSize": 35,
     "maxAdds": 8,
     "latestResult": 1648.67,
     "totalTrades": 226,
