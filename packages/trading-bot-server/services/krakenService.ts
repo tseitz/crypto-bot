@@ -136,8 +136,7 @@ class KrakenService {
           : (order.positionSize || order.addSize).toFixed(2);
         const myPositionAfter = (positionMargin + parseFloat(incrementalAddDollar)).toFixed(2);
         const marginPositionAfter = (
-          totalPosition +
-          parseFloat(incrementalAddDollar) * (order.leverageAmount || 1)
+          parseFloat(myPositionAfter) * (order.leverageAmount || 1)
         ).toFixed(2);
 
         console.log(`Bid ${order.bidPrice} : Average ${averagePrice} : ${percentDiff}% Diff`);
