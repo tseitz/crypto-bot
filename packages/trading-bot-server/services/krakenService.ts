@@ -122,14 +122,13 @@ class KrakenService {
           order.priceDecimals
         );
         const percentDiff = parseFloat(
-          (
-            (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) *
-            100
-          ).toFixed(4)
+          (((order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100).toFixed(
+            4
+          )
         );
         // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
         // this attempts to bring the average down when behind and add smaller when ahead
-        const boostPercentDiff = order.bidPrice > averagePrice ? percentDiff * -3 : percentDiff * 3;
+        const boostPercentDiff = percentDiff * -3.25;
         const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(4));
 
         const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
