@@ -125,6 +125,15 @@
     "percentProfitable": 87.57,
     "avgTrade": 21.35
   },
+  "TRXUSDT": {
+    "entrySize": 35,
+    "addSize": 40,
+    "maxAdds": 8,
+    "latestResult": 2622.36,
+    "totalTrades": 213,
+    "percentProfitable": 94.84,
+    "avgTrade": 12.31
+  },
   "UNIWETH": {
     "entrySize": 35,
     "addSize": 44,
