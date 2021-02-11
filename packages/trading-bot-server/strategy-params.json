@@ -36,8 +36,8 @@
     "avgTrade": 7.89
   },
   "BTCUSDT": {
-    "entrySize": 30,
-    "addSize": 34,
+    "entrySize": 28,
+    "addSize": 32,
     "maxAdds": 10,
     "latestResult": 1374.94,
     "totalTrades": 438,
@@ -163,7 +163,7 @@
   },
   "YFIUSDT": {
     "entrySize": 30,
-    "addSize": 40,
+    "addSize": 37,
     "maxAdds": 8,
     "latestResult": 1648.67,
     "totalTrades": 226,
