@@ -120,27 +120,22 @@ class KrakenService {
           order.priceDecimals
         );
         const percentDiff = parseFloat(
-          (
-            (Math.abs(order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) *
-            100
-          ).toFixed(4)
+          (((averagePrice - order.bidPrice) / ((order.bidPrice + averagePrice) / 2)) * 100).toFixed(
+            4
+          )
         );
-        const shouldBoost = order.bidPrice < averagePrice;
-        const boost = shouldBoost ? parseFloat((1 + addCount * (percentDiff / 100)).toFixed(4)) : 1;
+        // const shouldBoost = order.bidPrice < averagePrice;
+        const boost = parseFloat((1 + percentDiff / 100).toFixed(4));
 
-        const incrementalAddVolume = shouldBoost
-          ? (order.addVolume * boost).toFixed(order.volumeDecimals)
-          : order.addVolume;
-        const incrementalAddDollar = shouldBoost
-          ? ((order.positionSize || order.addSize) * boost).toFixed(2)
-          : (order.positionSize || order.addSize).toFixed(2);
+        const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
+        const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
         const myPositionAfter = (positionMargin + parseFloat(incrementalAddDollar)).toFixed(2);
         const marginPositionAfter = (
           parseFloat(myPositionAfter) * (order.leverageAmount || 1)
         ).toFixed(2);
 
         console.log(`Bid/Average: ${order.bidPrice} : ${averagePrice} : ${percentDiff}% Diff`);
-        console.log(`Adding: ${addCount}/${order.addCount} @ ${shouldBoost ? boost : 1}x`);
+        console.log(`Adding: ${addCount}/${order.addCount} @ ${boost}x`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
 
