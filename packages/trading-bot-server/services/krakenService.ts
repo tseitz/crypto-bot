@@ -199,7 +199,7 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar === 0 && order.marginFree > order.lowestNonLeverageMargin + 50) {
+      if (order.balanceInDollar === 0 && order.marginFree > order.lowestNonLeverageMargin) {
         console.log(`New Entry: ${order.tradeVolumeInDollar}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
@@ -214,18 +214,23 @@ class KrakenService {
           parseInt(
             ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(0)
           ) + 1;
-        const incrementalAddVolume = (order.addVolume * (1 + addCount * order.addBoost)).toFixed(
-          order.volumeDecimals
+        const shouldHave = order.entrySize + order.addSize * (addCount - 1);
+        const percentDiff = parseFloat(
+          (
+            ((order.balanceInDollar - shouldHave) / ((order.balanceInDollar + shouldHave) / 2)) *
+            100
+          ).toFixed(2)
         );
-        const incrementalAddDollar = (
-          (order.positionSize || order.addSize) *
-          (1 + addCount * order.addBoost)
-        ).toFixed(2);
+        // const boostPercentDiff = percentDiff * -3.15;
+        const boost = parseFloat((1 + percentDiff / 100).toFixed(2));
+        const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
+        const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
 
         if (!order.buyBags) {
           console.log(
-            `Adding ${addCount}/${order.addCount} @ ${(1 + addCount * order.addBoost).toFixed(2)}x`
+            `Balance: ${order.balanceInDollar}, Should Have: ${shouldHave}, Diff: ${percentDiff}`
           );
+          console.log(`Adding ${addCount}/${order.addCount} @ ${boost}x`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           console.log(
             `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
