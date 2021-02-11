@@ -73,8 +73,8 @@
   },
   "FILUSDT": {
     "entrySize": 35,
-    "addSize": 46,
-    "maxAdds": 10,
+    "addSize": 50,
+    "maxAdds": 8,
     "latestResult": 1896.68,
     "totalTrades": 315,
     "percentProfitable": 95.56,
