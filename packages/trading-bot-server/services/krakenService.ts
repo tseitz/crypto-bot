@@ -136,7 +136,7 @@ class KrakenService {
           parseFloat(myPositionAfter) * (order.leverageAmount || 1)
         ).toFixed(2);
 
-        console.log(`Bid/Average: ${order.bidPrice} : ${averagePrice} : ${percentDiff}% Diff`);
+        console.log(`Bid/Average: ${order.bidPrice} | ${averagePrice} | ${percentDiff}%`);
         console.log(`Adding: ${addCount}/${order.addCount} @ ${boost}x`);
         console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
         console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
@@ -226,7 +226,7 @@ class KrakenService {
 
         if (!order.buyBags) {
           console.log(
-            `Balance: ${order.balanceInDollar}, Should Have: ${shouldHave}, Diff: ${percentDiff}`
+            `Bought: ${shouldHave} | Balance: ${order.balanceInDollar} | Diff: ${percentDiff}%`
           );
           console.log(`Adding ${addCount}/${order.addCount} @ ${boost}x`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
