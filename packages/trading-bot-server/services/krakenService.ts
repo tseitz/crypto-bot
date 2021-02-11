@@ -208,6 +208,7 @@ class KrakenService {
           // validate: order.validate,
         });
       } else {
+        // This is all just a guestimate since we're not sure if we boosted each time
         const addCount =
           parseInt(
             ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(0)
