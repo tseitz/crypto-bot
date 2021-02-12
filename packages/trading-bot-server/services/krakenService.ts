@@ -140,7 +140,7 @@ class KrakenService {
 
         console.log(`Adding: ${addCount}/${order.addCount}`);
         console.log(`Avg: ${order.bidPrice} | ${averagePrice} | ${percentDiff}%`);
-        console.log(`Boost: ${order.addSize} | ${incrementalAddDollar} | ${boost}x`);
+        console.log(`Boost: ${boost}x | ${order.addSize.toFixed(2)} | ${incrementalAddDollar}`);
         console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
@@ -233,7 +233,7 @@ class KrakenService {
         if (!order.buyBags) {
           console.log(`Adding: ${addCount}/${order.addCount}`);
           console.log(`Balance: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
-          console.log(`Boost: ${order.addSize} | ${incrementalAddDollar} | ${boost}x`);
+          console.log(`Boost: ${boost}x | ${order.addSize.toFixed(2)} | ${incrementalAddDollar}`);
           console.log(
             `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
               2
