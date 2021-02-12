@@ -83,7 +83,12 @@ class KrakenService {
 
   async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let result;
+
     // await this.cancelOpenOrdersForPair(order, order.action);
+    console.log(`Margin: ${order.marginFree}`);
+    console.log(
+      `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | ${order.bidPrice}`
+    );
 
     if (order.close) {
       result = await this.settleLeveragedOrder(order);
@@ -169,7 +174,7 @@ class KrakenService {
       }
 
       if (result) {
-        logOrderResult(``, result, order.krakenizedTradingViewTicker);
+        logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
       }
     }
 
@@ -257,8 +262,9 @@ class KrakenService {
           const sellVolume = superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals);
           const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
 
+          console.log(`Selling Some First...`);
           console.log(
-            `Selling Some First... Balance After: ${(
+            `Balance After: ${(
               order.balanceInDollar +
               order.tradeVolumeInDollar -
               sellVolumeInDollar
@@ -273,7 +279,7 @@ class KrakenService {
               volume: sellVolume,
               // validate: order.validate,
             });
-            logOrderResult(`Sell Order`, result, newOrder.krakenizedTradingViewTicker);
+            logOrderResult(`Order`, result, newOrder.krakenizedTradingViewTicker);
             await sleep(5000);
           } else {
             console.log('Order size is the same. No action taken.');
@@ -292,7 +298,7 @@ class KrakenService {
     }
 
     if (result) {
-      logOrderResult(``, result, order.krakenizedTradingViewTicker);
+      logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
     }
 
     // await logKrakenResult(order, result);
