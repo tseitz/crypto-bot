@@ -55,8 +55,8 @@
   },
   "DOGEUSDT": {
     "entrySize": 34,
-    "addSize": 42,
-    "maxAdds": 8,
+    "addSize": 50,
+    "maxAdds": 7,
     "latestResult": 2666.73,
     "totalTrades": 262,
     "percentProfitable": 74.43,
