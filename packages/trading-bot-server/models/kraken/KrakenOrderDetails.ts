@@ -237,6 +237,7 @@ export default class KrakenOrderDetails {
       this.tradingViewTicker === 'BALUSDT' ||
       this.tradingViewTicker === 'XLMUSDT' ||
       this.tradingViewTicker === 'FILUSDT' ||
+      this.tradingViewTicker === 'CRVUSDT' ||
       (this.action === 'sell' && this.tradingViewTicker === 'KSMUSDT') ||
       (this.action === 'sell' && this.tradingViewTicker === 'LINKUSDT') ||
       (this.action === 'sell' && this.tradingViewTicker === 'UNIWETH') ||
