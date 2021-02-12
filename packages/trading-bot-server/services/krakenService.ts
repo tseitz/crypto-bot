@@ -331,7 +331,7 @@ class KrakenService {
             leverage: order.leverageAmount,
             // validate: order.validate,
           });
-          logOrderResult(`Settled Position`, latestResult, order.krakenizedTradingViewTicker);
+          logOrderResult(`Settled`, latestResult, order.krakenizedTradingViewTicker);
           break;
         }
       }
@@ -399,7 +399,7 @@ class KrakenService {
     // local meaning don't close leverage orders
     if (!order.nonLeverageOnly) {
       result = await this.handleLeveragedOrder(order);
-      logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
+      logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
     }
 
     // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
@@ -523,7 +523,7 @@ class KrakenService {
 
       result = await this.settleTxId(positions[1], order, true, volumeToClose);
     }
-    logOrderResult(`Settled Position`, result, position.pair);
+    logOrderResult(`Settled`, result, position.pair);
 
     return result;
   }
@@ -568,7 +568,7 @@ class KrakenService {
     let result;
     if (positionToClose) {
       console.log(
-        `${positionToClose.pair} Sell (${count}): ${positionToClose.margin}, ${positionToClose.cost}`
+        `${positionToClose.pair} Oldest: ${positionToClose.margin} | ${positionToClose.cost}`
       );
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
