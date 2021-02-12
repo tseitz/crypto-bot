@@ -258,7 +258,6 @@ class KrakenService {
           const sellVolume = superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals);
           const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
 
-          console.log('-'.repeat(20));
           console.log(`Selling Some First...`);
           console.log(
             `Balance After: ${(
@@ -281,7 +280,6 @@ class KrakenService {
           } else {
             console.log('Order size is the same. No action taken.');
           }
-          console.log('-'.repeat(20));
         }
 
         result = await this.kraken.setAddOrder({
@@ -571,14 +569,12 @@ class KrakenService {
 
     let result;
     if (positionToClose) {
-      console.log('-'.repeat(20));
       console.log(`${positionToClose.pair} Oldest: ${positionToClose.margin}`);
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
       if (count > 0) {
         await this.sellOldestOrder(order, pairOnly, openPositions, count);
       }
-      console.log('-'.repeat(20));
     }
     return result;
   }
