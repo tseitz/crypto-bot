@@ -64,8 +64,10 @@ class KrakenService {
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    // some orders might not have filled. cancel beforehand
-    // await this.cancelOpenOrdersForPair(order);
+    console.log(`Margin: ${order.marginFree}`);
+    console.log(
+      `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | My Bid: ${order.bidPrice}`
+    );
 
     let result;
     if (order.oldest) {
@@ -83,12 +85,7 @@ class KrakenService {
 
   async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
     let result;
-
     // await this.cancelOpenOrdersForPair(order, order.action);
-    console.log(`Margin: ${order.marginFree}`);
-    console.log(
-      `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | ${order.bidPrice}`
-    );
 
     if (order.close) {
       result = await this.settleLeveragedOrder(order);
