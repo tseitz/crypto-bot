@@ -64,7 +64,7 @@ class KrakenService {
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    console.log(`Margin: ${order.marginFree}`);
+    console.log(`Margin Free: ${order.marginFree}`);
     console.log(
       `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | My Bid: ${order.bidPrice}`
     );
@@ -138,9 +138,9 @@ class KrakenService {
           parseFloat(myPositionAfter) * (order.leverageAmount || 1)
         ).toFixed(2);
 
-        console.log(`Adding ${addCount}/${order.addCount}`);
+        console.log(`Adding: ${addCount}/${order.addCount}`);
         console.log(`Bid: ${order.bidPrice} | Avg: ${averagePrice} | ${percentDiff}%`);
-        console.log(`Boost: ${order.addSize} | ${boost}x | ${incrementalAddDollar}`);
+        console.log(`Boost: ${order.addSize} | ${incrementalAddDollar} | ${boost}x`);
         console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
@@ -228,9 +228,9 @@ class KrakenService {
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
 
         if (!order.buyBags) {
-          console.log(`Adding ${addCount}/${order.addCount}`);
+          console.log(`Adding: ${addCount}/${order.addCount}`);
           console.log(`Balance: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
-          console.log(`Boost: ${boost}x | ${order.addSize} | ${incrementalAddDollar}`);
+          console.log(`Boost: ${order.addSize} | ${incrementalAddDollar} | ${boost}x`);
           console.log(
             `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
               2
