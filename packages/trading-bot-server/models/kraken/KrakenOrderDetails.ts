@@ -82,6 +82,10 @@ export default class KrakenOrderDetails {
     openOrders: KrakenOpenOrders,
     tradeBalance: any
   ) {
+    // account info
+    this.openOrders = openOrders;
+    this.marginFree = superParseFloat(tradeBalance?.mf);
+
     // ticker info
     this.tradingViewTicker = body.ticker;
     this.krakenizedTradingViewTicker = krakenizedTicker;
@@ -90,17 +94,11 @@ export default class KrakenOrderDetails {
     this.quoteOfPair = pairData[this.krakenTicker]['quote'];
     this.assetClassTicker =
       Object.keys(assetClassPriceInfo)[0] === 'ETHUSDT' ? 'ETHUSDT' : 'XBTUSDT';
-    this.openOrders = openOrders;
-    this.marginFree = superParseFloat(tradeBalance?.mf);
 
-    // setup params
-    this.strategyParams = strategyParams[this.tradingViewTicker];
-    this.positionSize = body.strategy?.positionSize;
-    this.entrySize = this.strategyParams?.entrySize;
-    this.addSize = this.strategyParams?.addSize;
-    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 6;
+    // body params
     this.action = body.strategy.action === 'sell' ? 'sell' : 'buy'; // force it
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
+    this.positionSize = body.strategy?.positionSize;
     this.close = body.strategy.description.toLowerCase().includes('close');
     this.oldest = body.strategy.description.toLowerCase().includes('oldest');
     this.oldestPair = this.oldest && body.strategy.description.toLowerCase().includes('pair');
@@ -110,6 +108,18 @@ export default class KrakenOrderDetails {
     this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;
     this.bagAmount = parseFloat(body.strategy.bagSize?.toString() || '0');
     this.validate = body.strategy.validate || false;
+    this.shortZone = parseInt(body.strategy.shortZone?.toString() || '0') === 0 ? false : true;
+
+    // strat params
+    // if in short zone, deleverage to half position
+    this.strategyParams = strategyParams[this.tradingViewTicker];
+    this.entrySize = !this.shortZone
+      ? this.strategyParams?.entrySize
+      : this.strategyParams?.entrySize / 2;
+    this.addSize = !this.shortZone
+      ? this.strategyParams?.addSize
+      : this.strategyParams?.addSize / 2;
+    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 6;
 
     // pair info
     this.minVolume = superParseFloat(pairData[this.krakenTicker]['ordermin']);
@@ -118,7 +128,6 @@ export default class KrakenOrderDetails {
     this.volumeDecimals = pairData[this.krakenTicker]['lot_decimals'];
 
     // leverage info
-    this.shortZone = parseInt(body.strategy.shortzone?.toString() || '0') === 0 ? false : true;
     this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'];
     this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
     this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
@@ -128,8 +137,6 @@ export default class KrakenOrderDetails {
       this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
     this.noLeverage = typeof this.leverageAmount === 'undefined';
     this.bagIt = this.sellBags || this.buyBags;
-    // reset leverage amount in short zone. TODO: functionalize this
-    // this.leverageAmount = this.shortZone ? this.lowestLeverageAmount : this.leverageAmount;
 
     // current price info
     this.tradingViewPrice = superParseFloat(body.strategy.price, this.priceDecimals);

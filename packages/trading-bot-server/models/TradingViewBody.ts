@@ -17,7 +17,7 @@ export interface TradingViewStrategyBody {
   bagSize?: number;
   positionSize?: number;
   validate?: boolean;
-  shortzone?: boolean;
+  shortZone?: boolean;
 }
 
 // TODO: remove optional params. extend instead
