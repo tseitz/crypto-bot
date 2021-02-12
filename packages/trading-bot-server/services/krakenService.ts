@@ -64,9 +64,9 @@ class KrakenService {
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    console.log(
-      `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | My Bid: ${order.bidPrice}`
-    );
+    // console.log(
+    //   `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | My Bid: ${order.bidPrice}`
+    // );
     console.log(`Margin Free: ${order.marginFree}`);
 
     let result;
@@ -139,9 +139,9 @@ class KrakenService {
         ).toFixed(2);
 
         console.log(`Adding: ${addCount}/${order.addCount}`);
-        console.log(`Bid: ${order.bidPrice} | Avg: ${averagePrice} | ${percentDiff}%`);
+        console.log(`Avg: ${order.bidPrice} | ${averagePrice} | ${percentDiff}%`);
         console.log(`Boost: ${order.addSize} | ${incrementalAddDollar} | ${boost}x`);
-        console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
+        console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
           console.log('-'.repeat(26));
@@ -191,6 +191,7 @@ class KrakenService {
         });
       } else {
         console.log(order.sellBags ? `Selling Bags` : `Selling: ${order.tradeVolumeInDollar}`);
+        console.log(`Balance After: ${order.tradeVolumeInDollar + order.marginFree}`);
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
