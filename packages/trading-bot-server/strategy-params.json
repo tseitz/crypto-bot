@@ -28,7 +28,7 @@
   },
   "BALUSDT": {
     "entrySize": 40,
-    "addSize": 47,
+    "addSize": 44,
     "maxAdds": 8,
     "latestResult": 2927.56,
     "totalTrades": 371,
@@ -136,8 +136,8 @@
   },
   "UNIWETH": {
     "entrySize": 34,
-    "addSize": 36,
-    "maxAdds": 11,
+    "addSize": 34,
+    "maxAdds": 10,
     "latestResult": 3047.10,
     "totalTrades": 462,
     "percentProfitable": 70.35,
