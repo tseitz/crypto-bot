@@ -171,7 +171,7 @@ class KrakenService {
       }
 
       if (result) {
-        logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
+        logOrderResult(`ORDER`, result, order.krakenizedTradingViewTicker);
       }
     }
 
@@ -276,7 +276,7 @@ class KrakenService {
               volume: sellVolume,
               // validate: order.validate,
             });
-            logOrderResult(`Order`, result, newOrder.krakenizedTradingViewTicker);
+            logOrderResult(`ORDER`, result, newOrder.krakenizedTradingViewTicker);
             await sleep(5000);
           } else {
             console.log('Order size is the same. No action taken.');
@@ -295,7 +295,7 @@ class KrakenService {
     }
 
     if (result) {
-      logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
+      logOrderResult(`ORDER`, result, order.krakenizedTradingViewTicker);
     }
 
     // await logKrakenResult(order, result);
@@ -341,7 +341,7 @@ class KrakenService {
     }
 
     if (!latestResult) {
-      console.log('Order: Nothing to close');
+      console.log('Nothing to close');
     }
 
     return latestResult;
@@ -402,7 +402,7 @@ class KrakenService {
     // local meaning don't close leverage orders
     if (!order.nonLeverageOnly) {
       result = await this.handleLeveragedOrder(order);
-      logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
+      logOrderResult(`ORDER`, result, order.krakenizedTradingViewTicker);
     }
 
     // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
@@ -526,7 +526,7 @@ class KrakenService {
 
       result = await this.settleTxId(positions[1], order, true, volumeToClose);
     }
-    logOrderResult(`Settled`, result, position.pair);
+    logOrderResult(`SETTLED`, result, position.pair);
 
     return result;
   }
