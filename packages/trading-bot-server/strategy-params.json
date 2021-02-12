@@ -137,7 +137,7 @@
   "UNIWETH": {
     "entrySize": 34,
     "addSize": 34,
-    "maxAdds": 10,
+    "maxAdds": 11,
     "latestResult": 3047.10,
     "totalTrades": 462,
     "percentProfitable": 70.35,
