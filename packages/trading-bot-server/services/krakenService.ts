@@ -136,8 +136,8 @@ class KrakenService {
         ).toFixed(2);
 
         console.log(`Adding: ${addCount}/${order.addCount}`);
-        console.log(`Avg: ${order.bidPrice} | ${averagePrice} | ${percentDiff}%`);
-        console.log(`Boost: ${boost}x | ${order.addSize.toFixed(2)} | ${incrementalAddDollar}`);
+        console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
+        console.log(`Boost: ${order.addSize.toFixed(2)} | ${boost}x | ${incrementalAddDollar}`);
         console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
