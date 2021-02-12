@@ -64,10 +64,10 @@ class KrakenService {
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    console.log(`Margin Free: ${order.marginFree}`);
     console.log(
       `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | My Bid: ${order.bidPrice}`
     );
+    console.log(`Margin Free: ${order.marginFree}`);
 
     let result;
     if (order.oldest) {
@@ -145,7 +145,9 @@ class KrakenService {
 
         if (addCount > order.addCount) {
           console.log('Too Many. Selling Oldest First');
+          console.log('-'.repeat(20));
           await this.sellOldestOrder(order, true, openPositions, addCount - order.addCount);
+          console.log('-'.repeat(20));
         }
 
         result = await this.kraken.setAddOrder({
