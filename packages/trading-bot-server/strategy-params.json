@@ -118,7 +118,7 @@
   },
   "SNXUSDT": {
     "entrySize": 35,
-    "addSize": 48,
+    "addSize": 46,
     "maxAdds": 8,
     "latestResult": 3949.46,
     "totalTrades": 185,
