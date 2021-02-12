@@ -108,7 +108,6 @@ class KrakenService {
       }
 
       if (order.marginFree < order.lowestLeverageMargin) {
-        console.log('Margin Level too Low. Selling oldest order.');
         await this.sellOldestOrder(order, false, openPositions);
       }
 
@@ -144,7 +143,6 @@ class KrakenService {
         console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
-          console.log('Too Many. Selling Oldest First');
           await this.sellOldestOrder(order, true, openPositions, addCount - order.addCount);
         }
 
@@ -571,14 +569,14 @@ class KrakenService {
 
     let result;
     if (positionToClose) {
-      console.log('-'.repeat(26));
+      console.log('-'.repeat(20));
       console.log(`${positionToClose.pair} Oldest: ${positionToClose.margin}`);
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
       if (count > 0) {
         await this.sellOldestOrder(order, pairOnly, openPositions, count);
       }
-      console.log('-'.repeat(26));
+      console.log('-'.repeat(20));
     }
     return result;
   }
