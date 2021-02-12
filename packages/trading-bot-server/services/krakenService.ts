@@ -572,9 +572,7 @@ class KrakenService {
 
     let result;
     if (positionToClose) {
-      console.log(
-        `${positionToClose.pair} Oldest: ${positionToClose.margin} | ${positionToClose.cost}`
-      );
+      console.log(`${positionToClose.pair} Oldest: ${positionToClose.margin} Back`);
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
       if (count > 0) {
