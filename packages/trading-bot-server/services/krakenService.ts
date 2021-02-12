@@ -144,10 +144,10 @@ class KrakenService {
         console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
+          console.log('-'.repeat(26));
           console.log('Too Many. Selling Oldest First');
-          console.log('-'.repeat(20));
           await this.sellOldestOrder(order, true, openPositions, addCount - order.addCount);
-          console.log('-'.repeat(20));
+          console.log('-'.repeat(26));
         }
 
         result = await this.kraken.setAddOrder({
@@ -471,7 +471,7 @@ class KrakenService {
 
         // order
         result = await this.handleNonLeveragedOrder(newOrder);
-        console.log('-'.repeat(20));
+        console.log('-'.repeat(26));
       }, 18000 * i);
       i++;
     }
