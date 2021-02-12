@@ -226,9 +226,11 @@ class KrakenService {
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
 
         if (!order.buyBags) {
-          console.log(
-            `Bought: ${shouldHave} | Balance: ${order.balanceInDollar} | Diff: ${percentDiff}%`
-          );
+          console.log(`Bought | Balance | Diff
+          ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}`);
+          // console.log(
+          //   `Bought: ${shouldHave} | Balance: ${order.balanceInDollar} | Diff: ${percentDiff}%`
+          // );
           console.log(`Adding ${addCount}/${order.addCount} @ ${boost}x`);
           console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
           console.log(
