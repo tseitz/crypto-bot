@@ -18,8 +18,8 @@
     "avgTrade": 6.72
   },
   "ALGOUSD": {
-    "entrySize": 36,
-    "addSize": 44,
+    "entrySize": 38,
+    "addSize": 46,
     "maxAdds": 8,
     "latestResult": 2909.27,
     "totalTrades": 385,
@@ -109,7 +109,7 @@
   },
   "OMGUSDT": {
     "entrySize": 40,
-    "addSize": 48,
+    "addSize": 50,
     "maxAdds": 8,
     "latestResult": 2878.96,
     "totalTrades": 188,
