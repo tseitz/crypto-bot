@@ -236,11 +236,11 @@ export default class KrakenOrderDetails {
       this.tradingViewTicker === 'XTZUSDT' ||
       this.tradingViewTicker === 'BALUSDT' ||
       this.tradingViewTicker === 'XLMUSDT' ||
+      this.tradingViewTicker === 'FILUSDT' ||
       (this.action === 'sell' && this.tradingViewTicker === 'KSMUSDT') ||
       (this.action === 'sell' && this.tradingViewTicker === 'LINKUSDT') ||
       (this.action === 'sell' && this.tradingViewTicker === 'UNIWETH') ||
-      (this.action === 'sell' && this.tradingViewTicker === 'AAVEWETH') ||
-      (this.action === 'sell' && this.tradingViewTicker === 'FILUSDT')
+      (this.action === 'sell' && this.tradingViewTicker === 'AAVEWETH')
     ) {
       return this.action === 'buy' ? this.currentAsk : this.currentBid;
     } else {
