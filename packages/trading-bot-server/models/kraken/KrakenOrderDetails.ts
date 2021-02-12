@@ -165,11 +165,11 @@ export default class KrakenOrderDetails {
     this.lowestNonLeverageMargin = 115;
     this.lowestLeverageMargin = 125;
 
-    console.log(`Margin Available: ${this.marginFree}`);
+    console.log(`Available Margin: ${this.marginFree}`);
     console.log(
-      `Bids: ${superParseFloat(body.strategy.price, this.priceDecimals)} | ${this.currentBid} | ${
-        this.currentAsk
-      } | ${this.bidPrice}`
+      `TV: ${superParseFloat(body.strategy.price, this.priceDecimals)} | Bid: ${
+        this.currentBid
+      } | Ask: ${this.currentAsk} | ${this.bidPrice}`
     );
   }
 

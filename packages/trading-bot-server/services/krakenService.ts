@@ -136,10 +136,10 @@ class KrakenService {
           parseFloat(myPositionAfter) * (order.leverageAmount || 1)
         ).toFixed(2);
 
-        console.log(`Adding: ${addCount}/${order.addCount}`);
-        console.log(`Average Price: ${order.bidPrice} | ${averagePrice} | ${percentDiff}%`);
-        console.log(`Boost: ${boost}x | ${order.addSize} | ${incrementalAddDollar}`);
-        console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
+        console.log(`Adding ${addCount}/${order.addCount}`);
+        console.log(`Bid: ${order.bidPrice} | Avg Price: ${averagePrice} | ${percentDiff}%`);
+        console.log(`Boost: ${order.addSize} | ${boost}x | ${incrementalAddDollar}`);
+        console.log(`Position After: ${myPositionAfter} : ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
           console.log('Too Many. Selling Oldest First');
@@ -169,7 +169,7 @@ class KrakenService {
       }
 
       if (result) {
-        logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
+        logOrderResult(``, result, order.krakenizedTradingViewTicker);
       }
     }
 
@@ -292,7 +292,7 @@ class KrakenService {
     }
 
     if (result) {
-      logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
+      logOrderResult(``, result, order.krakenizedTradingViewTicker);
     }
 
     // await logKrakenResult(order, result);
@@ -338,7 +338,7 @@ class KrakenService {
     }
 
     if (!latestResult) {
-      console.log('Leveraged Order: Nothing to close');
+      console.log('Order: Nothing to close');
     }
 
     return latestResult;
