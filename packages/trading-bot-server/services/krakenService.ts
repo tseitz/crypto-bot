@@ -64,9 +64,7 @@ class KrakenService {
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    // console.log(
-    //   `Price: ${order.tradingViewPrice} | Bid: ${order.currentBid} | Ask: ${order.currentAsk} | My Bid: ${order.bidPrice}`
-    // );
+    console.log(`Price: ${order.tradingViewPrice} | Bid: ${order.bidPrice}`);
     console.log(`Margin Free: ${order.marginFree}`);
 
     let result;
