@@ -226,8 +226,9 @@ class KrakenService {
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
 
         if (!order.buyBags) {
-          console.log(`Bought | Balance | Diff
-          ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}`);
+          console.log(
+            `Bought | Balance | Diff\n${shouldHave} | ${order.balanceInDollar} | ${percentDiff}`
+          );
           // console.log(
           //   `Bought: ${shouldHave} | Balance: ${order.balanceInDollar} | Diff: ${percentDiff}%`
           // );
