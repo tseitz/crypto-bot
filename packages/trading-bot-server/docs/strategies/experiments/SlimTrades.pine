@@ -179,7 +179,7 @@ addLow = (addOnLows and newLow and not lowerMacd and possibleMacdBottom)
 
 buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2) or (reopenOnHighs and high > highestSlow2))
 buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and lowerMacd2 and lowerMacd and possibleMacdBottom
-addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and lowerMacd2 and (rsi1 < longZoneRsi)))
+addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and lowerMacd2 and ((rsiIncreasing) or (rsi1 < longZoneRsi))))
 addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd and possibleMacdBottom) or (rsi1 < shortZoneRsi))
 // closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
 closeSetup = rsi1 > macdCloseLong
