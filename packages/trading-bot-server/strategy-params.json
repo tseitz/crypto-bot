@@ -45,7 +45,7 @@
     "avgTrade": 3.14
   },
   "CRVUSDT": {
-    "entrySize": 32,
+    "entrySize": 36,
     "addSize": 42,
     "maxAdds": 10,
     "latestResult": 3316.71,
@@ -153,7 +153,7 @@
     "avgTrade": 3.69
   },
   "XTZUSD": {
-    "entrySize": 32,
+    "entrySize": 35,
     "addSize": 42,
     "maxAdds": 9,
     "latestResult": 1730.71,
