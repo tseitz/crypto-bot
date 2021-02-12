@@ -136,9 +136,9 @@ class KrakenService {
           parseFloat(myPositionAfter) * (order.leverageAmount || 1)
         ).toFixed(2);
 
-        console.log(`Bid | Average | Diff\n${order.bidPrice} | ${averagePrice} | ${percentDiff}%`);
-        console.log(`Adding: ${addCount}/${order.addCount} @ ${boost}x`);
-        console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
+        console.log(`Adding: ${addCount}/${order.addCount}`);
+        console.log(`Average Price: ${order.bidPrice} | ${averagePrice} | ${percentDiff}%`);
+        console.log(`Boost: ${boost}x | ${order.addSize} | ${incrementalAddDollar}`);
         console.log(`Position: ${myPositionAfter} : ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
@@ -169,7 +169,7 @@ class KrakenService {
       }
 
       if (result) {
-        logOrderResult(`Leveraged Order`, result, order.krakenizedTradingViewTicker);
+        logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
       }
     }
 
@@ -226,14 +226,9 @@ class KrakenService {
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
 
         if (!order.buyBags) {
-          console.log(
-            `Bought | Balance | Diff\n${shouldHave} | ${order.balanceInDollar} | ${percentDiff}`
-          );
-          // console.log(
-          //   `Bought: ${shouldHave} | Balance: ${order.balanceInDollar} | Diff: ${percentDiff}%`
-          // );
-          console.log(`Adding ${addCount}/${order.addCount} @ ${boost}x`);
-          console.log(`Original: ${order.addSize}, Incremental: ${incrementalAddDollar}`);
+          console.log(`Adding ${addCount}/${order.addCount}`);
+          console.log(`Balance: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}`);
+          console.log(`Boost: ${boost}x | ${order.addSize} | ${incrementalAddDollar}`);
           console.log(
             `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
               2
@@ -260,8 +255,15 @@ class KrakenService {
           newOrder.action = 'sell';
           newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now
           const sellVolume = superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals);
+          const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
 
-          console.log(`Selling Some First ${sellVolume}`);
+          console.log(
+            `Selling Some First... Balance After: ${(
+              order.balanceInDollar +
+              order.tradeVolumeInDollar -
+              sellVolumeInDollar
+            ).toFixed(2)}`
+          );
           if (order.addVolume !== parseFloat(incrementalAddVolume)) {
             result = await this.kraken.setAddOrder({
               pair: newOrder.krakenTicker,
@@ -271,11 +273,7 @@ class KrakenService {
               volume: sellVolume,
               // validate: order.validate,
             });
-            logOrderResult(
-              `Sell Non Leveraged Order`,
-              result,
-              newOrder.krakenizedTradingViewTicker
-            );
+            logOrderResult(`Sell Order`, result, newOrder.krakenizedTradingViewTicker);
             await sleep(5000);
           } else {
             console.log('Order size is the same. No action taken.');
@@ -294,7 +292,7 @@ class KrakenService {
     }
 
     if (result) {
-      logOrderResult(`Non Leveraged Order`, result, order.krakenizedTradingViewTicker);
+      logOrderResult(`Order`, result, order.krakenizedTradingViewTicker);
     }
 
     // await logKrakenResult(order, result);
