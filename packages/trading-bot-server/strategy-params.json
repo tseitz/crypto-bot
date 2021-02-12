@@ -46,7 +46,7 @@
   },
   "CRVUSDT": {
     "entrySize": 36,
-    "addSize": 42,
+    "addSize": 50,
     "maxAdds": 10,
     "latestResult": 3316.71,
     "totalTrades": 366,
