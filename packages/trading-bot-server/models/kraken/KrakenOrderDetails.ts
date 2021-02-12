@@ -252,7 +252,7 @@ export default class KrakenOrderDetails {
           this.tradingViewPrice <= this.currentAsk &&
           this.tradingViewPrice >= this.currentBid
         ) {
-          return this.tradingViewPrice;
+          return superParseFloat(this.tradingViewPrice, this.priceDecimals);
         } else {
           return superParseFloat((this.currentBid + this.currentAsk) / 2, this.priceDecimals);
         }
