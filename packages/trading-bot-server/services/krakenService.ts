@@ -226,12 +226,10 @@ class KrakenService {
 
         if (!order.buyBags) {
           console.log(`Adding: ${addCount}/${order.addCount}`);
-          console.log(`Balance: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
+          console.log(`Diff: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
           console.log(`Boost: ${boost}x | ${order.addSize.toFixed(2)} | ${incrementalAddDollar}`);
           console.log(
-            `Balance After: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(
-              2
-            )}`
+            `Position: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(2)}`
           );
         } else {
           console.log('Buying Bags');
