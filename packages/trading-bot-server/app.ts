@@ -86,18 +86,18 @@ app.listen(process.env.PORT || 3000, () => {
   }
 });
 
-const cron = schedule.scheduleJob('0 0 * * *', async () => {
+const cronNoon = schedule.scheduleJob('0 12 * * *', async () => {
+  getBalances();
+});
+const cronMidnight = schedule.scheduleJob('0 0 * * *', async () => {
   getBalances();
 });
 
-let previousBalance = 0;
 async function getBalances() {
   const { balances } = await kraken.getTradeBalance();
   const realizedBalance = balances.totalBalances;
   const unrealizedGains = balances.unrealizedGains;
   const unrealizedBalance = parseFloat(realizedBalance) + parseFloat(unrealizedGains);
-  // const difference = balance - previousBalance;
-  // previousBalance = balances.eb;
 
   console.log(`Nightly Log
 ---------------------------
@@ -108,4 +108,4 @@ async function getBalances() {
 
   await logNightlyResult(balances);
 }
-getBalances();
+// getBalances();
