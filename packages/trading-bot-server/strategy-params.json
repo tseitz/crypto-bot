@@ -30,19 +30,19 @@
     "entrySize": 40,
     "addSize": 46,
     "maxAdds": 8,
-    "latestResult": 2927.56,
-    "totalTrades": 371,
-    "percentProfitable": 85.71,
-    "avgTrade": 7.89
+    "latestResult": 3283.19,
+    "totalTrades": 442,
+    "percentProfitable": 88.69,
+    "avgTrade": 7.43
   },
   "BTCUSDT": {
     "entrySize": 28,
-    "addSize": 30,
+    "addSize": 32,
     "maxAdds": 10,
-    "latestResult": 1374.94,
-    "totalTrades": 438,
-    "percentProfitable": 71.92,
-    "avgTrade": 3.14
+    "latestResult": 1616.29,
+    "totalTrades": 406,
+    "percentProfitable": 83.99,
+    "avgTrade": 3.98
   },
   "CRVUSDT": {
     "entrySize": 36,
@@ -63,13 +63,13 @@
     "avgTrade": 10.18
   },
   "DOTUSDT": {
-    "entrySize": 32,
-    "addSize": 44,
-    "maxAdds": 10,
-    "latestResult": 2076.30,
-    "totalTrades": 558,
-    "percentProfitable": 69.18,
-    "avgTrade": 3.72
+    "entrySize": 36,
+    "addSize": 36,
+    "maxAdds": 11,
+    "latestResult": 1094.05,
+    "totalTrades": 555,
+    "percentProfitable": 65.59,
+    "avgTrade": 1.97
   },
   "ETHUSDT": {
     "entrySize": 30,
@@ -84,10 +84,10 @@
     "entrySize": 35,
     "addSize": 48,
     "maxAdds": 10,
-    "latestResult": 1896.68,
-    "totalTrades": 315,
-    "percentProfitable": 95.56,
-    "avgTrade": 6.02
+    "latestResult": 1655.60,
+    "totalTrades": 410,
+    "percentProfitable": 94.15,
+    "avgTrade": 4.04
   },
   "GRTUSDT": {
     "entrySize": 30,
@@ -102,37 +102,37 @@
     "entrySize": 35,
     "addSize": 42,
     "maxAdds": 10,
-    "latestResult": 4948.27,
-    "totalTrades": 481,
-    "percentProfitable": 93.14,
-    "avgTrade": 10.29
+    "latestResult": 2105.17,
+    "totalTrades": 586,
+    "percentProfitable": 89.93,
+    "avgTrade": 3.59
   },
   "OMGUSDT": {
     "entrySize": 40,
-    "addSize": 48,
-    "maxAdds": 9,
-    "latestResult": 2878.96,
-    "totalTrades": 188,
-    "percentProfitable": 96.81,
-    "avgTrade": 17.31
+    "addSize": 54,
+    "maxAdds": 8,
+    "latestResult": 3419.59,
+    "totalTrades": 452,
+    "percentProfitable": 90.04,
+    "avgTrade": 7.57
   },
   "SNXUSDT": {
     "entrySize": 35,
     "addSize": 46,
     "maxAdds": 8,
-    "latestResult": 3949.46,
-    "totalTrades": 185,
-    "percentProfitable": 87.57,
-    "avgTrade": 21.35
+    "latestResult": 1830.09,
+    "totalTrades": 414,
+    "percentProfitable": 88.16,
+    "avgTrade": 4.42
   },
   "TRXUSDT": {
     "entrySize": 35,
-    "addSize": 40,
+    "addSize": 46,
     "maxAdds": 8,
-    "latestResult": 2622.36,
-    "totalTrades": 213,
-    "percentProfitable": 94.84,
-    "avgTrade": 12.31
+    "latestResult": 5000.32,
+    "totalTrades": 348,
+    "percentProfitable": 95.11,
+    "avgTrade": 14.37
   },
   "UNIWETH": {
     "entrySize": 34,
@@ -145,21 +145,21 @@
   },
   "XLMUSDT": {
     "entrySize": 34,
-    "addSize": 47,
-    "maxAdds": 8,
-    "latestResult": 985.58,
-    "totalTrades": 267,
-    "percentProfitable": 69.29,
-    "avgTrade": 3.69
+    "addSize": 45,
+    "maxAdds": 10,
+    "latestResult": 4678.36,
+    "totalTrades": 399,
+    "percentProfitable": 84.96,
+    "avgTrade": 11.73
   },
   "XTZUSD": {
     "entrySize": 35,
-    "addSize": 42,
-    "maxAdds": 9,
-    "latestResult": 1730.71,
-    "totalTrades": 396,
-    "percentProfitable": 64.9,
-    "avgTrade": 4.37
+    "addSize": 40,
+    "maxAdds": 10,
+    "latestResult": 2830.97,
+    "totalTrades": 476,
+    "percentProfitable": 85.5,
+    "avgTrade": 5.95
   },
   "YFIUSDT": {
     "entrySize": 34,
