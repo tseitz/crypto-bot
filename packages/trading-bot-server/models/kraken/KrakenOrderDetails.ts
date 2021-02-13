@@ -48,6 +48,8 @@ export default class KrakenOrderDetails {
   tradeBalanceInDollar: number;
   usdValueOfQuote: number;
   usdValueOfBase: number;
+  originalEntry: number;
+  originalAdd: number;
   entrySize: number;
   addSize: number;
   spread: number;
@@ -113,8 +115,10 @@ export default class KrakenOrderDetails {
 
     // strat params
     // if in short zone, deleverage to half position
-    this.shortZoneDeleverage = 0.66;
     this.strategyParams = strategyParams[this.tradingViewTicker];
+    this.originalEntry = this.strategyParams?.entrySize;
+    this.originalAdd = this.strategyParams?.addSize;
+    this.shortZoneDeleverage = 0.66;
     this.entrySize = !this.shortZone
       ? this.strategyParams?.entrySize
       : this.strategyParams?.entrySize * this.shortZoneDeleverage;

@@ -115,7 +115,9 @@ class KrakenService {
 
       if (add) {
         const addCount =
-          parseInt(((Math.floor(positionMargin) - order.entrySize) / order.addSize).toFixed(0)) + 1;
+          parseInt(
+            ((Math.floor(positionMargin) - order.entrySize) / order.originalAdd).toFixed(0)
+          ) + 1;
 
         // get average price of positions
         let averagePrice = superParseFloat(
@@ -214,7 +216,7 @@ class KrakenService {
         // This is all just a guestimate since we're not sure if we boosted each time
         const addCount =
           parseInt(
-            ((Math.floor(order.balanceInDollar) - order.entrySize) / order.addSize).toFixed(0)
+            ((Math.floor(order.balanceInDollar) - order.entrySize) / order.originalAdd).toFixed(0)
           ) + 1;
         const shouldHave = order.entrySize + order.addSize * (addCount - 1);
         const percentDiff = parseFloat(
