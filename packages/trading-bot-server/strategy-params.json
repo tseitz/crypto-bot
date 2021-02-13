@@ -3,28 +3,28 @@
     "entrySize": 35,
     "addSize": 40,
     "maxAdds": 10,
-    "latestResult": 2774.76,
-    "totalTrades": 315,
-    "percentProfitable": 82.22,
-    "avgTrade": 8.81
+    "latestResult": 2104.62,
+    "totalTrades": 347,
+    "percentProfitable": 83.57,
+    "avgTrade": 6.07
   },
   "ADAUSDT": {
-    "entrySize": 34,
-    "addSize": 38,
-    "maxAdds": 10,
-    "latestResult": 2827.16,
-    "totalTrades": 421,
-    "percentProfitable": 94.06,
-    "avgTrade": 6.72
+    "entrySize": 32,
+    "addSize": 36,
+    "maxAdds": 11,
+    "latestResult": 5408.78,
+    "totalTrades": 374,
+    "percentProfitable": 98.13,
+    "avgTrade": 14.46
   },
   "ALGOUSD": {
     "entrySize": 38,
     "addSize": 50,
     "maxAdds": 8,
-    "latestResult": 2909.27,
-    "totalTrades": 385,
-    "percentProfitable": 89.61,
-    "avgTrade": 7.56
+    "latestResult": 2656.09,
+    "totalTrades": 366,
+    "percentProfitable": 89.34,
+    "avgTrade": 7.26
   },
   "BALUSDT": {
     "entrySize": 40,
