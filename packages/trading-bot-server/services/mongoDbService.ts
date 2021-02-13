@@ -13,7 +13,7 @@ export async function logNightlyResult(balances: KrakenTradeBalance) {
     const database = mongoClient.db('balances');
     const collection = database.collection('kraken');
 
-    console.dir(balances);
+    // console.dir(balances);
     // const logBalance =
 
     const mongoResult = await collection.insertOne(balances);
