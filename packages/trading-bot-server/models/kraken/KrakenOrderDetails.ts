@@ -113,7 +113,7 @@ export default class KrakenOrderDetails {
 
     // strat params
     // if in short zone, deleverage to half position
-    this.shortZoneDeleverage = 0.33;
+    this.shortZoneDeleverage = 0.66;
     this.strategyParams = strategyParams[this.tradingViewTicker];
     this.entrySize = !this.shortZone
       ? this.strategyParams?.entrySize
