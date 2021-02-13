@@ -108,4 +108,4 @@ async function getBalances() {
 
   await logNightlyResult(balances);
 }
-getBalances();
+// getBalances();

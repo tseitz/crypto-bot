@@ -19,9 +19,11 @@ export async function logNightlyResult(balances: KrakenTradeBalance) {
     const mongoResult = await collection.insertOne(balances);
 
     if (mongoResult.insertedCount === 1) {
-      console.dir(mongoResult);
+      console.log('Logged to Mongo');
+      // console.dir(mongoResult);
     } else {
-      console.dir(mongoResult);
+      console.log(`Nothing logged to Mongo`);
+      // console.dir(mongoResult);
     }
   } finally {
     // Ensures that the mongoClient will close when you finish/error
