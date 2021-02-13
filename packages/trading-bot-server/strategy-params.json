@@ -28,7 +28,7 @@
   },
   "BALUSDT": {
     "entrySize": 40,
-    "addSize": 44,
+    "addSize": 46,
     "maxAdds": 8,
     "latestResult": 2927.56,
     "totalTrades": 371,
