@@ -106,16 +106,16 @@ export class KrakenTradeBalance {
 }
 
 export class KrakenNightlyLog {
-  date: Date;
+  date: string;
   realizedBalances: number;
   unrealizedGains: number;
-  unrealizedBalance: number;
+  unrealizedBalances: number;
 
   constructor(balances: KrakenTradeBalance) {
-    this.date = new Date();
+    this.date = new Date().toLocaleDateString();
     this.realizedBalances = parseFloat(balances.totalBalances);
     this.unrealizedGains = parseFloat(balances.unrealizedGains);
-    this.unrealizedBalance = this.realizedBalances + this.unrealizedGains;
+    this.unrealizedBalances = this.realizedBalances + this.unrealizedGains;
   }
 }
 
