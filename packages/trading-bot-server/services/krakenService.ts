@@ -64,8 +64,11 @@ class KrakenService {
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
-    console.log(`${order.shortZone ? 'Short Zone' : 'Full Speed Ahead'}`);
-    console.log(`Price: ${order.tradingViewPrice} | Bid: ${order.bidPrice}`);
+    console.log(
+      `Price: ${order.tradingViewPrice} | Bid: ${order.bidPrice} | ${
+        order.shortZone ? 'Short Zone' : 'Long Zone'
+      }`
+    );
     console.log(`Margin Free: ${order.marginFree}`);
 
     let result;
