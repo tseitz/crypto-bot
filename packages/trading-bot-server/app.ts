@@ -106,6 +106,6 @@ async function getBalances() {
   Unrealized:   $${unrealizedBalance.toFixed(4)}
 ---------------------------`);
 
-  await logNightlyResult(balances);
+  // await logNightlyResult(balances);
 }
 // getBalances();
