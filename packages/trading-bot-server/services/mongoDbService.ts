@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { KrakenTradeBalance } from '../models/kraken/KrakenResults';
+import { KrakenTradeBalance, KrakenNightlyLog } from '../models/kraken/KrakenResults';
 import KrakenOrderDetails from '../models/kraken/KrakenOrderDetails';
 
 export const mongoClient = new MongoClient(process.env.MONGO_CONNECTION_STRING || '', {
@@ -13,10 +13,9 @@ export async function logNightlyResult(balances: KrakenTradeBalance) {
     const database = mongoClient.db('balances');
     const collection = database.collection('kraken');
 
-    // console.dir(balances);
-    // const logBalance =
+    const logBalance = new KrakenNightlyLog(balances);
 
-    const mongoResult = await collection.insertOne(balances);
+    const mongoResult = await collection.insertOne(logBalance);
 
     if (mongoResult.insertedCount === 1) {
       console.log('Logged to Mongo');
