@@ -127,7 +127,7 @@
   },
   "TRXUSDT": {
     "entrySize": 35,
-    "addSize": 46,
+    "addSize": 50,
     "maxAdds": 8,
     "latestResult": 5000.32,
     "totalTrades": 348,
@@ -145,7 +145,7 @@
   },
   "XLMUSDT": {
     "entrySize": 34,
-    "addSize": 55,
+    "addSize": 60,
     "maxAdds": 8,
     "latestResult": 4678.36,
     "totalTrades": 399,
