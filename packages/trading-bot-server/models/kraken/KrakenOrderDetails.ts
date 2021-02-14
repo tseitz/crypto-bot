@@ -175,7 +175,7 @@ export default class KrakenOrderDetails {
 
     // local configs
     // this.addBoost = 0.02;
-    this.lowestNonLeverageMargin = 125;
+    this.lowestNonLeverageMargin = 150;
     this.lowestLeverageMargin = 135;
   }
 
