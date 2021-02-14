@@ -10,8 +10,8 @@
   },
   "ADAUSDT": {
     "entrySize": 32,
-    "addSize": 36,
-    "maxAdds": 11,
+    "addSize": 40,
+    "maxAdds": 10,
     "latestResult": 5408.78,
     "totalTrades": 374,
     "percentProfitable": 98.13,
@@ -48,10 +48,10 @@
     "entrySize": 36,
     "addSize": 48,
     "maxAdds": 8,
-    "latestResult": 3316.71,
-    "totalTrades": 366,
-    "percentProfitable": 86.61,
-    "avgTrade": 9.06
+    "latestResult": 2216.32,
+    "totalTrades": 373,
+    "percentProfitable": 86.6,
+    "avgTrade": 5.94
   },
   "DOGEUSDT": {
     "entrySize": 34,
@@ -165,9 +165,9 @@
     "entrySize": 34,
     "addSize": 42,
     "maxAdds": 8,
-    "latestResult": 1648.67,
-    "totalTrades": 226,
-    "percentProfitable": 91.15,
-    "avgTrade": 7.30
+    "latestResult": 1476.66,
+    "totalTrades": 270,
+    "percentProfitable": 87.41,
+    "avgTrade": 5.47
   }
 }
