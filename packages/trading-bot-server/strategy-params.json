@@ -109,7 +109,7 @@
   },
   "OMGUSDT": {
     "entrySize": 48,
-    "addSize": 64,
+    "addSize": 60,
     "maxAdds": 8,
     "latestResult": 3419.59,
     "totalTrades": 452,
