@@ -19,7 +19,7 @@
   },
   "ALGOUSD": {
     "entrySize": 38,
-    "addSize": 52,
+    "addSize": 50,
     "maxAdds": 8,
     "latestResult": 2656.09,
     "totalTrades": 366,
