@@ -19,7 +19,7 @@
   },
   "ALGOUSD": {
     "entrySize": 38,
-    "addSize": 50,
+    "addSize": 52,
     "maxAdds": 8,
     "latestResult": 2656.09,
     "totalTrades": 366,
@@ -46,7 +46,7 @@
   },
   "CRVUSDT": {
     "entrySize": 36,
-    "addSize": 50,
+    "addSize": 48,
     "maxAdds": 8,
     "latestResult": 3316.71,
     "totalTrades": 366,
