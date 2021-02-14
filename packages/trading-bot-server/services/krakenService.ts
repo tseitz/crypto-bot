@@ -64,12 +64,12 @@ class KrakenService {
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+    console.log(`Margin Free: ${order.marginFree}`);
     console.log(
       `Price: ${order.tradingViewPrice} | Bid: ${order.bidPrice} | ${
         order.shortZone ? 'Short Zone' : 'Long Zone'
       }`
     );
-    console.log(`Margin Free: ${order.marginFree}`);
 
     let result;
     if (order.oldest) {

@@ -100,11 +100,11 @@ async function getBalances() {
   const unrealizedBalance = parseFloat(realizedBalance) + parseFloat(unrealizedGains);
 
   console.log(`Nightly Log
----------------------------
+--------------------------
   Balance:      $${realizedBalance}
   Open:         $${unrealizedGains}
   Unrealized:   $${unrealizedBalance.toFixed(4)}
----------------------------`);
+--------------------------`);
 
   await logNightlyResult(balances);
 }

@@ -19,9 +19,11 @@ export async function logNightlyResult(balances: KrakenTradeBalance) {
 
     if (mongoResult.insertedCount === 1) {
       console.log('Logged to Mongo');
+      console.log('-'.repeat(26));
       // console.dir(mongoResult);
     } else {
       console.log(`Nothing logged to Mongo`);
+      console.log('-'.repeat(26));
       // console.dir(mongoResult);
     }
   } finally {
