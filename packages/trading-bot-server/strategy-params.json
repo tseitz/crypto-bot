@@ -27,8 +27,8 @@
     "avgTrade": 7.26
   },
   "BALUSDT": {
-    "entrySize": 40,
-    "addSize": 46,
+    "entrySize": 38,
+    "addSize": 44,
     "maxAdds": 8,
     "latestResult": 3283.19,
     "totalTrades": 442,
