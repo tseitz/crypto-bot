@@ -174,7 +174,6 @@ export default class KrakenOrderDetails {
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
 
     // local configs
-    // this.addBoost = 0.02;
     this.lowestNonLeverageMargin = 150;
     this.lowestLeverageMargin = 135;
   }
