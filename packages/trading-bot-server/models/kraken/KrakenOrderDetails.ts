@@ -175,7 +175,7 @@ export default class KrakenOrderDetails {
 
     // local configs
     this.lowestNonLeverageMargin = 150;
-    this.lowestLeverageMargin = 135;
+    this.lowestLeverageMargin = 140;
   }
 
   private getTradeVolume(): number {
