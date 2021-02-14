@@ -163,7 +163,7 @@
   },
   "YFIUSDT": {
     "entrySize": 34,
-    "addSize": 44,
+    "addSize": 42,
     "maxAdds": 8,
     "latestResult": 1648.67,
     "totalTrades": 226,
