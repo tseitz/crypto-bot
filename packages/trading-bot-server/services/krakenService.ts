@@ -227,20 +227,24 @@ class KrakenService {
         );
         const boostPercentDiff = percentDiff * -2;
         const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(2));
-        const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
-        const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
+        let incrementalAddVolume = parseFloat(
+          (order.addVolume * boost).toFixed(order.volumeDecimals)
+        );
+        incrementalAddVolume =
+          incrementalAddVolume > order.minVolume ? incrementalAddVolume : order.minVolume;
+        const incrementalAddDollar = parseFloat(
+          (incrementalAddVolume * order.usdValueOfBase).toFixed(2)
+        );
 
         if (!order.buyBags) {
           console.log(`Adding: ${addCount}/${order.addCount}`);
           console.log(`Diff: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
           console.log(`Boost: ${boost}x | ${order.addSize.toFixed(2)} | ${incrementalAddDollar}`);
-          console.log(
-            `Position: ${(order.balanceInDollar + parseFloat(incrementalAddDollar)).toFixed(2)}`
-          );
+          console.log(`Position: ${(order.balanceInDollar + incrementalAddDollar).toFixed(2)}`);
         } else {
           console.log('Buying Bags');
           console.log(
-            `Balance After: ${(order.balanceInDollar + order.tradeVolumeInDollar).toFixed(2)}`
+            `Balance After: ${(order.balanceInDollar + incrementalAddDollar).toFixed(2)}`
           );
         }
 
@@ -268,7 +272,7 @@ class KrakenService {
               sellVolumeInDollar
             ).toFixed(2)}`
           );
-          if (order.addVolume !== parseFloat(incrementalAddVolume)) {
+          if (order.addVolume !== incrementalAddVolume) {
             result = await this.kraken.setAddOrder({
               pair: newOrder.krakenTicker,
               type: newOrder.action,
