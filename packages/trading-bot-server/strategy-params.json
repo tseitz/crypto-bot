@@ -19,8 +19,8 @@
   },
   "ALGOUSD": {
     "entrySize": 38,
-    "addSize": 50,
-    "maxAdds": 8,
+    "addSize": 46,
+    "maxAdds": 9,
     "latestResult": 2656.09,
     "totalTrades": 366,
     "percentProfitable": 89.34,
