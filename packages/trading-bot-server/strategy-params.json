@@ -81,9 +81,9 @@
     "avgTrade": 2.00
   },
   "FILUSDT": {
-    "entrySize": 35,
-    "addSize": 48,
-    "maxAdds": 10,
+    "entrySize": 40,
+    "addSize": 60,
+    "maxAdds": 8,
     "latestResult": 1655.60,
     "totalTrades": 410,
     "percentProfitable": 94.15,
