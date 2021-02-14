@@ -63,13 +63,13 @@
     "avgTrade": 10.18
   },
   "DOTUSDT": {
-    "entrySize": 36,
-    "addSize": 36,
-    "maxAdds": 10,
-    "latestResult": 1094.05,
-    "totalTrades": 555,
-    "percentProfitable": 65.59,
-    "avgTrade": 1.97
+    "entrySize": 40,
+    "addSize": 50,
+    "maxAdds": 6,
+    "latestResult": 572.48,
+    "totalTrades": 501,
+    "percentProfitable": 73.65,
+    "avgTrade": 1.14
   },
   "ETHUSDT": {
     "entrySize": 30,
