@@ -85,7 +85,7 @@ class KrakenService {
     return result;
   }
 
-  async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse> {
+  async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     let result;
     // await this.cancelOpenOrdersForPair(order, order.action);
 
@@ -129,6 +129,17 @@ class KrakenService {
             2
           )
         );
+
+        // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
+        if (
+          percentDiff < 0.8 &&
+          percentDiff > -0.8 &&
+          positionMargin > 600 &&
+          order.marginFree < order.lowestLeverageMargin * 2
+        ) {
+          return result;
+        }
+
         // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
         // this attempts to bring the average down when behind and add smaller when ahead
         const boostPercentDiff = percentDiff * -3.25;
