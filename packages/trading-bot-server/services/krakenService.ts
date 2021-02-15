@@ -142,6 +142,11 @@ class KrakenService {
           (parseFloat(myPositionAfter) * (order.leverageAmount || 1)).toFixed(2)
         );
 
+        console.log(`Adding: ${addCount}/${order.addCount}`);
+        console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
+        console.log(`Boost: ${order.addSize.toFixed(2)} | ${boost}x | ${incrementalAddDollar}`);
+        console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
+
         // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
         if (
           percentDiff < 1 &&
@@ -152,11 +157,6 @@ class KrakenService {
           console.log('Position within 1% and margin too low. Ignoring.');
           return result;
         }
-
-        console.log(`Adding: ${addCount}/${order.addCount}`);
-        console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
-        console.log(`Boost: ${order.addSize.toFixed(2)} | ${boost}x | ${incrementalAddDollar}`);
-        console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
         if (addCount > order.addCount) {
           await this.sellOldestOrder(order, true, openPositions, addCount - order.addCount);
