@@ -151,7 +151,7 @@ class KrakenService {
         if (
           percentDiff < 1 &&
           percentDiff > -1 &&
-          marginPositionAfter > 900 &&
+          marginPositionAfter > 875 &&
           order.marginFree < order.lowestLeverageMargin * 2
         ) {
           console.log('Position within 1%. Margin too low. Ignoring.');
