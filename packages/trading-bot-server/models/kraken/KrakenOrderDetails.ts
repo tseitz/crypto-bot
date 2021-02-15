@@ -225,14 +225,6 @@ export default class KrakenOrderDetails {
     return volume > this.minVolume ? volume : this.minVolume;
   }
 
-  // private getStopLoss(): number {
-  //   const stop =
-  //     this.action === 'sell'
-  //       ? this.currentBid * (1 + this.stopPercent / 100)
-  //       : this.currentBid * (1 - this.stopPercent / 100);
-  //   return parseFloat(stop.toFixed(this.priceDecimals));
-  // }
-
   public getBid(): number {
     // return this.action === 'buy' ? this.currentAsk : this.currentBid; // give it to the ask
     // YFI doesn't get filled as often so giving

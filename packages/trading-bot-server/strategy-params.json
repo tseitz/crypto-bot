@@ -9,9 +9,9 @@
     "avgTrade": 6.07
   },
   "ADAUSDT": {
-    "entrySize": 32,
-    "addSize": 40,
-    "maxAdds": 10,
+    "entrySize": 38,
+    "addSize": 50,
+    "maxAdds": 9,
     "latestResult": 5408.78,
     "totalTrades": 374,
     "percentProfitable": 98.13,
