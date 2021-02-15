@@ -28,6 +28,7 @@ macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
 addOnLows = input(defval=true, title="Add On Lows?", type=input.bool)
 reopenOnHighs = input(defval=true, title="Reopen on new highs?", type=input.bool)
 allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool)
+allowFastMacdLongs = input(defval=true, title="Fast Macd Longs?", type=input.bool)
 
 var isLong = false
 var isShort = false
@@ -151,8 +152,8 @@ higherMacd = macd > highestMacd and macd > 0
 higherMacd2 = macd1 > highestMacd2 and macd1 > 0
 higherMacd3 = macd2 > highestMacd3 and macd2 > 0
 higherMacd4 = macd3 > highestMacd4 and macd3 > 0
-lowerMacd = (longZone and macd < lowestMacd) or (shortZone and macd < lowestMacd and macd < 0)
-lowerMacd2 = (longZone and macd1 < lowestMacd2) or (shortZone and macd1 < lowestMacd2 and macd1 < 0)
+lowerMacd = (allowFastMacdLongs and longZone and macd < lowestMacd) or (shortZone and macd < lowestMacd and macd < 0)
+lowerMacd2 = (allowFastMacdLongs and longZone and macd1 < lowestMacd2) or (shortZone and macd1 < lowestMacd2 and macd1 < 0)
 lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
 lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
 bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)

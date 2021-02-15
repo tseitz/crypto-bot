@@ -99,8 +99,8 @@
     "avgTrade": 14.77
   },
   "LINKUSDT": {
-    "entrySize": 50,
-    "addSize": 70,
+    "entrySize": 60,
+    "addSize": 68,
     "maxAdds": 5,
     "latestResult": 718.77,
     "totalTrades": 1175,
