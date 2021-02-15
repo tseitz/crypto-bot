@@ -64,7 +64,7 @@
   },
   "DOTUSDT": {
     "entrySize": 40,
-    "addSize": 48,
+    "addSize": 60,
     "maxAdds": 7,
     "latestResult": 572.48,
     "totalTrades": 501,
@@ -127,7 +127,7 @@
   },
   "TRXUSDT": {
     "entrySize": 35,
-    "addSize": 50,
+    "addSize": 52,
     "maxAdds": 8,
     "latestResult": 5000.32,
     "totalTrades": 348,
