@@ -73,7 +73,7 @@ class KrakenService {
 
     let result;
     if (order.oldest) {
-      result = await this.sellOldestOrder(order, order.oldestPair);
+      result = await this.sellOldestOrder(order, order.closeOldestPair);
     } else if (order.bagIt) {
       result = await this.handleBags(order);
     } else if (order.noLeverage) {
@@ -337,6 +337,23 @@ class KrakenService {
           latestResult = await this.settleTxId(position, order);
         }
       }
+    } else if (order.closePositionSize) {
+      // close out specific position size
+      const positionsForPair: KrakenOpenPosition[] = [];
+      for (const key in openPositions) {
+        const position = openPositions[key];
+        if (position.pair === order.krakenTicker) {
+          positionsForPair.push(position);
+        }
+      }
+      if (order.positionSize) {
+        const count = Math.floor(positionsForPair.length * order.positionSize);
+        console.log(`Selling ${count} Positions for ${order.tradingViewTicker}`);
+        // TODO: we already have positions for pair. Allow passing those instead of all positions
+        await this.sellOldestOrder(order, true, openPositions, count);
+      } else {
+        console.log('No position size specified. Cancelling.');
+      }
     } else {
       for (const key in openPositions) {
         const position = openPositions[key];
@@ -566,8 +583,8 @@ class KrakenService {
     for (const key in openPositions) {
       const position = openPositions[key];
       if (
-        order.action === position.type &&
-        (!pairOnly || order.krakenTicker === position.pair) // && !ignorePairArr.includes(position.pair)
+        !pairOnly ||
+        order.krakenTicker === position.pair // && !ignorePairArr.includes(position.pair)
       ) {
         const prevPosition = positionToClose;
         positionToClose =
@@ -586,16 +603,20 @@ class KrakenService {
     }
 
     let result;
-    if (positionToClose) {
+    if (positionToClose && count !== 0) {
       console.log(`${positionToClose.pair} Oldest: ${positionToClose.margin}`);
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
       if (count > 0) {
         await this.sellOldestOrder(order, pairOnly, openPositions, count);
       }
+    } else {
+      console.log(`Nothing to close. ${count}`);
     }
     return result;
   }
+
+  // async getPositionsForPair()
 
   async getOrdersForPairByTimeAsc(
     pair: KrakenOpenPosition | KrakenOrderDetails,

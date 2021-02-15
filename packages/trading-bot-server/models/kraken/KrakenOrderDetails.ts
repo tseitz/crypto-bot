@@ -20,8 +20,9 @@ export default class KrakenOrderDetails {
   action: 'buy' | 'sell';
   oppositeAction: 'buy' | 'sell';
   close: boolean;
+  closePositionSize: boolean;
   oldest: boolean;
-  oldestPair: boolean;
+  closeOldestPair: boolean;
   nonLeverageOnly: boolean;
   minVolume: number;
   baseOfPair: string;
@@ -103,8 +104,12 @@ export default class KrakenOrderDetails {
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
     this.positionSize = body.strategy?.positionSize;
     this.close = body.strategy.description.toLowerCase().includes('close');
-    this.oldest = body.strategy.description.toLowerCase().includes('oldest');
-    this.oldestPair = this.oldest && body.strategy.description.toLowerCase().includes('pair');
+    this.oldest = body.strategy.description.toLowerCase().includes('close oldest');
+    this.closePositionSize = body.strategy.description
+      .toLowerCase()
+      .includes('close position size');
+    this.closeOldestPair =
+      this.oldest && body.strategy.description.toLowerCase().includes('close oldest pair');
     this.nonLeverageOnly = body.strategy.description.toLowerCase().includes('local');
     this.txId = body.strategy.txId;
     this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;
@@ -174,7 +179,7 @@ export default class KrakenOrderDetails {
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
 
     // local configs
-    this.lowestNonLeverageMargin = 225;
+    this.lowestNonLeverageMargin = 220;
     this.lowestLeverageMargin = 150;
   }
 
