@@ -63,8 +63,8 @@
     "avgTrade": 10.18
   },
   "DOTUSDT": {
-    "entrySize": 40,
-    "addSize": 60,
+    "entrySize": 45,
+    "addSize": 64,
     "maxAdds": 7,
     "latestResult": 572.48,
     "totalTrades": 501,
