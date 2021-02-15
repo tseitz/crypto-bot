@@ -99,13 +99,13 @@
     "avgTrade": 14.77
   },
   "LINKUSDT": {
-    "entrySize": 60,
-    "addSize": 68,
-    "maxAdds": 5,
-    "latestResult": 718.77,
-    "totalTrades": 1175,
-    "percentProfitable": 75.23,
-    "avgTrade": 0.61
+    "entrySize": 42,
+    "addSize": 52,
+    "maxAdds": 8,
+    "latestResult": 1098.38,
+    "totalTrades": 447,
+    "percentProfitable": 77.85,
+    "avgTrade": 2.46
   },
   "OMGUSDT": {
     "entrySize": 48,
