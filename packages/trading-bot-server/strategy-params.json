@@ -72,13 +72,13 @@
     "avgTrade": 1.14
   },
   "ETHUSDT": {
-    "entrySize": 30,
-    "addSize": 35,
-    "maxAdds": 9,
-    "latestResult": 957.99,
-    "totalTrades": 479,
-    "percentProfitable": 73.49,
-    "avgTrade": 2.00
+    "entrySize": 32,
+    "addSize": 38,
+    "maxAdds": 8,
+    "latestResult": 1109.42,
+    "totalTrades": 464,
+    "percentProfitable": 82.54,
+    "avgTrade": 2.39
   },
   "FILUSDT": {
     "entrySize": 40,
@@ -99,8 +99,8 @@
     "avgTrade": 14.77
   },
   "LINKUSDT": {
-    "entrySize": 42,
-    "addSize": 52,
+    "entrySize": 44,
+    "addSize": 58,
     "maxAdds": 8,
     "latestResult": 1098.38,
     "totalTrades": 447,
