@@ -130,16 +130,6 @@ class KrakenService {
           )
         );
 
-        // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
-        if (
-          percentDiff < 0.8 &&
-          percentDiff > -0.8 &&
-          positionMargin > 600 &&
-          order.marginFree < order.lowestLeverageMargin * 2
-        ) {
-          return result;
-        }
-
         // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
         // this attempts to bring the average down when behind and add smaller when ahead
         const boostPercentDiff = percentDiff * -3.25;
@@ -148,9 +138,19 @@ class KrakenService {
         const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
         const myPositionAfter = (positionMargin + parseFloat(incrementalAddDollar)).toFixed(2);
-        const marginPositionAfter = (
-          parseFloat(myPositionAfter) * (order.leverageAmount || 1)
-        ).toFixed(2);
+        const marginPositionAfter = parseFloat(
+          (parseFloat(myPositionAfter) * (order.leverageAmount || 1)).toFixed(2)
+        );
+
+        // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
+        if (
+          percentDiff < 1 &&
+          percentDiff > -1 &&
+          marginPositionAfter > 700 &&
+          order.marginFree < order.lowestLeverageMargin * 2
+        ) {
+          return result;
+        }
 
         console.log(`Adding: ${addCount}/${order.addCount}`);
         console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
