@@ -591,10 +591,10 @@ class KrakenService {
       const open = openOrders?.open;
       for (const orderId in open) {
         const openOrder = open[orderId];
-        // if position to close is already open, go back to prev position
+        // if position to close is already open, go to next position
         positionToClose =
           openOrder.descr.pair === positionToClose?.pair && openOrder.vol === positionToClose?.vol
-            ? undefined
+            ? pairPositions[i + 1]
             : positionToClose;
       }
 
