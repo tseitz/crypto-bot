@@ -110,6 +110,7 @@ class KrakenService {
       }
 
       if (order.marginFree < order.lowestLeverageMargin) {
+        console.log('Margin level too low, selling oldest order.');
         await this.sellOldestOrders(order, false, openPositions);
       }
 
@@ -159,6 +160,7 @@ class KrakenService {
         }
 
         if (addCount > order.addCount) {
+          console.log(`Too many adds, selling some first.`);
           await this.sellOldestOrders(order, true, openPositions, addCount - order.addCount);
         }
 
@@ -535,8 +537,12 @@ class KrakenService {
     const leverageSellAmounts = pair[position.pair]['leverage_sell'];
 
     // TODO: Calculate this better
-    if (!immediate) {
-      bidPrice = order.getBid(); // only works when same pair currently
+    if (!immediate && position.pair === order.krakenTicker) {
+      // update bid and ask since we've got it
+      // TODO: allow getbid for non similar pair
+      order.currentAsk = parseFloat(currentAsk);
+      order.currentBid = parseFloat(currentBid);
+      bidPrice = order.getBid();
     } else {
       bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
     }
@@ -600,6 +606,8 @@ class KrakenService {
 
       if (positionToClose) {
         result = await this.settleTxId(positionToClose, order, false);
+      } else {
+        console.log(`Couldn't find position to close`);
       }
     }
 
