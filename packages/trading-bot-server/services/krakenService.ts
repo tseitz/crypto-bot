@@ -349,8 +349,7 @@ class KrakenService {
       if (order.positionSize) {
         const count = Math.floor(positionsForPair.length * order.positionSize);
         console.log(`Selling ${count} Positions for ${order.tradingViewTicker}`);
-        // TODO: we already have positions for pair. Allow passing those instead of all positions
-        await this.sellOldestOrder(order, true, openPositions, count);
+        const result = this.sellOldestOrdersForPair(order, undefined, count);
       } else {
         console.log('No position size specified. Cancelling.');
       }
@@ -513,7 +512,7 @@ class KrakenService {
   async settleTxId(
     position: KrakenOpenPosition,
     order: KrakenOrderDetails,
-    immediate = false,
+    immediate = true,
     additionalVolume = 0
   ) {
     const closeAction = position.type === 'sell' ? 'buy' : 'sell';
@@ -533,11 +532,11 @@ class KrakenService {
       const leverageSellAmounts = pair[position.pair]['leverage_sell'];
 
       // TODO: Calculate this better
-      // if (!immediate) {
-      bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
-      // } else {
-      //   bidPrice = parseFloat(currentBid);
-      // }
+      if (!immediate) {
+        bidPrice = order.getBid(); // only works when same pair currently
+      } else {
+        bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
+      }
       leverageAmount =
         position.type === 'buy'
           ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
@@ -565,15 +564,37 @@ class KrakenService {
     return result;
   }
 
+  async sellOldestOrdersForPair(
+    order: KrakenOrderDetails,
+    openPositions?: KrakenOpenPositions,
+    count = 1
+  ) {
+    let pairPositions;
+    if (!openPositions) {
+      pairPositions = await this.getOrdersForPairByTimeAsc(order);
+    } else {
+      pairPositions = await this.getOrdersForPairByTimeAsc(order, openPositions);
+    }
+
+    let result;
+    for (let i = 0; i < count; i++) {
+      result = await this.settleTxId(pairPositions[i], order);
+    }
+
+    return result;
+  }
+
   async sellOldestOrder(
     order: KrakenOrderDetails,
     pairOnly?: boolean,
     openPositions?: KrakenOpenPositions,
     count = 1
   ) {
+    let pairPositions;
     if (!openPositions) {
-      const positionResult = await this.getOpenPositions();
-      openPositions = positionResult.openPositions;
+      pairPositions = await this.getOrdersForPairByTimeAsc(order);
+    } else {
+      pairPositions = await this.getOrdersForPairByTimeAsc(order, openPositions);
     }
 
     const { openOrders } = await this.getOpenOrders();
@@ -608,7 +629,7 @@ class KrakenService {
       result = await this.settleTxId(positionToClose, order, true);
       count -= 1;
       if (count > 0) {
-        await this.sellOldestOrder(order, pairOnly, openPositions, count);
+        await this.sellOldestOrder(order, pairOnly, undefined, count); // force update of open orders
       }
     } else {
       console.log(`Nothing to close. ${count}`);
@@ -627,13 +648,13 @@ class KrakenService {
       openPositions = positionResult.openPositions;
     }
 
-    const action = this.isOpenPosition(pair) ? pair.type : pair.action;
+    // const action = this.isOpenPosition(pair) ? pair.type : pair.action;
     const pairTicker = this.isOpenPosition(pair) ? pair.pair : pair.krakenTicker;
 
     let pairPositions = [];
     for (const key in openPositions) {
       const position = openPositions[key];
-      if (action === position.type && pairTicker === position.pair) {
+      if (pairTicker === position.pair) {
         pairPositions.push(position);
       }
     }
