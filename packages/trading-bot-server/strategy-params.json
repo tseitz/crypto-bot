@@ -1,12 +1,12 @@
 {
   "AAVEWETH": {
-    "entrySize": 36,
-    "addSize": 42,
-    "maxAdds": 8,
-    "latestResult": 2104.62,
-    "totalTrades": 347,
-    "percentProfitable": 83.57,
-    "avgTrade": 6.07
+    "entrySize": 100,
+    "addSize": 60,
+    "maxAdds": 5,
+    "latestResult": 794.62,
+    "totalTrades": 136,
+    "percentProfitable": 87.5,
+    "avgTrade": 5.84
   },
   "ADAUSDT": {
     "entrySize": 38,
