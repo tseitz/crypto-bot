@@ -36,13 +36,13 @@
     "avgTrade": 7.43
   },
   "BTCUSDT": {
-    "entrySize": 30,
-    "addSize": 35,
-    "maxAdds": 9,
-    "latestResult": 1616.29,
-    "totalTrades": 406,
-    "percentProfitable": 83.99,
-    "avgTrade": 3.98
+    "entrySize": 36,
+    "addSize": 42,
+    "maxAdds": 7,
+    "latestResult": 1321.89,
+    "totalTrades": 347,
+    "percentProfitable": 86.74,
+    "avgTrade": 3.81
   },
   "CRVUSDT": {
     "entrySize": 36,
@@ -72,13 +72,13 @@
     "avgTrade": 1.14
   },
   "ETHUSDT": {
-    "entrySize": 32,
-    "addSize": 38,
-    "maxAdds": 8,
-    "latestResult": 1109.42,
-    "totalTrades": 464,
-    "percentProfitable": 82.54,
-    "avgTrade": 2.39
+    "entrySize": 36,
+    "addSize": 42,
+    "maxAdds": 7,
+    "latestResult": 1272.34,
+    "totalTrades": 292,
+    "percentProfitable": 91.1,
+    "avgTrade": 4.36
   },
   "FILUSDT": {
     "entrySize": 40,
