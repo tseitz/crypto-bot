@@ -10,11 +10,11 @@ import {
   KrakenOpenOrderResult,
   KrakenOrderResult,
   KrakenOrderResponse,
-  KrakenOpenPositions,
   KrakenOpenPosition,
+  KrakenOpenPositions,
+  KrakenTradeBalanceResult,
 } from '../models/kraken/KrakenResults';
 import { sleep, superParseFloat } from '../scripts/common';
-import { KrakenTradeBalanceResult, KrakenOpenPosition } from '../models/kraken/KrakenResults';
 
 class KrakenService {
   kraken: any; // krakenApi
