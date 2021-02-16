@@ -73,7 +73,7 @@ class KrakenService {
 
     let result;
     if (order.oldest) {
-      result = await this.sellOldestOrder(order, order.closeOldestPair);
+      result = await this.sellOldestOrders(order, order.closeOldestPair);
     } else if (order.bagIt) {
       result = await this.handleBags(order);
     } else if (order.noLeverage) {
@@ -110,7 +110,7 @@ class KrakenService {
       }
 
       if (order.marginFree < order.lowestLeverageMargin) {
-        await this.sellOldestOrder(order, false, openPositions);
+        await this.sellOldestOrders(order, false, openPositions);
       }
 
       if (add) {
@@ -159,7 +159,7 @@ class KrakenService {
         }
 
         if (addCount > order.addCount) {
-          await this.sellOldestOrder(order, true, openPositions, addCount - order.addCount);
+          await this.sellOldestOrders(order, true, openPositions, addCount - order.addCount);
         }
 
         result = await this.kraken.setAddOrder({
@@ -349,7 +349,7 @@ class KrakenService {
       if (order.positionSize) {
         const count = Math.floor(positionsForPair.length * order.positionSize);
         console.log(`Selling ${count} Positions for ${order.tradingViewTicker}`);
-        const result = this.sellOldestOrdersForPair(order, undefined, count);
+        latestResult = await this.sellOldestOrders(order, true, openPositions, count);
       } else {
         console.log('No position size specified. Cancelling.');
       }
@@ -522,26 +522,25 @@ class KrakenService {
     let leverageAmount = order.leverageAmount;
 
     // if tx is not this pair, get data for it. used mostly in settle oldest transaction
-    if (position.pair !== order.krakenTicker) {
-      const { price } = await kraken.getPrice(position.pair);
-      const { pair } = await kraken.getPair(position.pair);
+    // if (position.pair !== order.krakenTicker) {
+    const { price } = await kraken.getPrice(position.pair);
+    const { pair } = await kraken.getPair(position.pair);
 
-      const currentBid = price[position.pair]['b'][0];
-      const currentAsk = price[position.pair]['a'][0];
-      const leverageBuyAmounts = pair[position.pair]['leverage_buy'];
-      const leverageSellAmounts = pair[position.pair]['leverage_sell'];
+    const currentBid = price[position.pair]['b'][0];
+    const currentAsk = price[position.pair]['a'][0];
+    const leverageBuyAmounts = pair[position.pair]['leverage_buy'];
+    const leverageSellAmounts = pair[position.pair]['leverage_sell'];
 
-      // TODO: Calculate this better
-      if (!immediate) {
-        bidPrice = order.getBid(); // only works when same pair currently
-      } else {
-        bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
-      }
-      leverageAmount =
-        position.type === 'buy'
-          ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
-          : leverageSellAmounts[leverageSellAmounts.length - 1];
+    // TODO: Calculate this better
+    if (!immediate) {
+      bidPrice = order.getBid(); // only works when same pair currently
+    } else {
+      bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
     }
+    leverageAmount =
+      position.type === 'buy'
+        ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
+        : leverageSellAmounts[leverageSellAmounts.length - 1];
 
     let result = await this.kraken.setAddOrder({
       pair: position.pair,
@@ -555,92 +554,60 @@ class KrakenService {
 
     if (result.error.length) {
       console.log('Could not sell oldest. Combining');
-      const positions = await this.getOrdersForPairByTimeAsc(position);
+      const positions = await this.getOrdersByTimeAsc(
+        position,
+        position.pair === order.krakenTicker
+      );
 
-      result = await this.settleTxId(positions[1], order, true, volumeToClose);
+      result = await this.settleTxId(positions[1], order, false, volumeToClose);
     }
     logOrderResult(`SETTLED`, result, position.pair);
 
     return result;
   }
 
-  async sellOldestOrdersForPair(
+  async sellOldestOrders(
     order: KrakenOrderDetails,
+    pairOnly = false,
     openPositions?: KrakenOpenPositions,
     count = 1
   ) {
     let pairPositions;
     if (!openPositions) {
-      pairPositions = await this.getOrdersForPairByTimeAsc(order);
+      pairPositions = await this.getOrdersByTimeAsc(order, pairOnly);
     } else {
-      pairPositions = await this.getOrdersForPairByTimeAsc(order, openPositions);
-    }
-
-    let result;
-    for (let i = 0; i < count; i++) {
-      result = await this.settleTxId(pairPositions[i], order);
-    }
-
-    return result;
-  }
-
-  async sellOldestOrder(
-    order: KrakenOrderDetails,
-    pairOnly?: boolean,
-    openPositions?: KrakenOpenPositions,
-    count = 1
-  ) {
-    let pairPositions;
-    if (!openPositions) {
-      pairPositions = await this.getOrdersForPairByTimeAsc(order);
-    } else {
-      pairPositions = await this.getOrdersForPairByTimeAsc(order, openPositions);
+      pairPositions = await this.getOrdersByTimeAsc(order, pairOnly, openPositions);
     }
 
     const { openOrders } = await this.getOpenOrders();
 
-    // const ignorePairArr = ['XETHZUSD'];
-    let positionToClose: KrakenOpenPosition = {} as KrakenOpenPosition;
-    for (const key in openPositions) {
-      const position = openPositions[key];
-      if (
-        !pairOnly ||
-        order.krakenTicker === position.pair // && !ignorePairArr.includes(position.pair)
-      ) {
-        const prevPosition = positionToClose;
-        positionToClose =
-          positionToClose && position.time > positionToClose.time ? positionToClose : position;
-
-        const open = openOrders?.open;
-        for (const orderId in open) {
-          const openOrder = open[orderId];
-          // if position to close is already open, go back to prev position
-          positionToClose =
-            openOrder.descr.pair === positionToClose.pair && openOrder.vol === positionToClose.vol
-              ? prevPosition
-              : positionToClose;
-        }
-      }
-    }
-
     let result;
-    if (positionToClose && count !== 0) {
-      console.log(`${positionToClose.pair} Oldest: ${positionToClose.margin}`);
-      result = await this.settleTxId(positionToClose, order, true);
-      count -= 1;
-      if (count > 0) {
-        await this.sellOldestOrder(order, pairOnly, undefined, count); // force update of open orders
+    for (let i = 0; i < count; i++) {
+      let positionToClose: KrakenOpenPosition | undefined = pairPositions[i];
+
+      const open = openOrders?.open;
+      for (const orderId in open) {
+        const openOrder = open[orderId];
+        // if position to close is already open, go back to prev position
+        positionToClose =
+          openOrder.descr.pair === positionToClose?.pair && openOrder.vol === positionToClose?.vol
+            ? undefined
+            : positionToClose;
       }
-    } else {
-      console.log(`Nothing to close. ${count}`);
+
+      if (positionToClose) {
+        result = await this.settleTxId(positionToClose, order, false);
+      }
     }
+
     return result;
   }
 
   // async getPositionsForPair()
 
-  async getOrdersForPairByTimeAsc(
+  async getOrdersByTimeAsc(
     pair: KrakenOpenPosition | KrakenOrderDetails,
+    pairOnly = true,
     openPositions?: KrakenOpenPositions
   ): Promise<KrakenOpenPosition[]> {
     if (!openPositions) {
@@ -651,15 +618,15 @@ class KrakenService {
     // const action = this.isOpenPosition(pair) ? pair.type : pair.action;
     const pairTicker = this.isOpenPosition(pair) ? pair.pair : pair.krakenTicker;
 
-    let pairPositions = [];
+    let positions = [];
     for (const key in openPositions) {
       const position = openPositions[key];
-      if (pairTicker === position.pair) {
-        pairPositions.push(position);
+      if (!pairOnly || pairTicker === position.pair) {
+        positions.push(position);
       }
     }
 
-    return pairPositions.sort((a, b) => a.time - b.time);
+    return positions.sort((a, b) => a.time - b.time);
   }
 
   isOpenPosition(
