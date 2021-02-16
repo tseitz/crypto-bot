@@ -139,13 +139,13 @@ class KrakenService {
           (parseFloat(myPositionAfter) * (order.leverageAmount || 1)).toFixed(2)
         );
 
-        console.log(`Adding: ${addCount}/${order.addCount}`);
-        console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
         console.log(
-          `Boost: ${order.shortZone ? 'Short Zone' : 'Long Zone'} | ${order.addSize.toFixed(
-            2
-          )} | ${boost}x | ${incrementalAddDollar}`
+          `Adding: ${addCount}/${order.addCount} | ${
+            order.shortZone ? `Short Zone ${order.shortZoneDeleverage}` : 'Long Zone'
+          }`
         );
+        console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
+        console.log(`Boost: ${order.addSize.toFixed(2)} | ${boost}x | ${incrementalAddDollar}`);
         console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
         // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
@@ -251,13 +251,13 @@ class KrakenService {
         );
 
         if (!order.buyBags) {
-          console.log(`Adding: ${addCount}/${order.addCount}`);
-          console.log(`Diff: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
           console.log(
-            `Boost: ${order.shortZone ? 'Short Zone' : 'Long Zone'} | ${order.addSize.toFixed(
-              2
-            )} | ${boost}x | ${incrementalAddDollar}`
+            `Adding: ${addCount}/${order.addCount} | ${
+              order.shortZone ? `Short Zone ${order.shortZoneDeleverage}` : 'Long Zone'
+            }`
           );
+          console.log(`Diff: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
+          console.log(`Boost: ${order.addSize.toFixed(2)} | ${boost}x | ${incrementalAddDollar}`);
           console.log(`Position: ${(order.balanceInDollar + incrementalAddDollar).toFixed(2)}`);
         } else {
           console.log('Buying Bags');
