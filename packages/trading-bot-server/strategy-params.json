@@ -10,8 +10,8 @@
   },
   "ADAUSDT": {
     "entrySize": 38,
-    "addSize": 50,
-    "maxAdds": 9,
+    "addSize": 54,
+    "maxAdds": 8,
     "latestResult": 5408.78,
     "totalTrades": 374,
     "percentProfitable": 98.13,
