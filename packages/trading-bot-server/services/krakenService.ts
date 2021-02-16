@@ -14,7 +14,7 @@ import {
   KrakenOpenPosition,
 } from '../models/kraken/KrakenResults';
 import { sleep, superParseFloat } from '../scripts/common';
-import { KrakenTradeBalanceResult } from '../models/kraken/KrakenResults';
+import { KrakenTradeBalanceResult, KrakenOpenPosition } from '../models/kraken/KrakenResults';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -347,7 +347,10 @@ class KrakenService {
         }
       }
       if (order.positionSize) {
-        const count = Math.floor(positionsForPair.length * order.positionSize);
+        const count =
+          order.positionSize >= 1
+            ? order.positionSize
+            : Math.floor(positionsForPair.length * order.positionSize);
         console.log(`Selling ${count} Positions for ${order.tradingViewTicker}`);
         latestResult = await this.sellOldestOrders(order, true, openPositions, count);
       } else {
