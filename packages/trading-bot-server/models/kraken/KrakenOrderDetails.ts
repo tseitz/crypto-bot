@@ -88,7 +88,7 @@ export default class KrakenOrderDetails {
   ) {
     // account info
     this.openOrders = openOrders;
-    this.marginFree = superParseFloat(tradeBalance?.mf) - this.getOpenOrderDollar();
+    this.marginFree = superParseFloat(tradeBalance?.mf) - this.getOpenOrderDollarAmount();
 
     // ticker info
     this.tradingViewTicker = body.ticker;
@@ -285,10 +285,10 @@ export default class KrakenOrderDetails {
     }
   }
 
-  getOpenOrderDollar(): number {
+  getOpenOrderDollarAmount(): number {
     const openOrders = this.openOrders.open;
-    let totalAmount = 0;
 
+    let totalAmount = 0;
     for (const key in openOrders) {
       const type = openOrders[key]['descr']['type'];
 
