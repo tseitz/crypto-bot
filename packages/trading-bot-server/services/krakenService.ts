@@ -232,24 +232,6 @@ class KrakenService {
           parseInt(
             ((Math.floor(order.balanceInDollar) - order.entrySize) / order.originalAdd).toFixed(0)
           ) + 1;
-        const shouldHave = order.entrySize + order.addSize * (addCount - 1);
-        let percentDiff = parseFloat(
-          (
-            ((order.balanceInDollar - shouldHave) / ((order.balanceInDollar + shouldHave) / 2)) *
-            100
-          ).toFixed(2)
-        );
-        percentDiff = percentDiff > 15 || percentDiff < -15 ? 15 : percentDiff;
-        const boostPercentDiff = percentDiff * -2.75;
-        const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(2));
-        let incrementalAddVolume = parseFloat(
-          (order.addVolume * boost).toFixed(order.volumeDecimals)
-        );
-        incrementalAddVolume =
-          incrementalAddVolume > order.minVolume ? incrementalAddVolume : order.minVolume;
-        const incrementalAddDollar = parseFloat(
-          (incrementalAddVolume * order.usdValueOfBase).toFixed(2)
-        );
 
         if (!order.buyBags) {
           console.log(
@@ -257,13 +239,10 @@ class KrakenService {
               order.shortZone ? `Short Zone ${order.shortZoneDeleverage}` : 'Long Zone'
             }`
           );
-          console.log(`Diff: ${shouldHave} | ${order.balanceInDollar} | ${percentDiff}%`);
-          console.log(`Boost: ${order.addSize.toFixed(2)} | ${boost}x | ${incrementalAddDollar}`);
-          console.log(`Position: ${(order.balanceInDollar + incrementalAddDollar).toFixed(2)}`);
         } else {
           console.log('Buying Bags');
           console.log(
-            `Balance After: ${(order.balanceInDollar + incrementalAddDollar).toFixed(2)}`
+            `Balance After: ${(order.balanceInDollar + order.tradeVolumeInDollar).toFixed(2)}`
           );
         }
 
@@ -290,36 +269,30 @@ class KrakenService {
               sellVolumeInDollar
             ).toFixed(2)}`
           );
-          if (order.addVolume !== incrementalAddVolume) {
-            const sellDiff = incrementalAddVolume - sellVolume;
-            console.log(
-              `Add: ${incrementalAddVolume} | Sell: ${sellVolume} | ${sellDiff.toFixed(4)}`
-            );
-            console.log(sellDiff < 0 ? `Selling the difference` : `Buying the difference`);
-            if (sellDiff > 0) {
-              const volume = sellDiff > order.minVolume ? sellDiff : order.minVolume;
-              result = await this.kraken.setAddOrder({
-                pair: order.krakenTicker,
-                type: order.action,
-                ordertype: 'limit',
-                price: order.bidPrice,
-                volume,
-                // validate: order.validate,
-              });
-            } else {
-              const volume =
-                Math.abs(sellDiff) > order.minVolume ? Math.abs(sellDiff) : order.minVolume;
-              result = await this.kraken.setAddOrder({
-                pair: newOrder.krakenTicker,
-                type: newOrder.action,
-                ordertype: 'limit',
-                price: newOrder.bidPrice,
-                volume,
-                // validate: order.validate,
-              });
-            }
+          const sellDiff = order.tradeVolume - sellVolume;
+          console.log(`Add: ${order.tradeVolume} | Sell: ${sellVolume} | ${sellDiff.toFixed(4)}`);
+          console.log(sellDiff < 0 ? `Selling the difference` : `Buying the difference`);
+          if (sellDiff > 0) {
+            const volume = sellDiff > order.minVolume ? sellDiff : order.minVolume;
+            result = await this.kraken.setAddOrder({
+              pair: order.krakenTicker,
+              type: order.action,
+              ordertype: 'limit',
+              price: order.bidPrice,
+              volume,
+              // validate: order.validate,
+            });
           } else {
-            console.log('Order size is the same. No action taken.');
+            const volume =
+              Math.abs(sellDiff) > order.minVolume ? Math.abs(sellDiff) : order.minVolume;
+            result = await this.kraken.setAddOrder({
+              pair: newOrder.krakenTicker,
+              type: newOrder.action,
+              ordertype: 'limit',
+              price: newOrder.bidPrice,
+              volume,
+              // validate: order.validate,
+            });
           }
         } else {
           result = await this.kraken.setAddOrder({
@@ -327,7 +300,7 @@ class KrakenService {
             type: order.action,
             ordertype: 'limit',
             price: order.bidPrice,
-            volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
+            volume: order.tradeVolume,
             // validate: order.validate,
           });
         }
