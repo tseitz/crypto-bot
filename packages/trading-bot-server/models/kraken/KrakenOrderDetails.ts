@@ -75,6 +75,7 @@ export default class KrakenOrderDetails {
   lowestNonLeverageMargin: number;
   lowestLeverageMargin: number;
   shortZoneDeleverage: number;
+  longZoneDeleverage: number;
 
   constructor(
     body: TradingViewBody,
@@ -124,11 +125,12 @@ export default class KrakenOrderDetails {
     this.originalEntry = this.strategyParams?.entrySize;
     this.originalAdd = this.strategyParams?.addSize;
     this.shortZoneDeleverage = 0.8;
+    this.longZoneDeleverage = 1;
     this.entrySize = !this.shortZone
-      ? this.strategyParams?.entrySize
+      ? this.strategyParams?.entrySize * this.longZoneDeleverage
       : this.strategyParams?.entrySize * this.shortZoneDeleverage;
     this.addSize = !this.shortZone
-      ? this.strategyParams?.addSize
+      ? this.strategyParams?.addSize * this.longZoneDeleverage
       : this.strategyParams?.addSize * this.shortZoneDeleverage;
     this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 6;
 
