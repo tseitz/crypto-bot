@@ -88,7 +88,7 @@ export default class KrakenOrderDetails {
   ) {
     // account info
     this.openOrders = openOrders;
-    this.marginFree = superParseFloat(tradeBalance?.mf);
+    this.marginFree = superParseFloat(tradeBalance?.mf) - this.getOpenOrderDollar();
 
     // ticker info
     this.tradingViewTicker = body.ticker;
@@ -180,7 +180,7 @@ export default class KrakenOrderDetails {
 
     // local configs
     this.lowestNonLeverageMargin = 220;
-    this.lowestLeverageMargin = 180;
+    this.lowestLeverageMargin = 150;
   }
 
   private getTradeVolume(): number {
@@ -283,6 +283,21 @@ export default class KrakenOrderDetails {
         }
       }
     }
+  }
+
+  getOpenOrderDollar(): number {
+    const openOrders = this.openOrders.open;
+    let totalAmount = 0;
+
+    for (const key in openOrders) {
+      const price = openOrders[key]['descr']['price'];
+      const vol = openOrders[key]['vol'];
+      const volExec = openOrders[key]['vol_exec'];
+
+      totalAmount += parseFloat(price) * (parseFloat(vol) - parseFloat(volExec));
+    }
+
+    return totalAmount;
   }
 
   convertBaseToDollar(base: number, usd: number): number {
