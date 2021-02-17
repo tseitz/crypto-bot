@@ -300,8 +300,9 @@ export default class KrakenOrderDetails {
         const price = openOrders[key]['descr']['price'];
         const vol = openOrders[key]['vol'];
         const volExec = openOrders[key]['vol_exec'];
+        const leverage = parseInt(openOrders[key]['descr']['leverage'][0]);
 
-        totalAmount += parseFloat(price) * (parseFloat(vol) - parseFloat(volExec));
+        totalAmount += (parseFloat(price) * (parseFloat(vol) - parseFloat(volExec))) / leverage;
       }
     }
 
