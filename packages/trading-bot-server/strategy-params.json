@@ -81,13 +81,13 @@
     "avgTrade": 4.36
   },
   "FILUSDT": {
-    "entrySize": 40,
-    "addSize": 60,
-    "maxAdds": 8,
-    "latestResult": 1655.60,
-    "totalTrades": 410,
-    "percentProfitable": 94.15,
-    "avgTrade": 4.04
+    "entrySize": 46,
+    "addSize": 62,
+    "maxAdds": 7,
+    "latestResult": 1354.47,
+    "totalTrades": 341,
+    "percentProfitable": 87.39,
+    "avgTrade": 3.97
   },
   "GRTUSDT": {
     "entrySize": 30,
