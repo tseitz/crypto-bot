@@ -281,40 +281,40 @@ class KrakenService {
           newOrder.action = 'sell';
           newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now
           const sellVolume = superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals);
-          const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
+          // const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
 
-          console.log(`Selling Some First...`);
-          console.log(
-            `Balance After: ${(
-              order.balanceInDollar +
-              order.tradeVolumeInDollar -
-              sellVolumeInDollar
-            ).toFixed(2)}`
-          );
+          console.log(`Buying the difference`);
+          // console.log(
+          //   `Balance After: ${(
+          //     order.balanceInDollar +
+          //     order.tradeVolumeInDollar -
+          //     sellVolumeInDollar
+          //   ).toFixed(2)}`
+          // );
           if (order.addVolume !== incrementalAddVolume) {
+            const sellDiff = incrementalAddVolume - sellVolume;
+            const volume = sellDiff > order.minVolume ? sellDiff : order.minVolume;
             result = await this.kraken.setAddOrder({
-              pair: newOrder.krakenTicker,
-              type: newOrder.action,
+              pair: order.krakenTicker,
+              type: order.action,
               ordertype: 'limit',
-              price: newOrder.bidPrice,
-              volume: sellVolume,
+              price: order.bidPrice,
+              volume,
               // validate: order.validate,
             });
-            logOrderResult(`ORDER`, result, newOrder.krakenizedTradingViewTicker);
-            await sleep(5000);
           } else {
             console.log('Order size is the same. No action taken.');
           }
+        } else {
+          result = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: order.action,
+            ordertype: 'limit',
+            price: order.bidPrice,
+            volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
+            // validate: order.validate,
+          });
         }
-
-        result = await this.kraken.setAddOrder({
-          pair: order.krakenTicker,
-          type: order.action,
-          ordertype: 'limit',
-          price: order.bidPrice,
-          volume: order.buyBags ? order.tradeVolume : incrementalAddVolume,
-          // validate: order.validate,
-        });
       }
     }
 
