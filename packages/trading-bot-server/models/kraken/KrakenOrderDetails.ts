@@ -290,11 +290,15 @@ export default class KrakenOrderDetails {
     let totalAmount = 0;
 
     for (const key in openOrders) {
-      const price = openOrders[key]['descr']['price'];
-      const vol = openOrders[key]['vol'];
-      const volExec = openOrders[key]['vol_exec'];
+      const type = openOrders[key]['descr']['type'];
 
-      totalAmount += parseFloat(price) * (parseFloat(vol) - parseFloat(volExec));
+      if (type === 'buy') {
+        const price = openOrders[key]['descr']['price'];
+        const vol = openOrders[key]['vol'];
+        const volExec = openOrders[key]['vol_exec'];
+
+        totalAmount += parseFloat(price) * (parseFloat(vol) - parseFloat(volExec));
+      }
     }
 
     return totalAmount;
