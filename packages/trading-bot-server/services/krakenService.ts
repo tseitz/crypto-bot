@@ -69,7 +69,7 @@ class KrakenService {
 
     let result;
     if (order.oldest) {
-      result = await this.sellOldestOrders(order, order.closeOldestPair);
+      result = await this.sellOldestOrders(order, order.krakenTicker);
     } else if (order.bagIt) {
       result = await this.handleBags(order);
     } else if (order.noLeverage) {
@@ -106,8 +106,13 @@ class KrakenService {
       }
 
       if (order.marginFree < order.lowestLeverageMargin) {
-        console.log('Margin level too low, selling oldest order.');
-        await this.sellOldestOrders(order, false, openPositions);
+        console.log('Margin level too low, selling some from largest position.');
+        const positionsBySize = await this.getOpenPositionsBySize(openPositions);
+        result = await this.sellOldestOrders(
+          order,
+          positionsBySize.keys().next().value,
+          openPositions
+        );
       }
 
       if (add) {
@@ -161,7 +166,12 @@ class KrakenService {
 
         if (addCount > order.addCount) {
           console.log(`Too many adds, selling some first.`);
-          await this.sellOldestOrders(order, true, openPositions, addCount - order.addCount);
+          await this.sellOldestOrders(
+            order,
+            order.krakenTicker,
+            openPositions,
+            addCount - order.addCount
+          );
         }
 
         result = await this.kraken.setAddOrder({
@@ -348,7 +358,7 @@ class KrakenService {
             ? order.positionSize
             : Math.floor(positionsForPair.length * order.positionSize);
         console.log(`Selling ${count} Positions for ${order.tradingViewTicker}`);
-        latestResult = await this.sellOldestOrders(order, true, openPositions, count);
+        latestResult = await this.sellOldestOrders(order, order.krakenTicker, openPositions, count);
       } else {
         console.log('No position size specified. Cancelling.');
       }
@@ -557,10 +567,7 @@ class KrakenService {
 
     if (result.error.length) {
       console.log('Could not sell oldest. Combining');
-      const positions = await this.getOrdersByTimeAsc(
-        position,
-        position.pair === order.krakenTicker
-      );
+      const positions = await this.getOrdersByTimeAsc(position.pair);
 
       result = await this.settleTxId(positions[1], order, false, volumeToClose);
     }
@@ -571,15 +578,15 @@ class KrakenService {
 
   async sellOldestOrders(
     order: KrakenOrderDetails,
-    pairOnly = false,
+    pair: string,
     openPositions?: KrakenOpenPositions,
     count = 1
   ) {
     let pairPositions;
     if (!openPositions) {
-      pairPositions = await this.getOrdersByTimeAsc(order, pairOnly);
+      pairPositions = await this.getOrdersByTimeAsc(pair);
     } else {
-      pairPositions = await this.getOrdersByTimeAsc(order, pairOnly, openPositions);
+      pairPositions = await this.getOrdersByTimeAsc(pair, openPositions);
     }
 
     const { openOrders } = await this.getOpenOrders();
@@ -611,8 +618,8 @@ class KrakenService {
   // async getPositionsForPair()
 
   async getOrdersByTimeAsc(
-    pair: KrakenOpenPosition | KrakenOrderDetails,
-    pairOnly = true,
+    // order: KrakenOpenPosition | KrakenOrderDetails,
+    pair?: string,
     openPositions?: KrakenOpenPositions
   ): Promise<KrakenOpenPosition[]> {
     if (!openPositions) {
@@ -621,17 +628,34 @@ class KrakenService {
     }
 
     // const action = this.isOpenPosition(pair) ? pair.type : pair.action;
-    const pairTicker = this.isOpenPosition(pair) ? pair.pair : pair.krakenTicker;
+    // const pairTicker = this.isOpenPosition(order) ? order.pair : order.krakenTicker;
 
     let positions = [];
     for (const key in openPositions) {
       const position = openPositions[key];
-      if (!pairOnly || pairTicker === position.pair) {
+      if (!pair || pair === position.pair) {
         positions.push(position);
       }
     }
 
     return positions.sort((a, b) => a.time - b.time);
+  }
+
+  async getOpenPositionsBySize(openPositions?: KrakenOpenPositions) {
+    if (!openPositions) {
+      const positionResult = await this.getOpenPositions();
+      openPositions = positionResult.openPositions;
+    }
+
+    let positions = new Map();
+    for (const key in openPositions) {
+      const position = openPositions[key];
+
+      const currentCost = positions.has(position.pair) ? positions.get(position.pair) : 0;
+      positions.set(position.pair, currentCost + parseFloat(position.cost));
+    }
+    // thanks stack overflow
+    return new Map([...positions.entries()].sort((a, b) => b[1] - a[1]));
   }
 
   isOpenPosition(
