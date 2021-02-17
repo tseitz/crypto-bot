@@ -606,7 +606,7 @@ class KrakenService {
       }
 
       if (positionToClose) {
-        result = await this.settleTxId(positionToClose, order, false);
+        result = await this.settleTxId(positionToClose, order, true);
       } else {
         console.log(`Couldn't find position to close`);
       }
