@@ -109,8 +109,8 @@
   },
   "OMGUSDT": {
     "entrySize": 48,
-    "addSize": 60,
-    "maxAdds": 8,
+    "addSize": 66,
+    "maxAdds": 7,
     "latestResult": 3419.59,
     "totalTrades": 452,
     "percentProfitable": 90.04,
