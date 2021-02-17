@@ -21,7 +21,7 @@ hiLowSlow = input(defval=420, title="Hi Low Long", minval=0, step=25)
 // loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
 macdCloseLong = input(defval=81, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=80, title="Close Long In Short Zone RSI", minval=0, step=1)
-longZoneRsi = input(defval=32, title="Buy Long Zone RSI", minval=0, step=1)
+longZoneRsi = input(defval=33, title="Buy Long Zone RSI", minval=0, step=1)
 shortZoneRsi = input(defval=40, title="Buy Short Zone RSI", minval=0, step=1)
 macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
 // maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
@@ -175,7 +175,7 @@ highestPrevMacd = higherMacd2 and macd < highestMacd
 
 shortAllowed = allowShorts and not isShort and shortZone
 shorting = allowShorts and isShort and shortZone
-addLow = (addOnLows and newLow and not lowerMacd2 and not lowerMacd)
+addLow = (addOnLows and newLow)
 
 buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2) or (reopenOnHighs and high > highestSlow2))
 buyShortZoneSetup = shortZone and rsiBottomed and lowerMacd2 and lowerMacd
