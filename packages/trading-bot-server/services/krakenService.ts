@@ -293,7 +293,7 @@ class KrakenService {
           );
           if (order.addVolume !== incrementalAddVolume) {
             const sellDiff = incrementalAddVolume - sellVolume;
-            console.log(`Incremental - Sell: ${sellDiff}`);
+            console.log(`Sell Diff: ${sellDiff.toFixed(4)}`);
             if (sellDiff > 0) {
               const volume = sellDiff > order.minVolume ? sellDiff : order.minVolume;
               result = await this.kraken.setAddOrder({
