@@ -233,15 +233,15 @@ class KrakenService {
             ((Math.floor(order.balanceInDollar) - order.entrySize) / order.originalAdd).toFixed(0)
           ) + 1;
         const shouldHave = order.entrySize + order.addSize * (addCount - 1);
-        const percentDiff = parseFloat(
+        let percentDiff = parseFloat(
           (
             ((order.balanceInDollar - shouldHave) / ((order.balanceInDollar + shouldHave) / 2)) *
             100
           ).toFixed(2)
         );
+        percentDiff = percentDiff > 15 || percentDiff < -15 ? 15 : percentDiff;
         const boostPercentDiff = percentDiff * -2.75;
-        let boost = parseFloat((1 + boostPercentDiff / 100).toFixed(2));
-        boost = boost > 15 || boost < -15 ? 15 : boost;
+        const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(2));
         let incrementalAddVolume = parseFloat(
           (order.addVolume * boost).toFixed(order.volumeDecimals)
         );
