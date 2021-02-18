@@ -272,6 +272,9 @@ class KrakenService {
           const sellVolume = superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals);
           const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
 
+          const sellDiff = order.tradeVolume - sellVolume;
+          console.log(`Add: ${order.tradeVolume} | Sell: ${sellVolume} | ${sellDiff.toFixed(4)}`);
+          console.log(sellDiff < 0 ? `Selling the difference` : `Buying the difference`);
           console.log(
             `Balance After: ${(
               order.balanceInDollar +
@@ -279,9 +282,6 @@ class KrakenService {
               sellVolumeInDollar
             ).toFixed(2)}`
           );
-          const sellDiff = order.tradeVolume - sellVolume;
-          console.log(`Add: ${order.tradeVolume} | Sell: ${sellVolume} | ${sellDiff.toFixed(4)}`);
-          console.log(sellDiff < 0 ? `Selling the difference` : `Buying the difference`);
           if (sellDiff > 0) {
             const volume = sellDiff > order.minVolume ? sellDiff : order.minVolume;
             result = await this.kraken.setAddOrder({
