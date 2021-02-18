@@ -19,13 +19,14 @@
     "avgTrade": 2.97
   },
   "ALGOUSD": {
-    "entrySize": 38,
-    "addSize": 50,
-    "maxAdds": 9,
-    "latestResult": 2656.09,
-    "totalTrades": 366,
-    "percentProfitable": 89.34,
-    "avgTrade": 7.26
+    "leverage": 2,
+    "entrySize": 42,
+    "addSize": 42,
+    "maxAdds": 11,
+    "latestResult": 2891.76,
+    "totalTrades": 322,
+    "percentProfitable": 84.78,
+    "avgTrade": 8.98
   },
   "BALUSDT": {
     "entrySize": 38,
