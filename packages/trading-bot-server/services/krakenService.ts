@@ -578,6 +578,8 @@ class KrakenService {
         ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
         : leverageSellAmounts[leverageSellAmounts.length - 1];
 
+    console.log(`Bid for Pair: ${currentBid} | Ask for Pair: ${currentAsk} | My Bid: ${bidPrice}`);
+
     let result = await this.kraken.setAddOrder({
       pair: position.pair,
       type: closeAction,
