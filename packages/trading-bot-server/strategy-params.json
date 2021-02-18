@@ -109,9 +109,10 @@
     "avgTrade": 2.46
   },
   "OMGUSDT": {
-    "entrySize": 48,
-    "addSize": 66,
-    "maxAdds": 7,
+    "leverage": 2,
+    "entrySize": 42,
+    "addSize": 42,
+    "maxAdds": 11,
     "latestResult": 3419.59,
     "totalTrades": 452,
     "percentProfitable": 90.04,
