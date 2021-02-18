@@ -305,6 +305,9 @@ class KrakenService {
             });
           }
         } else {
+          console.log(
+            `Balance After: ${(order.balanceInDollar + order.tradeVolumeInDollar).toFixed(2)}`
+          );
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
