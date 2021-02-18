@@ -9,13 +9,14 @@
     "avgTrade": 5.84
   },
   "ADAUSDT": {
-    "entrySize": 38,
-    "addSize": 52,
-    "maxAdds": 7,
-    "latestResult": 5408.78,
-    "totalTrades": 374,
-    "percentProfitable": 98.13,
-    "avgTrade": 14.46
+    "leverage": 3,
+    "entrySize": 62,
+    "addSize": 62,
+    "maxAdds": 5,
+    "latestResult": 1304.14,
+    "totalTrades": 437,
+    "percentProfitable": 76.43,
+    "avgTrade": 2.98
   },
   "ALGOUSD": {
     "entrySize": 38,
