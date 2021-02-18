@@ -134,10 +134,10 @@
     "entrySize": 40,
     "addSize": 40,
     "maxAdds": 8,
-    "latestResult": 5000.32,
-    "totalTrades": 348,
-    "percentProfitable": 95.11,
-    "avgTrade": 14.37
+    "latestResult": 1654.42,
+    "totalTrades": 251,
+    "percentProfitable": 90.44,
+    "avgTrade": 6.59
   },
   "UNIWETH": {
     "entrySize": 34,
