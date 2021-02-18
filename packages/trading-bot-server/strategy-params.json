@@ -1,7 +1,7 @@
 {
   "AAVEWETH": {
-    "entrySize": 100,
-    "addSize": 60,
+    "entrySize": 52,
+    "addSize": 52,
     "maxAdds": 5,
     "latestResult": 794.62,
     "totalTrades": 136,
@@ -140,8 +140,8 @@
     "avgTrade": 6.59
   },
   "UNIWETH": {
-    "entrySize": 34,
-    "addSize": 34,
+    "entrySize": 30,
+    "addSize": 30,
     "maxAdds": 10,
     "latestResult": 3047.10,
     "totalTrades": 462,
