@@ -363,23 +363,43 @@ class KrakenService {
         console.log('No position size specified. Cancelling.');
       }
     } else {
+      let positionMargin = 0;
+      let prices: number[] = [];
+
       for (const key in openPositions) {
         const position = openPositions[key];
-        if (position.pair === order.krakenTicker && order.action !== position.type) {
-          const closeAction = position.type === 'sell' ? 'buy' : 'sell';
-          latestResult = await this.kraken.setAddOrder({
-            pair: order.krakenTicker,
-            type: closeAction,
-            ordertype: 'limit',
-            price: order.bidPrice,
-            volume: 0, // 0 for close all
-            leverage: order.leverageAmount,
-            // validate: order.validate,
-          });
-          logOrderResult(`Settled`, latestResult, order.krakenizedTradingViewTicker);
-          break;
+        if (order.krakenTicker === position.pair && order.oppositeAction === position.type) {
+          positionMargin += parseFloat(position.margin);
+          prices.push(parseFloat(position.cost) / parseFloat(position.vol));
         }
       }
+
+      // get average price of positions
+      let averagePrice = superParseFloat(
+        prices.reduce((a, b) => a + b) / prices.length,
+        order.priceDecimals
+      );
+      const percentDiff = parseFloat(
+        (((order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100).toFixed(2)
+      );
+
+      const myPositionAfter = positionMargin.toFixed(2);
+      const marginPositionAfter = parseFloat(
+        (parseFloat(positionMargin.toFixed(2)) * (order.leverageAmount || 1)).toFixed(2)
+      );
+      console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
+      console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
+
+      latestResult = await this.kraken.setAddOrder({
+        pair: order.krakenTicker,
+        type: order.action,
+        ordertype: 'limit',
+        price: order.bidPrice,
+        volume: 0, // 0 for close all
+        leverage: order.leverageAmount,
+        // validate: order.validate,
+      });
+      logOrderResult(`Settled`, latestResult, order.krakenizedTradingViewTicker);
     }
 
     if (!latestResult) {
