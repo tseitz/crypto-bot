@@ -48,12 +48,12 @@
   },
   "CRVUSDT": {
     "entrySize": 36,
-    "addSize": 42,
-    "maxAdds": 8,
-    "latestResult": 2216.32,
-    "totalTrades": 373,
-    "percentProfitable": 86.6,
-    "avgTrade": 5.94
+    "addSize": 56,
+    "maxAdds": 5,
+    "latestResult": 909.41,
+    "totalTrades": 338,
+    "percentProfitable": 76.63,
+    "avgTrade": 2.69
   },
   "DOGEUSDT": {
     "entrySize": 34,
