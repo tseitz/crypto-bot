@@ -29,9 +29,9 @@
     "avgTrade": 8.98
   },
   "BALUSDT": {
-    "entrySize": 38,
-    "addSize": 44,
-    "maxAdds": 8,
+    "entrySize": 40,
+    "addSize": 46,
+    "maxAdds": 7,
     "latestResult": 3283.19,
     "totalTrades": 442,
     "percentProfitable": 88.69,
@@ -47,8 +47,8 @@
     "avgTrade": 3.81
   },
   "CRVUSDT": {
-    "entrySize": 36,
-    "addSize": 56,
+    "entrySize": 40,
+    "addSize": 54,
     "maxAdds": 5,
     "latestResult": 909.41,
     "totalTrades": 338,
@@ -122,9 +122,9 @@
     "avgTrade": 7.57
   },
   "SNXUSDT": {
-    "entrySize": 35,
+    "entrySize": 40,
     "addSize": 46,
-    "maxAdds": 8,
+    "maxAdds": 7,
     "latestResult": 1830.09,
     "totalTrades": 414,
     "percentProfitable": 88.16,
@@ -170,9 +170,9 @@
     "avgTrade": 9.23
   },
   "YFIUSDT": {
-    "entrySize": 34,
+    "entrySize": 40,
     "addSize": 42,
-    "maxAdds": 8,
+    "maxAdds": 7,
     "latestResult": 1476.66,
     "totalTrades": 270,
     "percentProfitable": 87.41,
