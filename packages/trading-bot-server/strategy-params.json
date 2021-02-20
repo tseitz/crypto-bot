@@ -65,9 +65,10 @@
     "avgTrade": 10.18
   },
   "DOTUSDT": {
-    "entrySize": 56,
-    "addSize": 56,
-    "maxAdds": 6,
+    "leverage": 3,
+    "entrySize": 75,
+    "addSize": 80,
+    "maxAdds": 4,
     "latestResult": 572.48,
     "totalTrades": 501,
     "percentProfitable": 73.65,
