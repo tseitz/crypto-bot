@@ -258,3 +258,5 @@ strategy.close("long", when=(closeLong or short) and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 // strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
 strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
+
+
