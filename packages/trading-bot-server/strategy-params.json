@@ -66,8 +66,8 @@
   },
   "DOTUSDT": {
     "leverage": 3,
-    "entrySize": 200,
-    "addSize": 100,
+    "entrySize": 300,
+    "addSize": 50,
     "maxAdds": 4,
     "latestResult": 572.48,
     "totalTrades": 501,
