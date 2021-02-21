@@ -2,7 +2,7 @@
 // © LonesomeTheBlue
 
 //@version=4
-study("Slim Support", "SRv2", overlay = true)
+strategy("Slim Support", overlay = true, initial_capital=1000, default_qty_value=1, default_qty_type=strategy.cash, currency=currency.USD)
 prd = input(defval = 10, title="Pivot Period", minval = 4, maxval = 30)
 ppsrc = input(defval = 'High/Low', title="Source", options = ['High/Low', 'Close/Open'])
 maxnumpp = input(defval = 20, title =" Maximum Number of Pivot", minval = 5, maxval = 100)
@@ -14,6 +14,17 @@ linewidth = input(defval = 2, title = "Line Width", minval = 1, maxval = 4)
 resistancecolor = input(defval = color.red, title = "Resistance Color", type = input.color)
 supportcolor = input(defval = color.lime, title = "Support Color", type = input.color)
 showpp = input(false, title = "Show Point Points")
+
+// days to test
+daysBackMax = input(defval=21, title="Max Days Back to Test", minval=0)
+daysBackMin = 0
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+var isLong = false
+var isShort = false
+var entryPrice = 0.0
 
 float ph = na, float pl = na
 float src1 =  ppsrc == 'High/Low' ? high : max(close, open)
@@ -198,24 +209,6 @@ rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 and rsi2 > rsi3)
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 and rsi2 < rsi3)
 prevRsiBottomed = rsi1 > rsi2 and rsi2 < rsi3
 
-f_crossed_over()=>
-    ret = false
-    if array.size(sr_up_level) > 0
-        for x = 0 to array.size(sr_up_level) - 1
-            float mid = round_it((array.get(sr_up_level, x) + array.get(sr_dn_level, x)) / 2)
-            if close[1] <= mid and close > mid
-                ret := true
-    ret
-
-f_crossed_under()=>
-    ret = false
-    if array.size(sr_up_level) > 0
-        for x = 0 to array.size(sr_up_level) - 1
-            float mid = round_it((array.get(sr_up_level, x) + array.get(sr_dn_level, x)) / 2)
-            if close[1] >= mid and close < mid
-                ret := true
-    ret
-
 buy_signal()=>
     ret = false
     if array.size(sr_up_level) > 0
@@ -234,16 +227,17 @@ sell_signal()=>
                 ret := true
     ret
 
-first
-
-alertcondition(f_crossed_over(), title='Resistance Broken', message='Resistance Broken')
-alertcondition(f_crossed_under(), title='Support Broken', message='Support Broken')
+alertcondition(buy_signal(), title='Resistance Broken', message='Resistance Broken')
+alertcondition(sell_signal(), title='Support Broken', message='Support Broken')
 
 plotshape(buy_signal(), title="buy dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
 plotshape(sell_signal(), title="sell dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
 long = not isLong and buy_signal()
-closeLong = isLong and 
+closeLong = isLong and sell_signal()
+short = not isShort and sell_signal()
+closeShort = isShort and buy_signal()
+// closeLong = isLong and 
 
 if long
     isLong := true
@@ -254,3 +248,10 @@ if short
     isShort := true
     isLong := false
     entryPrice := open
+
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+// strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
+strategy.close("long", when=(closeLong or short) and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
+strategy.close("short", when=(closeShort or long) and isWithinTimeBounds)
