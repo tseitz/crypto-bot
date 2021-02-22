@@ -66,7 +66,7 @@
   },
   "DOTUSDT": {
     "leverage": 3,
-    "entrySize": 250,
+    "entrySize": 60,
     "addSize": 60,
     "maxAdds": 5,
     "latestResult": 572.48,
@@ -76,7 +76,7 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 200,
+    "entrySize": 40,
     "addSize": 40,
     "maxAdds": 6,
     "latestResult": 1345.83,
