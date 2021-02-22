@@ -126,8 +126,8 @@ export default class KrakenOrderDetails {
     this.strategyParams = strategyParams[this.tradingViewTicker];
     this.originalEntry = this.strategyParams?.entrySize;
     this.originalAdd = this.strategyParams?.addSize;
-    this.shortZoneDeleverage = 0.9;
-    this.longZoneDeleverage = 1;
+    this.shortZoneDeleverage = 0.8;
+    this.longZoneDeleverage = 0.8;
     this.entrySize = !this.shortZone
       ? this.strategyParams?.entrySize * this.longZoneDeleverage
       : this.strategyParams?.entrySize * this.shortZoneDeleverage;
@@ -183,8 +183,8 @@ export default class KrakenOrderDetails {
     this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
 
     // local configs
-    this.lowestNonLeverageMargin = 175;
-    this.lowestLeverageMargin = 175;
+    this.lowestNonLeverageMargin = 250;
+    this.lowestLeverageMargin = 250;
   }
 
   private getTradeVolume(): number {
