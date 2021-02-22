@@ -230,14 +230,18 @@ sell_signal()=>
 alertcondition(buy_signal(), title='Resistance Broken', message='Resistance Broken')
 alertcondition(sell_signal(), title='Support Broken', message='Support Broken')
 
-plotshape(buy_signal(), title="buy dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-plotshape(sell_signal(), title="sell dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
 long = not isLong and buy_signal()
 closeLong = isLong and sell_signal()
 short = not isShort and sell_signal()
 closeShort = isShort and buy_signal()
 // closeLong = isLong and 
+
+plotshape(long, title="buy dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+plotshape(closeLong, title="close buy", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+plotshape(short, title="short dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
+plotshape(closeShort, title="close short", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+
 
 if long
     isLong := true
