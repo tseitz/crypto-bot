@@ -31,7 +31,7 @@
   "BALUSDT": {
     "entrySize": 40,
     "addSize": 46,
-    "maxAdds": 7,
+    "maxAdds": 6,
     "latestResult": 3283.19,
     "totalTrades": 442,
     "percentProfitable": 88.69,
@@ -124,7 +124,7 @@
   },
   "SNXUSDT": {
     "entrySize": 40,
-    "addSize": 46,
+    "addSize": 44,
     "maxAdds": 7,
     "latestResult": 1830.09,
     "totalTrades": 414,
