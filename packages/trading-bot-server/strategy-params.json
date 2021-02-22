@@ -66,7 +66,7 @@
   },
   "DOTUSDT": {
     "leverage": 3,
-    "entrySize": 100,
+    "entrySize": 150,
     "addSize": 60,
     "maxAdds": 5,
     "latestResult": 572.48,
