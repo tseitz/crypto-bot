@@ -126,7 +126,7 @@ export default class KrakenOrderDetails {
     this.strategyParams = strategyParams[this.tradingViewTicker];
     this.originalEntry = this.strategyParams?.entrySize;
     this.originalAdd = this.strategyParams?.addSize;
-    this.shortZoneDeleverage = 0.9;
+    this.shortZoneDeleverage = 0.8;
     this.longZoneDeleverage = 1;
     this.entrySize = !this.shortZone
       ? this.strategyParams?.entrySize * this.longZoneDeleverage
