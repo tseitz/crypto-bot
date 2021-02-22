@@ -208,13 +208,14 @@ rsi4 = getRsi(4)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 and rsi2 > rsi3)
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 and rsi2 < rsi3)
 prevRsiBottomed = rsi1 > rsi2 and rsi2 < rsi3
+prevRsiTopped = rsi1 < rsi2 and rsi2 > rsi3
 
 buy_signal()=>
     ret = false
     if array.size(sr_up_level) > 0
         for x = 0 to array.size(sr_up_level) - 1
             float mid = round_it((array.get(sr_up_level, x) + array.get(sr_dn_level, x)) / 2)
-            if close[1] < mid and close > mid and (rsiBottomed or prevRsiBottomed)
+            if low[1] < mid and close > mid and (rsiBottomed or prevRsiBottomed)
                 ret := true
     ret
 
@@ -223,12 +224,18 @@ sell_signal()=>
     if array.size(sr_up_level) > 0
         for x = 0 to array.size(sr_up_level) - 1
             float mid = round_it((array.get(sr_up_level, x) + array.get(sr_dn_level, x)) / 2)
-            if low[2] <= mid and close[1] >= mid and close < mid and rsiTopped
+            if low[2] <= mid and close[1] >= mid and close < mid and (rsiTopped or prevRsiTopped)
                 ret := true
     ret
 
-alertcondition(buy_signal(), title='Resistance Broken', message='Resistance Broken')
-alertcondition(sell_signal(), title='Support Broken', message='Support Broken')
+short_signal()=>
+    ret = false
+    if array.size(sr_up_level) > 0
+        for x = 0 to array.size(sr_up_level) - 1
+            float mid = round_it((array.get(sr_up_level, x) + array.get(sr_dn_level, x)) / 2)
+            if low[2] <= mid and close[2] >= mid and close[1] >= mid and close < mid and (rsiTopped or prevRsiTopped)
+                ret := true
+    ret
 
 
 long = not isLong and buy_signal()
@@ -238,9 +245,10 @@ closeShort = isShort and buy_signal()
 // closeLong = isLong and 
 
 plotshape(long, title="buy dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-plotshape(closeLong, title="close buy", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(closeLong, title="close buy", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 plotshape(short, title="short dis", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-plotshape(closeShort, title="close short", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+// plotshape(closeShort, title="close short", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+plotshape(short_signal(), title="close short", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.orange, textcolor=color.white, transp=0)
 
 
 if long
