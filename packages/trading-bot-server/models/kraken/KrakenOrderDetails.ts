@@ -186,13 +186,13 @@ export default class KrakenOrderDetails {
   private getEntry(): number {
     if (this.shortZone) {
       if (this.positionSize) {
-        return this.positionSize;
+        return this.positionSize * this.shortZoneDeleverage;
       } else {
         return this.strategyParams?.entrySize * this.longZoneDeleverage
       }
     } else {
       if (this.positionSize) {
-        return this.positionSize * this.shortZoneDeleverage;
+        return this.positionSize;
       } else {
         return this.strategyParams?.entrySize * this.shortZoneDeleverage
       }
@@ -202,13 +202,13 @@ export default class KrakenOrderDetails {
   private getAddSize(): number {
     if (this.shortZone) {
       if (this.positionSize) {
-        return this.positionSize;
+        return this.positionSize * this.shortZoneDeleverage;
       } else {
         return this.strategyParams?.addSize * this.longZoneDeleverage
       }
     } else {
       if (this.positionSize) {
-        return this.positionSize * this.shortZoneDeleverage;
+        return this.positionSize;
       } else {
         return this.strategyParams?.addSize * this.shortZoneDeleverage
       }
