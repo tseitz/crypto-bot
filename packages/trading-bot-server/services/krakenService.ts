@@ -101,16 +101,18 @@ class KrakenService {
           prices.push(parseFloat(position.cost) / parseFloat(position.vol));
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
-          await this.settleLeveragedOrder(order);
+          // await this.settleLeveragedOrder(order);
         }
       }
 
       if (order.marginFree < order.lowestLeverageMargin) {
         console.log('Margin level too low, selling some.');
-        const positionsBySize = await this.getOpenPositionsBySize(openPositions);
+        // const positionsBySize = await this.getOpenPositionsBySize(openPositions);
+        const positionsByTime = await this.getOrdersByTimeAsc();
         result = await this.sellOldestOrders(
           order,
-          positionsBySize.keys().next().value,
+          // positionsBySize.keys().next().value,
+          positionsByTime[0].pair,
           openPositions
         );
       }
