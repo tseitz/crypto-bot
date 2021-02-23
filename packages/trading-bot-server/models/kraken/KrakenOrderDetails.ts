@@ -126,11 +126,11 @@ export default class KrakenOrderDetails {
     this.strategyParams = strategyParams[this.tradingViewTicker];
     this.originalEntry = this.strategyParams?.entrySize;
     this.originalAdd = this.strategyParams?.addSize;
-    this.shortZoneDeleverage = 0.6;
+    this.shortZoneDeleverage = 0.5;
     this.longZoneDeleverage = 0.7;
     this.entrySize = this.getEntry();
     this.addSize = this.getAddSize();
-    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds + 1 : 5;
+    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 5;
 
     // pair info
     this.minVolume = superParseFloat(pairData[this.krakenTicker]['ordermin']);
