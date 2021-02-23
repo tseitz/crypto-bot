@@ -162,8 +162,8 @@
   },
   "XTZUSD": {
     "leverage": 3,
-    "entrySize": 33,
-    "addSize": 42,
+    "entrySize": 36,
+    "addSize": 36,
     "maxAdds": 9,
     "latestResult": 1983.38,
     "totalTrades": 215,
