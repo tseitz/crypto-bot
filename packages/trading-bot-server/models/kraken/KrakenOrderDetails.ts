@@ -105,35 +105,31 @@ export default class KrakenOrderDetails {
     // body params
     this.action = body.strategy.action === 'sell' ? 'sell' : 'buy'; // force it
     this.oppositeAction = this.action === 'sell' ? 'buy' : 'sell';
-    this.positionSize = body.strategy?.positionSize;
     this.close = body.strategy.description.toLowerCase().includes('close');
     this.oldest = body.strategy.description.toLowerCase().includes('close oldest');
     this.closePositionSize = body.strategy.description
-      .toLowerCase()
-      .includes('close position size');
+    .toLowerCase()
+    .includes('close position size');
     this.closeOldestPair =
-      this.oldest && body.strategy.description.toLowerCase().includes('close oldest pair');
+    this.oldest && body.strategy.description.toLowerCase().includes('close oldest pair');
     this.nonLeverageOnly = body.strategy.description.toLowerCase().includes('local');
-    this.txId = body.strategy.txId;
     this.sellBags = parseInt(body.strategy.sellBags?.toString() || '0') === 0 ? false : true;
     this.buyBags = parseInt(body.strategy.buyBags?.toString() || '0') === 0 ? false : true;
     this.bagAmount = parseFloat(body.strategy.bagSize?.toString() || '0');
     this.validate = body.strategy.validate || false;
     this.shortZone = parseInt(body.strategy.shortZone?.toString() || '0') === 0 ? false : true;
-
+    
     // strat params
     // if in short zone, deleverage to half position
+    this.txId = body.strategy.txId;
+    this.positionSize = body.strategy?.positionSize;
     this.strategyParams = strategyParams[this.tradingViewTicker];
     this.originalEntry = this.strategyParams?.entrySize;
     this.originalAdd = this.strategyParams?.addSize;
     this.shortZoneDeleverage = 0.8;
     this.longZoneDeleverage = 0.8;
-    this.entrySize = !this.shortZone
-      ? this.strategyParams?.entrySize * this.longZoneDeleverage
-      : this.strategyParams?.entrySize * this.shortZoneDeleverage;
-    this.addSize = !this.shortZone
-      ? this.strategyParams?.addSize * this.longZoneDeleverage
-      : this.strategyParams?.addSize * this.shortZoneDeleverage;
+    this.entrySize = this.getEntry();
+    this.addSize = this.getAddSize();
     this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 6;
 
     // pair info
@@ -187,16 +183,47 @@ export default class KrakenOrderDetails {
     this.lowestLeverageMargin = 250;
   }
 
+  private getEntry(): number {
+    if (this.shortZone) {
+      if (this.positionSize) {
+        return this.positionSize * this.longZoneDeleverage;
+      } else {
+        return this.strategyParams?.entrySize * this.longZoneDeleverage
+      }
+    } else {
+      if (this.positionSize) {
+        return this.positionSize * this.shortZoneDeleverage;
+      } else {
+        return this.strategyParams?.entrySize * this.shortZoneDeleverage
+      }
+    }
+  }
+
+  private getAddSize(): number {
+    if (this.shortZone) {
+      if (this.positionSize) {
+        return this.positionSize * this.longZoneDeleverage;
+      } else {
+        return this.strategyParams?.addSize * this.longZoneDeleverage
+      }
+    } else {
+      if (this.positionSize) {
+        return this.positionSize * this.shortZoneDeleverage;
+      } else {
+        return this.strategyParams?.addSize * this.shortZoneDeleverage
+      }
+    }
+  }
+
   private getTradeVolume(): number {
     let volume = 0;
-    const size = this.positionSize || this.entrySize;
 
-    if (size) {
+    if (this.entrySize) {
       if (this.action === 'sell' && this.close) {
         return this.balanceOfBase;
       } else {
         volume = superParseFloat(
-          (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
+          (this.entrySize * (this.leverageAmount || 1)) / this.usdValueOfBase,
           this.volumeDecimals
         );
         return volume > this.minVolume ? volume : this.minVolume;
@@ -217,11 +244,10 @@ export default class KrakenOrderDetails {
 
   private getAddVolume(): number {
     let volume = 0;
-    const size = this.positionSize || this.addSize;
 
-    if (size) {
+    if (this.addSize) {
       volume = superParseFloat(
-        (size * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
         this.volumeDecimals
       );
       return volume > this.minVolume ? volume : this.minVolume;
