@@ -133,8 +133,8 @@
   },
   "TRXUSDT": {
     "leverage": 3,
-    "entrySize": 40,
-    "addSize": 40,
+    "entrySize": 36,
+    "addSize": 36,
     "maxAdds": 8,
     "latestResult": 1654.42,
     "totalTrades": 251,
