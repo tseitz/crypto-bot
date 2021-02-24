@@ -40,7 +40,7 @@
   "BTCUSDT": {
     "entrySize": 36,
     "addSize": 36,
-    "maxAdds": 8,
+    "maxAdds": 7,
     "latestResult": 1321.89,
     "totalTrades": 347,
     "percentProfitable": 86.74,
@@ -76,8 +76,8 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 34,
-    "addSize": 34,
+    "entrySize": 32,
+    "addSize": 32,
     "maxAdds": 7,
     "latestResult": 1345.83,
     "totalTrades": 304,
