@@ -135,7 +135,7 @@
     "leverage": 3,
     "entrySize": 36,
     "addSize": 36,
-    "maxAdds": 8,
+    "maxAdds": 7,
     "latestResult": 1654.42,
     "totalTrades": 251,
     "percentProfitable": 90.44,
