@@ -1,7 +1,7 @@
 {
   "AAVEWETH": {
-    "entrySize": 52,
-    "addSize": 52,
+    "entrySize": 45,
+    "addSize": 45,
     "maxAdds": 5,
     "latestResult": 794.62,
     "totalTrades": 136,
@@ -10,9 +10,9 @@
   },
   "ADAUSDT": {
     "leverage": 3,
-    "entrySize": 40,
-    "addSize": 40,
-    "maxAdds": 7,
+    "entrySize": 50,
+    "addSize": 50,
+    "maxAdds": 6,
     "latestResult": 1328.42,
     "totalTrades": 448,
     "percentProfitable": 76.34,
@@ -39,8 +39,8 @@
   },
   "BTCUSDT": {
     "entrySize": 36,
-    "addSize": 42,
-    "maxAdds": 7,
+    "addSize": 36,
+    "maxAdds": 8,
     "latestResult": 1321.89,
     "totalTrades": 347,
     "percentProfitable": 86.74,

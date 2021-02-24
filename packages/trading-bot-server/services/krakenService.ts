@@ -107,12 +107,12 @@ class KrakenService {
 
       if (order.marginFree < order.lowestLeverageMargin) {
         console.log('Margin level too low, selling some.');
-        // const positionsBySize = await this.getOpenPositionsBySize(openPositions);
-        const positionsByTime = await this.getOrdersByTimeAsc();
+        const positionsBySize = await this.getOpenPositionsBySize(openPositions);
+        // const positionsByTime = await this.getOrdersByTimeAsc();
         result = await this.sellOldestOrders(
           order,
-          // positionsBySize.keys().next().value,
-          positionsByTime[0].pair,
+          positionsBySize.keys().next().value,
+          // positionsByTime[0].pair,
           openPositions
         );
       }
