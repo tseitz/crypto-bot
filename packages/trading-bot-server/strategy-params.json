@@ -38,8 +38,8 @@
     "avgTrade": 7.43
   },
   "BTCUSDT": {
-    "entrySize": 36,
-    "addSize": 36,
+    "entrySize": 34,
+    "addSize": 34,
     "maxAdds": 7,
     "latestResult": 1321.89,
     "totalTrades": 347,
@@ -142,9 +142,9 @@
     "avgTrade": 6.59
   },
   "UNIWETH": {
-    "entrySize": 30,
-    "addSize": 30,
-    "maxAdds": 10,
+    "entrySize": 36,
+    "addSize": 36,
+    "maxAdds": 8,
     "latestResult": 3047.10,
     "totalTrades": 462,
     "percentProfitable": 70.35,
