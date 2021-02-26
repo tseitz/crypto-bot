@@ -130,7 +130,7 @@ export default class KrakenOrderDetails {
     this.longZoneDeleverage = 0.68;
     this.entrySize = this.getEntry();
     this.addSize = this.getAddSize();
-    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds - 1 : 5;
+    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 5;
 
     // pair info
     this.minVolume = superParseFloat(pairData[this.krakenTicker]['ordermin']);
@@ -188,13 +188,13 @@ export default class KrakenOrderDetails {
       if (this.positionSize) {
         return this.positionSize * this.shortZoneDeleverage;
       } else {
-        return this.strategyParams?.entrySize * this.longZoneDeleverage
+        return this.strategyParams?.entrySize * this.shortZoneDeleverage
       }
     } else {
       if (this.positionSize) {
         return this.positionSize;
       } else {
-        return this.strategyParams?.entrySize * this.shortZoneDeleverage
+        return this.strategyParams?.entrySize * this.longZoneDeleverage
       }
     }
   }
@@ -204,13 +204,13 @@ export default class KrakenOrderDetails {
       if (this.positionSize) {
         return this.positionSize * this.shortZoneDeleverage;
       } else {
-        return this.strategyParams?.addSize * this.longZoneDeleverage
+        return this.strategyParams?.addSize * this.shortZoneDeleverage
       }
     } else {
       if (this.positionSize) {
         return this.positionSize;
       } else {
-        return this.strategyParams?.addSize * this.shortZoneDeleverage
+        return this.strategyParams?.addSize * this.longZoneDeleverage
       }
     }
   }
