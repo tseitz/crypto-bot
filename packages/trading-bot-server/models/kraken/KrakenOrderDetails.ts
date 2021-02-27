@@ -127,7 +127,7 @@ export default class KrakenOrderDetails {
     this.originalEntry = this.strategyParams?.entrySize;
     this.originalAdd = this.strategyParams?.addSize;
     this.shortZoneDeleverage = 0.45;
-    this.longZoneDeleverage = 0.75;
+    this.longZoneDeleverage = 0.85;
     this.entrySize = this.getEntry();
     this.addSize = this.getAddSize();
     this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 5;
