@@ -1,5 +1,5 @@
 //@version=4
-strategy("SlimTrades 2h", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("SlimTrades 2h", overlay=true, calc_on_every_tick=true, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // days to test
 daysBackMax = input(defval=21, title="Max Days Back to Test", minval=0)
@@ -16,7 +16,7 @@ shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) 
 shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
 
 hiLowFast = input(defval=4, title="Hi Low Short", minval=0, step=1)
-hiLowSlow = input(defval=30, title="Hi Low Long", minval=0, step=1)
+hiLowSlow = input(defval=24, title="Hi Low Long", minval=0, step=1)
 
 // loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
 macdCloseLong = input(defval=81, title="Highest MACD Close Long", minval=0, step=1)
@@ -106,8 +106,10 @@ twoSlowHighs = high[1] > highestSlow2 and oneSlowHigh
 
 oneFastLow = low < lowestFast1 and low < lowestFast2
 twoFastLows = low[1] < lowestFast2 and oneFastLow
+threeFastLows = low[2] < lowestFast3 and twoFastLows
 oneFastHigh = high > highestFast1 and high > highestFast2
 twoFastHighs = high[1] > highestFast2 and oneFastHigh
+threeFastHighs = high[2] > highestFast3 and twoFastHighs
 
 if oneSlowLow
     lowSlowCount := lowSlowCount + 1
@@ -121,7 +123,7 @@ if oneFastLow
 if oneFastHigh
     highFastCount := highFastCount + 1
 
-if twoSlowLows
+if threeFastLows or oneSlowLow
     firstAction := longZone or firstAction
     shortZone := true
     longZone := false
@@ -130,7 +132,7 @@ if twoSlowLows
     highFastCount := 0
     lowFastCount := 0
 
-if twoSlowHighs
+if threeFastHighs or oneSlowHigh
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
@@ -138,6 +140,10 @@ if twoSlowHighs
     highSlowCount := 0
     highFastCount := 0
     lowFastCount := 0
+
+
+bgColor2 = shortZone ? color.red : longZone ? color.green : na
+bgcolor(color=bgColor2, transp=85)
 
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 and rsi2 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
@@ -153,8 +159,10 @@ rsiIncreasing = (rsiClose > rsi2 and rsi1 < rsi2) // or (rsiClose > rsi3 and rsi
 // possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
 
 
-long = not isLong and oneSlowLow and open > lowestSlow1
-closeLong = isLong and twoFastLows
+long = not isLong and longZone
+closeLong = isLong and (oneFastLow or shortZone)
+short = not isShort and shortZone
+closeShort = isShort and (oneFastHigh or longZone)
 
 
 // bgcolor(color=twoNewLows ? color.blue : na, transp=20)
@@ -172,9 +180,22 @@ if closeLong
     lastRsi := 0.0
     entryPrice := 0.0
 
-strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+if short
+    isShort := true
+    isLong := false
+    entryPrice := open
+    
+if closeShort
+    isShort := false
+    longCount := 0
+    shortCount := 0
+    lastMacd := 0.0
+    lastRsi := 0.0
+    entryPrice := 0.0
+
+// strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 // strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
-strategy.close("long", when=closeLong and isWithinTimeBounds)
+// strategy.close("long", when=closeLong and isWithinTimeBounds)
 // strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 // strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
 // strategy.close("short", when=closeShort and isWithinTimeBounds)
