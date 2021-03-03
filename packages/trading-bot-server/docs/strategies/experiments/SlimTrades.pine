@@ -10,30 +10,46 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 
 showSlow = input(defval=true, title="Show Slow?", type=input.bool)
 
-longStopPerc = 35 //input(35, title='Long Stop %', type=input.float, step=1) / 100
-longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
-shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
-shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
+// Configure trail stop level with input options (optional)
+shortTrailPerc = input(title="Trail Short Loss (%)", type=input.float, minval=0.0, step=0.5, defval=4) * 0.01
 
-hiLowFast = input(defval=90, title="Hi Low Short", minval=0, step=5)
+// Determine trailing short price
+shortStopPrice = 0.0
+
+shortStopPrice := if (strategy.position_size < 0)
+    stopValue = close * (1 + shortTrailPerc)
+    min(stopValue, shortStopPrice[1])
+else
+    999999
+
+// longStopPerc = 35 //input(35, title='Long Stop %', type=input.float, step=1) / 100
+// longStopPrice = strategy.position_avg_price * (1 - longStopPerc)
+// shortStopPerc = 20 // input(12, title='Short Stop %', type=input.float, step=1) / 100
+// shortStopPrice = strategy.position_avg_price * (1 + shortStopPerc)
+
+hiLowFast = input(defval=240, title="Hi Low Short", minval=0, step=5)
 hiLowSlow = input(defval=420, title="Hi Low Long", minval=0, step=25)
+hiLowSuperSlow = input(defval=1600, title="Hi Low Super Long", minval=0, step=50)
 
 // loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
 macdCloseLong = input(defval=81, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=80, title="Close Long In Short Zone RSI", minval=0, step=1)
+closeShortInSuperShortZone = input(defval=20, title="Close Short In Super Short Zone RSI", minval=0, step=1)
 longZoneRsi = input(defval=33, title="Buy Long Zone RSI", minval=0, step=1)
 shortZoneRsi = input(defval=40, title="Buy Short Zone RSI", minval=0, step=1)
+shortRsi = input(defval=55, title="Buy Short RSI", minval=0, step=1)
 macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
 // maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
 addOnLows = input(defval=true, title="Add On Lows?", type=input.bool)
 reopenOnHighs = input(defval=false, title="Reopen on new highs?", type=input.bool)
-allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool)
+// allowShorts = true // input(defval=false, title="Allow shorts?", type=input.bool)
 allowFastMacdLongs = input(defval=true, title="Fast Macd Longs?", type=input.bool)
 
 var isLong = false
 var isShort = false
 var shortZone = false
 var longZone = false
+var superShortZone = false
 var firstAction = false
 var lowSlowCount = 0
 var highSlowCount = 0
@@ -92,11 +108,15 @@ highestSlow3 = getHighest(3, hiLowSlow)
 lowestSlow1 = getLowest(1, hiLowSlow)
 lowestSlow2 = getLowest(2, hiLowSlow)
 lowestSlow3 = getLowest(3, hiLowSlow)
+lowestSuperSlow1 = getLowest(1, hiLowSuperSlow)
+lowestSuperSlow2 = getLowest(2, hiLowSuperSlow)
 
 plot(series=highestFast1, color=color.green, linewidth=1)
 plot(series=lowestFast1, color=color.red, linewidth=1)
-plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=3)
-plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=3)
+plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=2)
+plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=2)
+// plot(series=highestSuperSlow1, color=color.green, linewidth=3)
+plot(series=lowestSuperSlow1, color=color.red, linewidth=3)
 
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
 oneSlowLow = low < lowestSlow1 and low < lowestSlow2
@@ -105,6 +125,8 @@ twoSlowLows = low[1] < lowestSlow2 and oneSlowLow
 twoSlowHighs = high[1] > highestSlow2 and oneSlowHigh
 oneFastLow = longZone and low < lowestFast2
 oneFastHigh = shortZone and high > highestFast2
+oneSuperSlowLow = low < lowestSuperSlow1 and low < lowestSuperSlow2
+// oneSuperSlowHigh = high > highestSuperSlow1 and high > highestSuperSlow2
 
 if oneSlowLow
     lowSlowCount := lowSlowCount + 1
@@ -131,13 +153,26 @@ if twoSlowHighs
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
+    superShortZone := false
     lowSlowCount := 0
     highSlowCount := 0
     highFastCount := 0
     lowFastCount := 0
 
+if oneSuperSlowLow
+    firstAction := longZone or firstAction
+    superShortZone := true
+    longZone := false
+    shortZone := false
+    highSlowCount := 0
+    lowSlowCount := 0
+    highFastCount := 0
+    lowFastCount := 0
+
+
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
+bgcolor(color=superShortZone ? color.red : na, transp=75)
 plotshape(shortZone, title="shortzone", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0, display=display.none)
 
 highestMacd = highest(macd, macdLength)[1]
@@ -173,25 +208,25 @@ lowestPrevMacd = lowerMacd2 and macd > lowestMacd
 highestPrevMacd = higherMacd2 and macd < highestMacd
 // possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
 
-shortAllowed = allowShorts and not isShort and shortZone
-shorting = allowShorts and isShort and shortZone
+shortAllowed = not isShort and superShortZone
+shorting = isShort and superShortZone
 addLow = (addOnLows and newLow)
 
 buyLongZoneSetup = longZone and ((newLow) or (rsiBottomed and lowerMacd2) or (reopenOnHighs and high > highestSlow2))
 buyShortZoneSetup = shortZone and rsiBottomed and lowerMacd2 and lowerMacd
-addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and lowerMacd2 and lowerMacd and rsi1 < longZoneRsi))
-addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) or (rsi1 < shortZoneRsi))
+addBuyLongZoneSetup = longZone and (addLow or (rsiBottomed and ((lowerMacd2 and lowerMacd) and (rsi1 < longZoneRsi))))
+addBuyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and ((lowerMacd2 and lowerMacd) and (rsi1 < shortZoneRsi))
 // closeLoneCloseSetup = rsi1 > loneCloseLong and not higherMacd2
 closeSetup = rsi1 > macdCloseLong
 closeLongInShortZoneSetup = (shortZone and rsiTopped and rsiDecreasing and rsi1 > closeLongInShortZone) // or (shortZone and highestPrevMacd)
-stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
+// stopped = (isShort and high >= shortStopPrice) or (isLong and low <= longStopPrice)
 
-long = not isLong and (buyLongZoneSetup or buyShortZoneSetup)
+long = not isLong and not superShortZone and (buyLongZoneSetup or buyShortZoneSetup)
 addLong = isLong and (addBuyLongZoneSetup or addBuyShortZoneSetup)
-closeLong = isLong and ((rsiTopped and rsiDecreasing and closeSetup) or closeLongInShortZoneSetup or stopped)
-short = shortAllowed and closeLong
-addShort = shorting and ((rsiTopped and ((higherMacd2 and higherMacd))))
-closeShort = shorting and long
+closeLong = isLong and ((rsiTopped and rsiDecreasing and closeSetup) or closeLongInShortZoneSetup or oneSuperSlowLow)
+short = not isShort and superShortZone
+addShort = shorting and ((rsiTopped and rsiDecreasing and ((higherMacd2 and higherMacd) and rsi1 > shortRsi)))
+closeShort = shorting and (longZone or (rsiBottomed and rsiIncreasing and rsi1 < closeShortInSuperShortZone))
 
 // bgcolor(color=twoNewLows ? color.blue : na, transp=20)
 
@@ -200,7 +235,7 @@ if long
     isShort := false
     entryPrice := open
 
-if short and allowShorts
+if short
     isShort := true
     isLong := false
     entryPrice := open
@@ -213,7 +248,7 @@ if closeLong
     lastRsi := 0.0
     entryPrice := 0.0
     
-if closeShort and allowShorts
+if closeShort
     isShort := false
     longCount := 0
     shortCount := 0
@@ -226,7 +261,7 @@ if addLong
     lastMacd := macd < lastMacd ? macd : lastMacd
     lastRsi := rsiClose < lastRsi ? rsiClose : lastRsi
 
-if addShort and allowShorts
+if addShort
     shortCount := shortCount + 1
     lastMacd := macd > lastMacd ? macd : lastMacd
     lastRsi := rsiClose > lastRsi ? rsiClose : lastRsi
@@ -246,3 +281,6 @@ strategy.close("long", when=closeLong and isWithinTimeBounds)
 strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
 strategy.close("short", when=closeShort and isWithinTimeBounds)
+
+if (strategy.position_size < 0)
+    strategy.exit(id="XS TRL STP", stop=shortStopPrice)
