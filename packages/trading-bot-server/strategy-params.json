@@ -1,12 +1,10 @@
 {
   "AAVEWETH": {
-    "entrySize": 45,
-    "addSize": 45,
-    "maxAdds": 5,
-    "latestResult": 794.62,
-    "totalTrades": 136,
-    "percentProfitable": 87.5,
-    "avgTrade": 5.84
+    "leverage": 1,
+    "entrySize": 27,
+    "addSize": 27,
+    "initialAdds": 8,
+    "maxAdds": 10
   },
   "ADAUSDT": {
     "leverage": 3,
@@ -76,13 +74,10 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 32,
-    "addSize": 32,
-    "maxAdds": 7,
-    "latestResult": 1345.83,
-    "totalTrades": 304,
-    "percentProfitable": 92.76,
-    "avgTrade": 4.43
+    "entrySize": 40,
+    "addSize": 40,
+    "initialAdds": 4,
+    "maxAdds": 10
   },
   "FILUSDT": {
     "leverage": 2,
