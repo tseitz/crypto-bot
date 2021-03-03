@@ -38,9 +38,9 @@
     "avgTrade": 7.43
   },
   "BTCUSDT": {
-    "entrySize": 34,
-    "addSize": 34,
-    "maxAdds": 7,
+    "entrySize": 30,
+    "addSize": 30,
+    "maxAdds": 8,
     "latestResult": 1321.89,
     "totalTrades": 347,
     "percentProfitable": 86.74,
