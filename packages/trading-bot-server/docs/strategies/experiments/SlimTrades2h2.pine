@@ -11,8 +11,8 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 showSlow = input(defval=true, title="Show Slow?", type=input.bool)
 
 // Configure trail stop level with input options (optional)
-longTrailPerc = input(title="Trail Long Loss (%)", type=input.float, minval=0.0, step=0.5, defval=4) * 0.01
-shortTrailPerc = input(title="Trail Short Loss (%)", type=input.float, minval=0.0, step=0.5, defval=4) * 0.01
+longTrailPerc = input(title="Trail Long Loss (%)", type=input.float, minval=0.0, step=0.1, defval=2.4) * 0.01
+shortTrailPerc = input(title="Trail Short Loss (%)", type=input.float, minval=0.0, step=0.1, defval=1.5) * 0.01
 
 // Determine trail stop loss prices
 longStopPrice = 0.0
@@ -33,8 +33,8 @@ else
     999999
 
 
-hiLowFast = input(defval=8, title="Hi Low Short", minval=0, step=1)
-hiLowSlow = input(defval=48, title="Hi Low Long", minval=0, step=1)
+hiLowFast = input(defval=4, title="Hi Low Short", minval=0, step=1)
+hiLowSlow = input(defval=18, title="Hi Low Long", minval=0, step=1)
 
 // loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
 macdCloseLong = input(defval=81, title="Highest MACD Close Long", minval=0, step=1)
@@ -76,6 +76,9 @@ getMACD(index) =>
     thisSlowMA = ema(close[index], slow)
     thisMacd = thisFastMA - thisSlowMA
 
+getSignal(index) =>
+    thisSignal = ema(macd, 9)[index]
+
 getRsi(index) =>
     thisRsi = rsi(close[index], 14)
 
@@ -89,6 +92,11 @@ macd0 = getMACD(0)
 macd1 = getMACD(1)
 macd2 = getMACD(2)
 macd3 = getMACD(3)
+
+signal0 = getSignal(0)
+signal1 = getSignal(1)
+signal2 = getSignal(2)
+signal3 = getSignal(3)
 
 rsi0 = getRsi(0)
 rsi1 = getRsi(1)
@@ -148,6 +156,9 @@ twoFastHighs = high[1] > highestFast2 and oneFastHigh
 threeFastHighs = high[2] > highestFast3 and twoFastHighs
 fourFastHighs = high[3] > highestFast4 and threeFastHighs
 
+openBelow = close[1] < lowestFast2 and open < lowestFast2
+openAbove = open > highestFast2
+
 if oneSlowLow
     lowSlowCount := lowSlowCount + 1
 
@@ -160,7 +171,7 @@ if oneFastLow
 if oneFastHigh
     highFastCount := highFastCount + 1
 
-if fourFastLows or oneSlowLow
+if twoSlowLows // fourFastLows or oneSlowLow
     firstAction := longZone or firstAction
     shortZone := true
     longZone := false
@@ -169,7 +180,7 @@ if fourFastLows or oneSlowLow
     highFastCount := 0
     lowFastCount := 0
 
-if fourFastHighs or oneSlowHigh
+if twoSlowHighs // fourFastHighs or oneSlowHigh
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
@@ -186,6 +197,12 @@ rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi2 < rsi3)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
 rsiDecreasing = rsiClose < rsi2
 rsiIncreasing = (rsiClose > rsi2 and rsi1 < rsi2) // or (rsiClose > rsi3 and rsi1 > rsi2 and rsi3 > rsi2)
+macdBottomed = (macd > macd1 and macd1 < macd2) or (macd2 - macd1 > macd1 - macd)
+macdTopped = (macd < macd1 and macd1 > macd2) or (macd2 - macd1 < macd1 - macd)
+
+// macdTopped = macd < macd1 and macd1 > macd2
+
+// bgcolor(color=macdBottomed ? color.blue : na)
 
 // newLow = low < lowestFast1 and high > lowestFast0 and low[1] > lowestFast2
 // newHigh = high > highestFast1 and low < highestFast0
@@ -195,8 +212,8 @@ rsiIncreasing = (rsiClose > rsi2 and rsi1 < rsi2) // or (rsiClose > rsi3 and rsi
 // highestPrevMacd = higherMacd2 and macd < highestMacd
 // possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
 
-long = not isLong and longZone and rsiBottomed and rsiIncreasing
-short = not isShort and shortZone and rsiTopped and rsiDecreasing
+long = not isLong and longZone and (macdBottomed) // (close > highestSlow2) or
+short = not isShort and shortZone and ((macdTopped)) // (close < lowestSlow2) or 
 
 
 
@@ -208,6 +225,7 @@ strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 
 isLong := strategy.position_size > 0
 isShort := strategy.position_size < 0
+
 
 
 // Submit exit orders for trail stop loss price
