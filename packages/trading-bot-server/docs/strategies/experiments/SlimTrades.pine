@@ -203,7 +203,7 @@ addLong = isLong and (addBuyLongZoneSetup or addBuyShortZoneSetup)
 closeLong = isLong and ((rsiTopped and rsiDecreasing and closeSetup) or rsiCloseShortZoneSetup)
 short = not isShort and oneSuperSlowLow
 // addShort = shorting and ((rsiTopped and rsiDecreasing and ((higherMacd2 and higherMacd) and rsi1 > shortRsi)))
-closeShort = isShort and (longZone or (rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShort))
+closeShort = isShort and rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShort
 
 if long
     isLong := true

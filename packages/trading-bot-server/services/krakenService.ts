@@ -103,6 +103,7 @@ class KrakenService {
           prices.push(parseFloat(position.cost) / parseFloat(position.vol));
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
           flip = true;
+          positionMargin += parseFloat(position.margin);
           positionVolume += parseFloat(position.vol);
           // await this.settleLeveragedOrder(order);
         }
@@ -110,12 +111,18 @@ class KrakenService {
 
       if (flip) {
         console.log("Flipping");
+        let orderVolume = positionVolume * 2;
+        if (positionMargin > order.marginFree) {
+          console.log('Margin level too low. Settling first');
+          await this.settleLeveragedOrder(order);
+          orderVolume = orderVolume * 0.4; // since not flipping, reset back adjusting for losses
+        }
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
-          type: 'sell',
+          type: order.action,
           ordertype: 'market',
           // price: order.bidPrice,
-          volume: positionVolume * 2,
+          volume: orderVolume,
           leverage: order.leverageAmount,
           // validate: order.validate,
         });
