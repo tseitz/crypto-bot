@@ -122,6 +122,12 @@ class KrakenService {
           parseInt(
             ((Math.floor(positionMargin) - order.entrySize) / order.originalAdd).toFixed(0)
           ) + 1;
+        const minAdds = true; // positionMargin >= order.maxInitialPositionSizeInDollar;
+        const tooMuch = positionMargin >= order.maxPositionSizeInDollar;
+
+        if (minAdds) {
+          order.addVolume = order.minVolume;
+        }
 
         // get average price of positions
         let averagePrice = superParseFloat(
@@ -139,7 +145,9 @@ class KrakenService {
         const boostPercentDiff = percentDiff * -4.2;
         const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(4));
 
-        const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals);
+        const volume = tooMuch ? order.minVolume : order.addVolume;
+        const incrementalVolume = parseFloat((volume * boost).toFixed(order.volumeDecimals));
+        const incrementalAddVolume = incrementalVolume > order.minVolume ? incrementalVolume : order.minVolume;
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
         const myPositionAfter = (positionMargin + parseFloat(incrementalAddDollar)).toFixed(2);
         const marginPositionAfter = parseFloat(
@@ -147,7 +155,7 @@ class KrakenService {
         );
 
         console.log(
-          `Adding: ${addCount}/${order.addCount} | ${
+          `Adding: ${addCount}/${order.initialAdds} | ${
             order.shortZone ? `Short Zone ${order.shortZoneDeleverage}` : 'Long Zone'
           }`
         );
@@ -165,13 +173,13 @@ class KrakenService {
           return result;
         }
 
-        if (addCount > order.addCount) {
+        if (tooMuch) {
           console.log(`Too many adds, selling some first.`);
           await this.sellOldestOrders(
             order,
             order.krakenTicker,
             openPositions,
-            addCount - order.addCount
+            1
           );
         }
 
@@ -246,7 +254,7 @@ class KrakenService {
 
         if (!order.buyBags) {
           console.log(
-            `Adding: ${addCount}/${order.addCount} | ${
+            `Adding: ${addCount}/${order.initialAdds} | ${
               order.shortZone ? `Short Zone ${order.shortZoneDeleverage}` : 'Long Zone'
             }`
           );
@@ -260,13 +268,13 @@ class KrakenService {
         // sell some if add count too high or margin too low
         if (
           !order.buyBags &&
-          (addCount > order.addCount || order.marginFree < order.lowestNonLeverageMargin)
+          (addCount > order.initialAdds || order.marginFree < order.lowestNonLeverageMargin)
         ) {
           // cancel previous sell since we're bundling
           await this.cancelOpenOrdersForPair(order, 'sell');
 
           const newOrder = { ...order };
-          const addDiff = addCount > order.addCount ? addCount - order.addCount : 1;
+          const addDiff = addCount > order.initialAdds ? addCount - order.initialAdds : 1;
 
           newOrder.action = 'sell';
           newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now

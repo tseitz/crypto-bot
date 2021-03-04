@@ -25,6 +25,7 @@ export default class KrakenOrderDetails {
   closeOldestPair: boolean;
   nonLeverageOnly: boolean;
   minVolume: number;
+  minVolumeInDollar: number;
   baseOfPair: string;
   quoteOfPair: string;
   usdPair: boolean;
@@ -63,9 +64,10 @@ export default class KrakenOrderDetails {
   marginFree: number;
   tradeVolumeInDollar: number;
   balanceInDollar: number;
-  // maxVolumeInDollar: number;
-  maxAdds: number;
+  maxInitialPositionSizeInDollar: number;
+  maxPositionSizeInDollar: number;
   initialAdds: number;
+  maxAdds: number;
   bagIt: boolean;
   bagAmount: number;
   positionSize: number | undefined;
@@ -148,7 +150,7 @@ export default class KrakenOrderDetails {
     this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
     this.lowestLeverageAmount =
       this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
-    this.noLeverage = typeof this.leverageAmount === 'undefined';
+      this.noLeverage = typeof this.leverageAmount === 'undefined';
     this.bagIt = this.sellBags || this.buyBags;
 
     // current price info
@@ -164,21 +166,23 @@ export default class KrakenOrderDetails {
     this.bidPrice = this.getBid();
     // Quote = USDT or ETH/BTC, Base = AAVE, ADA etc.
     this.usdValueOfQuote = this.usdPair
-      ? 1
+    ? 1
       : superParseFloat(assetClassPriceInfo[this.assetClassTicker]['c'][0]);
     this.usdValueOfBase = this.convertBaseToDollar(this.currentPrice, this.usdValueOfQuote);
-
+    
     // balance and order info
     this.balanceOfBase = superParseFloat(this.baseOfPair ? myBalanceInfo[this.baseOfPair] : 0) || 0;
     this.balanceOfQuote = superParseFloat(this.quoteOfPair ? myBalanceInfo[this.quoteOfPair] : 0);
     this.tradeBalance = this.action === 'sell' ? this.balanceOfBase : this.balanceOfQuote;
     this.balanceInDollar = this.convertBaseToDollar(this.balanceOfBase, this.usdValueOfBase);
     this.tradeBalanceInDollar = this.convertBaseToDollar(this.tradeBalance, this.usdValueOfQuote);
+    this.minVolumeInDollar = this.convertBaseToDollar(this.minVolume, this.usdValueOfBase);
     this.tradeVolume = this.getTradeVolume();
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
     // if no leverage, 4 less add counts
-    // this.maxVolumeInDollar = this.entrySize + this.addSize * this.initialAdds;
+    this.maxInitialPositionSizeInDollar = (this.entrySize + this.addSize * this.initialAdds) * this.leverageAmount;
+    this.maxPositionSizeInDollar = ((this.entrySize + this.addSize * this.initialAdds) + (this.minVolumeInDollar * (this.maxAdds - this.initialAdds))) * this.leverageAmount;
 
     // local configs
     this.lowestNonLeverageMargin = 200;
