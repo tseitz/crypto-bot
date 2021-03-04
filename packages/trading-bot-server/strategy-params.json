@@ -10,67 +10,22 @@
     "leverage": 3,
     "entrySize": 40,
     "addSize": 40,
-    "maxAdds": 7,
-    "latestResult": 1328.42,
-    "totalTrades": 448,
-    "percentProfitable": 76.34,
-    "avgTrade": 2.97
-  },
-  "ALGOUSD": {
-    "leverage": 2,
-    "entrySize": 40,
-    "addSize": 40,
-    "maxAdds": 11,
-    "latestResult": 2891.76,
-    "totalTrades": 322,
-    "percentProfitable": 84.78,
-    "avgTrade": 8.98
-  },
-  "BALUSDT": {
-    "entrySize": 40,
-    "addSize": 46,
-    "maxAdds": 6,
-    "latestResult": 3283.19,
-    "totalTrades": 442,
-    "percentProfitable": 88.69,
-    "avgTrade": 7.43
+    "initialAdds": 7,
+    "maxAdds": 10
   },
   "BTCUSDT": {
-    "entrySize": 30,
-    "addSize": 30,
-    "maxAdds": 8,
-    "latestResult": 1321.89,
-    "totalTrades": 347,
-    "percentProfitable": 86.74,
-    "avgTrade": 3.81
-  },
-  "CRVUSDT": {
-    "entrySize": 40,
-    "addSize": 54,
-    "maxAdds": 5,
-    "latestResult": 909.41,
-    "totalTrades": 338,
-    "percentProfitable": 76.63,
-    "avgTrade": 2.69
-  },
-  "DOGEUSDT": {
-    "entrySize": 34,
-    "addSize": 50,
-    "maxAdds": 7,
-    "latestResult": 2666.73,
-    "totalTrades": 262,
-    "percentProfitable": 74.43,
-    "avgTrade": 10.18
+    "leverage": 5,
+    "entrySize": 20,
+    "addSize": 20,
+    "initialAdds": 10,
+    "maxAdds": 12
   },
   "DOTUSDT": {
     "leverage": 3,
-    "entrySize": 42,
-    "addSize": 42,
-    "maxAdds": 7,
-    "latestResult": 572.48,
-    "totalTrades": 501,
-    "percentProfitable": 73.65,
-    "avgTrade": 1.14
+    "entrySize": 80,
+    "addSize": 80,
+    "initialAdds": 3,
+    "maxAdds": 6
   },
   "ETHUSDT": {
     "leverage": 5,
