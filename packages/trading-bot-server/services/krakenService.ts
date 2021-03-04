@@ -122,12 +122,12 @@ class KrakenService {
           parseInt(
             ((Math.floor(positionMargin) - order.entrySize) / order.originalAdd).toFixed(0)
           ) + 1;
-        const minAdds = true; // positionMargin >= order.maxInitialPositionSizeInDollar;
+        const minAdds = positionMargin >= order.maxInitialPositionSizeInDollar;
         const tooMuch = positionMargin >= order.maxPositionSizeInDollar;
 
-        if (minAdds) {
-          order.addVolume = order.minVolume;
-        }
+        // if (minAdds) {
+        //   order.addVolume = order.minVolume;
+        // }
 
         // get average price of positions
         let averagePrice = superParseFloat(
@@ -145,9 +145,9 @@ class KrakenService {
         const boostPercentDiff = percentDiff * -4.2;
         const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(4));
 
-        const volume = tooMuch ? order.minVolume : order.addVolume;
-        const incrementalVolume = parseFloat((volume * boost).toFixed(order.volumeDecimals));
-        const incrementalAddVolume = incrementalVolume > order.minVolume ? incrementalVolume : order.minVolume;
+        // const volume = tooMuch ? order.minVolume : order.addVolume;
+        // const incrementalVolume = parseFloat((volume * boost).toFixed(order.volumeDecimals));
+        const incrementalAddVolume = (order.addVolume * boost).toFixed(order.volumeDecimals); // incrementalVolume > order.minVolume ? incrementalVolume : order.minVolume;
         const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
         const myPositionAfter = (positionMargin + parseFloat(incrementalAddDollar)).toFixed(2);
         const marginPositionAfter = parseFloat(
@@ -165,11 +165,11 @@ class KrakenService {
 
         // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
         if (
-          percentDiff > -2 &&
-          positionMargin > 700 &&
+          percentDiff > -1 &&
+          marginPositionAfter > 800 &&
           order.marginFree < order.lowestLeverageMargin * 2
         ) {
-          console.log('Position above -2%. Margin too low. Ignoring.');
+          console.log('Position above -1%. Margin too low. Ignoring.');
           return result;
         }
 
@@ -235,16 +235,20 @@ class KrakenService {
         });
       }
     } else {
-      if (order.balanceInDollar === 0 && order.marginFree > order.lowestNonLeverageMargin) {
-        console.log(`New Entry: ${order.tradeVolumeInDollar}`);
-        result = await this.kraken.setAddOrder({
-          pair: order.krakenTicker,
-          type: order.action,
-          ordertype: 'market',
-          // price: order.bidPrice,
-          volume: order.tradeVolume,
-          // validate: order.validate,
-        });
+      if (order.balanceInDollar === 0) {
+        if (order.marginFree > order.lowestNonLeverageMargin) {
+          console.log(`New Entry: ${order.tradeVolumeInDollar}`);
+          result = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: order.action,
+            ordertype: 'market',
+            // price: order.bidPrice,
+            volume: order.tradeVolume,
+            // validate: order.validate,
+          });
+        } else {
+          console.log('No balance and margin is too low. Ignoring.')
+        }
       } else {
         // This is all just a guestimate since we're not sure if we boosted each time
         const addCount =
@@ -282,6 +286,12 @@ class KrakenService {
           const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
 
           const sellDiff = order.tradeVolume - sellVolume;
+
+          if (sellDiff == 0) {
+            console.log('Sell and add are same volume. Ignoring.');
+            return;
+          }
+
           console.log(`Add: ${order.tradeVolume} | Sell: ${sellVolume} | ${sellDiff.toFixed(4)}`);
           console.log(sellDiff < 0 ? `Selling the difference` : `Buying the difference`);
           console.log(

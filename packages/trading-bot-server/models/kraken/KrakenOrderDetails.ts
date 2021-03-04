@@ -181,8 +181,8 @@ export default class KrakenOrderDetails {
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
     // if no leverage, 4 less add counts
-    this.maxInitialPositionSizeInDollar = (this.entrySize + this.addSize * this.initialAdds) * this.leverageAmount;
-    this.maxPositionSizeInDollar = ((this.entrySize + this.addSize * this.initialAdds) + (this.minVolumeInDollar * (this.maxAdds - this.initialAdds))) * this.leverageAmount;
+    this.maxInitialPositionSizeInDollar = this.entrySize + this.addSize * this.initialAdds;
+    this.maxPositionSizeInDollar = (this.entrySize + this.addSize * this.initialAdds) + (this.minVolumeInDollar * (this.maxAdds - this.initialAdds));
 
     // local configs
     this.lowestNonLeverageMargin = 200;

@@ -137,7 +137,7 @@ plot(series=highestFast1, color=color.green, linewidth=1)
 plot(series=lowestFast1, color=color.red, linewidth=1)
 plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=2)
 plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=2)
-plot(series=lowestSuperSlow1, color=color.red, linewidth=3)
+plot(series=showSlow ? lowestSuperSlow1 : na, color=color.red, linewidth=3)
 
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
 oneSlowLow = low < lowestSlow1 and low < lowestSlow2
