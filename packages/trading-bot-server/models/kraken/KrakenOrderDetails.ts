@@ -63,8 +63,9 @@ export default class KrakenOrderDetails {
   marginFree: number;
   tradeVolumeInDollar: number;
   balanceInDollar: number;
-  maxVolumeInDollar: number;
-  addCount: number;
+  // maxVolumeInDollar: number;
+  maxAdds: number;
+  initialAdds: number;
   bagIt: boolean;
   bagAmount: number;
   positionSize: number | undefined;
@@ -130,7 +131,8 @@ export default class KrakenOrderDetails {
     this.longZoneDeleverage = 1;
     this.entrySize = this.getEntry();
     this.addSize = this.getAddSize();
-    this.addCount = this.strategyParams?.maxAdds ? this.strategyParams.maxAdds : 5;
+    this.maxAdds = this.strategyParams.maxAdds;
+    this.initialAdds = this.strategyParams.initialAdds;
 
     // pair info
     this.minVolume = superParseFloat(pairData[this.krakenTicker]['ordermin']);
@@ -176,7 +178,7 @@ export default class KrakenOrderDetails {
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
     // if no leverage, 4 less add counts
-    this.maxVolumeInDollar = this.entrySize + this.addSize * this.addCount;
+    // this.maxVolumeInDollar = this.entrySize + this.addSize * this.initialAdds;
 
     // local configs
     this.lowestNonLeverageMargin = 200;
