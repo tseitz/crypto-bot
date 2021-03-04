@@ -91,7 +91,9 @@ class KrakenService {
       let { openPositions } = await this.getOpenPositions();
 
       let add = false;
+      let flip = false;
       let positionMargin = 0;
+      let positionVolume = 0;
       let prices: number[] = [];
       for (const key in openPositions) {
         const position = openPositions[key];
@@ -100,9 +102,25 @@ class KrakenService {
           positionMargin += parseFloat(position.margin);
           prices.push(parseFloat(position.cost) / parseFloat(position.vol));
         } else if (order.krakenTicker === position.pair && order.action !== position.type) {
-          console.log("Opposite Order, Should've Closed?", order.krakenizedTradingViewTicker);
+          flip = true;
+          positionVolume += parseFloat(position.vol);
           // await this.settleLeveragedOrder(order);
         }
+      }
+
+      if (flip) {
+        console.log("Flipping");
+        result = await this.kraken.setAddOrder({
+          pair: order.krakenTicker,
+          type: 'sell',
+          ordertype: 'market',
+          // price: order.bidPrice,
+          volume: positionVolume * 2,
+          leverage: order.leverageAmount,
+          // validate: order.validate,
+        });
+        logOrderResult(`ORDER Flipped`, result, order.krakenizedTradingViewTicker);
+        return result;
       }
 
       if (order.marginFree < order.lowestLeverageMargin) {
