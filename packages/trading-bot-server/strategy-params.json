@@ -34,99 +34,32 @@
     "initialAdds": 4,
     "maxAdds": 10
   },
-  "FILUSDT": {
-    "leverage": 2,
-    "entrySize": 30,
-    "addSize": 30,
-    "maxAdds": 9,
-    "latestResult": 1067.02,
-    "totalTrades": 307,
-    "percentProfitable": 85.99,
-    "avgTrade": 3.48
-  },
-  "GRTUSDT": {
-    "entrySize": 30,
-    "addSize": 35,
-    "maxAdds": 12,
-    "latestResult": 5790.01,
-    "totalTrades": 392,
-    "percentProfitable": 86.73,
-    "avgTrade": 14.77
-  },
   "LINKUSDT": {
-    "entrySize": 48,
-    "addSize": 48,
-    "maxAdds": 7,
-    "latestResult": 1098.38,
-    "totalTrades": 447,
-    "percentProfitable": 77.85,
-    "avgTrade": 2.46
-  },
-  "OMGUSDT": {
-    "leverage": 2,
-    "entrySize": 40,
-    "addSize": 40,
-    "maxAdds": 11,
-    "latestResult": 3419.59,
-    "totalTrades": 452,
-    "percentProfitable": 90.04,
-    "avgTrade": 7.57
+    "leverage": 3,
+    "entrySize": 80,
+    "addSize": 80,
+    "initialAdds": 3,
+    "maxAdds": 6
   },
   "SNXUSDT": {
-    "entrySize": 40,
-    "addSize": 44,
-    "maxAdds": 6,
-    "latestResult": 1830.09,
-    "totalTrades": 414,
-    "percentProfitable": 88.16,
-    "avgTrade": 4.42
-  },
-  "TRXUSDT": {
-    "leverage": 3,
-    "entrySize": 36,
-    "addSize": 36,
-    "maxAdds": 7,
-    "latestResult": 1654.42,
-    "totalTrades": 251,
-    "percentProfitable": 90.44,
-    "avgTrade": 6.59
+    "leverage": 1,
+    "entrySize": 35,
+    "addSize": 35,
+    "initialAdds": 6,
+    "maxAdds": 8
   },
   "UNIWETH": {
-    "entrySize": 36,
-    "addSize": 36,
-    "maxAdds": 8,
-    "latestResult": 3047.10,
-    "totalTrades": 462,
-    "percentProfitable": 70.35,
-    "avgTrade": 6.60
-  },
-  "XLMUSDT": {
-    "leverage": 2,
-    "entrySize": 42,
-    "addSize": 42,
-    "maxAdds": 11,
-    "latestResult": 4678.36,
-    "totalTrades": 399,
-    "percentProfitable": 84.96,
-    "avgTrade": 11.73
+    "leverage": 1,
+    "entrySize": 27,
+    "addSize": 27,
+    "initialAdds": 8,
+    "maxAdds": 10
   },
   "XTZUSD": {
     "leverage": 3,
-    "entrySize": 35,
-    "addSize": 35,
-    "maxAdds": 8,
-    "latestResult": 1983.38,
-    "totalTrades": 215,
-    "percentProfitable": 81.4,
-    "avgTrade": 9.23
-  },
-  "YFIUSDT": {
-    "entrySize": 40,
-    "addSize": 42,
-    "maxAdds": 7,
-    "latestResult": 1476.66,
-    "totalTrades": 270,
-    "percentProfitable": 87.41,
-    "avgTrade": 5.47
+    "entrySize": 30,
+    "addSize": 30,
+    "initialAdds": 10,
+    "maxAdds": 12
   }
 }
