@@ -1,0 +1,244 @@
+//@version=4
+strategy("SlimTrades 4h", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+
+// days to test
+daysBackMax = input(defval=30, title="Max Days Back to Test", minval=0)
+daysBackMin = 0
+msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
+msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
+isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
+
+showSlow = input(defval=true, title="Show Slow?", type=input.bool)
+
+// Configure trail stop level with input options (optional)
+longTrailPerc = input(title="Trail Long Loss (%)", type=input.float, minval=0.0, step=0.5, defval=3) * 0.01
+shortTrailPerc = input(title="Trail Short Loss (%)", type=input.float, minval=0.0, step=0.5, defval=3) * 0.01
+
+// Determine trail stop loss prices
+longStopPrice = 0.0
+
+longStopPrice := if (strategy.position_size > 0)
+    stopValue = close * (1 - longTrailPerc)
+    max(stopValue, longStopPrice[1]) // max allows for trailing stop
+else
+    0
+
+// Determine trailing short price
+shortStopPrice = 0.0
+
+shortStopPrice := if (strategy.position_size < 0)
+    stopValue = close * (1 + shortTrailPerc)
+    min(stopValue, shortStopPrice[1])
+else
+    999999
+
+
+smaClose = input(defval=5, title="SMA", minval=0, step=1)
+hiLowFast = input(defval=5, title="Hi Low Short", minval=0, step=1)
+hiLowSlow = input(defval=48, title="Hi Low Long", minval=0, step=1)
+
+// loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
+macdCloseLong = input(defval=81, title="Highest MACD Close Long", minval=0, step=1)
+closeLongInShortZone = input(defval=80, title="Close Long In Short Zone RSI", minval=0, step=1)
+rsiBottomedRsi = input(defval=35, title="RSI Bottomed RSI", minval=0, step=1)
+rsiToppedRsi = input(defval=65, title="RSI Topped RSI", minval=0, step=1)
+macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
+// maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
+addOnLows = input(defval=true, title="Add On Lows?", type=input.bool)
+reopenOnHighs = input(defval=false, title="Reopen on new highs?", type=input.bool)
+allowShorts = false // input(defval=false, title="Allow shorts?", type=input.bool)
+allowFastMacdLongs = input(defval=true, title="Fast Macd Longs?", type=input.bool)
+
+var isLong = false
+var isShort = false
+var shortZone = false
+var longZone = false
+var firstAction = false
+var lowSlowCount = 0
+var highSlowCount = 0
+var lowFastCount = 0
+var highFastCount = 0
+var longCount = 0
+var shortCount = 0
+var entryPrice = 0.0
+var lastMacd = 0.0
+var lastRsi = 0.0
+
+// MACD
+fast = 12, slow = 26
+fastMA = ema(close, fast)
+slowMA = ema(close, slow)
+macd = fastMA - slowMA
+signal = ema(macd, 9)
+rsiClose = rsi(close, 14)
+
+getMACD(index) =>
+    thisFastMA = ema(close[index], fast)
+    thisSlowMA = ema(close[index], slow)
+    thisMacd = thisFastMA - thisSlowMA
+
+getRsi(index) =>
+    thisRsi = rsi(close[index], 14)
+
+getHighest(index, speed) =>
+    // greenCandle = open[index] < close[index]
+    // thisHighest = greenCandle ? highest(close, speed)[index] : highest(open, speed)[index]
+    thisHighest = highest(high, speed)[index]
+
+getLowest(index, speed) =>
+    // greenCandle = open[index] < close[index]
+    // thisLowest = greenCandle ? lowest(open, speed)[index] : lowest(close, speed)[index]
+    thisLowest = lowest(low, speed)[index]
+
+macd0 = getMACD(0)
+macd1 = getMACD(1)
+macd2 = getMACD(2)
+macd3 = getMACD(3)
+
+rsi0 = getRsi(0)
+rsi1 = getRsi(1)
+rsi2 = getRsi(2)
+rsi3 = getRsi(3)
+rsi4 = getRsi(4)
+
+highestFast0 = getHighest(0, hiLowFast)
+highestFast1 = getHighest(1, hiLowFast)
+highestFast2 = getHighest(2, hiLowFast)
+highestFast3 = getHighest(3, hiLowFast)
+highestFast4 = getHighest(4, hiLowFast)
+lowestFast0 = getLowest(0, hiLowFast)
+lowestFast1 = getLowest(1, hiLowFast)
+lowestFast2 = getLowest(2, hiLowFast)
+lowestFast3 = getLowest(3, hiLowFast)
+lowestFast4 = getLowest(4, hiLowFast)
+highestSlow1 = getHighest(1, hiLowSlow)
+highestSlow2 = getHighest(2, hiLowSlow)
+highestSlow3 = getHighest(3, hiLowSlow)
+lowestSlow1 = getLowest(1, hiLowSlow)
+lowestSlow2 = getLowest(2, hiLowSlow)
+lowestSlow3 = getLowest(3, hiLowSlow)
+
+// plot(series=highestFast1, color=color.green, linewidth=1)
+// plot(series=lowestFast1, color=color.red, linewidth=1)
+// plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=3)
+// plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=3)
+
+sma0 = sma(close, smaClose)
+plot(sma0, color=color.orange, linewidth=1, transp=0)
+
+highestMacd = highest(macd, macdLength)[1]
+highestMacd2 = highest(macd, macdLength)[2]
+highestMacd3 = highest(macd, macdLength)[3]
+highestMacd4 = highest(macd, macdLength)[4]
+lowestMacd = lowest(macd, macdLength)[1]
+lowestMacd2 = lowest(macd, macdLength)[2]
+lowestMacd3 = lowest(macd, macdLength)[3]
+lowestMacd4 = lowest(macd, macdLength)[4]
+higherMacd = macd > highestMacd and macd > 0
+higherMacd2 = macd1 > highestMacd2 and macd1 > 0
+lowerMacd = macd < lowestMacd and macd < 0
+lowerMacd2 = macd1 < lowestMacd2 and macd1 < 0
+
+bgcolor(color=higherMacd ? color.green : lowerMacd or lowerMacd2 ? color.red : na, transp=90)
+
+// lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
+oneSlowLow = low < lowestSlow1 and low < lowestSlow2
+twoSlowLows = low[1] < lowestSlow2 and oneSlowLow
+oneSlowHigh = high > highestSlow1 and high > highestSlow2
+twoSlowHighs = high[1] > highestSlow2 and oneSlowHigh
+
+oneFastLow = low < lowestFast1 and low < lowestFast2
+twoFastLows = low[1] < lowestFast2 and oneFastLow
+threeFastLows = low[2] < lowestFast3 and twoFastLows
+fourFastLows = low[3] < lowestFast4 and threeFastLows
+oneFastHigh = high > highestFast1 and high > highestFast2
+twoFastHighs = high[1] > highestFast2 and oneFastHigh
+threeFastHighs = high[2] > highestFast3 and twoFastHighs
+fourFastHighs = high[3] > highestFast4 and threeFastHighs
+
+if oneSlowLow
+    lowSlowCount := lowSlowCount + 1
+
+if oneSlowHigh
+    highSlowCount := highSlowCount + 1
+
+if oneFastLow
+    lowFastCount := lowFastCount + 1
+
+if oneFastHigh
+    highFastCount := highFastCount + 1
+
+if fourFastLows or oneSlowLow
+    firstAction := longZone or firstAction
+    shortZone := true
+    longZone := false
+    highSlowCount := 0
+    lowSlowCount := 0
+    highFastCount := 0
+    lowFastCount := 0
+
+if fourFastHighs or oneSlowHigh
+    firstAction := shortZone or firstAction
+    longZone := true
+    shortZone := false
+    lowSlowCount := 0
+    highSlowCount := 0
+    highFastCount := 0
+    lowFastCount := 0
+
+
+// bgColor2 = shortZone ? color.red : longZone ? color.green : na
+// bgcolor(color=bgColor2, transp=85)
+
+macdTopped = macd < macd1 and macd1 > macd2 and macd1 > signal
+macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
+rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi2 < rsi3)
+prevRsiBottomed = rsi1 > rsi2 and (rsi2 < rsi3 or rsi3 < rsi4)
+rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
+prevRsiTopped = rsi1 < rsi2 and (rsi2 > rsi3 or rsi2 > rsi4)
+rsiDecreasing = rsiClose < rsi2
+prevRsiDecreasing = rsi1 < rsi3
+rsiIncreasing = (rsiClose > rsi2 and rsi1 < rsi2) // or (rsiClose > rsi3 and rsi1 > rsi2 and rsi3 > rsi2)
+prevRsiIncreasing = rsi1 < rsi3
+
+// rsiToppedDecreasing = rsiClose < rsi1 and rsi
+rsiToppedDecreasing = rsiClose <= rsi1 and rsi1 <= rsi2 and rsi2 >= rsi3 and rsi3 >= rsi4 and (rsi2 - rsi1 < rsi1 - rsiClose)
+rsiToppedDecreasing2 = rsiClose <= rsi1 and rsi1 >= rsi2 and rsi2 >= rsi3 and rsiClose <= rsi2 and (rsi2 - rsi1 < rsi1 - rsiClose)
+rsiBottomedIncreasing = rsiClose >= rsi1 and rsi1 >= rsi2 and rsi2 <= rsi3 and rsi3 <= rsi4
+rsiBottomedIncreasing2 = rsiClose >= rsi1 and rsi1 <= rsi2 and rsi2 <= rsi3 and rsiClose >= rsi2
+
+// newLow = low < lowestFast1 and high > lowestFast0 and low[1] > lowestFast2
+// newHigh = high > highestFast1 and low < highestFast0
+// twoNewHighs = high[2] > highestFast3 and newHigh
+// twoNewLows = low[2] < lowestFast3 and newLow
+// lowestPrevMacd = lowerMacd2 and macd > lowestMacd
+// highestPrevMacd = higherMacd2 and macd < highestMacd
+// possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
+
+long = not isLong and (rsiBottomedIncreasing or rsiBottomedIncreasing2) and rsi1 < 55
+short = not isShort and (rsiToppedDecreasing or rsiToppedDecreasing2) and rsi1 > 45
+// short = not isShort and shortZone and rsiTopped and rsiDecreasing
+
+
+
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+// strategy.close("long", when=closeLong and isWithinTimeBounds)
+strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// strategy.close("short", when=closeShort and isWithinTimeBounds)
+
+
+isLong := strategy.position_size > 0
+isShort := strategy.position_size < 0
+
+
+// Submit exit orders for trail stop loss price
+if (strategy.position_size > 0)
+    strategy.exit(id="XL TRL STP", stop=longStopPrice)
+
+if (strategy.position_size < 0)
+    strategy.exit(id="XS TRL STP", stop=shortStopPrice)
+
+
+
+// bgColor2 = isShort ? color.red : isLong ? color.green : na
+// bgcolor(color=bgColor2, transp=85)

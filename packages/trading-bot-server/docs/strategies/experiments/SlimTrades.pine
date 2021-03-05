@@ -150,7 +150,13 @@ oneSuperSlowLow = low < lowestSuperSlow1 and low < lowestSuperSlow2
 
 
 // CONFIGURE SHORT/LONG ZONES
-if twoSlowLows
+if oneSlowLow
+    lowSlowCount := lowSlowCount + 1
+
+if oneSlowHigh
+    highSlowCount := highSlowCount + 1
+
+if lowSlowCount == 2
     firstAction := longZone or firstAction
     shortZone := true
     longZone := false
@@ -159,7 +165,7 @@ if twoSlowLows
     highFastCount := 0
     lowFastCount := 0
 
-if twoSlowHighs
+if highSlowCount == 2
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
