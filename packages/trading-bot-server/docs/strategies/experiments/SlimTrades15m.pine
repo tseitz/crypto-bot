@@ -11,8 +11,8 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 showSlow = input(defval=true, title="Show Slow?", type=input.bool)
 
 // Configure trail stop level with input options (optional)
-longTrailPerc = input(title="Trail Long Loss (%)", type=input.float, minval=0.0, step=0.5, defval=4) * 0.01
-shortTrailPerc = input(title="Trail Short Loss (%)", type=input.float, minval=0.0, step=0.5, defval=4) * 0.01
+longTrailPerc = input(title="Trail Long Loss (%)", type=input.float, minval=0.0, step=0.5, defval=3) * 0.01
+shortTrailPerc = input(title="Trail Short Loss (%)", type=input.float, minval=0.0, step=0.5, defval=3) * 0.01
 
 // Determine trail stop loss prices
 longStopPrice = 0.0
@@ -33,14 +33,15 @@ else
     999999
 
 
-hiLowFast = input(defval=8, title="Hi Low Short", minval=0, step=1)
+smaClose = input(defval=5, title="SMA", minval=0, step=1)
+hiLowFast = input(defval=5, title="Hi Low Short", minval=0, step=1)
 hiLowSlow = input(defval=48, title="Hi Low Long", minval=0, step=1)
 
 // loneCloseLong = input(defval=80, title="Lone Close Long", minval=0, step=1)
 macdCloseLong = input(defval=81, title="Highest MACD Close Long", minval=0, step=1)
 closeLongInShortZone = input(defval=80, title="Close Long In Short Zone RSI", minval=0, step=1)
-longZoneRsi = input(defval=33, title="Buy Long Zone RSI", minval=0, step=1)
-shortZoneRsi = input(defval=40, title="Buy Short Zone RSI", minval=0, step=1)
+rsiBottomedRsi = input(defval=35, title="RSI Bottomed RSI", minval=0, step=1)
+rsiToppedRsi = input(defval=65, title="RSI Topped RSI", minval=0, step=1)
 macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
 // maxAdds = input(defval=50, title="Max Adds", minval=0, step=1)
 addOnLows = input(defval=true, title="Add On Lows?", type=input.bool)
@@ -80,9 +81,13 @@ getRsi(index) =>
     thisRsi = rsi(close[index], 14)
 
 getHighest(index, speed) =>
+    // greenCandle = open[index] < close[index]
+    // thisHighest = greenCandle ? highest(close, speed)[index] : highest(open, speed)[index]
     thisHighest = highest(high, speed)[index]
 
 getLowest(index, speed) =>
+    // greenCandle = open[index] < close[index]
+    // thisLowest = greenCandle ? lowest(open, speed)[index] : lowest(close, speed)[index]
     thisLowest = lowest(low, speed)[index]
 
 macd0 = getMACD(0)
@@ -115,8 +120,11 @@ lowestSlow3 = getLowest(3, hiLowSlow)
 
 plot(series=highestFast1, color=color.green, linewidth=1)
 plot(series=lowestFast1, color=color.red, linewidth=1)
-plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=3)
-plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=3)
+// plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=3)
+// plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=3)
+
+sma0 = sma(close, smaClose)
+plot(sma0, color=color.orange, linewidth=1, transp=0)
 
 highestMacd = highest(macd, macdLength)[1]
 highestMacd2 = highest(macd, macdLength)[2]
@@ -182,10 +190,22 @@ if fourFastHighs or oneSlowHigh
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
 
+macdTopped = macd < macd1 and macd1 > macd2 and macd1 > signal
+macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
 rsiBottomed = rsiClose > rsi1 and (rsi1 < rsi2 or rsi2 < rsi3)
+prevRsiBottomed = rsi1 > rsi2 and (rsi2 < rsi3 or rsi3 < rsi4)
 rsiTopped = rsiClose < rsi1 and (rsi1 > rsi2 or rsi1 > rsi3)
+prevRsiTopped = rsi1 < rsi2 and (rsi2 > rsi3 or rsi2 > rsi4)
 rsiDecreasing = rsiClose < rsi2
+prevRsiDecreasing = rsi1 < rsi3
 rsiIncreasing = (rsiClose > rsi2 and rsi1 < rsi2) // or (rsiClose > rsi3 and rsi1 > rsi2 and rsi3 > rsi2)
+prevRsiIncreasing = rsi1 < rsi3
+
+// rsiToppedDecreasing = rsiClose < rsi1 and rsi
+rsiToppedDecreasing = rsiClose <= rsi1 and rsi1 <= rsi2 and rsi2 >= rsi3 and rsi3 >= rsi4 and (rsi2 - rsi1 < rsi1 - rsiClose)
+rsiToppedDecreasing2 = rsiClose <= rsi1 and rsi1 >= rsi2 and rsi2 >= rsi3 and rsiClose <= rsi2 and (rsi2 - rsi1 < rsi1 - rsiClose)
+rsiBottomedIncreasing = rsiClose >= rsi1 and rsi1 >= rsi2 and rsi2 <= rsi3 and rsi3 <= rsi4
+rsiBottomedIncreasing2 = rsiClose >= rsi1 and rsi1 <= rsi2 and rsi2 <= rsi3 and rsiClose >= rsi2
 
 // newLow = low < lowestFast1 and high > lowestFast0 and low[1] > lowestFast2
 // newHigh = high > highestFast1 and low < highestFast0
@@ -195,8 +215,9 @@ rsiIncreasing = (rsiClose > rsi2 and rsi1 < rsi2) // or (rsiClose > rsi3 and rsi
 // highestPrevMacd = higherMacd2 and macd < highestMacd
 // possibleBreakdown = low[2] < lowestFast3 and low[1] < lowestFast2 and low < lowestFast1
 
-long = not isLong and longZone and rsiBottomed and rsiIncreasing
-short = not isShort and shortZone and rsiTopped and rsiDecreasing
+long = not isLong and (rsiBottomedIncreasing or rsiBottomedIncreasing2) and rsi1 < 55
+short = not isShort and (rsiToppedDecreasing or rsiToppedDecreasing2) and rsi1 > 45
+// short = not isShort and shortZone and rsiTopped and rsiDecreasing
 
 
 
