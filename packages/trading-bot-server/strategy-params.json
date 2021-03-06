@@ -31,14 +31,14 @@
     "leverage": 5,
     "entrySize": 40,
     "addSize": 40,
-    "initialAdds": 4,
+    "initialAdds": 5,
     "maxAdds": 10
   },
   "LINKUSDT": {
     "leverage": 3,
     "entrySize": 80,
     "addSize": 80,
-    "initialAdds": 3,
+    "initialAdds": 4,
     "maxAdds": 6
   },
   "SNXUSDT": {
