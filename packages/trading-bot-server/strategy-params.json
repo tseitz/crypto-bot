@@ -43,8 +43,8 @@
   },
   "OMGUSDT": {
     "leverage": 2,
-    "entrySize": 26,
-    "addSize": 26,
+    "entrySize": 30,
+    "addSize": 30,
     "initialAdds": 5,
     "maxAdds": 6
   },
