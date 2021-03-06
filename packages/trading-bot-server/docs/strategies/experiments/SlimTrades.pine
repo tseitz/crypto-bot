@@ -42,8 +42,8 @@ rsiCloseShortZone = input(defval=16, title="Close Short Zone RSI", minval=0, ste
 
 macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
 
-longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.25, defval=1.75) * 0.01
-shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.25, defval=3) * 0.01
+longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=2.6) * 0.01
+shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
 
 showSlow = input(defval=true, title="Show Slow", type=input.bool)
 addOnLows = input(defval=true, title="Add On Lows", type=input.bool)
@@ -56,7 +56,7 @@ allowFastMacdLongs = input(defval=true, title="Fast Macd Longs", type=input.bool
 longStopPrice = 0.0
 
 longStopPrice := if (strategy.position_size > 0)
-    stopValue = close * (1 - longTrailPerc)
+    stopValue = high * (1 - longTrailPerc)
     max(stopValue, longStopPrice[1]) // max allows for trailing stop
 else
     0
@@ -64,7 +64,7 @@ else
 shortStopPrice = 0.0
 
 shortStopPrice := if (strategy.position_size < 0)
-    stopValue = close * (1 + shortTrailPerc)
+    stopValue = low * (1 + shortTrailPerc)
     min(stopValue, shortStopPrice[1])
 else
     999999
@@ -209,23 +209,23 @@ if addHigh
 if addLow
     addLowCount := addLowCount + 1
 
-longZoneSetup = longZone and ((newLow) or (rsiBottomed and ((macdBottomed and (lowerMacd2)) or (macdSlowingDown and rsiIncreasing))) or (reopenHigh))
-addLongZoneSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
-// buyShortZoneSetup = shortZone and rsiBottomed and rsiIncreasing and macdBottomed and macdBelow0 and (lowerMacd2 or lowerMacd)
-shortZoneSetup = shortZone and ((newHigh) or (rsiTopped and ((macdTopped and (higherMacd2)) or (macdSlowingDown and rsiDecreasing))) or (reopenLow))
-addShortZoneSetup = shortZone and ((addHigh and addHighCount < 4) or (rsiTopped and (macdTopped or (macdSlowingDown and rsiDecreasing)) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
-// addBuyShortZoneSetup = shortZone and rsiBottomed and ((rsi1 < 100 - rsiCloseShortZone) or (rsiIncreasing and macdBottomed and macdBelow0 and (((lowerMacd2 or lowerMacd) and rsi1 < shortShortZoneRsi))))
-closeLongZoneSetup = rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone
-closeShortZoneSetup = rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShortZone
+longSetup = longZone and ((newLow) or (rsiBottomed and ((macdBottomed and (lowerMacd2)) or (macdSlowingDown and rsiIncreasing))) or (reopenHigh))
+shortSetup = shortZone and ((newHigh) or (rsiTopped and ((macdTopped and (higherMacd2)) or (macdSlowingDown and rsiDecreasing))) or (reopenLow))
+
+addLongSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
+addShortSetup = shortZone and ((addHigh and addHighCount < 4) or (rsiTopped and (macdTopped or (macdSlowingDown and rsiDecreasing)) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
+
+closeLongSetup = (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone) or (low < longStopPrice)
+closeShortSetup = (rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShortZone) or (high > shortStopPrice)
 
 
 // STRAT SETUP
-long = not isLong and longZoneSetup
-addLong = isLong and addLongZoneSetup
-closeLong = isLong and closeLongZoneSetup
-short = not isShort and shortZoneSetup
-addShort = isShort and addShortZoneSetup
-closeShort = isShort and closeShortZoneSetup
+long = not isLong and longSetup
+addLong = isLong and addLongSetup
+closeLong = isLong and closeLongSetup
+short = not isShort and shortSetup
+addShort = isShort and addShortSetup
+closeShort = isShort and closeShortSetup
 
 
 if long
@@ -282,11 +282,11 @@ strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
 strategy.close("short", when=closeShort and isWithinTimeBounds)
 
-if (strategy.position_size > 0)
-    strategy.exit(id="XS TRL STP", stop=longStopPrice)
+// if (strategy.position_size > 0)
+//     strategy.exit("XS TRL STP", "long", stop=longStopPrice)
 
-if (strategy.position_size < 0)
-    strategy.exit(id="XS TRL STP", stop=shortStopPrice)
+// if (strategy.position_size < 0)
+//     strategy.exit("XS TRL STP", "short", stop=shortStopPrice)
 
 if (strategy.position_size == 0)
     isLong := false
