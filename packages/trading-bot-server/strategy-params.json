@@ -31,7 +31,7 @@
     "leverage": 5,
     "entrySize": 40,
     "addSize": 40,
-    "initialAdds": 5,
+    "initialAdds": 7,
     "maxAdds": 10
   },
   "LINKUSDT": {
