@@ -322,21 +322,23 @@ export default class KrakenOrderDetails {
   }
 
   getOpenOrderDollarAmount(): number {
-    const openOrders = this.openOrders.open;
+    const openOrders = this.openOrders?.open;
 
     let totalAmount = 0;
-    for (const key in openOrders) {
-      const type = openOrders[key]['descr']['type'];
-
-      if (type === 'buy') {
-        const price = openOrders[key]['descr']['price'];
-        const vol = openOrders[key]['vol'];
-        const volExec = openOrders[key]['vol_exec'];
-        const leverage = parseInt(openOrders[key]['descr']['leverage'][0]);
-
-        totalAmount +=
-          (parseFloat(price) * (parseFloat(vol) - parseFloat(volExec))) /
-          (isNaN(leverage) ? 1 : leverage);
+    if (openOrders) {
+      for (const key in openOrders) {
+        const type = openOrders[key]['descr']['type'];
+  
+        if (type === 'buy') {
+          const price = openOrders[key]['descr']['price'];
+          const vol = openOrders[key]['vol'];
+          const volExec = openOrders[key]['vol_exec'];
+          const leverage = parseInt(openOrders[key]['descr']['leverage'][0]);
+  
+          totalAmount +=
+            (parseFloat(price) * (parseFloat(vol) - parseFloat(volExec))) /
+            (isNaN(leverage) ? 1 : leverage);
+        }
       }
     }
 

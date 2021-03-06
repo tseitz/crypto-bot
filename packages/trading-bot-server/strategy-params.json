@@ -59,7 +59,7 @@
     "leverage": 3,
     "entrySize": 30,
     "addSize": 30,
-    "initialAdds": 10,
+    "initialAdds": 8,
     "maxAdds": 12
   }
 }
