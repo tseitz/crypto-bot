@@ -41,6 +41,13 @@
     "initialAdds": 4,
     "maxAdds": 6
   },
+  "OMGUSDT": {
+    "leverage": 2,
+    "entrySize": 20,
+    "addSize": 20,
+    "initialAdds": 5,
+    "maxAdds": 6
+  },
   "SNXUSDT": {
     "leverage": 1,
     "entrySize": 35,
