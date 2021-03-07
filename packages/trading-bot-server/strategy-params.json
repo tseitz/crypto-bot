@@ -29,10 +29,10 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 40,
+    "entrySize": 125,
     "addSize": 40,
-    "initialAdds": 7,
-    "maxAdds": 10
+    "initialAdds": 1,
+    "maxAdds": 2
   },
   "LINKUSDT": {
     "leverage": 3,
