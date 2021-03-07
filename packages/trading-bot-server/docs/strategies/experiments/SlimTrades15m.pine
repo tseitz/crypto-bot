@@ -42,8 +42,8 @@ rsiCloseShortZone = input(defval=16, title="Close Short Zone RSI", minval=0, ste
 
 macdLength = input(defval=15, title="MACD Bars", minval=0, step=5)
 
-longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=2.3) * 0.01
-shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
+longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=1.2) * 0.01
+shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.6) * 0.01
 
 showSlow = input(defval=true, title="Show Slow", type=input.bool)
 addOnLows = input(defval=false, title="Add On Lows", type=input.bool)
@@ -213,8 +213,8 @@ if addHigh
 if addLow
     addLowCount := addLowCount + 1
 
-longSetup = longZone and ((newLow) or (rsiBottomed and (macdSlowingDown or macdBottomed) and (rsi1 < buyLongZoneRsi)) or (rsiBottomed and lowerMacd2) or (slowCloseAbove))
-shortSetup = shortZone and ((newHigh) or (rsiTopped and (macdSlowingDown or macdTopped) and (rsi1 > shortShortZoneRsi)) or (rsiBottomed and higherMacd2)) //or (slowCloseBelow))
+longSetup = longZone and ((newLow) or (rsiBottomed and rsi1 < buyLongZoneRsi and ((macdSlowingDown or macdBottomed) or (lowerMacd2))) or (slowCloseAbove))
+shortSetup = shortZone and ((newHigh) or (rsiTopped and rsi1 > shortShortZoneRsi and ((macdSlowingDown or macdTopped) or higherMacd))) //or (slowCloseBelow))
 
 // addLongSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
 // addShortSetup = shortZone and ((addHigh and addHighCount < 4) or (rsiTopped and (macdTopped) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
@@ -293,10 +293,10 @@ strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 strategy.close("short", when=closeShort and isWithinTimeBounds)
 
 if (strategy.position_size > 0)
-    strategy.exit("XS TRL STP", "long", stop=longStopPrice)
+    strategy.exit("stop close", "long", stop=longStopPrice)
 
 if (strategy.position_size < 0)
-    strategy.exit("XS TRL STP", "short", stop=shortStopPrice)
+    strategy.exit("stop close", "short", stop=shortStopPrice)
 
 if (strategy.position_size == 0)
     isLong := false

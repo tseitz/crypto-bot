@@ -15,10 +15,10 @@
   },
   "BTCUSDT": {
     "leverage": 5,
-    "entrySize": 20,
-    "addSize": 20,
-    "initialAdds": 10,
-    "maxAdds": 12
+    "entrySize": 125,
+    "addSize": 40,
+    "initialAdds": 1,
+    "maxAdds": 2
   },
   "DOTUSDT": {
     "leverage": 3,
