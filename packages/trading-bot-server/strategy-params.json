@@ -17,7 +17,7 @@
     "leverage": 5,
     "entrySize": 200,
     "addSize": 40,
-    "initialAdds": 1,
+    "initialAdds": 2,
     "maxAdds": 2
   },
   "DOTUSDT": {
@@ -31,7 +31,7 @@
     "leverage": 5,
     "entrySize": 200,
     "addSize": 40,
-    "initialAdds": 1,
+    "initialAdds": 2,
     "maxAdds": 2
   },
   "LINKUSDT": {
