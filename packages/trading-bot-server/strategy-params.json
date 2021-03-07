@@ -15,7 +15,7 @@
   },
   "BTCUSDT": {
     "leverage": 5,
-    "entrySize": 125,
+    "entrySize": 200,
     "addSize": 40,
     "initialAdds": 1,
     "maxAdds": 2
@@ -29,7 +29,7 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 125,
+    "entrySize": 200,
     "addSize": 40,
     "initialAdds": 1,
     "maxAdds": 2
