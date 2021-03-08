@@ -15,6 +15,7 @@ import {
   KrakenTradeBalanceResult,
 } from '../models/kraken/KrakenResults';
 import { sleep, superParseFloat } from '../scripts/common';
+import { KrakenOrder } from '../models/kraken/KrakenOrder';
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -120,7 +121,7 @@ class KrakenService {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
-          ordertype: 'limit',
+          ordertype: 'market',
           price: order.bidPrice,
           volume: orderVolume,
           leverage: order.leverageAmount,
@@ -130,17 +131,17 @@ class KrakenService {
         return result;
       }
 
-      if (order.marginFree < order.lowestLeverageMargin) {
-        console.log('Margin level too low, selling some.');
-        const positionsBySize = await this.getOpenPositionsBySize(openPositions);
-        // const positionsByTime = await this.getOrdersByTimeAsc();
-        result = await this.sellOldestOrders(
-          order,
-          positionsBySize.keys().next().value,
-          // positionsByTime[0].pair,
-          openPositions
-        );
-      }
+      // if (order.marginFree < order.lowestLeverageMargin) {
+      //   console.log('Margin level too low, selling some.');
+      //   const positionsBySize = await this.getOpenPositionsBySize(openPositions);
+      //   // const positionsByTime = await this.getOrdersByTimeAsc();
+      //   result = await this.sellOldestOrders(
+      //     order,
+      //     positionsBySize.keys().next().value,
+      //     // positionsByTime[0].pair,
+      //     openPositions
+      //   );
+      // }
 
       if (add) {
         const addCount =
@@ -198,36 +199,42 @@ class KrakenService {
           return result;
         }
 
-        if (tooMuch) {
-          console.log(`Too many adds, selling some first.`);
-          await this.sellOldestOrders(
-            order,
-            order.krakenTicker,
-            openPositions,
-            1
-          );
-        }
+        // if (tooMuch) {
+        //   console.log(`Too many adds, selling some first.`);
+        //   await this.sellOldestOrders(
+        //     order,
+        //     order.krakenTicker,
+        //     openPositions,
+        //     1
+        //   );
+        // }
 
+        const price = order.bidPrice - 100;
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
-          ordertype: 'limit',
-          price: order.bidPrice,
+          ordertype: 'market',
+          // price: order.bidPrice - 100,
+          price,
           volume: incrementalAddVolume,
           leverage: order.leverageAmount,
           // validate: order.validate,
         });
+        this.checkOrder(order);
       } else if (!add) {
         console.log(`New Entry: ${order.entrySize}`);
+        const price = order.bidPrice - 100;
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
-          ordertype: 'limit',
-          price: order.bidPrice,
+          ordertype: 'market',
+          // price: order.bidPrice,
+          price,
           volume: order.tradeVolume,
           leverage: order.leverageAmount,
           // validate: order.validate,
         });
+        this.checkOrder(order);
       }
 
       if (result) {
@@ -253,7 +260,7 @@ class KrakenService {
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
-          ordertype: 'limit',
+          ordertype: 'market',
           price: order.bidPrice,
           volume: order.tradeVolume,
           // validate: order.validate,
@@ -266,7 +273,7 @@ class KrakenService {
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
-            ordertype: 'limit',
+            ordertype: 'market',
             price: order.bidPrice,
             volume: order.tradeVolume,
             // validate: order.validate,
@@ -331,7 +338,7 @@ class KrakenService {
             result = await this.kraken.setAddOrder({
               pair: order.krakenTicker,
               type: order.action,
-              ordertype: 'limit',
+              ordertype: 'market',
               price: order.bidPrice,
               volume,
               // validate: order.validate,
@@ -342,7 +349,7 @@ class KrakenService {
             result = await this.kraken.setAddOrder({
               pair: newOrder.krakenTicker,
               type: newOrder.action,
-              ordertype: 'limit',
+              ordertype: 'market',
               price: newOrder.bidPrice,
               volume,
               // validate: order.validate,
@@ -355,7 +362,7 @@ class KrakenService {
           result = await this.kraken.setAddOrder({
             pair: order.krakenTicker,
             type: order.action,
-            ordertype: 'limit',
+            ordertype: 'market',
             price: order.bidPrice,
             volume: order.tradeVolume,
             // validate: order.validate,
@@ -438,15 +445,25 @@ class KrakenService {
         console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
         console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
   
+        // const sendOrder = new KrakenOrder({
+        //   pair: order.krakenTicker,
+        //   type: order.action,
+        //   ordertype: 'market',
+        //   price: order.bidPrice,
+        //   volume: 0, // 0 for close all
+        //   leverage: order.leverageAmount,
+        //   // validate: order.validate,
+        // });
         latestResult = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
-          ordertype: 'limit',
+          ordertype: 'market',
           price: order.bidPrice,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
           // validate: order.validate,
         });
+        // this.checkOrder(order);
         logOrderResult(`Settled`, latestResult, order.krakenizedTradingViewTicker);
       }
     }
@@ -505,6 +522,46 @@ class KrakenService {
       }
     }
     return result;
+  }
+
+  async checkOrder(order: KrakenOrderDetails, action = order.action) {
+    setTimeout(async () => {
+      console.log('Checking order');
+      
+      const { openOrders } = await this.getOpenOrders();
+  
+      const open = openOrders?.open;
+      for (const orderId in open) {
+        const openOrder = open[orderId];
+        
+        if (openOrder.descr.pair === order.krakenizedTradingViewTicker && openOrder.descr.type === action) {
+          console.log('Switching to market order');
+  
+          await this.cancelOpenOrdersForPair(order, action);
+  
+          if (action === 'sell' && order.leverageAmount && order.leverageAmount > 1) {
+            const result = await this.kraken.setAddOrder({
+              pair: order.krakenTicker,
+              type: action,
+              ordertype: 'market',
+              price: order.bidPrice,
+              volume: 0,
+              validate: order.validate,
+            });
+          }
+          const result = await this.kraken.setAddOrder({
+            pair: order.krakenTicker,
+            type: action,
+            ordertype: 'market',
+            price: order.bidPrice,
+            volume: order.tradeVolume,
+            validate: order.validate,
+          });
+  
+          logOrderResult(`ORDER`, result, order.krakenizedTradingViewTicker);
+        }
+      }
+    }, 5000); // 15000
   }
 
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
@@ -629,12 +686,13 @@ class KrakenService {
     let result = await this.kraken.setAddOrder({
       pair: position.pair,
       type: closeAction,
-      ordertype: 'limit',
+      ordertype: 'market',
       price: bidPrice,
       volume: volumeToClose,
       leverage: leverageAmount,
       // validate: order.validate,
     });
+    this.checkOrder(order, closeAction);
 
     if (result.error.length) {
       console.log('Could not sell oldest. Combining');
