@@ -131,17 +131,17 @@ class KrakenService {
         return result;
       }
 
-      // if (order.marginFree < order.lowestLeverageMargin) {
-      //   console.log('Margin level too low, selling some.');
-      //   const positionsBySize = await this.getOpenPositionsBySize(openPositions);
-      //   // const positionsByTime = await this.getOrdersByTimeAsc();
-      //   result = await this.sellOldestOrders(
-      //     order,
-      //     positionsBySize.keys().next().value,
-      //     // positionsByTime[0].pair,
-      //     openPositions
-      //   );
-      // }
+      if (order.marginFree < order.lowestLeverageMargin) {
+        console.log('Margin level too low, selling some.');
+        const positionsBySize = await this.getOpenPositionsBySize(openPositions);
+        // const positionsByTime = await this.getOrdersByTimeAsc();
+        result = await this.sellOldestOrders(
+          order,
+          positionsBySize.keys().next().value,
+          // positionsByTime[0].pair,
+          openPositions
+        );
+      }
 
       if (add) {
         const addCount =
@@ -199,37 +199,37 @@ class KrakenService {
           return result;
         }
 
-        // if (tooMuch) {
-        //   console.log(`Too many adds, selling some first.`);
-        //   await this.sellOldestOrders(
-        //     order,
-        //     order.krakenTicker,
-        //     openPositions,
-        //     1
-        //   );
-        // }
+        if (tooMuch) {
+          console.log(`Too many adds, selling some first.`);
+          await this.sellOldestOrders(
+            order,
+            order.krakenTicker,
+            openPositions,
+            1
+          );
+        }
 
-        const price = order.bidPrice - 100;
+        // const price = order.bidPrice - 100;
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
           ordertype: 'market',
-          // price: order.bidPrice - 100,
-          price,
+          price: order.bidPrice - 100,
+          // price,
           volume: incrementalAddVolume,
           leverage: order.leverageAmount,
           // validate: order.validate,
         });
         this.checkOrder(order);
       } else if (!add) {
-        console.log(`New Entry: ${order.entrySize}`);
-        const price = order.bidPrice - 100;
+        console.log(`New Entry: ${order.entrySize} | ${order.entrySize * (order.leverageAmount || 1)}`);
+        // const price = order.bidPrice - 100;
         result = await this.kraken.setAddOrder({
           pair: order.krakenTicker,
           type: order.action,
           ordertype: 'market',
-          // price: order.bidPrice,
-          price,
+          price: order.bidPrice,
+          // price,
           volume: order.tradeVolume,
           leverage: order.leverageAmount,
           // validate: order.validate,
