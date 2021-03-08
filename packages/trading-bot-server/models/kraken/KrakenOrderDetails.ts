@@ -31,10 +31,10 @@ export default class KrakenOrderDetails {
   usdPair: boolean;
   leverageBuyAmounts: number[];
   leverageSellAmounts: number[];
-  leverageBuyAmount: number | undefined;
-  leverageSellAmount: number | undefined;
-  lowestLeverageAmount: number | undefined;
-  leverageAmount: number | undefined;
+  leverageBuyAmount: number;
+  leverageSellAmount: number;
+  lowestLeverageAmount: number;
+  leverageAmount: number;
   priceDecimals: number;
   volumeDecimals: number;
   tradeVolume: number;
@@ -143,14 +143,14 @@ export default class KrakenOrderDetails {
     this.volumeDecimals = pairData[this.krakenTicker]['lot_decimals'];
 
     // leverage info
-    this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'];
-    this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'];
-    this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1];
-    this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1];
+    this.leverageBuyAmounts = pairData[this.krakenTicker]['leverage_buy'] || 1;
+    this.leverageSellAmounts = pairData[this.krakenTicker]['leverage_sell'] || 1;
+    this.leverageBuyAmount = this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1] || 1;
+    this.leverageSellAmount = this.leverageSellAmounts[this.leverageSellAmounts.length - 1] || 1;
     this.leverageAmount = this.action === 'sell' ? this.leverageSellAmount : this.leverageBuyAmount;
     this.lowestLeverageAmount =
       this.action === 'sell' ? this.leverageSellAmounts[0] : this.leverageBuyAmounts[0];
-      this.noLeverage = typeof this.leverageAmount === 'undefined';
+    this.noLeverage = this.leverageAmount === 1;
     this.bagIt = this.sellBags || this.buyBags;
 
     // current price info

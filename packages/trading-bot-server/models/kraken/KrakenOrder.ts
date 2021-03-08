@@ -1,26 +1,31 @@
-export interface IKrakenOrder { 
+interface KrakenOrderProps {
   pair: string;
+  krakenizedPair: string;
   type: 'buy' | 'sell';
-  ordertype: string; // 'market' and 'limit'?
+  ordertype: 'market' | 'limit';
   price: number;
   volume: number;
-  leverage: number;
+  leverage?: number;
 }
 
 export class KrakenOrder {
   pair: string;
+  krakenizedPair: string;
   type: 'buy' | 'sell';
-  ordertype: string; // 'market' and 'limit'?
+  ordertype: 'market' | 'limit';
   price: number;
   volume: number;
-  leverage: number;
+  leverage?: number;
+  validate?: boolean;
 
-  constructor({ pair, type, ordertype, price, volume, leverage }: IKrakenOrder) {
-    this.pair = pair;
-    this.type = type;
-    this.ordertype = ordertype;
-    this.price = price;
-    this.volume = volume;
-    this.leverage = leverage;
+  constructor(attrs: KrakenOrderProps, switchType?: 'market' | 'limit') {
+    this.pair = attrs.pair;
+    this.krakenizedPair = attrs.krakenizedPair;
+    this.type = attrs.type;
+    this.ordertype = switchType ? switchType : attrs.ordertype;
+    this.price = attrs.price;
+    this.volume = attrs.volume;
+    this.leverage = attrs.leverage;
+    // this.validate = true;
   }
 }
