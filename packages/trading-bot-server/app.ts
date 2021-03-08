@@ -1,6 +1,6 @@
 import express from 'express';
 import schedule from 'node-schedule';
-import { KrakenOrder } from './models/kraken/KrakenOrder';
+import { KrakenWebhookOrder } from './models/kraken/KrakenWebhookOrder';
 import { kraken } from './services/krakenService';
 // import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
@@ -51,7 +51,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
         request.body.strategy.action,
         request.body.strategy.description
       );
-      const order = new KrakenOrder(request.body);
+      const order = new KrakenWebhookOrder(request.body);
       try {
         request.res.send(await order.placeOrder());
       } catch (error) {
