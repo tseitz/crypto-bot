@@ -92,7 +92,7 @@ class KrakenService {
     if (checkOrder) {
       setTimeout(async () => {
         this.checkOrder(krakenOrder);
-      }, 20000);
+      }, 30000);
     }
 
     logOrderResult(desc, result, krakenOrder.pair);
@@ -543,8 +543,7 @@ class KrakenService {
       const openOrder = open[orderId];
       
       if (openOrder.descr.pair === krakenOrder.krakenizedPair && openOrder.descr.type === krakenOrder.type) {
-        console.log('Switching to market order');
-        logBreak();
+        console.log('Limit not picked up. Switching to market order');
 
         await this.kraken.setCancelOrder({ txid: orderId });
 
