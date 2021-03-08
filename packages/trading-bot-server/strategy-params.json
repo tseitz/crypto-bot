@@ -15,7 +15,7 @@
   },
   "BTCUSDT": {
     "leverage": 5,
-    "entrySize": 200,
+    "entrySize": 150,
     "addSize": 40,
     "initialAdds": 2,
     "maxAdds": 2
