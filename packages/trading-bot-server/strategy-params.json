@@ -36,9 +36,9 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 80,
-    "addSize": 80,
-    "initialAdds": 4,
+    "entrySize": 150,
+    "addSize": 40,
+    "initialAdds": 2,
     "maxAdds": 6
   },
   "OMGUSDT": {

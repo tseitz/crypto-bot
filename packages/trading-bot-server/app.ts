@@ -6,6 +6,7 @@ import { kraken } from './services/krakenService';
 import { TradingViewBody } from './models/TradingViewBody';
 import { OrderQueue } from './models/OrderQueue';
 import { mongoClient, logNightlyResult } from './services/mongoDbService';
+import { logBreak } from './scripts/common';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -34,7 +35,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log('Hey buddy, get out of here', req);
-    console.log('-'.repeat(26));
+    logBreak();
     return res.send('Hey buddy, get out of here');
   }
 
@@ -59,7 +60,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
         locked = false;
       }
     }
-    console.log('-'.repeat(26));
+    logBreak();
     locked = false;
   }
   return;

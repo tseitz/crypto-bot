@@ -8,3 +8,7 @@ export function superParseFloat(floatString: number | string, decimals?: number)
     ? parseFloat(floatString)
     : parseFloat(parseFloat(floatString).toFixed(decimals));
 }
+
+export function logBreak() {
+  console.log('-'.repeat(26));
+}

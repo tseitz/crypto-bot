@@ -14,7 +14,7 @@ import {
   KrakenOpenPositions,
   KrakenTradeBalanceResult,
 } from '../models/kraken/KrakenResults';
-import { sleep, superParseFloat } from '../scripts/common';
+import { sleep, superParseFloat, logBreak } from '../scripts/common';
 import { KrakenOrder } from '../models/kraken/KrakenOrder';
 
 class KrakenService {
@@ -526,8 +526,6 @@ class KrakenService {
 
   async checkOrder(order: KrakenOrderDetails, action = order.action) {
     setTimeout(async () => {
-      console.log('Checking order');
-      
       const { openOrders } = await this.getOpenOrders();
   
       const open = openOrders?.open;
@@ -536,6 +534,7 @@ class KrakenService {
         
         if (openOrder.descr.pair === order.krakenizedTradingViewTicker && openOrder.descr.type === action) {
           console.log('Switching to market order');
+          logBreak();
   
           await this.cancelOpenOrdersForPair(order, action);
   
@@ -637,7 +636,7 @@ class KrakenService {
 
         // order
         result = await this.handleNonLeveragedOrder(newOrder);
-        console.log('-'.repeat(26));
+        logBreak();
       }, 18000 * i);
       i++;
     }
