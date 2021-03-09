@@ -65,7 +65,7 @@ class KrakenService {
   }
 
   async setAddOrder(krakenOrder: KrakenOrder): Promise<KrakenOrderResponse> {
-    return this.kraken.setAddOrder(krakenOrder);
+    return this.kraken.setAddOrder(krakenOrder.orderify());
   }
 
   async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
@@ -265,7 +265,6 @@ class KrakenService {
         });
       } else {
         console.log(order.sellBags ? `Selling Bags` : `Selling: ${order.tradeVolumeInDollar}`);
-        console.log(`Balance After: ${order.tradeVolumeInDollar + order.marginFree}`);
 
         const krakenOrder = new KrakenOrder({
           pair: order.krakenTicker,

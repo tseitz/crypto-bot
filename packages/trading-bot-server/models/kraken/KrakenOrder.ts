@@ -28,4 +28,25 @@ export class KrakenOrder {
     this.leverage = attrs.leverage;
     // this.validate = true;
   }
+
+  orderify() {
+    if (this.leverage) {
+      return {
+        pair: this.pair,
+        type: this.type,
+        ordertype: this.ordertype,
+        price: this.price,
+        volume: this.volume,
+        leverage: this.leverage,
+      }
+    } else {
+      return {
+        pair: this.pair,
+        type: this.type,
+        ordertype: this.ordertype,
+        price: this.price,
+        volume: this.volume,
+      }
+    }
+  }
 }

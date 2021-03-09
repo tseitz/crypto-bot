@@ -2,9 +2,10 @@
   "ADAUSDT": {
     "leverage": 3,
     "entrySize": 120,
-    "addSize": 40,
-    "initialAdds": 2,
-    "maxAdds": 10
+    "latestResult": 1761.27,
+    "totalTrades": 344,
+    "percentProfitable": 43.02,
+    "avgTrade": 5.12
   },
   "BTCUSDT": {
     "leverage": 5,
