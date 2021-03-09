@@ -129,7 +129,7 @@ export default class KrakenOrderDetails {
     this.strategyParams = strategyParams[this.tradingViewTicker];
     this.originalEntry = this.strategyParams.entrySize;
     // this.originalAdd = this.strategyParams.addSize;
-    this.shortZoneDeleverage = 0.65;
+    this.shortZoneDeleverage = 0.8;
     this.longZoneDeleverage = 1;
     this.entrySize = this.getEntry();
     this.addSize = this.getAddSize();
@@ -211,7 +211,6 @@ export default class KrakenOrderDetails {
         return this.positionSize * this.shortZoneDeleverage;
       } else {
         // return this.strategyParams.addSize * this.shortZoneDeleverage;
-        console.log('No add volume specified');
         return 0;
       }
     } else {
@@ -219,7 +218,6 @@ export default class KrakenOrderDetails {
         return this.positionSize;
       } else {
         // return this.strategyParams.addSize * this.longZoneDeleverage;
-        console.log('No add volume specified');
         return 0;
       }
     }
