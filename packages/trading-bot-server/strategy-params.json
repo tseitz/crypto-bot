@@ -1,14 +1,7 @@
 {
-  "AAVEWETH": {
-    "leverage": 1,
-    "entrySize": 27,
-    "addSize": 27,
-    "initialAdds": 8,
-    "maxAdds": 10
-  },
   "ADAUSDT": {
     "leverage": 3,
-    "entrySize": 140,
+    "entrySize": 120,
     "addSize": 40,
     "initialAdds": 2,
     "maxAdds": 10
@@ -22,10 +15,11 @@
   },
   "DOTUSDT": {
     "leverage": 3,
-    "entrySize": 80,
-    "addSize": 80,
-    "initialAdds": 3,
-    "maxAdds": 6
+    "entrySize": 100,
+    "latestResult": 1026.85,
+    "totalTrades": 329,
+    "percentProfitable": 40.73,
+    "avgTrade": 3.12
   },
   "ETHUSDT": {
     "leverage": 5,
@@ -36,24 +30,10 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 140,
+    "entrySize": 120,
     "addSize": 40,
     "initialAdds": 2,
     "maxAdds": 6
-  },
-  "OMGUSDT": {
-    "leverage": 2,
-    "entrySize": 25,
-    "addSize": 25,
-    "initialAdds": 6,
-    "maxAdds": 6
-  },
-  "SNXUSDT": {
-    "leverage": 1,
-    "entrySize": 35,
-    "addSize": 35,
-    "initialAdds": 6,
-    "maxAdds": 8
   },
   "UNIWETH": {
     "leverage": 1,
@@ -61,12 +41,5 @@
     "addSize": 27,
     "initialAdds": 2,
     "maxAdds": 10
-  },
-  "XTZUSD": {
-    "leverage": 3,
-    "entrySize": 30,
-    "addSize": 30,
-    "initialAdds": 8,
-    "maxAdds": 12
   }
 }

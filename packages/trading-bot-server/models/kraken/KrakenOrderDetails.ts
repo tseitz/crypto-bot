@@ -51,7 +51,7 @@ export default class KrakenOrderDetails {
   usdValueOfQuote: number;
   usdValueOfBase: number;
   originalEntry: number;
-  originalAdd: number;
+  // originalAdd: number | undefined;
   entrySize: number;
   addSize: number;
   spread: number;
@@ -64,10 +64,10 @@ export default class KrakenOrderDetails {
   marginFree: number;
   tradeVolumeInDollar: number;
   balanceInDollar: number;
-  maxInitialPositionSizeInDollar: number;
-  maxPositionSizeInDollar: number;
-  initialAdds: number;
-  maxAdds: number;
+  // maxInitialPositionSizeInDollar: number;
+  // maxPositionSizeInDollar: number;
+  // initialAdds: number;
+  // maxAdds: number;
   bagIt: boolean;
   bagAmount: number;
   positionSize: number | undefined;
@@ -127,14 +127,14 @@ export default class KrakenOrderDetails {
     this.txId = body.strategy.txId;
     this.positionSize = body.strategy?.positionSize;
     this.strategyParams = strategyParams[this.tradingViewTicker];
-    this.originalEntry = this.strategyParams?.entrySize;
-    this.originalAdd = this.strategyParams?.addSize;
+    this.originalEntry = this.strategyParams.entrySize;
+    // this.originalAdd = this.strategyParams.addSize;
     this.shortZoneDeleverage = 0.65;
     this.longZoneDeleverage = 1;
     this.entrySize = this.getEntry();
-    this.addSize = this.getAddSize();
-    this.maxAdds = this.strategyParams.maxAdds;
-    this.initialAdds = this.strategyParams.initialAdds;
+    // this.addSize = this.getAddSize();
+    // this.maxAdds = this.strategyParams.maxAdds;
+    // this.initialAdds = this.strategyParams.initialAdds;
 
     // pair info
     this.minVolume = superParseFloat(pairData[this.krakenTicker]['ordermin']);
@@ -181,12 +181,12 @@ export default class KrakenOrderDetails {
     this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(this.tradeVolume, this.usdValueOfBase);
     // if no leverage, 4 less add counts
-    this.maxInitialPositionSizeInDollar = this.entrySize + this.addSize * this.initialAdds;
-    this.maxPositionSizeInDollar = (this.entrySize + this.addSize * this.initialAdds) + (this.minVolumeInDollar * (this.maxAdds - this.initialAdds));
+    // this.maxInitialPositionSizeInDollar = this.entrySize + this.addSize * this.initialAdds;
+    // this.maxPositionSizeInDollar = (this.entrySize + this.addSize * this.initialAdds) + (this.minVolumeInDollar * (this.maxAdds - this.initialAdds));
 
     // local configs
     this.lowestNonLeverageMargin = 175;
-    this.lowestLeverageMargin = 100;
+    this.lowestLeverageMargin = 75;
   }
 
   private getEntry(): number {
@@ -194,32 +194,32 @@ export default class KrakenOrderDetails {
       if (this.positionSize) {
         return this.positionSize * this.shortZoneDeleverage;
       } else {
-        return this.strategyParams?.entrySize * this.shortZoneDeleverage
+        return this.strategyParams.entrySize * this.shortZoneDeleverage
       }
     } else {
       if (this.positionSize) {
         return this.positionSize;
       } else {
-        return this.strategyParams?.entrySize * this.longZoneDeleverage
+        return this.strategyParams.entrySize * this.longZoneDeleverage
       }
     }
   }
 
-  private getAddSize(): number {
-    if (this.shortZone) {
-      if (this.positionSize) {
-        return this.positionSize * this.shortZoneDeleverage;
-      } else {
-        return this.strategyParams?.addSize * this.shortZoneDeleverage
-      }
-    } else {
-      if (this.positionSize) {
-        return this.positionSize;
-      } else {
-        return this.strategyParams?.addSize * this.longZoneDeleverage
-      }
-    }
-  }
+  // private getAddSize(): number {
+  //   if (this.shortZone) {
+  //     if (this.positionSize) {
+  //       return this.positionSize * this.shortZoneDeleverage;
+  //     } else {
+  //       return this.strategyParams.addSize * this.shortZoneDeleverage
+  //     }
+  //   } else {
+  //     if (this.positionSize) {
+  //       return this.positionSize;
+  //     } else {
+  //       return this.strategyParams.addSize * this.longZoneDeleverage
+  //     }
+  //   }
+  // }
 
   private getTradeVolume(): number {
     let volume = 0;
