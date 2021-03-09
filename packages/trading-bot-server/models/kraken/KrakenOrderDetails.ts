@@ -186,7 +186,7 @@ export default class KrakenOrderDetails {
 
     // local configs
     this.lowestNonLeverageMargin = 175;
-    this.lowestLeverageMargin = 75;
+    this.lowestLeverageMargin = 25;
   }
 
   private getEntry(): number {
