@@ -36,7 +36,7 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 150,
+    "entrySize": 220,
     "addSize": 40,
     "initialAdds": 2,
     "maxAdds": 6
