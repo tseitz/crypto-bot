@@ -8,9 +8,9 @@
   },
   "ADAUSDT": {
     "leverage": 3,
-    "entrySize": 40,
+    "entrySize": 140,
     "addSize": 40,
-    "initialAdds": 7,
+    "initialAdds": 2,
     "maxAdds": 10
   },
   "BTCUSDT": {
@@ -36,7 +36,7 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 220,
+    "entrySize": 160,
     "addSize": 40,
     "initialAdds": 2,
     "maxAdds": 6
