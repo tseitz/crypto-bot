@@ -132,7 +132,7 @@ export default class KrakenOrderDetails {
     this.shortZoneDeleverage = 0.65;
     this.longZoneDeleverage = 1;
     this.entrySize = this.getEntry();
-    // this.addSize = this.getAddSize();
+    this.addSize = this.getAddSize();
     // this.maxAdds = this.strategyParams.maxAdds;
     // this.initialAdds = this.strategyParams.initialAdds;
 
@@ -205,21 +205,25 @@ export default class KrakenOrderDetails {
     }
   }
 
-  // private getAddSize(): number {
-  //   if (this.shortZone) {
-  //     if (this.positionSize) {
-  //       return this.positionSize * this.shortZoneDeleverage;
-  //     } else {
-  //       return this.strategyParams.addSize * this.shortZoneDeleverage
-  //     }
-  //   } else {
-  //     if (this.positionSize) {
-  //       return this.positionSize;
-  //     } else {
-  //       return this.strategyParams.addSize * this.longZoneDeleverage
-  //     }
-  //   }
-  // }
+  private getAddSize(): number {
+    if (this.shortZone) {
+      if (this.positionSize) {
+        return this.positionSize * this.shortZoneDeleverage;
+      } else {
+        // return this.strategyParams.addSize * this.shortZoneDeleverage;
+        console.log('No add volume specified');
+        return 0;
+      }
+    } else {
+      if (this.positionSize) {
+        return this.positionSize;
+      } else {
+        // return this.strategyParams.addSize * this.longZoneDeleverage;
+        console.log('No add volume specified');
+        return 0;
+      }
+    }
+  }
 
   private getTradeVolume(): number {
     let volume = 0;
