@@ -57,9 +57,9 @@
   },
   "UNIWETH": {
     "leverage": 1,
-    "entrySize": 27,
+    "entrySize": 275,
     "addSize": 27,
-    "initialAdds": 8,
+    "initialAdds": 2,
     "maxAdds": 10
   },
   "XTZUSD": {
