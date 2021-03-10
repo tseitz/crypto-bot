@@ -12,6 +12,3 @@ node_modules
 # yarn
 .yarn-integrity
 yarn-error.log
-
-# remove server env stuff (would like to just use process, but can't access api key's in the debugging process without loading them from .env)
-packages/trading-bot-server/.env
