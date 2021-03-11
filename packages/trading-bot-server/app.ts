@@ -5,7 +5,7 @@ import { kraken } from './services/krakenService';
 // import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from './models/TradingViewBody';
 import { OrderQueue } from './models/OrderQueue';
-import { mongoClient, logNightlyResult } from './services/mongoDbService';
+import { logNightlyResult } from './services/mongoDbService';
 import { logBreak } from './scripts/common';
 // const Binance = require("node-binance-api");
 // const config = require("./config");
@@ -64,6 +64,13 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
     locked = false;
   }
   return;
+});
+
+app.get('/api/kraken/getOpenPositions', jsonParser, async (req, res) => {
+  console.log('Hey we got a request');
+  const result = await kraken.getOpenPositions();
+  console.log(result)
+  return JSON.stringify(result);
 });
 
 // app.post('/webhook/uniswap', jsonParser, async (req, res) => {
