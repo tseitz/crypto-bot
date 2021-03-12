@@ -1,7 +1,7 @@
 {
   "ADAUSDT": {
     "leverage": 3,
-    "entrySize": 140,
+    "entrySize": 180,
     "latestResult": 1761.27,
     "totalTrades": 344,
     "percentProfitable": 43.02,
@@ -9,7 +9,7 @@
   },
   "BTCUSDT": {
     "leverage": 5,
-    "entrySize": 140,
+    "entrySize": 125,
     "latestResult": 481.42,
     "totalTrades": 213,
     "percentProfitable": 39.91,
@@ -17,7 +17,7 @@
   },
   "DOTUSDT": {
     "leverage": 3,
-    "entrySize": 100,
+    "entrySize": 140,
     "latestResult": 1026.85,
     "totalTrades": 329,
     "percentProfitable": 40.73,
@@ -25,7 +25,7 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 200,
+    "entrySize": 180,
     "latestResult": 1296.70,
     "totalTrades": 232,
     "percentProfitable": 42.67,
@@ -33,7 +33,7 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 140,
+    "entrySize": 160,
     "latestResult": 1059.37,
     "totalTrades": 229,
     "percentProfitable": 45.41,
@@ -41,7 +41,7 @@
   },
   "UNIWETH": {
     "leverage": 1,
-    "entrySize": 275,
+    "entrySize": 250,
     "addSize": 27,
     "initialAdds": 2,
     "maxAdds": 10
