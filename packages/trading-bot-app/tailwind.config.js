@@ -26,6 +26,12 @@ module.exports = {
       indigo: colors.indigo,
       purple: colors.violet,
       pink: colors.pink,
+
+      font: '#2F2F2F',
+      primary: '#4179BE',
+      secondary: '#41BE86',
+      tertiary: '#41B7BE',
+      kraken: '#5841D8',
     },
     spacing: {
       px: '1px',

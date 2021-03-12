@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import schedule from 'node-schedule';
 import { KrakenWebhookOrder } from './models/kraken/KrakenWebhookOrder';
 import { kraken } from './services/krakenService';
@@ -14,6 +15,10 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+const corsOptions = {
+  origin: 'http://localhost:5000',
+}
+
 // const binance = new Binance().options({
 //   APIKEY: process.env.BINANCE_API_KEY,
 //   APISECRET: process.env.BINANCE_SECRET_KEY,
@@ -21,7 +26,7 @@ const app = express();
 
 // create application/json parser
 const jsonParser = express.json();
-app.use(jsonParser);
+app.use(jsonParser, cors(corsOptions));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -67,10 +72,7 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
 });
 
 app.get('/api/kraken/getOpenPositions', jsonParser, async (req, res) => {
-  console.log('Hey we got a request');
-  const result = await kraken.getOpenPositions();
-  console.log(result)
-  return JSON.stringify(result);
+  res.json(await kraken.getOpenPositions());
 });
 
 // app.post('/webhook/uniswap', jsonParser, async (req, res) => {
