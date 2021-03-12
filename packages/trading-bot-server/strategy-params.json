@@ -33,11 +33,11 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 160,
-    "latestResult": 1059.37,
-    "totalTrades": 229,
-    "percentProfitable": 45.41,
-    "avgTrade": 4.63
+    "entrySize": 140,
+    "latestResult": 774.34,
+    "totalTrades": 224,
+    "percentProfitable": 41.52,
+    "avgTrade": 3.46
   },
   "UNIWETH": {
     "leverage": 1,
