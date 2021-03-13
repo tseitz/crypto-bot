@@ -10,10 +10,10 @@
   "BTCUSDT": {
     "leverage": 5,
     "entrySize": 120,
-    "latestResult": 449.67,
-    "totalTrades": 193,
-    "percentProfitable": 46.63,
-    "avgTrade": 2.33
+    "latestResult": 541.69,
+    "totalTrades": 144,
+    "percentProfitable": 39.58,
+    "avgTrade": 3.76
   },
   "DOTUSDT": {
     "leverage": 3,
@@ -42,9 +42,9 @@
   "UNIWETH": {
     "leverage": 1,
     "entrySize": 250,
-    "latestResult": 1769.44,
-    "totalTrades": 128,
-    "percentProfitable": 47.66,
-    "avgTrade": 13.82
+    "latestResult": 1880.68,
+    "totalTrades": 205,
+    "percentProfitable": 44.39,
+    "avgTrade": 9.17
   }
 }

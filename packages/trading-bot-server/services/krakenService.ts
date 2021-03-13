@@ -567,13 +567,13 @@ class KrakenService {
     if (order.bagAmount && order.bagAmount > 1) {
       totalVolumeToTradeInDollar = superParseFloat(order.bagAmount, order.volumeDecimals);
     } else if (order.buyBags) {
-      const bagAmount = order.bagAmount ? order.bagAmount : 0.4;
+      const bagAmount = order.bagAmount ? order.bagAmount : 0.425;
       totalVolumeToTradeInDollar = superParseFloat(
         order.balanceOfQuote * bagAmount,
         order.volumeDecimals
       );
     } else {
-      const bagAmount = order.bagAmount ? order.bagAmount : 0.75;
+      const bagAmount = order.bagAmount ? order.bagAmount : 0.8;
       totalVolumeToTradeInDollar = superParseFloat(
         order.balanceOfBase * order.usdValueOfBase * bagAmount,
         order.volumeDecimals

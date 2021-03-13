@@ -214,7 +214,7 @@ slowCloseAbove = firstAction and close > highestSlow1
 // if addLow
 //     addLowCount := addLowCount + 1
 
-longSetup = (longZone and ((rsiBottomed and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)))) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and macdBottomed)
+longSetup = (longZone and ((rsiBottomed and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)))) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed))
 shortSetup = allowShorts and shortZone and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)))
 
 // addLongSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
@@ -271,7 +271,7 @@ if closeShort
 //     lastRsi := rsiClose > lastRsi ? rsiClose : lastRsi
 
 plotshape(firstAction and longZone and long, title="buybags", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
-plotshape(firstAction and shortZone and closeLong, title="sellbags", style=shape.xcross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
+plotshape(firstAction and shortZone and short, title="sellbags", style=shape.xcross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0)
 
 if firstAction and longZone and long
     firstAction := false

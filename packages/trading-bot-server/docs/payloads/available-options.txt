@@ -22,6 +22,7 @@
         "market_position_size": {{strategy.market_position_size}},
         "prev_market_position": "{{strategy.prev_market_position}}",
         "prev_market_position_size": {{strategy.prev_market_position_size}},
+        "shortzone": {{plot("shortzone")}},
         "buyBags": {{plot("buybags")}},
         "sellBags": {{plot("sellbags")}}
     }
