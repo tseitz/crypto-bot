@@ -214,7 +214,7 @@ slowCloseAbove = firstAction and close > highestSlow1
 // if addLow
 //     addLowCount := addLowCount + 1
 
-longSetup = longZone and ((rsiBottomed and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and macdBottomed))
+longSetup = (longZone and ((rsiBottomed and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)))) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and macdBottomed)
 shortSetup = allowShorts and shortZone and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)))
 
 // addLongSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
