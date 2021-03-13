@@ -1,4 +1,6 @@
 <script lang="typescript">
+import { fix_position } from "svelte/internal";
+
   async function getOpenPositions() {
     const res = await fetch(
       "http://localhost:3000/api/kraken/getOpenPositions",
@@ -8,9 +10,13 @@
     );
 
     const { openPositions } = await res.json();
-    console.log(openPositions);
+    
+    const openPositionArr = [];
+    for (const key in openPositions) {
+      openPositionArr.push(openPositions[key]);
+    }
 
-    return openPositions;
+    return openPositionArr;
   }
 </script>
 
@@ -26,19 +32,27 @@
 </style>
 
 
-<h1>Longs</h1>
-<div class="table-header"></div>
+<div class="md:container md:mx-auto">
+  <div class="flex justify-center">
+    <img src="kraken-logo.png" alt="Kraken" height="150" width="150">
+  </div>
 
-{#await getOpenPositions()}
-	<p>...loading open positions</p>
-{:then openPositions}
-  {#each Object.entries(openPositions) as [key, val]}
-    {key}: {JSON.stringify(val)}
-  {/each}
-{:catch error}
-	<p style="color: red">{error.message}</p>
-{/await}
-
-
-<h1>Shorts</h1>
-<div class="table-header"></div>
+  <div>
+    <h1>Longs</h1>
+    <div class="table-header"></div>
+    
+    {#await getOpenPositions()}
+      <p>...loading open positions</p>
+    {:then openPositions}
+      {#each openPositions as position}
+        {position.pair} : {position.margin} : {position.cost} <br />
+      {/each}
+    {:catch error}
+      <p style="color: red">{error.message}</p>
+    {/await}
+    
+    
+    <h1>Shorts</h1>
+    <div class="table-header"></div>
+  </div>
+</div>
