@@ -75,6 +75,14 @@ app.get('/api/kraken/getOpenPositions', jsonParser, async (req, res) => {
   res.json(await kraken.getOpenPositions());
 });
 
+app.get('/api/kraken/getBalance', jsonParser, async (req, res) => {
+  res.json(await kraken.getBalance());
+});
+
+app.get('/api/kraken/getTradeBalance', jsonParser, async (req, res) => {
+  res.json(await kraken.getTradeBalance());
+});
+
 // app.post('/webhook/uniswap', jsonParser, async (req, res) => {
 //   // force body to be JSON
 //   const requestBody: TradingViewBody = JSON.parse(JSON.stringify(req.body));

@@ -1,12 +1,4 @@
 <script lang="typescript">
-  import { onMount } from "svelte";
-
-  let result: string = "";
-
-  onMount(async () => {
-    await getOpenPositions();
-  });
-
   async function getOpenPositions() {
     const res = await fetch(
       "http://localhost:3000/api/kraken/getOpenPositions",
@@ -15,17 +7,16 @@
       }
     );
 
-    const json = await res.json();
-    result = JSON.stringify(json);
+    const { openPositions } = await res.json();
+    console.log(openPositions);
 
-    return result;
+    return openPositions;
   }
 </script>
 
 <style>
   h1 {
    font-size: 2em;
-   /* font-weight: bold; */
   }
   .table-header {
     height: 74px;
@@ -37,6 +28,16 @@
 
 <h1>Longs</h1>
 <div class="table-header"></div>
+
+{#await getOpenPositions()}
+	<p>...loading open positions</p>
+{:then openPositions}
+  {#each Object.entries(openPositions) as [key, val]}
+    {key}: {JSON.stringify(val)}
+  {/each}
+{:catch error}
+	<p style="color: red">{error.message}</p>
+{/await}
 
 
 <h1>Shorts</h1>
