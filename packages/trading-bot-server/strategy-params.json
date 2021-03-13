@@ -41,7 +41,7 @@
   },
   "UNIWETH": {
     "leverage": 1,
-    "entrySize": 250,
+    "entrySize": 225,
     "latestResult": 1880.68,
     "totalTrades": 205,
     "percentProfitable": 44.39,
