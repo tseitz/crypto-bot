@@ -1,4 +1,4 @@
-import { KrakenOrderResult } from './KrakenResults';
+import { KrakenOrderResponse, KrakenOrderResult } from './KrakenResults';
 import { TradingViewBody } from '../TradingViewBody';
 import { kraken } from '../../services/krakenService';
 import KrakenOrderDetails from './KrakenOrderDetails';
@@ -78,6 +78,28 @@ export class KrakenWebhookOrder {
     );
 
     // execute the order
-    return await kraken.openOrder(this.order);
+    return await this.openOrder(this.order);
+  }
+
+  private async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+    console.log(`Margin Free: ${order.marginFree}`);
+    console.log(`Price: ${order.tradingViewPrice} | Bid: ${order.bidPrice}`);
+
+    let result;
+    if (order.oldest) {
+      result = await kraken.sellOldestOrders(order, order.krakenTicker);
+    } else if (order.bagIt) {
+      result = await kraken.handleBags(order);
+    } else if (order.noLeverage) {
+      result = await kraken.handleNonLeveragedOrder(order);
+    } else {
+      if (order.close) {
+        result = await kraken.settleLeveragedOrder(order);
+      } else {
+        result = await kraken.handleLeveragedOrder(order);
+      }
+    }
+
+    return result;
   }
 }
