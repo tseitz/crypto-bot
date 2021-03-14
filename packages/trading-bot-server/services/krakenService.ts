@@ -255,7 +255,8 @@ class KrakenService {
   }
 
   async handleNonLeveragedOrder(
-    order: KrakenOrderDetails
+    order: KrakenOrderDetails,
+    type: 'market' | 'limit' = 'limit',
   ): Promise<KrakenOrderResponse | undefined> {
     let result;
     if (order.action === 'sell') {
@@ -270,7 +271,7 @@ class KrakenService {
           pair: order.krakenTicker,
           krakenizedPair: order.krakenizedTradingViewTicker,
           type: order.action,
-          ordertype: 'limit',
+          ordertype: type,
           price: order.bidPrice,
           volume: order.tradeVolume,
         });
@@ -286,7 +287,7 @@ class KrakenService {
             pair: order.krakenTicker,
             krakenizedPair: order.krakenizedTradingViewTicker,
             type: order.action,
-            ordertype: 'limit',
+            ordertype: type,
             price: order.bidPrice,
             volume: order.tradeVolume,
           });
@@ -557,7 +558,7 @@ class KrakenService {
   async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
     let totalVolumeToTradeInDollar: number, result;
 
-    // local meaning don't close leverage orders
+    // only handle leverage order if not local only
     if (!order.nonLeverageOnly) {
       result = await this.handleLeveragedOrder(order);
       logOrderResult(`ORDER`, result, order.krakenizedTradingViewTicker);
@@ -625,8 +626,8 @@ class KrakenService {
         );
         newOrder.bidPrice = newOrder.action === 'buy' ? currentAsk : currentBid;
 
-        // order
-        result = await this.handleNonLeveragedOrder(newOrder);
+        // order market order to fill immediately
+        result = await this.handleNonLeveragedOrder(newOrder, 'market');
         logBreak();
       }, 18000 * i);
       i++;

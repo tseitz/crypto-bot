@@ -190,6 +190,7 @@ macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
 macdSlowingDown = abs(macd - macd1) < abs(macd1 - macd2)
 macdTopped = macd < macd1 and macd1 > macd2 and macd1 > signal
 macdBelow0 = macd1 < 0
+macdAbove0 = macd1 < 0
 rsiBottomed = rsiClose > rsi1 and rsi1 < rsi2
 rsiTopped = rsiClose < rsi1 and rsi1 > rsi2
 rsiDecreasing = rsiClose < rsi2
