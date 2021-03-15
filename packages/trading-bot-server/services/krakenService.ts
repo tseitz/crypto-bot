@@ -97,6 +97,10 @@ class KrakenService {
     return new KrakenOpenPositionResult(await this.kraken.getOpenPositions());
   }
 
+  async getClosedOrders(): Promise<any> {
+    return await this.kraken.getClosedOrders();
+  }
+
   async getOrderBook(pair: string) {
     const {
       error: orderBookError,
@@ -118,6 +122,8 @@ class KrakenService {
     checkOrder = true
   ) {
     const result = await this.setAddOrder(krakenOrder);
+
+    krakenOrder.orderId = result.result?.txid[0];
 
     if (checkOrder) {
       setTimeout(async () => {
@@ -624,30 +630,42 @@ class KrakenService {
   async checkOrder(krakenOrder: KrakenOrder) {
     const openOrders = await this.getOpenOrders();
 
-    const open = openOrders?.open;
-    for (const orderId in open) {
-      const openOrder = open[orderId];
+    const openOrder = openOrders?.open[krakenOrder.orderId];
 
-      if (
-        openOrder.descr.pair === krakenOrder.krakenizedPair &&
-        openOrder.descr.type === krakenOrder.type
-      ) {
-        console.log("Limit not picked up. Switching to market order");
+    if (
+      openOrder
+      // openOrder.descr.pair === krakenOrder.krakenizedPair &&
+      // openOrder.descr.type === krakenOrder.type
+    ) {
+      console.log("Limit not picked up. Switching to market order");
 
-        await this.kraken.setCancelOrder({ txid: orderId });
+      await this.kraken.setCancelOrder({ txid: krakenOrder.orderId });
 
-        const volumeRemaining =
-          parseFloat(openOrder.vol) - parseFloat(openOrder.vol_exec);
+      const volumeRemaining =
+        parseFloat(openOrder.vol) - parseFloat(openOrder.vol_exec);
 
-        const krakenMarketOrder = new KrakenOrder({
-          ...krakenOrder,
-          volume: volumeRemaining,
-          ordertype: "market",
-        });
-        await this.placeOrder(krakenMarketOrder, `ORDER`, false);
+      const krakenMarketOrder = new KrakenOrder({
+        ...krakenOrder,
+        volume: volumeRemaining,
+        ordertype: "market",
+      });
+      await this.placeOrder(krakenMarketOrder, `ORDER`, false);
 
-        logBreak();
-      }
+      logBreak();
+    }
+
+    const closedOrders = await this.getClosedOrders();
+
+    console.log(closedOrders);
+    const closedOrder = closedOrders?.closed[krakenOrder.orderId];
+
+    if (closedOrder?.reason?.toLowerCase() == "insufficient margin") {
+      console.log("Order closed due to insufficient margin. Trying again");
+
+      // This time we don't have to switch to market. We'll try limit until it will allow
+      await this.placeOrder(krakenOrder, `ORDER`);
+
+      logBreak();
     }
   }
 

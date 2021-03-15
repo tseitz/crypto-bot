@@ -15,6 +15,7 @@ export class KrakenOrder {
   ordertype: "market" | "limit";
   price: number;
   volume: number;
+  orderId: string;
   leverage?: number;
 
   constructor(attrs: KrakenOrderProps) {
@@ -25,9 +26,10 @@ export class KrakenOrder {
     this.price = attrs.price;
     this.volume = attrs.volume;
     this.leverage = attrs.leverage;
+    this.orderId = "";
   }
 
-  orderify() {
+  public orderify() {
     if (this.leverage) {
       return {
         pair: this.pair,
