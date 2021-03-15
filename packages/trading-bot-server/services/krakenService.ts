@@ -123,7 +123,7 @@ class KrakenService {
   ) {
     const result = await this.setAddOrder(krakenOrder);
 
-    krakenOrder.orderId = result.result?.txid[0];
+    krakenOrder.orderId = result.result?.txid[0] || "";
 
     if (checkOrder) {
       setTimeout(async () => {
