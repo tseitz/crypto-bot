@@ -22,7 +22,7 @@ var lastRsi = 0.0
 
 
 // INPUTS
-daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMax = input(defval=90, title="Max Days Back to Test", minval=0)
 daysBackMin = 0
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
@@ -34,19 +34,20 @@ hiLowSlow = input(defval=45, title="Hi Low Long", minval=0, step=5)
 
 buyLongZoneRsi = input(defval=54, title="Buy Long Zone RSI", minval=0, step=1)
 // dramaticBuyLongZoneRSI = input(defval=31, title="Dramatic Buy Long Zone RSI", minval=0, step=1)
-rsiCloseLongZone = input(defval=71, title="Close Long Zone RSI", minval=0, step=1)
+rsiCloseLongZone = input(defval=70, title="Close Long Zone RSI", minval=0, step=1)
 
 shortShortZoneRsi = input(defval=48, title="Short Short Zone RSI", minval=0, step=1)
 // dramaticShortShortZoneRSI = input(defval=69, title="Dramatic Short Short Long Zone RSI", minval=0, step=1)
-rsiCloseShortZone = input(defval=33, title="Close Short Zone RSI", minval=0, step=1)
+rsiCloseShortZone = input(defval=36, title="Close Short Zone RSI", minval=0, step=1)
 
 // macdLength = input(defval=15, title="MACD Bars", minval=0, step=5)
 
-longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=2.2) * 0.01
+longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=1.6) * 0.01
 shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3) * 0.01
 
 showSlow = true // input(defval=true, title="Show Slow", type=input.bool)
 allowShorts = input(defval=true, title="Allow Shorts", type=input.bool)
+fastOpens = input(defval=false, title="Fast Opens", type=input.bool)
 // addOnLows = input(defval=false, title="Add On Lows", type=input.bool)
 // reopenOnHighs = input(defval=false, title="Reopen on new highs", type=input.bool)
 // allowFastMacdLongs = input(defval=true, title="Fast Macd Longs", type=input.bool)
@@ -59,7 +60,7 @@ buyShortZoneRsi = input(defval=39, title="Buy Short Zone RSI", minval=0, step=1)
 longStopPrice = 0.0
 
 longStopPrice := if (strategy.position_size > 0)
-    stopValue = high * (1 - longTrailPerc)
+    stopValue = close * (1 - longTrailPerc)
     max(stopValue, longStopPrice[1]) // max allows for trailing stop
 else
     0
@@ -215,13 +216,13 @@ slowCloseAbove = firstAction and close > highestSlow1
 // if addLow
 //     addLowCount := addLowCount + 1
 
-longSetup = (longZone and ((rsiBottomed and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)))) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed))
-shortSetup = allowShorts and shortZone and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)))
+longSetup = (longZone and ((rsiBottomed and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)) or (fastOpens and slowCloseAbove))) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed))
+shortSetup = allowShorts and shortZone and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)) or (fastOpens and slowCloseBelow))
 
 // addLongSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
 // addShortSetup = shortZone and ((addHigh and addHighCount < 4) or (rsiTopped and (macdTopped) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
 
-closeLongSetup = isLong and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone) or (low < longStopPrice)
+closeLongSetup = isLong and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone) or (close < longStopPrice)
 closeShortSetup = isShort and (rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShortZone) or (high > shortStopPrice)
 
 // bgcolor(color=isShort ? color.red : isLong ? color.green : na, transp=65)
