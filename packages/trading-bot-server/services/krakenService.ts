@@ -122,7 +122,7 @@ class KrakenService {
     if (checkOrder) {
       setTimeout(async () => {
         this.checkOrder(krakenOrder);
-      }, 30000);
+      }, 45000);
     }
 
     logOrderResult(desc, result, krakenOrder.pair);
