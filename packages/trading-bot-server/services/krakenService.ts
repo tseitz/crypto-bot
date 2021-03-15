@@ -636,7 +636,14 @@ class KrakenService {
 
         await this.kraken.setCancelOrder({ txid: orderId });
 
-        const krakenMarketOrder = new KrakenOrder(krakenOrder, "market");
+        const volumeRemaining =
+          parseFloat(openOrder.vol) - parseFloat(openOrder.vol_exec);
+
+        const krakenMarketOrder = new KrakenOrder({
+          ...krakenOrder,
+          volume: volumeRemaining,
+          ordertype: "market",
+        });
         await this.placeOrder(krakenMarketOrder, `ORDER`, false);
 
         logBreak();

@@ -17,11 +17,11 @@ export class KrakenOrder {
   volume: number;
   leverage?: number;
 
-  constructor(attrs: KrakenOrderProps, switchType?: "market" | "limit") {
+  constructor(attrs: KrakenOrderProps) {
     this.pair = attrs.pair;
     this.krakenizedPair = attrs.krakenizedPair;
     this.type = attrs.type;
-    this.ordertype = switchType ? switchType : attrs.ordertype;
+    this.ordertype = attrs.ordertype;
     this.price = attrs.price;
     this.volume = attrs.volume;
     this.leverage = attrs.leverage;
