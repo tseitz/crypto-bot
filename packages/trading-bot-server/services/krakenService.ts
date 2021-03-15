@@ -668,7 +668,7 @@ class KrakenService {
         order.volumeDecimals
       );
     } else {
-      const bagAmount = order.bagAmount ? order.bagAmount : 0.8;
+      const bagAmount = order.bagAmount ? order.bagAmount : 0.85;
       totalVolumeToTradeInDollar = superParseFloat(
         order.balanceOfBase * order.usdValueOfBase * bagAmount,
         order.volumeDecimals
