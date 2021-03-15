@@ -1,8 +1,8 @@
 interface KrakenOrderProps {
   pair: string;
   krakenizedPair: string;
-  type: 'buy' | 'sell';
-  ordertype: 'market' | 'limit';
+  type: "buy" | "sell";
+  ordertype: "market" | "limit";
   price: number;
   volume: number;
   leverage?: number;
@@ -11,13 +11,13 @@ interface KrakenOrderProps {
 export class KrakenOrder {
   pair: string;
   krakenizedPair: string;
-  type: 'buy' | 'sell';
-  ordertype: 'market' | 'limit';
+  type: "buy" | "sell";
+  ordertype: "market" | "limit";
   price: number;
   volume: number;
   leverage?: number;
 
-  constructor(attrs: KrakenOrderProps, switchType?: 'market' | 'limit') {
+  constructor(attrs: KrakenOrderProps, switchType?: "market" | "limit") {
     this.pair = attrs.pair;
     this.krakenizedPair = attrs.krakenizedPair;
     this.type = attrs.type;
@@ -36,8 +36,8 @@ export class KrakenOrder {
         price: this.price,
         volume: this.volume,
         leverage: this.leverage,
-        validate: true,
-      }
+        // validate: true,
+      };
     } else {
       return {
         pair: this.pair,
@@ -45,8 +45,8 @@ export class KrakenOrder {
         ordertype: this.ordertype,
         price: this.price,
         volume: this.volume,
-        validate: true,
-      }
+        // validate: true,
+      };
     }
   }
 }
