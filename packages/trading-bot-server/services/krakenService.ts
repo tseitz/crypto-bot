@@ -667,12 +667,12 @@ class KrakenService {
     const closedOrders = await this.getClosedOrders();
 
     const closedOrder = closedOrders?.closed[krakenOrder.orderId];
-    console.log(closedOrder);
+    // console.log(closedOrder);
 
     if (closedOrder?.reason?.toLowerCase() == "insufficient margin") {
       console.log("Order closed due to insufficient margin. Trying again");
 
-      // This time we don't have to switch to market. We'll try limit until it will allow
+      // Try again with original limit order
       await this.placeOrder(krakenOrder, `ORDER`);
 
       logBreak();
