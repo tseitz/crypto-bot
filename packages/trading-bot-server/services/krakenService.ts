@@ -1,21 +1,26 @@
-const Kraken = require('kraken-wrapper'); // no d.ts file... gotta figure out heroku deploy
+const Kraken = require("kraken-wrapper"); // no d.ts file... gotta figure out heroku deploy
 // import { mongoClient, logKrakenResult } from './mongoDbService';
-import KrakenOrderDetails from '../models/kraken/KrakenOrderDetails';
-import { logOrderResult } from './logger';
+import KrakenOrderDetails from "../models/kraken/KrakenOrderDetails";
+import { logOrderResult } from "./logger";
 import {
+  KrakenPrice,
   KrakenPriceResult,
+  KrakenTradeablePair,
   KrakenTradeablePairResult,
+  KrakenBalance,
   KrakenBalanceResult,
   KrakenOpenPositionResult,
   KrakenOpenOrderResult,
+  KrakenOpenOrders,
   KrakenOrderResult,
   KrakenOrderResponse,
   KrakenOpenPosition,
   KrakenOpenPositions,
+  KrakenTradeBalance,
   KrakenTradeBalanceResult,
-} from '../models/kraken/KrakenResults';
-import { sleep, superParseFloat, logBreak } from '../scripts/common';
-import { KrakenOrder } from '../models/kraken/KrakenOrder';
+} from "../models/kraken/KrakenResults";
+import { sleep, superParseFloat, logBreak } from "../scripts/common";
+import { KrakenOrder } from "../models/kraken/KrakenOrder";
 
 class KrakenService {
   kraken: any; // krakenApi
@@ -24,28 +29,68 @@ class KrakenService {
     this.kraken = kraken;
   }
 
-  async getPair(krakenTicker: string): Promise<KrakenTradeablePairResult> {
-    return new KrakenTradeablePairResult(
+  async getPair(krakenTicker: string): Promise<KrakenTradeablePair> {
+    const { error, pair } = new KrakenTradeablePairResult(
       await this.kraken.getTradableAssetPairs({
         pair: krakenTicker,
       })
     );
+
+    if (error?.length > 0) {
+      throw new Error(`Pair data for ${krakenTicker} not available on Kraken`);
+    }
+
+    return pair;
   }
 
-  async getPrice(krakenTicker: string): Promise<KrakenPriceResult> {
-    return new KrakenPriceResult(
+  async getPrice(krakenTicker: string): Promise<KrakenPrice> {
+    const { error, price } = new KrakenPriceResult(
       await this.kraken.getTickerInformation({
         pair: krakenTicker,
       })
     );
+
+    if (error?.length > 0) {
+      throw new Error(`Price info for ${krakenTicker} not available on Kraken`);
+    }
+
+    return price;
   }
 
-  async getBalance(): Promise<KrakenBalanceResult> {
-    return new KrakenBalanceResult(await this.kraken.getBalance());
+  async getBalance(): Promise<KrakenBalance> {
+    const { error, balances } = new KrakenBalanceResult(
+      await this.kraken.getBalance()
+    );
+
+    if (error?.length > 0) {
+      throw new Error(`Could not find balance info on Kraken`);
+    }
+
+    return balances;
   }
 
-  async getOpenOrders(): Promise<KrakenOpenOrderResult> {
-    return new KrakenOpenOrderResult(await this.kraken.getOpenOrders());
+  async getTradeBalance(): Promise<KrakenTradeBalance> {
+    const { error, balances } = new KrakenTradeBalanceResult(
+      await this.kraken.getOpenOrders()
+    );
+
+    if (error?.length > 0) {
+      console.log("Could not get trade balance");
+    }
+
+    return balances;
+  }
+
+  async getOpenOrders(): Promise<KrakenOpenOrders> {
+    const { error, openOrders } = new KrakenOpenOrderResult(
+      await this.kraken.getOpenOrders()
+    );
+
+    if (error?.length > 0) {
+      console.log("Could not get open orders");
+    }
+
+    return openOrders;
   }
 
   async getOpenPositions(): Promise<KrakenOpenPositionResult> {
@@ -53,24 +98,27 @@ class KrakenService {
   }
 
   async getOrderBook(pair: string) {
-    const { error: orderBookError, openPositions: orderBookData } = await this.kraken.getOrderBook({
+    const {
+      error: orderBookError,
+      openPositions: orderBookData,
+    } = await this.kraken.getOrderBook({
       pair,
     });
 
     return { orderBookError, orderBookData };
   }
 
-  async getTradeBalance(): Promise<KrakenTradeBalanceResult> {
-    return new KrakenTradeBalanceResult(await this.kraken.getTradeBalance());
-  }
-
   async setAddOrder(krakenOrder: KrakenOrder): Promise<KrakenOrderResponse> {
     return this.kraken.setAddOrder(krakenOrder.orderify());
   }
 
-  async placeOrder(krakenOrder: KrakenOrder, desc = 'ORDER', checkOrder = true) {
+  async placeOrder(
+    krakenOrder: KrakenOrder,
+    desc = "ORDER",
+    checkOrder = true
+  ) {
     const result = await this.setAddOrder(krakenOrder);
-    
+
     if (checkOrder) {
       setTimeout(async () => {
         this.checkOrder(krakenOrder);
@@ -82,7 +130,9 @@ class KrakenService {
     return result;
   }
 
-  async handleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+  async handleLeveragedOrder(
+    order: KrakenOrderDetails
+  ): Promise<KrakenOrderResponse | undefined> {
     let latestResult;
 
     let { openPositions } = await this.getOpenPositions();
@@ -94,11 +144,17 @@ class KrakenService {
     let prices: number[] = [];
     for (const key in openPositions) {
       const position = openPositions[key];
-      if (order.krakenTicker === position.pair && order.action === position.type) {
+      if (
+        order.krakenTicker === position.pair &&
+        order.action === position.type
+      ) {
         add = true;
         positionMargin += parseFloat(position.margin);
         prices.push(parseFloat(position.cost) / parseFloat(position.vol));
-      } else if (order.krakenTicker === position.pair && order.action !== position.type) {
+      } else if (
+        order.krakenTicker === position.pair &&
+        order.action !== position.type
+      ) {
         flip = true;
         positionMargin += parseFloat(position.margin);
         positionVolume += parseFloat(position.vol);
@@ -106,32 +162,32 @@ class KrakenService {
     }
 
     if (flip) {
-      let orderVolume = positionVolume * 2; // to flip
-      
+      let orderVolume = positionVolume + order.tradeVolume; // to flip
+
       console.log("Flipping");
       if (positionMargin > order.marginFree) {
-        console.log('Margin level too low. Settling first');
+        console.log("Margin level too low. Settling first");
         await this.settleLeveragedOrder(order);
         orderVolume = orderVolume * 0.4; // since not flipping, reset back adjusting for losses. crude but works for now
       }
-      
+
       const krakenOrder = new KrakenOrder({
         pair: order.krakenTicker,
         krakenizedPair: order.krakenizedTradingViewTicker,
         type: order.action,
-        ordertype: 'limit',
+        ordertype: "limit",
         price: order.bidPrice,
         volume: orderVolume,
         leverage: order.leverageAmount,
       });
 
       await this.placeOrder(krakenOrder, `ORDER Flipped`);
-      
+
       return;
     }
 
     if (order.marginFree < order.lowestLeverageMargin) {
-      console.log('Margin level too low, selling some.');
+      console.log("Margin level too low, selling some.");
       const positionsBySize = await this.getOpenPositionsBySize(openPositions);
       // const positionsByTime = await this.getOrdersByTimeAsc();
       latestResult = await this.sellOldestOrders(
@@ -156,9 +212,11 @@ class KrakenService {
         order.priceDecimals
       );
       const percentDiff = parseFloat(
-        (((order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100).toFixed(
-          2
-        )
+        (
+          ((order.bidPrice - averagePrice) /
+            ((order.bidPrice + averagePrice) / 2)) *
+          100
+        ).toFixed(2)
       );
 
       // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
@@ -166,9 +224,15 @@ class KrakenService {
       const boostPercentDiff = percentDiff * -4.2;
       const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(4));
 
-      const incrementalAddVolume = parseFloat(((order.addVolume * boost).toFixed(order.volumeDecimals))); // incrementalVolume > order.minVolume ? incrementalVolume : order.minVolume;
-      const incrementalAddDollar = ((order.positionSize || order.addSize) * boost).toFixed(2);
-      const myPositionAfter = (positionMargin + parseFloat(incrementalAddDollar)).toFixed(2);
+      const incrementalAddVolume = parseFloat(
+        (order.addVolume * boost).toFixed(order.volumeDecimals)
+      ); // incrementalVolume > order.minVolume ? incrementalVolume : order.minVolume;
+      const incrementalAddDollar = (
+        (order.positionSize || order.addSize) * boost
+      ).toFixed(2);
+      const myPositionAfter = (
+        positionMargin + parseFloat(incrementalAddDollar)
+      ).toFixed(2);
       const marginPositionAfter = parseFloat(
         (parseFloat(myPositionAfter) * (order.leverageAmount || 1)).toFixed(2)
       );
@@ -178,8 +242,14 @@ class KrakenService {
       //     order.shortZone ? `Short Zone ${order.shortZoneDeleverage}` : 'Long Zone'
       //   }`
       // );
-      console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
-      console.log(`Boost: ${order.addSize.toFixed(2)} | ${boost}x | ${incrementalAddDollar}`);
+      console.log(
+        `Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`
+      );
+      console.log(
+        `Boost: ${order.addSize.toFixed(
+          2
+        )} | ${boost}x | ${incrementalAddDollar}`
+      );
       console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
       // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
@@ -206,7 +276,7 @@ class KrakenService {
         pair: order.krakenTicker,
         krakenizedPair: order.krakenizedTradingViewTicker,
         type: order.action,
-        ordertype: 'limit',
+        ordertype: "limit",
         price: order.bidPrice,
         volume: incrementalAddVolume,
         leverage: order.leverageAmount,
@@ -214,13 +284,17 @@ class KrakenService {
 
       await this.placeOrder(krakenOrder);
     } else if (!add) {
-      console.log(`New Entry: ${order.entrySize} | ${order.entrySize * (order.leverageAmount || 1)}`);
+      console.log(
+        `New Entry: ${order.entrySize} | ${
+          order.entrySize * (order.leverageAmount || 1)
+        }`
+      );
 
       const krakenOrder = new KrakenOrder({
         pair: order.krakenTicker,
         krakenizedPair: order.krakenizedTradingViewTicker,
         type: order.action,
-        ordertype: 'limit',
+        ordertype: "limit",
         price: order.bidPrice,
         volume: order.tradeVolume,
         leverage: order.leverageAmount,
@@ -234,16 +308,20 @@ class KrakenService {
 
   async handleNonLeveragedOrder(
     order: KrakenOrderDetails,
-    type: 'market' | 'limit' = 'limit',
+    type: "market" | "limit" = "limit"
   ): Promise<KrakenOrderResponse | undefined> {
     let result;
-    if (order.action === 'sell') {
+    if (order.action === "sell") {
       if (order.balanceInDollar === 0) {
         result = new KrakenOrderResult({
           error: [`${order.action.toUpperCase()} balance is too small`],
         });
       } else {
-        console.log(order.sellBags ? `Selling Bags` : `Selling: ${order.tradeVolumeInDollar}`);
+        console.log(
+          order.sellBags
+            ? `Selling Bags`
+            : `Selling: ${order.tradeVolumeInDollar}`
+        );
 
         const krakenOrder = new KrakenOrder({
           pair: order.krakenTicker,
@@ -269,10 +347,10 @@ class KrakenService {
             price: order.bidPrice,
             volume: order.tradeVolume,
           });
-  
+
           result = await this.placeOrder(krakenOrder);
         } else {
-          console.log('No balance and margin is too low. Ignoring.')
+          console.log("No balance and margin is too low. Ignoring.");
         }
       } else {
         // This is all just a guestimate since we're not sure if we boosted each time
@@ -288,9 +366,11 @@ class KrakenService {
           //   }`
           // );
         } else {
-          console.log('Buying Bags');
+          console.log("Buying Bags");
           console.log(
-            `Balance After: ${(order.balanceInDollar + order.tradeVolumeInDollar).toFixed(2)}`
+            `Balance After: ${(
+              order.balanceInDollar + order.tradeVolumeInDollar
+            ).toFixed(2)}`
           );
         }
 
@@ -337,7 +417,7 @@ class KrakenService {
         //       price: order.bidPrice,
         //       volume,
         //     });
-    
+
         //     result = await this.placeOrder(krakenOrder);
         //   } else {
         //     const volume =
@@ -351,19 +431,21 @@ class KrakenService {
         //       price: newOrder.bidPrice,
         //       volume,
         //     });
-    
+
         //     result = await this.placeOrder(krakenOrder);
         //   }
         // } else {
         console.log(
-          `Balance After: ${(order.balanceInDollar + order.tradeVolumeInDollar).toFixed(2)}`
+          `Balance After: ${(
+            order.balanceInDollar + order.tradeVolumeInDollar
+          ).toFixed(2)}`
         );
 
         const krakenOrder = new KrakenOrder({
           pair: order.krakenTicker,
           krakenizedPair: order.krakenizedTradingViewTicker,
           type: order.action,
-          ordertype: 'limit',
+          ordertype: "limit",
           price: order.bidPrice,
           volume: order.tradeVolume,
         });
@@ -377,7 +459,9 @@ class KrakenService {
     return result;
   }
 
-  async settleLeveragedOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+  async settleLeveragedOrder(
+    order: KrakenOrderDetails
+  ): Promise<KrakenOrderResponse | undefined> {
     let latestResult;
 
     // cancel open add order for this group. Some might not have been picked up
@@ -391,7 +475,10 @@ class KrakenService {
       // we don't break the for loop because there may be 2 or more orders filled in a transaction
       for (const key in openPositions) {
         const position = openPositions[key];
-        if (position.pair === order.krakenTicker && position.ordertxid === order.txId) {
+        if (
+          position.pair === order.krakenTicker &&
+          position.ordertxid === order.txId
+        ) {
           latestResult = await this.settleTxId(position, order);
         }
       }
@@ -409,10 +496,17 @@ class KrakenService {
           order.positionSize >= 1
             ? order.positionSize
             : Math.floor(positionsForPair.length * order.positionSize);
-        console.log(`Selling ${count} Positions for ${order.tradingViewTicker}`);
-        latestResult = await this.sellOldestOrders(order, order.krakenTicker, openPositions, count);
+        console.log(
+          `Selling ${count} Positions for ${order.tradingViewTicker}`
+        );
+        latestResult = await this.sellOldestOrders(
+          order,
+          order.krakenTicker,
+          openPositions,
+          count
+        );
       } else {
-        console.log('No position size specified. Cancelling.');
+        console.log("No position size specified. Cancelling.");
       }
     } else {
       let positionMargin = 0;
@@ -420,7 +514,10 @@ class KrakenService {
 
       for (const key in openPositions) {
         const position = openPositions[key];
-        if (order.krakenTicker === position.pair && order.oppositeAction === position.type) {
+        if (
+          order.krakenTicker === position.pair &&
+          order.oppositeAction === position.type
+        ) {
           positionMargin += parseFloat(position.margin);
           prices.push(parseFloat(position.cost) / parseFloat(position.vol));
         }
@@ -433,38 +530,49 @@ class KrakenService {
           order.priceDecimals
         );
         const percentDiff = parseFloat(
-          (((order.bidPrice - averagePrice) / ((order.bidPrice + averagePrice) / 2)) * 100).toFixed(2)
+          (
+            ((order.bidPrice - averagePrice) /
+              ((order.bidPrice + averagePrice) / 2)) *
+            100
+          ).toFixed(2)
         );
-  
+
         const myPositionAfter = positionMargin.toFixed(2);
         const marginPositionAfter = parseFloat(
-          (parseFloat(positionMargin.toFixed(2)) * (order.leverageAmount || 1)).toFixed(2)
+          (
+            parseFloat(positionMargin.toFixed(2)) * (order.leverageAmount || 1)
+          ).toFixed(2)
         );
-        console.log(`Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`);
+        console.log(
+          `Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`
+        );
         console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
-  
+
         const krakenOrder = new KrakenOrder({
           pair: order.krakenTicker,
           krakenizedPair: order.krakenizedTradingViewTicker,
           type: order.action,
-          ordertype: 'limit',
+          ordertype: "limit",
           price: order.bidPrice,
           volume: 0, // 0 for close all
           leverage: order.leverageAmount,
         });
 
-        latestResult = await this.placeOrder(krakenOrder, 'SETTLED');
+        latestResult = await this.placeOrder(krakenOrder, "SETTLED");
       }
     }
 
     if (!latestResult) {
-      console.log('Nothing to close');
+      console.log("Nothing to close");
     }
 
     return latestResult;
   }
 
-  async cancelOpenOrdersForPair(order: KrakenOrderDetails, orderType: 'buy' | 'sell') {
+  async cancelOpenOrdersForPair(
+    order: KrakenOrderDetails,
+    orderType: "buy" | "sell"
+  ) {
     const open = order.openOrders?.open;
 
     if (!open) return;
@@ -473,8 +581,8 @@ class KrakenService {
 
     let result;
     for (const key in open) {
-      const pair = open[key]['descr']['pair'];
-      const type = open[key]['descr']['type'];
+      const pair = open[key]["descr"]["pair"];
+      const type = open[key]["descr"]["type"];
 
       if (pair === order.krakenizedTradingViewTicker && type === orderType) {
         console.log(`Canceling ${type} order`);
@@ -499,9 +607,9 @@ class KrakenService {
     if (!open) return;
 
     for (const key in open) {
-      const pair = open[key]['descr']['pair'];
-      const type = open[key]['descr']['type'];
-      const starttm = open[key]['opentm'];
+      const pair = open[key]["descr"]["pair"];
+      const type = open[key]["descr"]["type"];
+      const starttm = open[key]["opentm"];
       const startDate = new Date(starttm * 1000).toUTCString();
       const timeLimit = new Date(Date.now() - 10 * 60 * 1000).toUTCString(); // 10 min
 
@@ -514,18 +622,21 @@ class KrakenService {
   }
 
   async checkOrder(krakenOrder: KrakenOrder) {
-    const { openOrders } = await this.getOpenOrders();
+    const openOrders = await this.getOpenOrders();
 
     const open = openOrders?.open;
     for (const orderId in open) {
       const openOrder = open[orderId];
-      
-      if (openOrder.descr.pair === krakenOrder.krakenizedPair && openOrder.descr.type === krakenOrder.type) {
-        console.log('Limit not picked up. Switching to market order');
+
+      if (
+        openOrder.descr.pair === krakenOrder.krakenizedPair &&
+        openOrder.descr.type === krakenOrder.type
+      ) {
+        console.log("Limit not picked up. Switching to market order");
 
         await this.kraken.setCancelOrder({ txid: orderId });
 
-        const krakenMarketOrder = new KrakenOrder(krakenOrder, 'market');
+        const krakenMarketOrder = new KrakenOrder(krakenOrder, "market");
         await this.placeOrder(krakenMarketOrder, `ORDER`, false);
 
         logBreak();
@@ -533,7 +644,9 @@ class KrakenService {
     }
   }
 
-  async handleBags(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+  async handleBags(
+    order: KrakenOrderDetails
+  ): Promise<KrakenOrderResponse | undefined> {
     let totalVolumeToTradeInDollar: number, result;
 
     // only handle leverage order if not local only
@@ -544,7 +657,10 @@ class KrakenService {
 
     // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
     if (order.bagAmount && order.bagAmount > 1) {
-      totalVolumeToTradeInDollar = superParseFloat(order.bagAmount, order.volumeDecimals);
+      totalVolumeToTradeInDollar = superParseFloat(
+        order.bagAmount,
+        order.volumeDecimals
+      );
     } else if (order.buyBags) {
       const bagAmount = order.bagAmount ? order.bagAmount : 0.75;
       totalVolumeToTradeInDollar = superParseFloat(
@@ -579,7 +695,9 @@ class KrakenService {
           : volumeLeft / newOrder.usdValueOfBase;
 
       if (newOrder.tradeVolume < newOrder.minVolume) {
-        console.log(`Trade volume too low. Ignoring the last bit. ${volumeTradedInDollar} Traded.`);
+        console.log(
+          `Trade volume too low. Ignoring the last bit. ${volumeTradedInDollar} Traded.`
+        );
         return;
       }
 
@@ -593,19 +711,19 @@ class KrakenService {
 
       // no way of knowing when the leveraged order is filled, so we'll wait
       setTimeout(async () => {
-        const { price } = await kraken.getPrice(newOrder.krakenTicker);
+        const price = await kraken.getPrice(newOrder.krakenTicker);
         const currentBid = superParseFloat(
-          price[newOrder.krakenTicker]['b'][0],
+          price[newOrder.krakenTicker]["b"][0],
           newOrder.priceDecimals
         );
         const currentAsk = superParseFloat(
-          price[newOrder.krakenTicker]['a'][0],
+          price[newOrder.krakenTicker]["a"][0],
           newOrder.priceDecimals
         );
-        newOrder.bidPrice = newOrder.action === 'buy' ? currentAsk : currentBid;
+        newOrder.bidPrice = newOrder.action === "buy" ? currentAsk : currentBid;
 
         // order market order to fill immediately
-        result = await this.handleNonLeveragedOrder(newOrder, 'market');
+        result = await this.handleNonLeveragedOrder(newOrder, "market");
         logBreak();
       }, 18000 * i);
       i++;
@@ -619,7 +737,7 @@ class KrakenService {
     immediate = true,
     additionalVolume = 0
   ) {
-    const closeAction = position.type === 'sell' ? 'buy' : 'sell';
+    const closeAction = position.type === "sell" ? "buy" : "sell";
     // const volumeToClose = parseFloat(position.vol) - parseFloat(position.vol_closed);
     const volumeToClose = parseFloat(position.vol) + additionalVolume;
     let bidPrice = order.bidPrice;
@@ -627,13 +745,13 @@ class KrakenService {
 
     // if tx is not this pair, get data for it. used mostly in settle oldest transaction
     // if (position.pair !== order.krakenTicker) {
-    const { price } = await kraken.getPrice(position.pair);
-    const { pair } = await kraken.getPair(position.pair);
+    const price = await kraken.getPrice(position.pair);
+    const pair = await kraken.getPair(position.pair);
 
-    const currentBid = price[position.pair]['b'][0];
-    const currentAsk = price[position.pair]['a'][0];
-    const leverageBuyAmounts = pair[position.pair]['leverage_buy'];
-    const leverageSellAmounts = pair[position.pair]['leverage_sell'];
+    const currentBid = price[position.pair]["b"][0];
+    const currentAsk = price[position.pair]["a"][0];
+    const leverageBuyAmounts = pair[position.pair]["leverage_buy"];
+    const leverageSellAmounts = pair[position.pair]["leverage_sell"];
 
     // TODO: Calculate this better
     if (!immediate && position.pair === order.krakenTicker) {
@@ -643,29 +761,34 @@ class KrakenService {
       order.currentBid = parseFloat(currentBid);
       bidPrice = order.getBid();
     } else {
-      bidPrice = position.type === 'buy' ? parseFloat(currentAsk) : parseFloat(currentBid);
+      bidPrice =
+        position.type === "buy"
+          ? parseFloat(currentAsk)
+          : parseFloat(currentBid);
     }
     leverageAmount =
-      position.type === 'buy'
+      position.type === "buy"
         ? leverageBuyAmounts[leverageBuyAmounts.length - 1]
         : leverageSellAmounts[leverageSellAmounts.length - 1];
 
-    console.log(`Bid for Pair: ${currentBid} | Ask for Pair: ${currentAsk} | My Bid: ${bidPrice}`);
+    console.log(
+      `Bid for Pair: ${currentBid} | Ask for Pair: ${currentAsk} | My Bid: ${bidPrice}`
+    );
 
     const krakenOrder = new KrakenOrder({
       pair: position.pair,
       krakenizedPair: order.krakenizedTradingViewTicker,
       type: closeAction,
-      ordertype: 'limit',
+      ordertype: "limit",
       price: bidPrice,
       volume: volumeToClose,
       leverage: leverageAmount,
     });
 
-    let result = await this.placeOrder(krakenOrder, 'SETTLED');
+    let result = await this.placeOrder(krakenOrder, "SETTLED");
 
     if (result.error.length) {
-      console.log('Could not sell oldest. Combining');
+      console.log("Could not sell oldest. Combining");
       const positions = await this.getOrdersByTimeAsc(position.pair);
 
       result = await this.settleTxId(positions[1], order, false, volumeToClose);
@@ -687,7 +810,7 @@ class KrakenService {
       pairPositions = await this.getOrdersByTimeAsc(pair, openPositions);
     }
 
-    const { openOrders } = await this.getOpenOrders();
+    const openOrders = await this.getOpenOrders();
 
     let result;
     for (let i = 0; i < count; i++) {
@@ -698,7 +821,8 @@ class KrakenService {
         const openOrder = open[orderId];
         // if position to close is already open, go to next position
         positionToClose =
-          openOrder.descr.pair === positionToClose?.pair && openOrder.vol === positionToClose?.vol
+          openOrder.descr.pair === positionToClose?.pair &&
+          openOrder.vol === positionToClose?.vol
             ? pairPositions[i + 1]
             : positionToClose;
       }
@@ -749,7 +873,9 @@ class KrakenService {
     for (const key in openPositions) {
       const position = openPositions[key];
 
-      const currentCost = positions.has(position.pair) ? positions.get(position.pair) : 0;
+      const currentCost = positions.has(position.pair)
+        ? positions.get(position.pair)
+        : 0;
       positions.set(position.pair, currentCost + parseFloat(position.cost));
     }
     // thanks stack overflow
@@ -791,5 +917,8 @@ class KrakenService {
   // }
 }
 
-const krakenApi = new Kraken(process.env.KRAKEN_API_KEY, process.env.KRAKEN_SECRET_KEY);
+const krakenApi = new Kraken(
+  process.env.KRAKEN_API_KEY,
+  process.env.KRAKEN_SECRET_KEY
+);
 export const kraken = new KrakenService(krakenApi);

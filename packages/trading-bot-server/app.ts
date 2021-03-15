@@ -1,13 +1,13 @@
-import express from 'express';
-import cors from 'cors';
-import schedule from 'node-schedule';
-import { KrakenWebhookOrder } from './models/kraken/KrakenWebhookOrder';
-import { kraken } from './services/krakenService';
+import express from "express";
+import cors from "cors";
+import schedule from "node-schedule";
+import { KrakenWebhookOrder } from "./models/kraken/KrakenWebhookOrder";
+import { kraken } from "./services/krakenService";
 // import { handleUniswapOrder } from './services/uniswapService';
-import { TradingViewBody } from './models/TradingViewBody';
-import { OrderQueue } from './models/OrderQueue';
-import { logNightlyResult } from './services/mongoDbService';
-import { logBreak } from './scripts/common';
+import { TradingViewBody } from "./models/TradingViewBody";
+import { OrderQueue } from "./models/OrderQueue";
+import { logNightlyResult } from "./services/mongoDbService";
+import { logBreak } from "./scripts/common";
 // const Binance = require("node-binance-api");
 // const config = require("./config");
 
@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:5000',
-}
+  origin: "http://localhost:5000",
+};
 
 // const binance = new Binance().options({
 //   APIKEY: process.env.BINANCE_API_KEY,
@@ -28,20 +28,20 @@ const corsOptions = {
 const jsonParser = express.json();
 app.use(jsonParser, cors(corsOptions));
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
 const queue: OrderQueue[] = [];
 let locked = false;
 
-app.post('/webhook/kraken', jsonParser, async (req, res) => {
+app.post("/webhook/kraken", jsonParser, async (req, res) => {
   // force body to be JSON
   const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
-    console.log('Hey buddy, get out of here', req);
+    console.log("Hey buddy, get out of here", req);
     logBreak();
-    return res.send('Hey buddy, get out of here');
+    return res.send("Hey buddy, get out of here");
   }
 
   // queue it
@@ -71,15 +71,15 @@ app.post('/webhook/kraken', jsonParser, async (req, res) => {
   return;
 });
 
-app.get('/api/kraken/getOpenPositions', jsonParser, async (req, res) => {
+app.get("/api/kraken/getOpenPositions", jsonParser, async (req, res) => {
   res.json(await kraken.getOpenPositions());
 });
 
-app.get('/api/kraken/getBalance', jsonParser, async (req, res) => {
+app.get("/api/kraken/getBalance", jsonParser, async (req, res) => {
   res.json(await kraken.getBalance());
 });
 
-app.get('/api/kraken/getTradeBalance', jsonParser, async (req, res) => {
+app.get("/api/kraken/getTradeBalance", jsonParser, async (req, res) => {
   res.json(await kraken.getTradeBalance());
 });
 
@@ -104,18 +104,19 @@ app.listen(process.env.PORT || 3000, () => {
   }
 });
 
-const cronNoon = schedule.scheduleJob('0 12 * * *', async () => {
+const cronNoon = schedule.scheduleJob("0 12 * * *", async () => {
   getBalances();
 });
-const cronMidnight = schedule.scheduleJob('0 0 * * *', async () => {
+const cronMidnight = schedule.scheduleJob("0 0 * * *", async () => {
   getBalances();
 });
 
 async function getBalances() {
-  const { balances } = await kraken.getTradeBalance();
+  const balances = await kraken.getTradeBalance();
   const realizedBalance = balances.totalBalances;
   const unrealizedGains = balances.unrealizedGains;
-  const unrealizedBalance = parseFloat(realizedBalance) + parseFloat(unrealizedGains);
+  const unrealizedBalance =
+    parseFloat(realizedBalance) + parseFloat(unrealizedGains);
 
   console.log(`Nightly Log
 --------------------------

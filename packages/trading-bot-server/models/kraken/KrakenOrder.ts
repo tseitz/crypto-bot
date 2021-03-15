@@ -16,7 +16,6 @@ export class KrakenOrder {
   price: number;
   volume: number;
   leverage?: number;
-  validate?: boolean;
 
   constructor(attrs: KrakenOrderProps, switchType?: 'market' | 'limit') {
     this.pair = attrs.pair;
@@ -26,7 +25,6 @@ export class KrakenOrder {
     this.price = attrs.price;
     this.volume = attrs.volume;
     this.leverage = attrs.leverage;
-    // this.validate = true;
   }
 
   orderify() {
@@ -38,6 +36,7 @@ export class KrakenOrder {
         price: this.price,
         volume: this.volume,
         leverage: this.leverage,
+        validate: true,
       }
     } else {
       return {
@@ -46,6 +45,7 @@ export class KrakenOrder {
         ordertype: this.ordertype,
         price: this.price,
         volume: this.volume,
+        validate: true,
       }
     }
   }

@@ -1,7 +1,7 @@
-import { KrakenOrderResponse, KrakenOrderResult } from './KrakenResults';
-import { TradingViewBody } from '../TradingViewBody';
-import { kraken } from '../../services/krakenService';
-import KrakenOrderDetails from './KrakenOrderDetails';
+import { KrakenOrderResponse, KrakenOrderResult } from "./KrakenResults";
+import { TradingViewBody } from "../TradingViewBody";
+import { kraken } from "../../services/krakenService";
+import KrakenOrderDetails from "./KrakenOrderDetails";
 
 export class KrakenWebhookOrder {
   requestBody: TradingViewBody;
@@ -15,73 +15,59 @@ export class KrakenWebhookOrder {
     // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH
     // I use binance/uniswap for most webhooks since there is more volume
     this.krakenTicker = this.tradingViewTicker
-      .replace('BTC', 'XBT')
-      .replace('WETH', 'ETH')
-      .replace('DOGE', 'XDG')
-      .replace('USDT', 'USD');
+      .replace("BTC", "XBT")
+      .replace("WETH", "ETH")
+      .replace("DOGE", "XDG")
+      .replace("USDT", "USD");
   }
 
   async placeOrder() {
-    // get pair data
-    const { error: pairError, pair } = await kraken.getPair(this.krakenTicker);
-    if (pairError?.length > 0) {
-      console.log(`Pair data for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResult({
-        error: [`Pair data for ${this.krakenTicker} not available on Kraken`],
-      });
+    try {
+      // set up the order
+      this.order = new KrakenOrderDetails(await this.initOrder());
+
+      // execute the order
+      return await this.openOrder(this.order);
+    } catch (error) {
+      console.log(error);
+      return error;
     }
-
-    // get pair price info for order
-    const { error: priceError, price } = await kraken.getPrice(this.krakenTicker);
-    if (priceError?.length > 0) {
-      console.log(`Price info for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResult({
-        error: [`Price info for ${this.krakenTicker} not available on Kraken`],
-      });
-    }
-
-    // const { orderBookError, orderBookData } = await kraken.getOrderBook(this.krakenTicker);
-
-    // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
-    const assetClass = this.krakenTicker.includes('XBT') ? 'XBTUSDT' : 'ETHUSDT';
-    const { error: assetClassError, price: assetClassPrice } = await kraken.getPrice(assetClass);
-    if (assetClassError?.length > 0) {
-      console.log(`Asset Class Price info for ${this.krakenTicker} not available on Kraken`);
-      return new KrakenOrderResult({
-        error: [`Asset Class Price info for ${this.krakenTicker} not available on Kraken`],
-      });
-    }
-
-    const { error: balanceError, balances } = await kraken.getBalance();
-    if (balanceError?.length > 0) {
-      console.log(`Could not find balance info for ${this.krakenTicker} on Kraken`);
-      return new KrakenOrderResult({
-        error: [`Could not find balance info for ${this.krakenTicker} on Kraken`],
-      });
-    }
-
-    const { openOrders } = await kraken.getOpenOrders();
-
-    // TODO: krakenize this
-    const { result: tradeBalance } = await kraken.kraken.getTradeBalance();
-
-    // set up the order
-    this.order = new KrakenOrderDetails(
-      this.requestBody,
-      this.krakenTicker,
-      pair,
-      price,
-      assetClassPrice,
-      balances,
-      openOrders,
-      tradeBalance
-    );
-
-    // execute the order
-    return await this.openOrder(this.order);
   }
 
-  private async openOrder(order: KrakenOrderDetails): Promise<KrakenOrderResponse | undefined> {
+  private async initOrder() {
+    // get pair data
+    const pairData = await kraken.getPair(this.krakenTicker);
+
+    // get pair price info for order
+    const pairPriceInfo = await kraken.getPrice(this.krakenTicker);
+
+    // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
+    const assetClass = this.krakenTicker.includes("XBT")
+      ? "XBTUSDT"
+      : "ETHUSDT";
+    const assetClassPriceInfo = await kraken.getPrice(assetClass);
+
+    const myBalanceInfo = await kraken.getBalance();
+
+    const openOrders = await kraken.getOpenOrders();
+
+    const tradeBalance = await kraken.kraken.getTradeBalance();
+
+    return {
+      body: this.requestBody,
+      krakenizedTicker: this.krakenTicker,
+      pairData,
+      pairPriceInfo,
+      assetClassPriceInfo,
+      myBalanceInfo,
+      openOrders,
+      tradeBalance,
+    };
+  }
+
+  private async openOrder(
+    order: KrakenOrderDetails
+  ): Promise<KrakenOrderResponse | undefined> {
     console.log(`Margin Free: ${order.marginFree}`);
     console.log(`Price: ${order.tradingViewPrice} | Bid: ${order.bidPrice}`);
 
