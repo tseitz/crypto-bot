@@ -18,6 +18,8 @@ import {
   KrakenOpenPositions,
   KrakenTradeBalance,
   KrakenTradeBalanceResult,
+  KrakenClosedOrders,
+  KrakenClosedOrderResult,
 } from "../models/kraken/KrakenResults";
 import { sleep, superParseFloat, logBreak } from "../scripts/common";
 import { KrakenOrder } from "../models/kraken/KrakenOrder";
@@ -98,7 +100,15 @@ class KrakenService {
   }
 
   async getClosedOrders(): Promise<any> {
-    return await this.kraken.getClosedOrders();
+    const { error, closedOrders } = new KrakenClosedOrderResult(
+      await this.kraken.getClosedOrders()
+    );
+
+    if (error?.length > 0) {
+      console.log("Could not get closed orders");
+    }
+
+    return closedOrders;
   }
 
   async getOrderBook(pair: string) {
@@ -656,8 +666,8 @@ class KrakenService {
 
     const closedOrders = await this.getClosedOrders();
 
-    console.log(closedOrders);
     const closedOrder = closedOrders?.closed[krakenOrder.orderId];
+    console.log(closedOrder);
 
     if (closedOrder?.reason?.toLowerCase() == "insufficient margin") {
       console.log("Order closed due to insufficient margin. Trying again");

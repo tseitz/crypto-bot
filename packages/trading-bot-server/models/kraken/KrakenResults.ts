@@ -156,6 +156,20 @@ export class KrakenOpenOrderResult {
   }
 }
 
+export interface KrakenClosedOrderResponse {
+  error: string[];
+  result: KrakenClosedOrders;
+}
+export class KrakenClosedOrderResult {
+  error: string[];
+  closedOrders: KrakenClosedOrders;
+
+  constructor(response: KrakenClosedOrderResponse) {
+    this.error = response.error;
+    this.closedOrders = response.result;
+  }
+}
+
 export interface KrakenOrderResponse {
   error: string[];
   result?: KrakenOrder;
@@ -268,24 +282,30 @@ export interface KrakenOpenOrders {
   };
 }
 
-// closetm:1615781180.6272
-// cost:'0.000000'
-// descr:{pair: 'LINKUSD', type: 'buy', ordertype: 'limit', price: '29.29841', price2: '0', …}
-// expiretm:0
-// fee:'0.000000'
-// limitprice:'0.000000'
-// misc:''
-// oflags:'fciq'
-// opentm:1615781180.6269
-// price:'0.000000'
-// reason:'Insufficient margin'
-// refid:null
-// starttm:0
-// status:'canceled'
-// stopprice:'0.000000'
-// userref:0
-// vol:'1.55567485'
-// vol_exec:'0.00000000'
+export interface KrakenClosedOrders {
+  closed: {
+    [index: string]: {
+      closetm: string;
+      cost: string;
+      descr: any; // TODO: add a type for this
+      expiretm: number;
+      fee: string;
+      limitprice: string;
+      misc: string;
+      oflags: string;
+      opentm: number;
+      price: string;
+      reason: string;
+      refid: any; // came in as null, not sure
+      starttm: number;
+      status: string;
+      stopprice: string;
+      userref: number;
+      vol: string;
+      vol_exec: string;
+    };
+  };
+}
 
 interface KrakenOpenOrderDescription {
   close: string;
