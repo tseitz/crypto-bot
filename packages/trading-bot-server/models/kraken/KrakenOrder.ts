@@ -23,7 +23,7 @@ export class KrakenOrder {
     this.krakenizedPair = attrs.krakenizedPair;
     this.type = attrs.type;
     this.ordertype = attrs.ordertype;
-    this.price = attrs.price - 100;
+    this.price = attrs.price;
     this.volume = attrs.volume;
     this.leverage = attrs.leverage;
     this.orderId = "";
