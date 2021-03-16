@@ -29,16 +29,16 @@ msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 // hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=5)
-hiLowSlow = input(defval=45, title="Hi Low Slow", minval=0, step=2)
-hiLowSuperSlow = input(defval=85, title="Hi Low Super Slow", minval=0, step=5)
+hiLowSlow = input(defval=43, title="Hi Low Slow", minval=0, step=2)
+hiLowSuperSlow = input(defval=75, title="Hi Low Super Slow", minval=0, step=5)
 
-buyLongZoneRsi = input(defval=54, title="Buy Long Zone RSI", minval=0, step=1)
+buyLongZoneRsi = input(defval=52, title="Buy Long Zone RSI", minval=0, step=1)
 // dramaticBuyLongZoneRSI = input(defval=31, title="Dramatic Buy Long Zone RSI", minval=0, step=1)
 rsiCloseLongZone = input(defval=63, title="Close Long Zone RSI", minval=0, step=1)
 
-shortShortZoneRsi = input(defval=48, title="Short Short Zone RSI", minval=0, step=1)
+shortShortZoneRsi = input(defval=49, title="Short Short Zone RSI", minval=0, step=1)
 // dramaticShortShortZoneRSI = input(defval=69, title="Dramatic Short Short Long Zone RSI", minval=0, step=1)
-rsiCloseShortZone = input(defval=36, title="Close Short Zone RSI", minval=0, step=1)
+rsiCloseShortZone = input(defval=33, title="Close Short Zone RSI", minval=0, step=1)
 
 // macdLength = input(defval=15, title="MACD Bars", minval=0, step=5)
 
@@ -150,8 +150,8 @@ plot(series=showSlow ? highestSuperSlow1 : na, color=color.green, linewidth=1)
 plot(series=showSlow ? lowestSuperSlow1 : na, color=color.red, linewidth=1)
 
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
-oneSlowLow = low < lowestSlow1 and low < lowestSlow2
-oneSlowHigh = high > highestSlow1 and high > highestSlow2
+oneSlowLow = close < lowestSlow1 and close < lowestSlow2
+oneSlowHigh = close > highestSlow1 and close > highestSlow2
 twoSlowLows = low[1] < lowestSlow2 and oneSlowLow
 twoSlowHighs = high[1] > highestSlow2 and oneSlowHigh
 // oneFastLow = longZone and low < lowestFast2
@@ -165,7 +165,7 @@ if oneSlowLow
 if oneSlowHigh
     highSlowCount := highSlowCount + 1
 
-if lowSlowCount == 2
+if oneSlowLow
     firstAction := longZone or firstAction
     shortZone := true
     longZone := false
@@ -174,7 +174,7 @@ if lowSlowCount == 2
     highFastCount := 0
     lowFastCount := 0
 
-if highSlowCount == 2
+if oneSlowHigh
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
@@ -218,7 +218,7 @@ slowCloseAbove = firstAction and close > highestSuperSlow1
 // if addLow
 //     addLowCount := addLowCount + 1
 
-longSetup = (longZone and low > lowestSlow1 and ((rsiBottomed and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)) or (fastOpens and slowCloseAbove))) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed))
+longSetup = (longZone and low > lowestSlow1 and ((rsiBottomed and rsi1 < buyLongZoneRsi and rsiClose < 70 and (macdSlowingDown or macdBottomed)) or (fastOpens and slowCloseAbove and rsi1 < rsiCloseLongZone and rsiClose < 70))) or (not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed))
 shortSetup = allowShorts and shortZone and high < highestSlow1 and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)) or (fastOpens and slowCloseBelow))  // 
 
 // addLongSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
