@@ -26,10 +26,10 @@
   "ETHUSDT": {
     "leverage": 5,
     "entrySize": 400,
-    "latestResult": 1597.19,
-    "totalTrades": 381,
-    "percentProfitable": 47.77,
-    "avgTrade": 4.19
+    "latestResult": 1650.32,
+    "totalTrades": 319,
+    "percentProfitable": 51.1,
+    "avgTrade": 5.17
   },
   "LINKUSDT": {
     "leverage": 3,
