@@ -18,7 +18,6 @@ import {
   KrakenOpenPositions,
   KrakenTradeBalance,
   KrakenTradeBalanceResult,
-  KrakenClosedOrders,
   KrakenClosedOrderResult,
 } from "../models/kraken/KrakenResults";
 import { sleep, superParseFloat, logBreak } from "../scripts/common";
@@ -138,7 +137,7 @@ class KrakenService {
     if (checkOrder) {
       setTimeout(async () => {
         this.checkOrder(krakenOrder);
-      }, 45000);
+      }, 75000);
     }
 
     logOrderResult(desc, result, krakenOrder.pair);
