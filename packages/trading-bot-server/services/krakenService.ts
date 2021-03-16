@@ -137,7 +137,7 @@ class KrakenService {
     if (checkOrder) {
       setTimeout(async () => {
         this.checkOrder(krakenOrder);
-      }, 75000);
+      }, 90000);
     }
 
     logOrderResult(desc, result, krakenOrder.pair);
@@ -685,7 +685,7 @@ class KrakenService {
         order.priceDecimals
       );
     } else if (order.buyBags) {
-      const bagAmount = order.bagAmount > 0 ? order.bagAmount : 0.75;
+      const bagAmount = order.bagAmount > 0 ? order.bagAmount : 0.7;
       totalVolumeToTradeInDollar = superParseFloat(
         order.balanceOfQuote * bagAmount,
         order.priceDecimals
