@@ -105,7 +105,8 @@ export default class KrakenOrderDetails {
     this.openOrders = openOrders;
     this.marginFree = parseFloat(
       (
-        superParseFloat(tradeBalance?.mf) - this.getOpenOrderDollarAmount()
+        superParseFloat(tradeBalance?.marginFree) -
+        this.getOpenOrderDollarAmount()
       ).toFixed(2)
     );
 

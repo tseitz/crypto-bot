@@ -51,7 +51,7 @@ export class KrakenWebhookOrder {
 
     const openOrders = await kraken.getOpenOrders();
 
-    const tradeBalance = await kraken.kraken.getTradeBalance();
+    const tradeBalance = await kraken.getTradeBalance();
 
     return {
       body: this.requestBody,
