@@ -672,12 +672,6 @@ class KrakenService {
   ): Promise<KrakenOrderResponse | undefined> {
     let totalVolumeToTradeInDollar: number, result;
 
-    // handle leverage?
-    if (!order.nonLeverageOnly) {
-      result = await this.handleLeveragedOrder(order);
-      logOrderResult(`ORDER`, result, order.krakenizedTradingViewTicker);
-    }
-
     // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
     if (order.bagAmount > 1) {
       totalVolumeToTradeInDollar = superParseFloat(

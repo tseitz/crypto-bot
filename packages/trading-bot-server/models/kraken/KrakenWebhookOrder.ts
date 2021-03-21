@@ -75,7 +75,16 @@ export class KrakenWebhookOrder {
     if (order.oldest) {
       result = await kraken.sellOldestOrders(order, order.krakenTicker);
     } else if (order.bagIt) {
-      result = await kraken.handleBags(order);
+      if (!order.nonLeverageOnly) {
+        // close order first, handle bags so funds are available, then handle leverage
+        result = await kraken.settleLeveragedOrder(order);
+
+        result = await kraken.handleBags(order);
+
+        result = await kraken.handleLeveragedOrder(order);
+      } else {
+        result = await kraken.handleBags(order);
+      }
     } else if (order.noLeverage) {
       result = await kraken.handleNonLeveragedOrder(order);
     } else {
