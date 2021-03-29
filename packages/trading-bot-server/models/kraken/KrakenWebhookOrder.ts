@@ -79,9 +79,15 @@ export class KrakenWebhookOrder {
         // close order first, handle bags so funds are available, then handle leverage
         result = await kraken.settleLeveragedOrder(order);
 
-        result = await kraken.handleBags(order);
-
         result = await kraken.handleLeveragedOrder(order);
+
+        // just wait this one out for now
+        setTimeout(async () => {
+          // Reset order details based on above order. Mostly margin free...
+          // TODO: this needs improved
+          const order = new KrakenOrderDetails(await this.initOrder());
+          result = await kraken.handleBags(order);
+        }, 100000);
       } else {
         result = await kraken.handleBags(order);
       }
