@@ -247,7 +247,11 @@ export default class KrakenOrderDetails {
   }
 
   private getEntry(): number {
-    return this.marginFree - 20;
+    if (this.positionSize) {
+      return this.positionSize;
+    } else {
+      return this.marginFree - 20;
+    }
     // if (this.shortZone) {
     //   if (this.positionSize) {
     //     return this.positionSize * this.shortZoneDeleverage;
