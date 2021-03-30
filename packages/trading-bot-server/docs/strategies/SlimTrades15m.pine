@@ -80,6 +80,8 @@ else
 closeShortAfter = strategy.position_avg_price * (1 - (1 * closeShortPerc))
 closeLongAfter = strategy.position_avg_price * (1 + (1 * closeLongPerc))
 
+// tradeMA = ema(close, 2)
+// plot(series=tradeMA, color=color.blue, linewidth=1)
 
 // MACD and RSI
 fast = 12, slow = 26
@@ -205,6 +207,7 @@ rsiBottomed = rsiClose > rsi1 and rsi1 < rsi2 and rsiClose > rsi1 + 1
 rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
 rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
 rsiIncreasing = rsiClose > rsi2 and (rsiClose > rsi2 + 1) and rsi1 < rsi2 - 1
+// emaBottomed = 
 // newLow = low[1] < lowestFast1 and close > lowestFast1
 // newHigh = high[1] > highestFast2 and close < highestFast1
 // twoNewHighs = high[2] > highestFast3 and newHigh

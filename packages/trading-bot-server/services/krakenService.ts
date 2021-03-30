@@ -226,13 +226,14 @@ class KrakenService {
         prices.reduce((a, b) => a + b) / prices.length,
         order.priceDecimals
       );
-      const percentDiff = parseFloat(
+      let percentDiff = parseFloat(
         (
           ((order.bidPrice - averagePrice) /
             ((order.bidPrice + averagePrice) / 2)) *
           100
         ).toFixed(2)
       );
+      percentDiff = order.action === 'sell' ? percentDiff * -1 : percentDiff;
 
       // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
       // this attempts to bring the average down when behind and add smaller when ahead
@@ -533,13 +534,14 @@ class KrakenService {
           prices.reduce((a, b) => a + b) / prices.length,
           order.priceDecimals
         );
-        const percentDiff = parseFloat(
+        let percentDiff = parseFloat(
           (
             ((order.bidPrice - averagePrice) /
               ((order.bidPrice + averagePrice) / 2)) *
             100
           ).toFixed(2)
         );
+        percentDiff = order.action === 'sell' ? percentDiff * -1 : percentDiff;
 
         const myPositionAfter = positionMargin.toFixed(2);
         const marginPositionAfter = parseFloat(
