@@ -250,7 +250,7 @@ export default class KrakenOrderDetails {
     if (this.positionSize) {
       return this.positionSize;
     } else {
-      return this.marginFree - 20;
+      return this.marginFree - 25;
     }
     // if (this.shortZone) {
     //   if (this.positionSize) {
