@@ -1,5 +1,6 @@
 //@version=4
-strategy("SlimTrades 15m", overlay=true, calc_on_every_tick=false, initial_capital=1000, default_qty_value=1000, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("SlimTrades 15m", overlay=true, calc_on_every_tick=false, initial_capital=1000, 
+          default_qty_value=1000, default_qty_type=strategy.cash, currency=currency.USD)
 
 
 // VARIABLES
@@ -42,7 +43,7 @@ rsiCloseShortZone = input(defval=40, title="Close Short Zone RSI", minval=0, ste
 
 // macdLength = input(defval=15, title="MACD Bars", minval=0, step=5)
 
-closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0, step=0.1, defval=1) * 0.01
+closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0, step=0.1, defval=0.9) * 0.01
 closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=2) * 0.01
 
 longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=4) * 0.01
@@ -105,6 +106,9 @@ getHighest(index, speed) =>
 getLowest(index, speed) =>
     thisLowest = lowest(low, speed)[index]
 
+getVolume(index) =>
+    thisVolume = volume[index]
+
 macd0 = getMACD(0)
 macd1 = getMACD(1)
 macd2 = getMACD(2)
@@ -115,6 +119,11 @@ rsi1 = getRsi(1)
 rsi2 = getRsi(2)
 rsi3 = getRsi(3)
 rsi4 = getRsi(4)
+
+volume0 = getVolume(0)
+volume1 = getVolume(1)
+volume2 = getVolume(2)
+volume3 = getVolume(3)
 
 // highestMacd = highest(macd, macdLength)[1]
 // highestMacd2 = highest(macd, macdLength)[2]
@@ -194,6 +203,7 @@ if oneSlowHigh
 
 bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
+bgcolor(color=volume0 == volume ? color.blue : na)
 plotshape(shortZone, title="shortzone", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0, display=display.none)
 
 
@@ -235,7 +245,7 @@ shortSetup = allowShorts and shortZone and high < highestSlow1 and ((rsiTopped a
 // addShortSetup = shortZone and ((addHigh and addHighCount < 4) or (rsiTopped and (macdTopped) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
 
 closeLongSetup = isLong and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (close < longStopPrice)
-closeShortSetup = isShort and (rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShortZone and close < closeShortAfter) or (high > shortStopPrice)
+closeShortSetup = isShort and (rsiBottomed and rsi1 < rsiCloseShortZone and close < closeShortAfter) or (high > shortStopPrice)
 
 
 // STRAT SETUP
