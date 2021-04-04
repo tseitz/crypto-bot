@@ -1,5 +1,5 @@
 //@version=4
-strategy("SlimTrades 15m", overlay=true, calc_on_every_tick=false, initial_capital=1000, 
+strategy("SlimTrades 5m", overlay=true, calc_on_every_tick=false, initial_capital=1000, 
           default_qty_value=1000, default_qty_type=strategy.cash, currency=currency.USD)
 
 
@@ -30,24 +30,24 @@ msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
 isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msBackMin == 0 or (time < (timenow - msBackMin)))
 
 // hiLowFast = input(defval=30, title="Hi Low Short", minval=0, step=5)
-hiLowSlow = input(defval=42, title="Hi Low Slow", minval=0, step=1)
-hiLowSuperSlow = input(defval=68, title="Hi Low Super Slow", minval=0, step=1)
+hiLowSlow = input(defval=117, title="Hi Low Slow", minval=0, step=1)
+hiLowSuperSlow = input(defval=196, title="Hi Low Super Slow", minval=0, step=1)
 
-buyLongZoneRsi = input(defval=49, title="Buy Long Zone RSI", minval=0, step=1)
+buyLongZoneRsi = input(defval=52, title="Buy Long Zone RSI", minval=0, step=1)
 // dramaticBuyLongZoneRSI = input(defval=31, title="Dramatic Buy Long Zone RSI", minval=0, step=1)
-rsiCloseLongZone = input(defval=65, title="Close Long Zone RSI", minval=0, step=1)
+rsiCloseLongZone = input(defval=68, title="Close Long Zone RSI", minval=0, step=1)
 
-shortShortZoneRsi = input(defval=48, title="Short Short Zone RSI", minval=0, step=1)
+shortShortZoneRsi = input(defval=43, title="Short Short Zone RSI", minval=0, step=1)
 // dramaticShortShortZoneRSI = input(defval=69, title="Dramatic Short Short Long Zone RSI", minval=0, step=1)
-rsiCloseShortZone = input(defval=35, title="Close Short Zone RSI", minval=0, step=1)
+rsiCloseShortZone = input(defval=33, title="Close Short Zone RSI", minval=0, step=1)
 
 // macdLength = input(defval=15, title="MACD Bars", minval=0, step=5)
 
 closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.1) * 0.01
-closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.8) * 0.01
+closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.3) * 0.01
 
-longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=4) * 0.01
-shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=4.9) * 0.01
+longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.9) * 0.01
+shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=4.3) * 0.01
 
 allowShorts = input(defval=true, title="Allow Shorts", type=input.bool)
 fastOpens = input(defval=true, title="Fast Opens", type=input.bool)
@@ -152,9 +152,8 @@ volume3 = getVolume(3)
 // lowestFast0 = getLowest(0, hiLowFast)
 // lowestFast1 = getLowest(1, hiLowFast)
 // lowestFast2 = getLowest(2, hiLowFast)
-// lowestFast3 = getLowest(3, hiLowFast)
-highestSlow1 = getHighest(1, hiLowSlow)
-highestSlow2 = getHighest(2, hiLowSlow)
+// lowestFast3 = getLowest(3, hiLowFast)    // lastRsi := 0.0
+    // entryPrice := 0.0
 highestSlow3 = getHighest(3, hiLowSlow)
 lowestSlow1 = getLowest(1, hiLowSlow)
 lowestSlow2 = getLowest(2, hiLowSlow)
@@ -209,7 +208,7 @@ plotshape(shortZone, title="shortzone", style=shape.cross, location=location.abo
 // HELPER VARIABLES
 greenCandle = (close > open)
 redCandle = (close < open)
-crazyVolume = volume0 / 2 > ((volume1 + volume2 + volume3) / 3)
+// crazyVolume = volume0 / 2 > ((volume1 + volume2 + volume3) / 3)
 macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
 macdSlowingDown = abs(macd - macd1) < abs(macd1 - macd2)
 macdTopped = macd < macd1 and macd1 > macd2 and macd1 > signal
@@ -229,7 +228,7 @@ rsiIncreasing = rsiClose > rsi2 and rsi1 < rsi2 - 1
 slowCloseBelow = firstAction and close < lowestSuperSlow1
 slowCloseAbove = firstAction and close > highestSuperSlow1
 
-bgcolor(color=crazyVolume ? color.blue : na)
+// bgcolor(color=crazyVolume ? color.blue : na)
 
 switchToLong = isShort and firstAction and crazyVolume and greenCandle
 
@@ -244,11 +243,11 @@ switchToLong = isShort and firstAction and crazyVolume and greenCandle
 // if addLow
 //     addLowCount := addLowCount + 1
 basicLongSetup = rsiBottomed and rsiIncreasing and rsi1 < buyLongZoneRsi and (macdSlowingDown or macdBottomed)
-fastOpenLongSetup = fastOpens and slowCloseAbove and rsi1 < rsiCloseLongZone and rsiClose < 70
+fastOpenLongSetup = fastOpens and slowCloseAbove //  and rsi1 < rsiCloseLongZone and rsiClose < 70
 longNoShortSetup = not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed)
 
 basicShortSetup = rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)
-fastOpenShortSetup = fastOpens and slowCloseBelow and rsi1 > rsiCloseShortZone
+fastOpenShortSetup = fastOpens and slowCloseBelow // and rsi1 > rsiCloseShortZone
 
 longSetup = (longZone and low > lowestSlow1 and (basicLongSetup or fastOpenLongSetup)) or longNoShortSetup
 shortSetup = allowShorts and shortZone and high < highestSlow1 and ((basicShortSetup) or (fastOpenShortSetup))  // 

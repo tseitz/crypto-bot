@@ -1,7 +1,8 @@
-import { KrakenOrderResponse, KrakenOrderResult } from "./KrakenResults";
+import { KrakenOrderResponse } from "./KrakenResults";
 import { TradingViewBody } from "../TradingViewBody";
 import { kraken } from "../../services/krakenService";
 import KrakenOrderDetails from "./KrakenOrderDetails";
+import { logBreak } from "../../scripts/common";
 
 export class KrakenWebhookOrder {
   requestBody: TradingViewBody;
@@ -79,15 +80,20 @@ export class KrakenWebhookOrder {
         // close order first, handle bags so funds are available, then handle leverage
         result = await kraken.settleLeveragedOrder(order);
 
-        result = await kraken.handleLeveragedOrder(order);
+        // wait a second for settle to go through
+        setTimeout(async () => {
+          result = await kraken.handleLeveragedOrder(order);
+        }, 5000);
 
         // just wait this one out for now
         setTimeout(async () => {
           // Reset order details based on above order. Mostly margin free...
           // TODO: this needs improved
-          const order = new KrakenOrderDetails(await this.initOrder());
+          logBreak();
+          const newOrderInfo = await this.initOrder();
+          const order = new KrakenOrderDetails(newOrderInfo);
           result = await kraken.handleBags(order);
-        }, 100000);
+        }, 105000);
       } else {
         result = await kraken.handleBags(order);
       }

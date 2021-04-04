@@ -132,7 +132,7 @@ class KrakenService {
   ) {
     const result = await this.setAddOrder(krakenOrder);
 
-    krakenOrder.orderId = result.result?.txid[0] || "";
+    krakenOrder.orderId = result.result?.txid ? result.result.txid[0] : "";
 
     if (checkOrder) {
       setTimeout(async () => {
@@ -183,7 +183,7 @@ class KrakenService {
       if (positionMargin > order.marginFree) {
         console.log("Margin level too low. Settling first");
         await this.settleLeveragedOrder(order);
-        orderVolume = orderVolume * 0.4; // since not flipping, reset back adjusting for losses. crude but works for now
+        orderVolume = order.tradeVolume; // reset back to just order volume
       }
 
       const krakenOrder = new KrakenOrder({
@@ -369,82 +369,13 @@ class KrakenService {
           console.log("No balance and margin is too low. Ignoring.");
         }
       } else {
-        // This is all just a guestimate since we're not sure if we boosted each time
-        // const addCount =
-        //   parseInt(
-        //     ((Math.floor(order.balanceInDollar) - order.entrySize) / order.originalAdd).toFixed(0)
-        //   ) + 1;
-
-        if (order.buyBags) {
-          console.log("Buying Bags");
+        if (!order.buyBags) {
+          console.log(
+            `Balance After: ${(
+              order.balanceInDollar + order.tradeVolumeInDollar
+            ).toFixed(2)}`
+          );
         }
-
-        // sell some if add count too high or margin too low
-        // if (
-        //   !order.buyBags &&
-        //   (addCount > order.initialAdds || order.marginFree < order.lowestNonLeverageMargin)
-        // ) {
-        //   // cancel previous sell since we're bundling
-        //   await this.cancelOpenOrdersForPair(order, 'sell');
-
-        //   const newOrder = { ...order };
-        //   const addDiff = addCount > order.initialAdds ? addCount - order.initialAdds : 1;
-
-        //   newOrder.action = 'sell';
-        //   newOrder.bidPrice = order.getBid(); // get new bid for sell order.currentBid; // just give it to bid for now
-        //   const sellVolume = superParseFloat(newOrder.addVolume * addDiff, newOrder.volumeDecimals);
-        //   const sellVolumeInDollar = order.convertBaseToDollar(sellVolume, order.usdValueOfBase);
-
-        //   const sellDiff = order.tradeVolume - sellVolume;
-
-        //   if (sellDiff == 0) {
-        //     console.log('Sell and add are same volume. Ignoring.');
-        //     return;
-        //   }
-
-        //   console.log(`Add: ${order.tradeVolume} | Sell: ${sellVolume} | ${sellDiff.toFixed(4)}`);
-        //   console.log(sellDiff < 0 ? `Selling the difference` : `Buying the difference`);
-        //   console.log(
-        //     `Balance After: ${(
-        //       order.balanceInDollar +
-        //       order.tradeVolumeInDollar -
-        //       sellVolumeInDollar
-        //     ).toFixed(2)}`
-        //   );
-        //   if (sellDiff > 0) {
-        //     const volume = sellDiff > order.minVolume ? sellDiff : order.minVolume;
-
-        //     const krakenOrder = new KrakenOrder({
-        //       pair: order.krakenTicker,
-        //       krakenizedPair: order.krakenizedTradingViewTicker,
-        //       type: order.action,
-        //       ordertype: 'limit',
-        //       price: order.bidPrice,
-        //       volume,
-        //     });
-
-        //     result = await this.placeOrder(krakenOrder);
-        //   } else {
-        //     const volume =
-        //       Math.abs(sellDiff) > order.minVolume ? Math.abs(sellDiff) : order.minVolume;
-
-        //     const krakenOrder = new KrakenOrder({
-        //       pair: newOrder.krakenTicker,
-        //       krakenizedPair: order.krakenizedTradingViewTicker,
-        //       type: newOrder.action,
-        //       ordertype: 'limit',
-        //       price: newOrder.bidPrice,
-        //       volume,
-        //     });
-
-        //     result = await this.placeOrder(krakenOrder);
-        //   }
-        // } else {
-        console.log(
-          `Balance After: ${(
-            order.balanceInDollar + order.tradeVolumeInDollar
-          ).toFixed(2)}`
-        );
 
         const krakenOrder = new KrakenOrder({
           pair: order.krakenTicker,
@@ -456,7 +387,6 @@ class KrakenService {
         });
 
         result = await this.placeOrder(krakenOrder);
-        // }
       }
     }
 
@@ -732,10 +662,6 @@ class KrakenService {
       volumeTradedInDollar += newOrder.tradeVolumeInDollar;
       dollarVolumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
 
-      console.log(
-        `Trading ${volumeTradedInDollar} of ${totalVolumeToTradeInDollar}. Volume Remaining: ${dollarVolumeLeft}`
-      );
-
       // market orders. waiting 2 seconds between for good measure
       setTimeout(async () => {
         // const price = await kraken.getPrice(newOrder.krakenTicker);
@@ -748,6 +674,14 @@ class KrakenService {
         //   newOrder.priceDecimals
         // );
         // newOrder.bidPrice = newOrder.action === "buy" ? currentAsk : currentBid;
+        if (i === 0) {
+          console.log("Buying Bags");
+          console.log(
+            `Balance After: ${(
+              order.balanceInDollar + totalVolumeToTradeInDollar
+            ).toFixed(2)}`
+          );
+        }
 
         // order market order to fill immediately
         result = await this.handleNonLeveragedOrder(newOrder, "market");
