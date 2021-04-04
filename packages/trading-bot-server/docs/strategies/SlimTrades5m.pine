@@ -39,7 +39,7 @@ rsiCloseLongZone = input(defval=65, title="Close Long Zone RSI", minval=0, step=
 
 shortShortZoneRsi = input(defval=48, title="Short Short Zone RSI", minval=0, step=1)
 // dramaticShortShortZoneRSI = input(defval=69, title="Dramatic Short Short Long Zone RSI", minval=0, step=1)
-rsiCloseShortZone = input(defval=40, title="Close Short Zone RSI", minval=0, step=1)
+rsiCloseShortZone = input(defval=35, title="Close Short Zone RSI", minval=0, step=1)
 
 // macdLength = input(defval=15, title="MACD Bars", minval=0, step=5)
 
@@ -47,7 +47,7 @@ closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0
 closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.8) * 0.01
 
 longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=4) * 0.01
-shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=5) * 0.01
+shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=4.9) * 0.01
 
 allowShorts = input(defval=true, title="Allow Shorts", type=input.bool)
 fastOpens = input(defval=true, title="Fast Opens", type=input.bool)
@@ -247,8 +247,11 @@ basicLongSetup = rsiBottomed and rsiIncreasing and rsi1 < buyLongZoneRsi and (ma
 fastOpenLongSetup = fastOpens and slowCloseAbove and rsi1 < rsiCloseLongZone and rsiClose < 70
 longNoShortSetup = not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed)
 
+basicShortSetup = rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)
+fastOpenShortSetup = fastOpens and slowCloseBelow and rsi1 > rsiCloseShortZone
+
 longSetup = (longZone and low > lowestSlow1 and (basicLongSetup or fastOpenLongSetup)) or longNoShortSetup
-shortSetup = allowShorts and shortZone and high < highestSlow1 and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)) or (fastOpens and slowCloseBelow))  // 
+shortSetup = allowShorts and shortZone and high < highestSlow1 and ((basicShortSetup) or (fastOpenShortSetup))  // 
 
 // addLongSetup = longZone and ((addLow and addLowCount < 4) or (rsiBottomed and (macdBottomed) and ((lowerMacd2) and (rsi1 < buyLongZoneRsi))))
 // addShortSetup = shortZone and ((addHigh and addHighCount < 4) or (rsiTopped and (macdTopped) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
