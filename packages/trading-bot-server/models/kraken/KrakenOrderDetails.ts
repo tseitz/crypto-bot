@@ -247,24 +247,19 @@ export default class KrakenOrderDetails {
   }
 
   private getEntry(): number {
-    if (this.positionSize) {
-      return this.positionSize;
+    if (this.shortZone) {
+      if (this.positionSize) {
+        return this.positionSize * this.shortZoneDeleverage;
+      } else {
+        return this.strategyParams.entrySize * this.shortZoneDeleverage;
+      }
     } else {
-      return this.marginFree - 25;
+      if (this.positionSize) {
+        return this.positionSize;
+      } else {
+        return this.strategyParams.entrySize * this.longZoneDeleverage;
+      }
     }
-    // if (this.shortZone) {
-    //   if (this.positionSize) {
-    //     return this.positionSize * this.shortZoneDeleverage;
-    //   } else {
-    //     return this.strategyParams.entrySize * this.shortZoneDeleverage;
-    //   }
-    // } else {
-    //   if (this.positionSize) {
-    //     return this.positionSize;
-    //   } else {
-    //     return this.strategyParams.entrySize * this.longZoneDeleverage;
-    //   }
-    // }
   }
 
   private getAddSize(): number {
