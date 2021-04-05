@@ -201,17 +201,17 @@ class KrakenService {
       return;
     }
 
-    if (order.marginFree < order.lowestLeverageMargin) {
-      console.log("Margin level too low, selling some.");
-      const positionsBySize = await this.getOpenPositionsBySize(openPositions);
-      // const positionsByTime = await this.getOrdersByTimeAsc();
-      latestResult = await this.sellOldestOrders(
-        order,
-        positionsBySize.keys().next().value,
-        // positionsByTime[0].pair,
-        openPositions
-      );
-    }
+    // if (order.marginFree < order.lowestLeverageMargin) {
+    //   console.log("Margin level too low, selling some.");
+    //   const positionsBySize = await this.getOpenPositionsBySize(openPositions);
+    //   // const positionsByTime = await this.getOrdersByTimeAsc();
+    //   latestResult = await this.sellOldestOrders(
+    //     order,
+    //     positionsBySize.keys().next().value,
+    //     // positionsByTime[0].pair,
+    //     openPositions
+    //   );
+    // }
 
     if (add) {
       // const addCount =
@@ -353,7 +353,7 @@ class KrakenService {
     } else {
       if (order.balanceInDollar === 0) {
         if (order.marginFree > order.lowestNonLeverageMargin) {
-          console.log(`New Entry: ${order.tradeVolumeInDollar}`);
+          console.log(`New Entry: ${order.tradeVolumeInDollar.toFixed(0)}`);
 
           const krakenOrder = new KrakenOrder({
             pair: order.krakenTicker,
