@@ -1,5 +1,5 @@
 //@version=4
-strategy("SlimTrades 15m", overlay=true, calc_on_every_tick=false, initial_capital=1000, 
+strategy("SlimTrades 15m 2", overlay=true, calc_on_every_tick=false, initial_capital=1000, 
           default_qty_value=1000, default_qty_type=strategy.cash, currency=currency.USD)
 
 
@@ -246,7 +246,7 @@ basicLongSetup = rsiBottomed and rsiIncreasing and rsi1 < buyLongZoneRsi and (ma
 fastOpenLongSetup = fastOpenLong and slowCloseAbove and rsi1 < rsiCloseLongZone and rsiClose < 69
 longNoShortSetup = not allowShorts and shortZone and rsiBottomed and rsi1 < buyShortZoneRsi and (macdSlowingDown or macdBottomed)
 
-fastOpenShortSetup = fastOpenShort and slowCloseBelow and rsi1 > rsiCloseShortZone and rsiClose > 28
+fastOpenShortSetup = fastOpenShort and slowCloseBelow and rsi1 > rsiCloseShortZone
 
 longSetup = (longZone and low > lowestSlow1 and (basicLongSetup or fastOpenLongSetup)) or longNoShortSetup
 shortSetup = allowShorts and shortZone and high < highestSlow1 and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)) or fastOpenShortSetup)  // 
