@@ -602,95 +602,91 @@ class KrakenService {
   async handleBags(
     order: KrakenOrderDetails
   ): Promise<KrakenOrderResponse | undefined> {
-    let totalVolumeToTradeInDollar: number, result;
-
-    // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
-    if (order.bagAmount > 1) {
-      totalVolumeToTradeInDollar = superParseFloat(
-        order.bagAmount,
-        order.priceDecimals
-      );
-    } else if (order.buyBags) {
-      const bagAmount = order.bagAmount > 0 ? order.bagAmount : 0.7;
-      totalVolumeToTradeInDollar = superParseFloat(
-        order.balanceOfQuote * bagAmount,
-        order.priceDecimals
-      );
-    } else {
-      const bagAmount = order.bagAmount > 0 ? order.bagAmount : 0.85;
-      totalVolumeToTradeInDollar = superParseFloat(
-        order.balanceOfBase * order.usdValueOfBase * bagAmount,
-        order.priceDecimals
-      );
-    }
-
-    let volumeTradedInDollar = 0;
-    let i = 0;
-    let dollarVolumeLeft = totalVolumeToTradeInDollar;
-    // for (let dollarVolumeLeft = totalVolumeToTradeInDollar, )
-    while (volumeTradedInDollar < totalVolumeToTradeInDollar) {
-      if (i > 8) {
-        console.log(
-          `Easy there buddy. Lots of looping going on. Canceling for good measure`
+    if (order.balanceOfQuote > 0) {
+      let totalVolumeToTradeInDollar: number, result;
+      logBreak();
+  
+      // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
+      if (order.bagAmount > 1) {
+        totalVolumeToTradeInDollar = superParseFloat(
+          order.bagAmount,
+          order.priceDecimals
         );
-        break;
-      }
-      // if margin too low for volume, we'll trade 80% at a time
-      const newOrder = <KrakenOrderDetails>{ ...order };
-      newOrder.tradeVolume =
-        newOrder.marginFree < dollarVolumeLeft
-          ? superParseFloat(
-              (newOrder.marginFree * 0.8) / newOrder.usdValueOfBase,
-              newOrder.volumeDecimals
-            )
-          : superParseFloat(
-              dollarVolumeLeft / newOrder.usdValueOfBase,
-              newOrder.volumeDecimals
-            );
-      newOrder.tradeVolumeInDollar = superParseFloat(
-        newOrder.tradeVolume * order.usdValueOfBase,
-        order.priceDecimals
-      );
-
-      if (newOrder.tradeVolume < newOrder.minVolume) {
-        console.log(
-          `Trade volume too low. Ignoring the last bit. $${volumeTradedInDollar} Traded.`
+      } else if (order.buyBags) {
+        const bagAmount = order.bagAmount > 0 ? order.bagAmount : 0.7;
+        totalVolumeToTradeInDollar = superParseFloat(
+          order.balanceOfQuote * bagAmount,
+          order.priceDecimals
         );
-        return;
+      } else {
+        const bagAmount = order.bagAmount > 0 ? order.bagAmount : 0.85;
+        totalVolumeToTradeInDollar = superParseFloat(
+          order.balanceOfBase * order.usdValueOfBase * bagAmount,
+          order.priceDecimals
+        );
       }
-
-      volumeTradedInDollar += newOrder.tradeVolumeInDollar;
-      dollarVolumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
-
-      // market orders. waiting 2 seconds between for good measure
-      setTimeout(async () => {
-        // const price = await kraken.getPrice(newOrder.krakenTicker);
-        // const currentBid = superParseFloat(
-        //   price[newOrder.krakenTicker]["b"][0],
-        //   newOrder.priceDecimals
-        // );
-        // const currentAsk = superParseFloat(
-        //   price[newOrder.krakenTicker]["a"][0],
-        //   newOrder.priceDecimals
-        // );
-        // newOrder.bidPrice = newOrder.action === "buy" ? currentAsk : currentBid;
-        if (i === 0) {
-          console.log("Buying Bags");
+  
+      let volumeTradedInDollar = 0;
+      let i = 0;
+      let dollarVolumeLeft = totalVolumeToTradeInDollar;
+      // for (let dollarVolumeLeft = totalVolumeToTradeInDollar, )
+      while (volumeTradedInDollar < totalVolumeToTradeInDollar) {
+        if (i > 8) {
           console.log(
-            `Balance After: ${(
-              order.balanceInDollar + totalVolumeToTradeInDollar
-            ).toFixed(2)}`
+            `Easy there buddy. Lots of looping going on. Canceling for good measure`
           );
+          break;
         }
-
-        // order market order to fill immediately
-        result = await this.handleNonLeveragedOrder(newOrder, "market");
-        logBreak();
-      }, 2000);
-
-      i++;
+        // if margin too low for volume, we'll trade 80% at a time
+        const newOrder = <KrakenOrderDetails>{ ...order };
+        newOrder.tradeVolume =
+          newOrder.marginFree < dollarVolumeLeft
+            ? superParseFloat(
+                (newOrder.marginFree * 0.8) / newOrder.usdValueOfBase,
+                newOrder.volumeDecimals
+              )
+            : superParseFloat(
+                dollarVolumeLeft / newOrder.usdValueOfBase,
+                newOrder.volumeDecimals
+              );
+        newOrder.tradeVolumeInDollar = superParseFloat(
+          newOrder.tradeVolume * order.usdValueOfBase,
+          order.priceDecimals
+        );
+  
+        if (newOrder.tradeVolume < newOrder.minVolume) {
+          console.log(
+            `Trade volume too low. Ignoring the last bit. $${volumeTradedInDollar} Traded.`
+          );
+          return;
+        }
+  
+        volumeTradedInDollar += newOrder.tradeVolumeInDollar;
+        dollarVolumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
+  
+        // market orders. waiting 2 seconds between for good measure
+        setTimeout(async () => {
+          if (i === 0) {
+            console.log("Buying Bags");
+            console.log(
+              `Balance After: ${(
+                order.balanceInDollar + totalVolumeToTradeInDollar
+              ).toFixed(2)}`
+            );
+          }
+  
+          // order market order to fill immediately
+          result = await this.handleNonLeveragedOrder(newOrder, "market");
+          logBreak();
+        }, 2000);
+  
+        i++;
+      }
+      return result;
+    } else {
+      console.log('No USD to trade');
+      return;
     }
-    return result;
   }
 
   async settleTxId(

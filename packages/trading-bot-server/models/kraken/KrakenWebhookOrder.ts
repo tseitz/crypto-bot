@@ -89,7 +89,6 @@ export class KrakenWebhookOrder {
         setTimeout(async () => {
           // Reset order details based on above order. Mostly margin free...
           // TODO: this needs improved
-          logBreak();
           const newOrderInfo = await this.initOrder();
           const order = new KrakenOrderDetails(newOrderInfo);
           result = await kraken.handleBags(order);
