@@ -232,7 +232,7 @@ export default class KrakenOrderDetails {
       this.usdValueOfBase
     );
     this.tradeVolume = this.getTradeVolume();
-    this.addVolume = this.getAddVolume();
+    this.addVolume = this.getTradeVolume(); // this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(
       this.tradeVolume,
       this.usdValueOfBase
@@ -307,23 +307,23 @@ export default class KrakenOrderDetails {
     }
   }
 
-  private getAddVolume(): number {
-    let volume = 0;
+  // private getAddVolume(): number {
+  //   let volume = 0;
 
-    if (this.addSize) {
-      volume = superParseFloat(
-        (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
-        this.volumeDecimals
-      );
-      return volume > this.minVolume ? volume : this.minVolume;
-    } else {
-      volume = superParseFloat(
-        (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
-        this.volumeDecimals
-      );
-    }
-    return volume > this.minVolume ? volume : this.minVolume;
-  }
+  //   if (this.addSize) {
+  //     volume = superParseFloat(
+  //       (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+  //       this.volumeDecimals
+  //     );
+  //     return volume > this.minVolume ? volume : this.minVolume;
+  //   } else {
+  //     volume = superParseFloat(
+  //       (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
+  //       this.volumeDecimals
+  //     );
+  //   }
+  //   return volume > this.minVolume ? volume : this.minVolume;
+  // }
 
   public getBid(): number {
     // return this.action === 'buy' ? this.currentAsk : this.currentBid; // give it to the ask
