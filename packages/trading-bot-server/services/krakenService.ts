@@ -233,10 +233,13 @@ class KrakenService {
           100
         ).toFixed(2)
       );
-      percentDiff = order.action === 'buy' ? percentDiff * -1 : percentDiff;
-
+      
       // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
       // this attempts to bring the average down when behind and add smaller when ahead
+      console.log(percentDiff);
+      console.log(order.action);
+      console.log(order.action === 'buy' ? percentDiff * -1 : percentDiff);
+      percentDiff = order.action === 'buy' ? percentDiff * -1 : percentDiff;
       const boostPercentDiff = percentDiff * -4.2;
       const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(4));
 
@@ -253,11 +256,6 @@ class KrakenService {
         (parseFloat(myPositionAfter) * (order.leverageAmount || 1)).toFixed(2)
       );
 
-      // console.log(
-      //   `Adding: ${addCount}/${order.initialAdds} | ${
-      //     order.shortZone ? `Short Zone ${order.shortZoneDeleverage}` : 'Long Zone'
-      //   }`
-      // );
       console.log(
         `Diff: ${averagePrice} | ${order.bidPrice} | ${percentDiff}%`
       );
@@ -267,26 +265,6 @@ class KrakenService {
         )} | ${boost}x | ${incrementalAddDollar}`
       );
       console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
-
-      // if it's within a certain percentage and already a decent position and margin is fairly low, skip it
-      // if (
-      //   percentDiff > -1 &&
-      //   marginPositionAfter > 900 &&
-      //   order.marginFree < order.lowestLeverageMargin * 2
-      // ) {
-      //   console.log('Position above -1%. Margin too low. Ignoring.');
-      //   return latestResult;
-      // }
-
-      // if (tooMuch) {
-      //   console.log(`Too many adds, selling some first.`);
-      //   await this.sellOldestOrders(
-      //     order,
-      //     order.krakenTicker,
-      //     openPositions,
-      //     1
-      //   );
-      // }
 
       const krakenOrder = new KrakenOrder({
         pair: order.krakenTicker,
