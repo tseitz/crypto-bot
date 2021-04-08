@@ -2,7 +2,6 @@ import { KrakenOrderResponse } from "./KrakenResults";
 import { TradingViewBody } from "../TradingViewBody";
 import { kraken } from "../../services/krakenService";
 import KrakenOrderDetails from "./KrakenOrderDetails";
-import { logBreak } from "../../scripts/common";
 
 export class KrakenWebhookOrder {
   requestBody: TradingViewBody;

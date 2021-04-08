@@ -2,13 +2,14 @@ import express from "express";
 import cors from "cors";
 import schedule from "node-schedule";
 import { KrakenWebhookOrder } from "./models/kraken/KrakenWebhookOrder";
+import { BinanceWebhookOrder } from "./models/binance/BinanceWebhookOrder";
 import { kraken } from "./services/krakenService";
 // import { handleUniswapOrder } from './services/uniswapService';
 import { TradingViewBody } from "./models/TradingViewBody";
 import { OrderQueue } from "./models/OrderQueue";
 import { logNightlyResult } from "./services/mongoDbService";
 import { logBreak } from "./scripts/common";
-// const Binance = require("node-binance-api");
+const Binance = require("node-binance-api");
 // const config = require("./config");
 
 const PORT = process.env.PORT || 3000;
@@ -19,10 +20,10 @@ const corsOptions = {
   origin: "http://localhost:5000",
 };
 
-// const binance = new Binance().options({
-//   APIKEY: process.env.BINANCE_API_KEY,
-//   APISECRET: process.env.BINANCE_SECRET_KEY,
-// });
+const binance = new Binance().options({
+  APIKEY: process.env.BINANCE_API_KEY,
+  APISECRET: process.env.BINANCE_SECRET_KEY,
+});
 
 // create application/json parser
 const jsonParser = express.json();
@@ -33,7 +34,10 @@ app.get("/", (req, res) => {
 });
 
 const queue: OrderQueue[] = [];
-let locked = false;
+let locked = {
+  kraken: false,
+  binance: false
+};
 
 app.post("/webhook/kraken", jsonParser, async (req, res) => {
   // force body to be JSON
@@ -46,10 +50,10 @@ app.post("/webhook/kraken", jsonParser, async (req, res) => {
 
   // queue it
   queue.push({ body, res });
-  if (locked === true) return;
+  if (locked.kraken === true) return;
 
   while (queue.length > 0) {
-    locked = true;
+    locked.kraken = true;
     const request = queue.shift();
     if (request) {
       console.log(
@@ -62,14 +66,50 @@ app.post("/webhook/kraken", jsonParser, async (req, res) => {
         request.res.send(await order.placeOrder());
       } catch (error) {
         console.log(error);
-        locked = false;
+        locked.kraken = false;
       }
     }
     logBreak();
-    locked = false;
+    locked.kraken = false;
   }
   return;
 });
+
+app.post("/webhook/binance", jsonParser, async (req, res) => {
+  // force body to be JSON
+  const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
+  if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
+    console.log("Hey buddy, get out of here", req);
+    logBreak();
+    return res.send("Hey buddy, get out of here");
+  }
+
+  // queue it
+  queue.push({ body, res });
+  if (locked.binance === true) return;
+
+  while (queue.length > 0) {
+    locked.binance = true;
+    const request = queue.shift();
+    if (request) {
+      console.log(
+        request.body.ticker,
+        request.body.strategy.action,
+        request.body.strategy.description
+      );
+      const order = new BinanceWebhookOrder(request.body);
+      try {
+        request.res.send(await order.placeOrder());
+      } catch (error) {
+        console.log(error);
+        locked.binance = false;
+      }
+    }
+    logBreak();
+    locked.binance = false;
+  }
+  return;
+})
 
 app.get("/api/kraken/getOpenPositions", jsonParser, async (req, res) => {
   res.json(await kraken.getOpenPositions());
