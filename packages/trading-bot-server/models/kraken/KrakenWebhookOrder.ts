@@ -1,15 +1,15 @@
 import { KrakenOrderResponse } from "./KrakenResults";
-import { TradingViewBody } from "../TradingViewBody";
+import { KrakenTradingViewBody } from "../TradingViewBody";
 import { kraken } from "../../services/krakenService";
 import KrakenOrderDetails from "./KrakenOrderDetails";
 
 export class KrakenWebhookOrder {
-  requestBody: TradingViewBody;
+  requestBody: KrakenTradingViewBody;
   tradingViewTicker: string;
   krakenTicker: string;
   order?: KrakenOrderDetails;
 
-  constructor(requestBody: TradingViewBody) {
+  constructor(requestBody: KrakenTradingViewBody) {
     this.requestBody = requestBody;
     this.tradingViewTicker = requestBody.ticker;
     // Kraken uses XBT instead of BTC. Uniswap uses WETH instead of ETH

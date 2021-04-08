@@ -1,13 +1,13 @@
-export interface TradingViewBody {
+export interface KrakenTradingViewBody {
   passphrase: string;
   time: string;
   exchange: string;
   ticker: string;
   interval: string;
-  strategy: TradingViewStrategyBody;
+  strategy: KrakenTradingViewStrategyBody;
 }
 
-export interface TradingViewStrategyBody {
+export interface KrakenTradingViewStrategyBody {
   action: string;
   description: string;
   price: string;
@@ -18,6 +18,21 @@ export interface TradingViewStrategyBody {
   positionSize?: number;
   validate?: boolean;
   shortZone?: boolean;
+}
+
+export interface BinanceTradingViewBody {
+  passphrase: string;
+  time: string;
+  exchange: string;
+  ticker: string;
+  interval: string;
+  strategy: BinanceTradingViewStrategyBody;
+}
+
+export interface BinanceTradingViewStrategyBody {
+  action: string;
+  description: string;
+  price: string;
 }
 
 // TODO: remove optional params. extend instead

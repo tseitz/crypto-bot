@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { TradingViewBody } from './TradingViewBody';
+import { KrakenTradingViewBody } from './TradingViewBody';
 
 export interface OrderQueue {
-  body: TradingViewBody;
+  body: KrakenTradingViewBody;
   res: Response;
 }

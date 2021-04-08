@@ -13,7 +13,7 @@ import {
 import { ethers, utils, BigNumber } from 'ethers';
 import { toWei } from 'web3-utils';
 import abis from '../abis/abis';
-import { TradingViewBody } from '../models/TradingViewBody';
+import { KrakenTradingViewBody } from '../models/TradingViewBody';
 
 interface TokenList {
   [index: string]: string;
@@ -73,7 +73,7 @@ export async function getToken(tokenAddress: string): Promise<Token> {
   return TOKEN;
 }
 
-export async function handleUniswapOrder(body: TradingViewBody) {
+export async function handleUniswapOrder(body: KrakenTradingViewBody) {
   // get eth info
   const ethPricePair = await Fetcher.fetchPairData(DAI, weth, provider);
   const ethPriceRoute = new Route([ethPricePair], weth);

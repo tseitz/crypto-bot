@@ -1,15 +1,26 @@
-import { KrakenOrderResponse } from "./KrakenResults";
-import { TradingViewBody } from "../TradingViewBody";
-import { kraken } from "../../services/krakenService";
-import KrakenOrderDetails from "./KrakenOrderDetails";
+import { KrakenTradingViewBody } from "../TradingViewBody";
+import BinanceOrderDetails from "./BinanceOrderDetails";
+import { StrategyParamsJson } from "../StrategyParams";
+
+const Binance = require("node-binance-api");
+const strategyParams: StrategyParamsJson = require("../../strategy-params");
+
+const binanceOpts = {
+  APIKEY: process.env.BINANCE_API_KEY,
+  APISECRET: process.env.BINANCE_SECRET_KEY,
+  test: true,
+  // APIKEY: process.env.BINANCE_API_KEY,
+  // APISECRET: process.env.BINANCE_SECRET_KEY,
+}
+
+const binance = new Binance().options(binanceOpts);
 
 export class BinanceWebhookOrder {
-  requestBody: TradingViewBody;
+  requestBody: KrakenTradingViewBody;
   tradingViewTicker: string;
-  binanceTicker: string;
   order?: BinanceOrderDetails;
 
-  constructor(requestBody: TradingViewBody) {
+  constructor(requestBody: KrakenTradingViewBody) {
     this.requestBody = requestBody;
     this.tradingViewTicker = requestBody.ticker;
   }
@@ -17,10 +28,16 @@ export class BinanceWebhookOrder {
   async placeOrder() {
     try {
       // set up the order
-      this.order = new KrakenOrderDetails(await this.initOrder());
-
+      // this.order = new BinanceOrderDetails(await this.initOrder());
+      console.log(binanceOpts)
+      console.log(this.requestBody)
+      
+      const order = await binance.buy(this.requestBody.ticker, 1, 5)
+      console.log(order.body)
+      
       // execute the order
-      return await this.openOrder(this.order);
+      // return await this.openOrder(this.order);
+      return;
     } catch (error) {
       console.log(error);
       return error;
@@ -28,76 +45,14 @@ export class BinanceWebhookOrder {
   }
 
   private async initOrder() {
-    // get pair data
-    const pairData = await kraken.getPair(this.krakenTicker);
-
-    // get pair price info for order
-    const pairPriceInfo = await kraken.getPrice(this.krakenTicker);
-
-    // btc or eth price for calculations (we're currently placing orders in fixed USD amount)
-    const assetClass = this.krakenTicker.includes("XBT")
-      ? "XBTUSDT"
-      : "ETHUSDT";
-    const assetClassPriceInfo = await kraken.getPrice(assetClass);
-
-    const myBalanceInfo = await kraken.getBalance();
-
-    const openOrders = await kraken.getOpenOrders();
-
-    const tradeBalance = await kraken.getTradeBalance();
-
-    return {
-      body: this.requestBody,
-      krakenizedTicker: this.krakenTicker,
-      pairData,
-      pairPriceInfo,
-      assetClassPriceInfo,
-      myBalanceInfo,
-      openOrders,
-      tradeBalance,
-    };
+    // return order details
+    return;
   }
 
   private async openOrder(
-    order: KrakenOrderDetails
-  ): Promise<KrakenOrderResponse | undefined> {
-    console.log(`Margin Free: ${order.marginFree}`);
-    console.log(`Price: ${order.tradingViewPrice} | Bid: ${order.bidPrice}`);
-
-    let result;
-    if (order.oldest) {
-      result = await kraken.sellOldestOrders(order, order.krakenTicker);
-    } else if (order.bagIt) {
-      if (!order.nonLeverageOnly) {
-        // close order first, handle bags so funds are available, then handle leverage
-        result = await kraken.settleLeveragedOrder(order);
-
-        // wait a second for settle to go through
-        setTimeout(async () => {
-          result = await kraken.handleLeveragedOrder(order);
-        }, 5000);
-
-        // just wait this one out for now
-        setTimeout(async () => {
-          // Reset order details based on above order. Mostly margin free...
-          // TODO: this needs improved
-          const newOrderInfo = await this.initOrder();
-          const order = new KrakenOrderDetails(newOrderInfo);
-          result = await kraken.handleBags(order);
-        }, 105000);
-      } else {
-        result = await kraken.handleBags(order);
-      }
-    } else if (order.noLeverage) {
-      result = await kraken.handleNonLeveragedOrder(order);
-    } else {
-      if (order.close) {
-        result = await kraken.settleLeveragedOrder(order);
-      } else {
-        result = await kraken.handleLeveragedOrder(order);
-      }
-    }
-
-    return result;
+    order: BinanceOrderDetails
+  ): Promise<undefined> {
+    // order stuff
+    return;
   }
 }

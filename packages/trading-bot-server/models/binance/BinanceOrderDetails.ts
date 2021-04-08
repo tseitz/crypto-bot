@@ -1,4 +1,4 @@
-import { TradingViewBody } from "../TradingViewBody";
+import { KrakenTradingViewBody } from "../TradingViewBody";
 import { StrategyParams, StrategyParamsJson } from "../StrategyParams";
 import { superParseFloat } from "../../scripts/common";
 const strategyParams: StrategyParamsJson = require("../../strategy-params");
@@ -6,171 +6,16 @@ const strategyParams: StrategyParamsJson = require("../../strategy-params");
 type AssetClassTicker = "XBTUSDT" | "ETHUSDT";
 
 interface OrderInfo {
-  body: TradingViewBody;
-  krakenizedTicker: string;
-  pairData: any;
-  pairPriceInfo: any;
-  assetClassPriceInfo: any;
-  myBalanceInfo: any;
-  openOrders: any;
-  tradeBalance: any;
+  body: KrakenTradingViewBody;
 }
 
 export default class KrakenOrderDetails {
   tradingViewTicker: string;
-  binanceTicker: string;
 
   constructor({
     body,
-    krakenizedTicker,
-    pairData,
-    pairPriceInfo,
-    assetClassPriceInfo,
-    myBalanceInfo,
-    tradeBalance,
   }: OrderInfo) {
-    this.marginFree = parseFloat(
-      (
-        superParseFloat(tradeBalance?.marginFree) -
-        this.getOpenOrderDollarAmount()
-      ).toFixed(2)
-    );
-
-    // ticker info
-    this.tradingViewTicker = body.ticker;
-    this.krakenizedTradingViewTicker = krakenizedTicker;
-    this.krakenTicker = Object.keys(pairData)[0];
-    this.baseOfPair = pairData[this.krakenTicker]["base"];
-    this.quoteOfPair = pairData[this.krakenTicker]["quote"];
-    this.krakenizedTicker = `${this.baseOfPair}${this.quoteOfPair}`;
-    this.assetClassTicker =
-      Object.keys(assetClassPriceInfo)[0] === "ETHUSDT" ? "ETHUSDT" : "XBTUSDT";
-
-    // body params
-    this.action = body.strategy.action === "sell" ? "sell" : "buy"; // force it
-    this.oppositeAction = this.action === "sell" ? "buy" : "sell";
-    this.close = body.strategy.description.toLowerCase().includes("close");
-    this.oldest = body.strategy.description
-      .toLowerCase()
-      .includes("close oldest");
-    this.closePositionSize = body.strategy.description
-      .toLowerCase()
-      .includes("close position size");
-    this.closeOldestPair =
-      this.oldest &&
-      body.strategy.description.toLowerCase().includes("close oldest pair");
-    this.nonLeverageOnly = body.strategy.description
-      .toLowerCase()
-      .includes("local");
-    this.sellBags =
-      parseInt(body.strategy.sellBags?.toString() || "0") === 0 ? false : true;
-    this.buyBags =
-      parseInt(body.strategy.buyBags?.toString() || "0") === 0 ? false : true;
-    this.bagAmount = parseFloat(body.strategy.bagSize?.toString() || "0");
-    this.validate = body.strategy.validate || false;
-    this.shortZone =
-      parseInt(body.strategy.shortZone?.toString() || "0") === 0 ? false : true;
-
-    // strat params
-    // if in short zone, deleverage to half position
-    this.txId = body.strategy.txId;
-    this.positionSize = body.strategy?.positionSize;
-    this.strategyParams = strategyParams[this.tradingViewTicker];
-    this.originalEntry = this.strategyParams.entrySize;
-    // this.originalAdd = this.strategyParams.addSize;
-    this.shortZoneDeleverage = 1;
-    this.longZoneDeleverage = 1;
-    this.entrySize = this.getEntry();
-    this.addSize = this.getAddSize();
-    // this.maxAdds = this.strategyParams.maxAdds;
-    // this.initialAdds = this.strategyParams.initialAdds;
-
-    // pair info
-    this.minVolume = superParseFloat(pairData[this.krakenTicker]["ordermin"]);
-    this.usdPair = !/XBT$|ETH$/.test(this.krakenTicker);
-    this.priceDecimals = pairData[this.krakenTicker]["pair_decimals"];
-    this.volumeDecimals = pairData[this.krakenTicker]["lot_decimals"];
-
-    // leverage info
-    this.leverageBuyAmounts = pairData[this.krakenTicker]["leverage_buy"] || 1;
-    this.leverageSellAmounts =
-      pairData[this.krakenTicker]["leverage_sell"] || 1;
-    this.leverageBuyAmount =
-      this.leverageBuyAmounts[this.leverageBuyAmounts.length - 1] || 1;
-    this.leverageSellAmount =
-      this.leverageSellAmounts[this.leverageSellAmounts.length - 1] || 1;
-    this.leverageAmount =
-      this.action === "sell" ? this.leverageSellAmount : this.leverageBuyAmount;
-    this.lowestLeverageAmount =
-      this.action === "sell"
-        ? this.leverageSellAmounts[0]
-        : this.leverageBuyAmounts[0];
-    this.noLeverage = this.leverageAmount === 1;
-    this.bagIt = this.sellBags || this.buyBags;
-
-    // current price info
-    this.tradingViewPrice = superParseFloat(
-      body.strategy.price,
-      this.priceDecimals
-    );
-    this.currentPrice = superParseFloat(
-      pairPriceInfo[this.krakenizedTicker]["c"][0],
-      this.priceDecimals
-    );
-    this.currentBid = superParseFloat(
-      pairPriceInfo[this.krakenizedTicker]["b"][0],
-      this.priceDecimals
-    );
-    this.currentAsk = superParseFloat(
-      pairPriceInfo[this.krakenizedTicker]["a"][0],
-      this.priceDecimals
-    );
-
-    this.spread = this.currentAsk - this.currentBid;
-    this.bidPrice = this.getBid();
-    // Quote = USDT or ETH/BTC, Base = AAVE, ADA etc.
-    this.usdValueOfQuote = this.usdPair
-      ? 1
-      : superParseFloat(assetClassPriceInfo[this.assetClassTicker]["c"][0]);
-    this.usdValueOfBase = this.convertBaseToDollar(
-      this.currentPrice,
-      this.usdValueOfQuote
-    );
-
-    // balance and order info
-    this.balanceOfBase =
-      superParseFloat(this.baseOfPair ? myBalanceInfo[this.baseOfPair] : 0) ||
-      0;
-    this.balanceOfQuote = superParseFloat(
-      this.quoteOfPair ? myBalanceInfo[this.quoteOfPair] : 0
-    );
-    this.tradeBalance =
-      this.action === "sell" ? this.balanceOfBase : this.balanceOfQuote;
-    this.balanceInDollar = this.convertBaseToDollar(
-      this.balanceOfBase,
-      this.usdValueOfBase
-    );
-    this.tradeBalanceInDollar = this.convertBaseToDollar(
-      this.tradeBalance,
-      this.usdValueOfQuote
-    );
-    this.minVolumeInDollar = this.convertBaseToDollar(
-      this.minVolume,
-      this.usdValueOfBase
-    );
-    this.tradeVolume = this.getTradeVolume();
-    this.addVolume = this.getTradeVolume(); // this.getAddVolume();
-    this.tradeVolumeInDollar = this.convertBaseToDollar(
-      this.tradeVolume,
-      this.usdValueOfBase
-    );
-    // if no leverage, 4 less add counts
-    // this.maxInitialPositionSizeInDollar = this.entrySize + this.addSize * this.initialAdds;
-    // this.maxPositionSizeInDollar = (this.entrySize + this.addSize * this.initialAdds) + (this.minVolumeInDollar * (this.maxAdds - this.initialAdds));
-
-    // local configs
-    this.lowestNonLeverageMargin = 175;
-    this.lowestLeverageMargin = 25;
+    
   }
 
   private getEntry(): number {
@@ -230,82 +75,6 @@ export default class KrakenOrderDetails {
           this.volumeDecimals
         );
         return volume > this.minVolume ? volume : this.minVolume;
-      }
-    }
-  }
-
-  // private getAddVolume(): number {
-  //   let volume = 0;
-
-  //   if (this.addSize) {
-  //     volume = superParseFloat(
-  //       (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
-  //       this.volumeDecimals
-  //     );
-  //     return volume > this.minVolume ? volume : this.minVolume;
-  //   } else {
-  //     volume = superParseFloat(
-  //       (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
-  //       this.volumeDecimals
-  //     );
-  //   }
-  //   return volume > this.minVolume ? volume : this.minVolume;
-  // }
-
-  public getBid(): number {
-    // return this.action === 'buy' ? this.currentAsk : this.currentBid; // give it to the ask
-    // YFI doesn't get filled as often so giving
-    if (
-      isNaN(this.tradingViewPrice) ||
-      this.tradingViewTicker === "DOTUSDT" ||
-      this.tradingViewTicker === "ATOMUSDT" ||
-      this.tradingViewTicker === "ADAUSDT" ||
-      this.tradingViewTicker === "LTCUSDT" ||
-      this.tradingViewTicker === "YFIUSDT" ||
-      this.tradingViewTicker === "SNXUSDT" ||
-      this.tradingViewTicker === "OMGUSDT" ||
-      this.tradingViewTicker === "XTZUSDT" ||
-      this.tradingViewTicker === "BALUSDT" ||
-      this.tradingViewTicker === "XLMUSDT" ||
-      this.tradingViewTicker === "FILUSDT" ||
-      this.tradingViewTicker === "CRVUSDT" ||
-      this.tradingViewTicker === "TRXUSDT" ||
-      (this.action === "sell" && this.tradingViewTicker === "KSMUSDT") ||
-      (this.action === "sell" && this.tradingViewTicker === "LINKUSDT") ||
-      (this.action === "sell" && this.tradingViewTicker === "UNIWETH") ||
-      (this.action === "sell" && this.tradingViewTicker === "AAVEWETH")
-    ) {
-      return this.action === "buy" ? this.currentAsk : this.currentBid;
-    } else {
-      // if it's running away long or short, buy it, otherwise average it out
-      if (this.action === "buy") {
-        if (this.tradingViewPrice >= this.currentAsk) {
-          return this.currentAsk;
-        } else if (
-          this.tradingViewPrice <= this.currentAsk &&
-          this.tradingViewPrice >= this.currentBid
-        ) {
-          return superParseFloat(this.tradingViewPrice, this.priceDecimals);
-        } else {
-          return superParseFloat(
-            (this.currentBid + this.currentAsk) / 2,
-            this.priceDecimals
-          );
-        }
-        // return parseFloat(
-        //   parseFloat(
-        //     ((this.tradingViewPrice + this.currentAsk + this.currentBid) / 3).toString()
-        //   ).toFixed(this.priceDecimals)
-        // );
-      } else {
-        if (this.tradingViewPrice <= this.currentBid) {
-          return this.currentBid;
-        } else {
-          return superParseFloat(
-            (this.tradingViewPrice + this.currentAsk + this.currentBid) / 3,
-            this.priceDecimals
-          );
-        }
       }
     }
   }

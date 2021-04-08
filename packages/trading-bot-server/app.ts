@@ -5,12 +5,10 @@ import { KrakenWebhookOrder } from "./models/kraken/KrakenWebhookOrder";
 import { BinanceWebhookOrder } from "./models/binance/BinanceWebhookOrder";
 import { kraken } from "./services/krakenService";
 // import { handleUniswapOrder } from './services/uniswapService';
-import { TradingViewBody } from "./models/TradingViewBody";
+import { KrakenTradingViewBody } from "./models/TradingViewBody";
 import { OrderQueue } from "./models/OrderQueue";
 import { logNightlyResult } from "./services/mongoDbService";
 import { logBreak } from "./scripts/common";
-const Binance = require("node-binance-api");
-// const config = require("./config");
 
 const PORT = process.env.PORT || 3000;
 
@@ -19,11 +17,6 @@ const app = express();
 const corsOptions = {
   origin: "http://localhost:5000",
 };
-
-const binance = new Binance().options({
-  APIKEY: process.env.BINANCE_API_KEY,
-  APISECRET: process.env.BINANCE_SECRET_KEY,
-});
 
 // create application/json parser
 const jsonParser = express.json();
@@ -41,7 +34,7 @@ let locked = {
 
 app.post("/webhook/kraken", jsonParser, async (req, res) => {
   // force body to be JSON
-  const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
+  const body: KrakenTradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log("Hey buddy, get out of here", req);
     logBreak();
@@ -57,6 +50,7 @@ app.post("/webhook/kraken", jsonParser, async (req, res) => {
     const request = queue.shift();
     if (request) {
       console.log(
+        'Kraken',
         request.body.ticker,
         request.body.strategy.action,
         request.body.strategy.description
@@ -77,7 +71,7 @@ app.post("/webhook/kraken", jsonParser, async (req, res) => {
 
 app.post("/webhook/binance", jsonParser, async (req, res) => {
   // force body to be JSON
-  const body: TradingViewBody = JSON.parse(JSON.stringify(req.body));
+  const body: KrakenTradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
     console.log("Hey buddy, get out of here", req);
     logBreak();
@@ -93,6 +87,7 @@ app.post("/webhook/binance", jsonParser, async (req, res) => {
     const request = queue.shift();
     if (request) {
       console.log(
+        'Binance',
         request.body.ticker,
         request.body.strategy.action,
         request.body.strategy.description

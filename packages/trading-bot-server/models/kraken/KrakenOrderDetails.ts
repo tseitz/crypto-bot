@@ -1,4 +1,4 @@
-import { TradingViewBody } from "../TradingViewBody";
+import { KrakenTradingViewBody } from "../TradingViewBody";
 import {
   KrakenTradeablePair,
   KrakenPrice,
@@ -13,7 +13,7 @@ const strategyParams: StrategyParamsJson = require("../../strategy-params");
 type AssetClassTicker = "XBTUSDT" | "ETHUSDT";
 
 interface OrderInfo {
-  body: TradingViewBody;
+  body: KrakenTradingViewBody;
   krakenizedTicker: string;
   pairData: KrakenTradeablePair;
   pairPriceInfo: KrakenPrice;
