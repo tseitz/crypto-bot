@@ -27,6 +27,7 @@ export default class KrakenOrderDetails {
   tradingViewTicker: string;
   krakenizedTradingViewTicker: string;
   krakenTicker: string;
+  krakenizedTicker: string;
   assetClassTicker: AssetClassTicker;
   action: "buy" | "sell";
   oppositeAction: "buy" | "sell";
@@ -116,6 +117,7 @@ export default class KrakenOrderDetails {
     this.krakenTicker = Object.keys(pairData)[0];
     this.baseOfPair = pairData[this.krakenTicker]["base"];
     this.quoteOfPair = pairData[this.krakenTicker]["quote"];
+    this.krakenizedTicker = `${this.baseOfPair}${this.quoteOfPair}`;
     this.assetClassTicker =
       Object.keys(assetClassPriceInfo)[0] === "ETHUSDT" ? "ETHUSDT" : "XBTUSDT";
 
@@ -187,15 +189,15 @@ export default class KrakenOrderDetails {
       this.priceDecimals
     );
     this.currentPrice = superParseFloat(
-      pairPriceInfo[this.krakenTicker]["c"][0],
+      pairPriceInfo[this.krakenizedTicker]["c"][0],
       this.priceDecimals
     );
     this.currentBid = superParseFloat(
-      pairPriceInfo[this.krakenTicker]["b"][0],
+      pairPriceInfo[this.krakenizedTicker]["b"][0],
       this.priceDecimals
     );
     this.currentAsk = superParseFloat(
-      pairPriceInfo[this.krakenTicker]["a"][0],
+      pairPriceInfo[this.krakenizedTicker]["a"][0],
       this.priceDecimals
     );
 
