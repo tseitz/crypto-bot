@@ -160,14 +160,14 @@ class KrakenService {
     for (const key in openPositions) {
       const position = openPositions[key];
       if (
-        order.krakenTicker === position.pair &&
+        order.krakenizedTicker === position.pair &&
         order.action === position.type
       ) {
         add = true;
         positionMargin += parseFloat(position.margin);
         prices.push(parseFloat(position.cost) / parseFloat(position.vol));
       } else if (
-        order.krakenTicker === position.pair &&
+        order.krakenizedTicker === position.pair &&
         order.action !== position.type
       ) {
         flip = true;
@@ -187,7 +187,7 @@ class KrakenService {
       }
 
       const krakenOrder = new KrakenOrder({
-        pair: order.krakenTicker,
+        pair: order.krakenizedTicker,
         krakenizedPair: order.krakenizedTradingViewTicker,
         type: order.action,
         ordertype: "limit",
@@ -267,7 +267,7 @@ class KrakenService {
       console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
       const krakenOrder = new KrakenOrder({
-        pair: order.krakenTicker,
+        pair: order.krakenizedTicker,
         krakenizedPair: order.krakenizedTradingViewTicker,
         type: order.action,
         ordertype: "limit",
@@ -285,7 +285,7 @@ class KrakenService {
       );
 
       const krakenOrder = new KrakenOrder({
-        pair: order.krakenTicker,
+        pair: order.krakenizedTicker,
         krakenizedPair: order.krakenizedTradingViewTicker,
         type: order.action,
         ordertype: "limit",
@@ -318,7 +318,7 @@ class KrakenService {
         );
 
         const krakenOrder = new KrakenOrder({
-          pair: order.krakenTicker,
+          pair: order.krakenizedTicker,
           krakenizedPair: order.krakenizedTradingViewTicker,
           type: order.action,
           ordertype: type,
@@ -334,7 +334,7 @@ class KrakenService {
           console.log(`New Entry: ${order.tradeVolumeInDollar.toFixed(0)}`);
 
           const krakenOrder = new KrakenOrder({
-            pair: order.krakenTicker,
+            pair: order.krakenizedTicker,
             krakenizedPair: order.krakenizedTradingViewTicker,
             type: order.action,
             ordertype: type,
@@ -356,7 +356,7 @@ class KrakenService {
         }
 
         const krakenOrder = new KrakenOrder({
-          pair: order.krakenTicker,
+          pair: order.krakenizedTicker,
           krakenizedPair: order.krakenizedTradingViewTicker,
           type: order.action,
           ordertype: type,
@@ -389,7 +389,7 @@ class KrakenService {
       for (const key in openPositions) {
         const position = openPositions[key];
         if (
-          position.pair === order.krakenTicker &&
+          position.pair === order.krakenizedTicker &&
           position.ordertxid === order.txId
         ) {
           latestResult = await this.settleTxId(position, order);
@@ -400,7 +400,7 @@ class KrakenService {
       const positionsForPair: KrakenOpenPosition[] = [];
       for (const key in openPositions) {
         const position = openPositions[key];
-        if (position.pair === order.krakenTicker) {
+        if (position.pair === order.krakenizedTicker) {
           positionsForPair.push(position);
         }
       }
@@ -414,7 +414,7 @@ class KrakenService {
         );
         latestResult = await this.sellOldestOrders(
           order,
-          order.krakenTicker,
+          order.krakenizedTicker,
           openPositions,
           count
         );
@@ -428,7 +428,7 @@ class KrakenService {
       for (const key in openPositions) {
         const position = openPositions[key];
         if (
-          order.krakenTicker === position.pair &&
+          order.krakenizedTicker === position.pair &&
           order.oppositeAction === position.type
         ) {
           positionMargin += parseFloat(position.margin);
@@ -463,7 +463,7 @@ class KrakenService {
         console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
 
         const krakenOrder = new KrakenOrder({
-          pair: order.krakenTicker,
+          pair: order.krakenizedTicker,
           krakenizedPair: order.krakenizedTradingViewTicker,
           type: order.action,
           ordertype: "limit",
@@ -680,7 +680,7 @@ class KrakenService {
     let leverageAmount = order.leverageAmount;
 
     // if tx is not this pair, get data for it. used mostly in settle oldest transaction
-    // if (position.pair !== order.krakenTicker) {
+    // if (position.pair !== order.krakenizedTicker) {
     const price = await kraken.getPrice(position.pair);
     const pair = await kraken.getPair(position.pair);
 
@@ -690,7 +690,7 @@ class KrakenService {
     const leverageSellAmounts = pair[position.pair]["leverage_sell"];
 
     // TODO: Calculate this better
-    if (!immediate && position.pair === order.krakenTicker) {
+    if (!immediate && position.pair === order.krakenizedTicker) {
       // update bid and ask since we've got it
       // TODO: allow getbid for non similar pair
       order.currentAsk = parseFloat(currentAsk);
@@ -786,7 +786,7 @@ class KrakenService {
     }
 
     // const action = this.isOpenPosition(pair) ? pair.type : pair.action;
-    // const pairTicker = this.isOpenPosition(order) ? order.pair : order.krakenTicker;
+    // const pairTicker = this.isOpenPosition(order) ? order.pair : order.krakenizedTicker;
 
     let positions = [];
     for (const key in openPositions) {
