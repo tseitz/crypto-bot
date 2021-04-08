@@ -6,12 +6,15 @@ const Binance = require("node-binance-api");
 const strategyParams: StrategyParamsJson = require("../../strategy-params");
 
 const binanceOpts = {
-  APIKEY: process.env.BINANCE_API_KEY,
-  APISECRET: process.env.BINANCE_SECRET_KEY,
+  APIKEY: process.env.BINANCE_TEST_API_KEY,
+  APISECRET: process.env.BINANCE_TEST_SECRET_KEY,
   test: true,
+  urls: {
+    base: "https://testnet.binance.vision/api/",
+  },
   // APIKEY: process.env.BINANCE_API_KEY,
   // APISECRET: process.env.BINANCE_SECRET_KEY,
-}
+};
 
 const binance = new Binance().options(binanceOpts);
 
@@ -27,17 +30,13 @@ export class BinanceWebhookOrder {
 
   async placeOrder() {
     try {
-      // set up the order
-      // this.order = new BinanceOrderDetails(await this.initOrder());
-      console.log(binanceOpts)
-      console.log(this.requestBody)
-      
-      const order = await binance.buy(this.requestBody.ticker, 1, 5)
-      console.log(order.body)
-      
-      // execute the order
-      // return await this.openOrder(this.order);
-      return;
+      const order = await binance.buy(
+        this.tradingViewTicker,
+        0.025, // TODO: calc this
+        this.requestBody.strategy.price
+      );
+
+      return order;
     } catch (error) {
       console.log(error);
       return error;
@@ -49,9 +48,7 @@ export class BinanceWebhookOrder {
     return;
   }
 
-  private async openOrder(
-    order: BinanceOrderDetails
-  ): Promise<undefined> {
+  private async openOrder(order: BinanceOrderDetails): Promise<undefined> {
     // order stuff
     return;
   }
