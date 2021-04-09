@@ -546,6 +546,7 @@ class KrakenService {
       // openOrder.descr.type === krakenOrder.type
     ) {
       console.log("Limit not picked up. Switching to market order");
+      console.log(`Try ${count}`);
 
       await this.kraken.setCancelOrder({ txid: krakenOrder.orderId });
 
@@ -564,6 +565,7 @@ class KrakenService {
         ? result.result.txid[0]
         : "";
 
+      // check if insufficient margin
       setTimeout(async () => {
         this.checkOrder(krakenMarketOrder, count++);
       }, 5000);
@@ -581,6 +583,7 @@ class KrakenService {
       count < 10
     ) {
       console.log("Order closed due to insufficient margin. Trying again");
+      console.log(`Try ${count}`);
 
       // Try again with original limit order
       const result = await this.placeOrder(krakenOrder, `ORDER`);
