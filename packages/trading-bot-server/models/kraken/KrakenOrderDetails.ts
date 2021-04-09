@@ -63,7 +63,7 @@ export default class KrakenOrderDetails {
   usdValueOfQuote: number;
   usdValueOfBase: number;
   originalEntry: number;
-  // originalAdd: number | undefined;
+  originalAdd: number;
   entrySize: number;
   addSize: number;
   spread: number;
@@ -89,8 +89,8 @@ export default class KrakenOrderDetails {
   shortZone: boolean;
   lowestNonLeverageMargin: number;
   lowestLeverageMargin: number;
-  shortZoneDeleverage: number;
-  longZoneDeleverage: number;
+  // shortZoneDeleverage: number;
+  // longZoneDeleverage: number;
 
   constructor({
     body,
@@ -152,9 +152,10 @@ export default class KrakenOrderDetails {
     this.positionSize = body.strategy?.positionSize;
     this.strategyParams = strategyParams[this.tradingViewTicker];
     this.originalEntry = this.strategyParams.entrySize;
-    // this.originalAdd = this.strategyParams.addSize;
-    this.shortZoneDeleverage = 1;
-    this.longZoneDeleverage = 1;
+    this.originalAdd = this.strategyParams.addSize ?? 0;
+    // this.shortZoneDeleverage = 1;
+    // this.longZoneDeleverage = 1;
+    // TODO: pass add or not add in the body
     this.entrySize = this.getEntry();
     this.addSize = this.getAddSize();
     // this.maxAdds = this.strategyParams.maxAdds;
@@ -234,7 +235,7 @@ export default class KrakenOrderDetails {
       this.usdValueOfBase
     );
     this.tradeVolume = this.getTradeVolume();
-    this.addVolume = this.getTradeVolume(); // this.getAddVolume();
+    this.addVolume = this.getAddVolume();
     this.tradeVolumeInDollar = this.convertBaseToDollar(
       this.tradeVolume,
       this.usdValueOfBase
@@ -249,35 +250,34 @@ export default class KrakenOrderDetails {
   }
 
   private getEntry(): number {
-    if (this.shortZone) {
-      if (this.positionSize) {
-        return this.positionSize * this.shortZoneDeleverage;
-      } else {
-        return this.strategyParams.entrySize * this.shortZoneDeleverage;
-      }
-    } else {
+    if (this.action === "buy") {
       if (this.positionSize) {
         return this.positionSize;
       } else {
-        return this.strategyParams.entrySize * this.longZoneDeleverage;
+        return this.strategyParams.entrySize;
+      }
+    } else {
+      if (this.positionSize) {
+        return this.positionSize; // * this.shortZoneDeleverage;
+      } else {
+        // not adding shorts for now, so calc the total
+        return this.originalEntry + this.originalAdd;
       }
     }
   }
 
   private getAddSize(): number {
-    if (this.shortZone) {
+    if (this.action === "buy") {
       if (this.positionSize) {
-        return this.positionSize * this.shortZoneDeleverage;
+        return this.positionSize;
       } else {
-        // return this.strategyParams.addSize * this.shortZoneDeleverage;
-        return 0;
+        return this.originalAdd;
       }
     } else {
       if (this.positionSize) {
         return this.positionSize;
       } else {
-        // return this.strategyParams.addSize * this.longZoneDeleverage;
-        return 0;
+        return this.originalAdd;
       }
     }
   }
@@ -309,23 +309,23 @@ export default class KrakenOrderDetails {
     }
   }
 
-  // private getAddVolume(): number {
-  //   let volume = 0;
+  private getAddVolume(): number {
+    let volume = 0;
 
-  //   if (this.addSize) {
-  //     volume = superParseFloat(
-  //       (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
-  //       this.volumeDecimals
-  //     );
-  //     return volume > this.minVolume ? volume : this.minVolume;
-  //   } else {
-  //     volume = superParseFloat(
-  //       (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
-  //       this.volumeDecimals
-  //     );
-  //   }
-  //   return volume > this.minVolume ? volume : this.minVolume;
-  // }
+    if (this.addSize) {
+      volume = superParseFloat(
+        (this.addSize * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        this.volumeDecimals
+      );
+      return volume > this.minVolume ? volume : this.minVolume;
+    } else {
+      volume = superParseFloat(
+        (60 * (this.leverageAmount || 1)) / this.usdValueOfBase,
+        this.volumeDecimals
+      );
+    }
+    return volume > this.minVolume ? volume : this.minVolume;
+  }
 
   public getBid(): number {
     // return this.action === 'buy' ? this.currentAsk : this.currentBid; // give it to the ask

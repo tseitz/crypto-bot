@@ -42,14 +42,4 @@ export class BinanceWebhookOrder {
       return error;
     }
   }
-
-  private async initOrder() {
-    // return order details
-    return;
-  }
-
-  private async openOrder(order: BinanceOrderDetails): Promise<undefined> {
-    // order stuff
-    return;
-  }
 }
