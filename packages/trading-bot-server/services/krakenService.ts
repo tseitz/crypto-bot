@@ -136,7 +136,7 @@ class KrakenService {
 
     if (checkOrder) {
       setTimeout(async () => {
-        this.checkOrder(krakenOrder);
+        this.checkOrder(krakenOrder, 1);
       }, 90000);
     }
 
@@ -233,13 +233,13 @@ class KrakenService {
           100
         ).toFixed(2)
       );
-      
+
       // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
       // this attempts to bring the average down when behind and add smaller when ahead
       console.log(percentDiff);
       console.log(order.action);
-      console.log(order.action === 'sell' ? percentDiff * -1 : percentDiff);
-      percentDiff = order.action === 'sell' ? percentDiff * -1 : percentDiff;
+      console.log(order.action === "sell" ? percentDiff * -1 : percentDiff);
+      percentDiff = order.action === "sell" ? percentDiff * -1 : percentDiff;
       const boostPercentDiff = percentDiff * -4.2;
       const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(4));
 
@@ -449,7 +449,7 @@ class KrakenService {
             100
           ).toFixed(2)
         );
-        percentDiff = order.action === 'buy' ? percentDiff * -1 : percentDiff;
+        percentDiff = order.action === "buy" ? percentDiff * -1 : percentDiff;
 
         const myPositionAfter = positionMargin.toFixed(2);
         const marginPositionAfter = parseFloat(
@@ -535,7 +535,7 @@ class KrakenService {
     return result;
   }
 
-  async checkOrder(krakenOrder: KrakenOrder) {
+  async checkOrder(krakenOrder: KrakenOrder, count: number) {
     const openOrders = await this.getOpenOrders();
 
     const openOrder = openOrders?.open[krakenOrder.orderId];
@@ -557,7 +557,16 @@ class KrakenService {
         volume: volumeRemaining,
         ordertype: "market",
       });
-      await this.placeOrder(krakenMarketOrder, `ORDER`, false);
+
+      const result = await this.placeOrder(krakenMarketOrder, `ORDER`, false);
+
+      krakenMarketOrder.orderId = result.result?.txid
+        ? result.result.txid[0]
+        : "";
+
+      setTimeout(async () => {
+        this.checkOrder(krakenMarketOrder, count++);
+      }, 5000);
 
       logBreak();
     }
@@ -567,11 +576,20 @@ class KrakenService {
     const closedOrder = closedOrders?.closed[krakenOrder.orderId];
     // console.log(closedOrder);
 
-    if (closedOrder?.reason?.toLowerCase() == "insufficient margin") {
+    if (
+      closedOrder?.reason?.toLowerCase() == "insufficient margin" &&
+      count < 10
+    ) {
       console.log("Order closed due to insufficient margin. Trying again");
 
       // Try again with original limit order
-      await this.placeOrder(krakenOrder, `ORDER`);
+      const result = await this.placeOrder(krakenOrder, `ORDER`);
+
+      krakenOrder.orderId = result.result?.txid ? result.result.txid[0] : "";
+
+      setTimeout(async () => {
+        this.checkOrder(krakenOrder, count++);
+      }, 5000);
 
       logBreak();
     }
@@ -583,7 +601,7 @@ class KrakenService {
     if (order.balanceOfQuote > 0) {
       let totalVolumeToTradeInDollar: number, result;
       logBreak();
-  
+
       // convert to dollar. If greater than 1 bag size, we assume it's a dollar amount, else percent
       if (order.bagAmount > 1) {
         totalVolumeToTradeInDollar = superParseFloat(
@@ -603,7 +621,7 @@ class KrakenService {
           order.priceDecimals
         );
       }
-  
+
       let volumeTradedInDollar = 0;
       let i = 0;
       let dollarVolumeLeft = totalVolumeToTradeInDollar;
@@ -631,17 +649,17 @@ class KrakenService {
           newOrder.tradeVolume * order.usdValueOfBase,
           order.priceDecimals
         );
-  
+
         if (newOrder.tradeVolume < newOrder.minVolume) {
           console.log(
             `Trade volume too low. Ignoring the last bit. $${volumeTradedInDollar} Traded.`
           );
           return;
         }
-  
+
         volumeTradedInDollar += newOrder.tradeVolumeInDollar;
         dollarVolumeLeft = totalVolumeToTradeInDollar - volumeTradedInDollar;
-  
+
         // market orders. waiting 2 seconds between for good measure
         setTimeout(async () => {
           if (i === 0) {
@@ -652,17 +670,17 @@ class KrakenService {
               ).toFixed(2)}`
             );
           }
-  
+
           // order market order to fill immediately
           result = await this.handleNonLeveragedOrder(newOrder, "market");
           logBreak();
         }, 2000);
-  
+
         i++;
       }
       return result;
     } else {
-      console.log('No USD to trade');
+      console.log("No USD to trade");
       return;
     }
   }
