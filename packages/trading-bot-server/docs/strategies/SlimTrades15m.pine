@@ -133,34 +133,7 @@ volume1 = getVolume(1)
 volume2 = getVolume(2)
 volume3 = getVolume(3)
 
-// highestMacd = highest(macd, macdLength)[1]
-// highestMacd2 = highest(macd, macdLength)[2]
-// highestMacd3 = highest(macd, macdLength)[3]
-// highestMacd4 = highest(macd, macdLength)[4]
-// lowestMacd = lowest(macd, macdLength)[1]
-// lowestMacd2 = lowest(macd, macdLength)[2]
-// lowestMacd3 = lowest(macd, macdLength)[3]
-// lowestMacd4 = lowest(macd, macdLength)[4]
-// higherMacd = macd > highestMacd and macd > 0
-// higherMacd2 = macd1 > highestMacd2 and macd1 > 0
-// higherMacd3 = macd2 > highestMacd3 and macd2 > 0
-// higherMacd4 = macd3 > highestMacd4 and macd3 > 0
-// lowerMacd = (allowFastMacdLongs and longZone and macd < lowestMacd) or (macd < lowestMacd and macd < 0)
-// lowerMacd2 = (allowFastMacdLongs and longZone and macd1 < lowestMacd2) or (macd1 < lowestMacd2 and macd1 < 0)
-// lowerMacd3 = macd2 < lowestMacd3 and macd2 < 0
-// lowerMacd4 = macd3 < lowestMacd4 and macd3 < 0
-// bgcolor(color=higherMacd ? color.green : lowerMacd ? color.red : na, transp=90)
-
-
 // PLOT SUPPORT/RESISTANCE
-// highestFast0 = getHighest(0, hiLowFast)
-// highestFast1 = getHighest(1, hiLowFast)
-// highestFast2 = getHighest(2, hiLowFast)
-// highestFast3 = getHighest(3, hiLowFast)
-// lowestFast0 = getLowest(0, hiLowFast)
-// lowestFast1 = getLowest(1, hiLowFast)
-// lowestFast2 = getLowest(2, hiLowFast)
-// lowestFast3 = getLowest(3, hiLowFast)
 highestSlow1 = getHighest(1, hiLowSlow)
 highestSlow2 = getHighest(2, hiLowSlow)
 highestSlow3 = getHighest(3, hiLowSlow)
@@ -221,6 +194,7 @@ crazyVolume = volume0 / 2 > ((volume1 + volume2 + volume3) / 3)
 macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
 macdSlowingDown = abs(macd - macd1) < abs(macd1 - macd2)
 macdTopped = macd < macd1 and macd1 > macd2 and macd1 > signal
+macdDecreasing = macd < macd1 and macd < macd2
 macdBelow0 = macd1 < 0
 macdAbove0 = macd1 < 0
 rsiBottomed = rsiClose > rsi1 and rsi1 < rsi2 and rsiClose > rsi1 + 1
@@ -259,7 +233,7 @@ longNoShortSetup = not allowShorts and shortZone and rsiBottomed and rsi1 < buyS
 fastOpenShortSetup = fastOpenShort and slowCloseBelow and rsiClose > fastOpenShortRsi
 
 longSetup = (longZone and low > lowestSlow1 and (basicLongSetup or fastOpenLongSetup)) or longNoShortSetup
-shortSetup = allowShorts and shortZone and high < highestSlow1 and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)) or fastOpenShortSetup)  // 
+shortSetup = allowShorts and shortZone and high < highestSlow1 and ((rsiTopped and rsi1 > shortShortZoneRsi and (macdSlowingDown or macdTopped)) or fastOpenShortSetup)
 
 addLongSetup = longZone and addLow and addLowCount < 2
 addShortSetup = shortZone and addHigh and addHighCount < 2
