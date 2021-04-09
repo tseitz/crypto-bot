@@ -1,5 +1,5 @@
 //@version=4
-study("Binance Buy The Dip", overlay=true)
+study("Stocks Buy The Dip", overlay=true)
 
 
 // VARIABLES
@@ -60,7 +60,7 @@ rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
 rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
 rsiIncreasing = rsiClose > rsi2 and rsi1 < rsi2 - 1
 
-alert = rsiBottomed and rsi1 < buyRsi and (macdSlowingDown or macdBottomed)
+alert = rsiBottomed and rsi1 < buyRsi
 
 bgcolor(color=alert ? color.green : na, transp=85)
 
