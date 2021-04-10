@@ -33,7 +33,7 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 hiLowSlow = input(defval=45, title="Hi Low Slow", minval=0, step=1)
 hiLowSuperSlow = input(defval=68, title="Hi Low Super Slow", minval=0, step=1)
 
-buyLongZoneRsi = input(defval=52, title="Buy Long Zone RSI", minval=0, step=1)
+buyLongZoneRsi = input(defval=50, title="Buy Long Zone RSI", minval=0, step=1)
 // dramaticBuyLongZoneRSI = input(defval=31, title="Dramatic Buy Long Zone RSI", minval=0, step=1)
 rsiCloseLongZone = input(defval=64, title="Close Long Zone RSI", minval=0, step=1)
 
@@ -200,7 +200,7 @@ macdAbove0 = macd1 < 0
 rsiBottomed = rsiClose > rsi1 and rsi1 < rsi2 and rsiClose > rsi1 + 1
 rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
 rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
-rsiIncreasing = rsiClose > rsi2 and rsi1 < rsi2 - 1
+rsiIncreasing = rsiClose > rsi2 - 1
 // emaBottomed = 
 // newLow = low[1] < lowestFast1 and close > lowestFast1
 // newHigh = high[1] > highestFast2 and close < highestFast1

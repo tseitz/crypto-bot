@@ -24,7 +24,8 @@ export class KrakenWebhookOrder {
   async placeOrder() {
     try {
       // set up the order
-      this.order = new KrakenOrderDetails(await this.initOrder());
+      const orderDetails = await this.initOrder();
+      this.order = new KrakenOrderDetails(orderDetails);
 
       // execute the order
       return await this.openOrder(this.order);
