@@ -38,7 +38,7 @@ export class KrakenOrder {
         price: this.price,
         volume: this.volume,
         leverage: this.leverage,
-        validate: true,
+        // validate: true,
       };
     } else {
       return {
@@ -47,7 +47,7 @@ export class KrakenOrder {
         ordertype: this.ordertype,
         price: this.price,
         volume: this.volume,
-        validate: true,
+        // validate: true,
       };
     }
   }
