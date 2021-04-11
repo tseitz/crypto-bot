@@ -1,3 +1,5 @@
+type OrderAction = "buy" | "sell";
+
 export interface KrakenTradingViewBody {
   passphrase: string;
   time: string;
@@ -8,7 +10,7 @@ export interface KrakenTradingViewBody {
 }
 
 export interface KrakenTradingViewStrategyBody {
-  action: string;
+  action: OrderAction;
   description: string;
   price: string;
   txId?: string;
@@ -30,7 +32,22 @@ export interface BinanceTradingViewBody {
 }
 
 export interface BinanceTradingViewStrategyBody {
-  action: string;
+  action: OrderAction;
+  description: string;
+  price: string;
+}
+
+export interface GeminiTradingViewBody {
+  passphrase: string;
+  time: string;
+  exchange: string;
+  ticker: string;
+  interval: string;
+  strategy: GeminiTradingViewStrategyBody;
+}
+
+export interface GeminiTradingViewStrategyBody {
+  action: OrderAction;
   description: string;
   price: string;
 }

@@ -3,6 +3,7 @@ import cors from "cors";
 import schedule from "node-schedule";
 import { KrakenWebhookOrder } from "./models/kraken/KrakenWebhookOrder";
 import { BinanceWebhookOrder } from "./models/binance/BinanceWebhookOrder";
+import { GeminiWebhookOrder } from "./models/gemini/GeminiWebhookOrder";
 import { kraken } from "./services/krakenService";
 // import { handleUniswapOrder } from './services/uniswapService';
 import { KrakenTradingViewBody } from "./models/TradingViewBody";
@@ -29,14 +30,15 @@ app.get("/", (req, res) => {
 const queue: OrderQueue[] = [];
 let locked = {
   kraken: false,
-  binance: false
+  binance: false,
+  gemini: false,
 };
 
 app.post("/webhook/kraken", jsonParser, async (req, res) => {
   // force body to be JSON
   const body: KrakenTradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
-    console.log("Hey buddy, get out of here", req);
+    console.log("Hey buddy, get out of here", req.body);
     logBreak();
     return res.send("Hey buddy, get out of here");
   }
@@ -50,7 +52,7 @@ app.post("/webhook/kraken", jsonParser, async (req, res) => {
     const request = queue.shift();
     if (request) {
       console.log(
-        'Kraken',
+        "KRAKEN",
         request.body.ticker,
         request.body.strategy.action,
         request.body.strategy.description
@@ -87,7 +89,7 @@ app.post("/webhook/binance", jsonParser, async (req, res) => {
     const request = queue.shift();
     if (request) {
       console.log(
-        'Binance',
+        "BINANCE",
         request.body.ticker,
         request.body.strategy.action,
         request.body.strategy.description
@@ -104,7 +106,44 @@ app.post("/webhook/binance", jsonParser, async (req, res) => {
     locked.binance = false;
   }
   return;
-})
+});
+
+app.post("/webhook/gemini", jsonParser, async (req, res) => {
+  // force body to be JSON
+  const body: KrakenTradingViewBody = JSON.parse(JSON.stringify(req.body));
+  if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
+    console.log("Hey buddy, get out of here", req);
+    logBreak();
+    return res.send("Hey buddy, get out of here");
+  }
+
+  // queue it
+  queue.push({ body, res });
+  if (locked.gemini === true) return;
+
+  while (queue.length > 0) {
+    locked.gemini = true;
+    const request = queue.shift();
+    if (request) {
+      console.log(
+        "GEMINI",
+        request.body.ticker,
+        request.body.strategy.action,
+        request.body.strategy.description
+      );
+      const order = new GeminiWebhookOrder(request.body);
+      try {
+        request.res.send(await order.placeOrder());
+      } catch (error) {
+        console.log(error);
+        locked.gemini = false;
+      }
+    }
+    logBreak();
+    locked.gemini = false;
+  }
+  return;
+});
 
 app.get("/api/kraken/getOpenPositions", jsonParser, async (req, res) => {
   res.json(await kraken.getOpenPositions());

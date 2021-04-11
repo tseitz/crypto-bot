@@ -1,0 +1,17 @@
+study('Supertrend', overlay=true)
+
+factor = input(4, minval=1, maxval=100)
+pd = input(10, minval=1, maxval=100)
+
+up = hl2 - (factor * atr(pd))
+down = hl2 + (factor * atr(pd))
+
+trendUp = close[1] > trendUp[1] ? max(up, trendUp[1]) : up
+trendDown = close[1] < trendDown[1] ? min(down, trendDown[1]) : down
+
+trend = close > trendDown[1] ? 1 : close < trendUp[1] ? -1 : nz(trend[1], 1)
+tsi = trend == 1 ? trendUp : trendDown
+
+linecolor = trend == 1 ? green : red
+
+plot(tsi, color=linecolor, style=line, linewidth=2, title="Super Trend")

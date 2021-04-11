@@ -1,3 +1,5 @@
+/* Idk I'll  write my own Kraken API wrapper at some point */
+
 import { URL } from "url";
 import * as Path from "path";
 

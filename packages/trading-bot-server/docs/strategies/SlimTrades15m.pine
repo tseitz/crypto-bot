@@ -211,7 +211,7 @@ rsiIncreasing = rsiClose > rsi2 - 1
 slowCloseBelow = firstAction and close < lowestSuperSlow1
 slowCloseAbove = firstAction and close > highestSuperSlow1
 
-bgcolor(color=crazyVolume ? color.blue : na)
+// bgcolor(color=crazyVolume ? color.blue : na)
 
 switchToLong = isShort and firstAction and crazyVolume and greenCandle
 

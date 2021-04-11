@@ -1,4 +1,4 @@
-import { KrakenTradingViewBody } from "../TradingViewBody";
+import { BinanceTradingViewBody } from "../TradingViewBody";
 import BinanceOrderDetails from "./BinanceOrderDetails";
 import { StrategyParamsJson } from "../StrategyParams";
 
@@ -19,11 +19,11 @@ const binanceOpts = {
 const binance = new Binance().options(binanceOpts);
 
 export class BinanceWebhookOrder {
-  requestBody: KrakenTradingViewBody;
+  requestBody: BinanceTradingViewBody;
   tradingViewTicker: string;
   order?: BinanceOrderDetails;
 
-  constructor(requestBody: KrakenTradingViewBody) {
+  constructor(requestBody: BinanceTradingViewBody) {
     this.requestBody = requestBody;
     this.tradingViewTicker = requestBody.ticker;
   }
@@ -35,6 +35,7 @@ export class BinanceWebhookOrder {
         0.025, // TODO: calc this
         this.requestBody.strategy.price
       );
+      console.log(order);
 
       return order;
     } catch (error) {

@@ -28,6 +28,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "ethers": "^5.0.20",
     "express": "^4.17.1",
+    "gemini-node-api": "^3.1.2",
     "kraken-wrapper": "^1.0.1",
     "mongodb": "^3.6.3",
     "node-binance-api": "^0.12.2",
