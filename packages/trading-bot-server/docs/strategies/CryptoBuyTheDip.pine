@@ -57,10 +57,10 @@ macdAbove0 = macd1 < 0
 rsiBottomed = rsiClose > rsi1 and rsi1 < rsi2 and rsiClose > rsi1 + 1
 rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
 rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
-rsiIncreasing = rsiClose > rsi2 and rsi1 < rsi2 - 1
+rsiIncreasing = rsiClose > rsi2 - 1
 
-alert = rsiBottomed and rsi1 < buyRsi and (macdSlowingDown or macdBottomed)
+alert = rsiBottomed and rsiIncreasing and rsi1 < buyRsi and (macdSlowingDown or macdBottomed)
 
-bgcolor(color=alert ? color.green : na, transp=85)
+bgcolor(color=alert ? color.green : na, transp=60)
 
 alertcondition(alert, 'Buy!', 'Buy!')
