@@ -75,7 +75,7 @@ app.post("/webhook/binance", jsonParser, async (req, res) => {
   // force body to be JSON
   const body: KrakenTradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
-    console.log("Hey buddy, get out of here", req);
+    console.log("Hey buddy, get out of here", req.body);
     logBreak();
     return res.send("Hey buddy, get out of here");
   }
@@ -112,7 +112,7 @@ app.post("/webhook/gemini", jsonParser, async (req, res) => {
   // force body to be JSON
   const body: KrakenTradingViewBody = JSON.parse(JSON.stringify(req.body));
   if (!body || body.passphrase !== process.env.TRADING_VIEW_PASSPHRASE) {
-    console.log("Hey buddy, get out of here", req);
+    console.log("Hey buddy, get out of here", req.body);
     logBreak();
     return res.send("Hey buddy, get out of here");
   }
