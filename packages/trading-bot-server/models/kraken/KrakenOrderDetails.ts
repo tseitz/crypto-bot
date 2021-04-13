@@ -254,14 +254,13 @@ export default class KrakenOrderDetails {
       if (this.positionSize) {
         return this.positionSize;
       } else {
-        return this.strategyParams.entrySize;
+        return this.originalEntry;
       }
     } else {
       if (this.positionSize) {
-        return this.positionSize; // * this.shortZoneDeleverage;
+        return this.positionSize;
       } else {
-        // not adding shorts for now, so calc the total
-        return this.originalEntry + this.originalAdd;
+        return this.originalEntry;
       }
     }
   }
