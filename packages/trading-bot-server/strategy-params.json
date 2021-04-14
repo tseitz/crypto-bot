@@ -11,10 +11,10 @@
     "leverage": 5,
     "entrySize": 10,
     "addSize": 8,
-    "latestResult": 59.97,
-    "totalTrades": 290,
-    "percentProfitable": 74.48,
-    "avgTrade": 0.21
+    "latestResult": 63.26,
+    "totalTrades": 166,
+    "percentProfitable": 72.29,
+    "avgTrade": 0.38
   },
   "DOTUSDT": {
     "leverage": 3,
@@ -26,8 +26,8 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 20,
-    "addSize": 17,
+    "entrySize": 22,
+    "addSize": 20,
     "latestResult": 137.01,
     "totalTrades": 155,
     "percentProfitable": 77.42,
@@ -51,7 +51,7 @@
   },
   "XTZUSDT": {
     "leverage": 3,
-    "entrySize": 20,
+    "entrySize": 18,
     "addSize": 18,
     "latestResult": 245.2,
     "totalTrades": 288,
