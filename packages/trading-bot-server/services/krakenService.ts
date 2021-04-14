@@ -547,8 +547,9 @@ class KrakenService {
       // openOrder.descr.pair === krakenOrder.krakenizedPair &&
       // openOrder.descr.type === krakenOrder.type
     ) {
-      console.log("Limit not picked up. Switching to market order");
-      console.log(`Try ${count}`);
+      console.log(
+        `Limit not picked up. Switching to market order. Try: ${count}`
+      );
 
       await this.kraken.setCancelOrder({ txid: krakenOrder.orderId });
 
@@ -582,7 +583,7 @@ class KrakenService {
 
     if (
       closedOrder?.reason?.toLowerCase() == "insufficient margin" &&
-      count < 10
+      count < 9
     ) {
       console.log("Order closed due to insufficient margin. Trying again");
       console.log(`Try ${count}`);
