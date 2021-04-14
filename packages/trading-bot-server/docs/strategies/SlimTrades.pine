@@ -52,7 +52,7 @@ closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, 
 longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=8) * 0.01
 // shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
 
-addPercDiff = input(title="Add % Diff", type=input.float, minval=0.0, step=0.1, defval=0.13) * 0.01
+addPercDiff = input(title="Add % Diff", type=input.float, minval=0.0, step=0.01, defval=0.13) * 0.01
 
 // closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0, step=0.1, defval=0.4) * 0.01
 

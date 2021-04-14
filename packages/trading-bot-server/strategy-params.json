@@ -9,7 +9,7 @@
   },
   "BTCUSDT": {
     "leverage": 5,
-    "entrySize": 10,
+    "entrySize": 8,
     "addSize": 8,
     "latestResult": 63.26,
     "totalTrades": 166,
@@ -51,8 +51,8 @@
   },
   "XTZUSDT": {
     "leverage": 3,
-    "entrySize": 18,
-    "addSize": 18,
+    "entrySize": 15,
+    "addSize": 15,
     "latestResult": 267.69,
     "totalTrades": 196,
     "percentProfitable": 80.1,
