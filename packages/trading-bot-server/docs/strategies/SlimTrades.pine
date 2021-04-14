@@ -44,7 +44,7 @@ rsiCloseShortZone = input(defval=72, title="Close Short Zone RSI", minval=0, ste
 shortShortZoneRsi = input(defval=69, title="Short Short Zone RSI", minval=0, step=1)
 rsiCloseShortShortZone = input(defval=16, title="Close Short Zone RSI", minval=0, step=1)
 
-maxAdds = input(defval=2, title="Max Adds", minval=0, step=1)
+maxAdds = input(defval=3, title="Max Adds", minval=0, step=1)
 
 macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
 
@@ -52,6 +52,9 @@ longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0,
 shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
 
 addPercDiff = input(title="Add % Diff", type=input.float, minval=0.0, step=0.1, defval=0.13) * 0.01
+
+// closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0, step=0.1, defval=0.4) * 0.01
+closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.4) * 0.01
 
 showSlow = input(defval=true, title="Show Slow", type=input.bool)
 addOnLows = input(defval=false, title="Add On Lows", type=input.bool)
@@ -85,6 +88,9 @@ shortStopPrice := if (strategy.position_size < 0)
     min(stopValue, shortStopPrice[1])
 else
     999999
+
+
+closeLongAfter = strategy.position_avg_price * (1 + (1 * closeLongPerc))
 
 
 // MACD and RSI
@@ -229,10 +235,10 @@ reopenLow = reopenOnHighs and low < lowestSlow2
 longZoneSetup = longZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openLongZoneRsi))
 shortZoneSetup = shortZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openShortZoneRsi))
 
-addLongZoneSetup = longZone and longCount <= maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addLongZoneRsi))))
-addShortZoneSetup = shortZone and longCount <= maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addShortZoneRsi))))
+addLongZoneSetup = longZone and longCount < maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addLongZoneRsi))))
+addShortZoneSetup = shortZone and longCount < maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addShortZoneRsi))))
 
-closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone) or (low < longStopPrice)
+closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (low < longStopPrice)
 closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone) or (low < longStopPrice)
 
 // shortSetup = shortZone and ((rsiTopped and ((macdTopped and (higherMacd2)) or (macdSlowingDown and rsiDecreasing))))

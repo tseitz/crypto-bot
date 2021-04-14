@@ -27,11 +27,11 @@
   "ETHUSDT": {
     "leverage": 5,
     "entrySize": 20,
-    "addSize": 18,
-    "latestResult": 121.42,
-    "totalTrades": 232,
-    "percentProfitable": 80.17,
-    "avgTrade": 0.52
+    "addSize": 17,
+    "latestResult": 137.01,
+    "totalTrades": 155,
+    "percentProfitable": 77.42,
+    "avgTrade": 0.88
   },
   "LINKUSDT": {
     "leverage": 3,
@@ -51,11 +51,11 @@
   },
   "XRPUSDT": {
     "leverage": 5,
-    "entrySize": 20,
-    "addSize": 15,
-    "latestResult": 283.64,
-    "totalTrades": 298,
-    "percentProfitable": 73.49,
-    "avgTrade": 0.95
+    "entrySize": 25,
+    "addSize": 20,
+    "latestResult": 436.15,
+    "totalTrades": 217,
+    "percentProfitable": 76.96,
+    "avgTrade": 2.01
   }
 }
