@@ -9,11 +9,12 @@
   },
   "BTCUSDT": {
     "leverage": 5,
-    "entrySize": 120,
-    "latestResult": 683.89,
-    "totalTrades": 323,
-    "percentProfitable": 41.8,
-    "avgTrade": 2.12
+    "entrySize": 10,
+    "addSize": 8,
+    "latestResult": 59.97,
+    "totalTrades": 290,
+    "percentProfitable": 74.48,
+    "avgTrade": 0.21
   },
   "DOTUSDT": {
     "leverage": 3,
@@ -25,7 +26,7 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 25,
+    "entrySize": 20,
     "addSize": 18,
     "latestResult": 121.42,
     "totalTrades": 232,
@@ -47,5 +48,14 @@
     "totalTrades": 205,
     "percentProfitable": 44.39,
     "avgTrade": 9.17
+  },
+  "XRPUSDT": {
+    "leverage": 5,
+    "entrySize": 20,
+    "addSize": 15,
+    "latestResult": 283.64,
+    "totalTrades": 298,
+    "percentProfitable": 73.49,
+    "avgTrade": 0.95
   }
 }

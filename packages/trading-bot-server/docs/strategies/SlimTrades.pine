@@ -38,7 +38,7 @@ openLongZoneRsi = input(defval=52, title="Open Long Zone RSI", minval=0, step=1)
 openShortZoneRsi = input(defval=39, title="Open Short Zone RSI", minval=0, step=1)
 addLongZoneRsi = input(defval=46, title="Add Long Zone RSI", minval=0, step=1)
 addShortZoneRsi = input(defval=29, title="Add Short Zone RSI", minval=0, step=1)
-rsiCloseLongZone = input(defval=72, title="Close Long Zone RSI", minval=0, step=1)
+rsiCloseLongZone = input(defval=73, title="Close Long Zone RSI", minval=0, step=1)
 rsiCloseShortZone = input(defval=72, title="Close Short Zone RSI", minval=0, step=1)
 
 shortShortZoneRsi = input(defval=69, title="Short Short Zone RSI", minval=0, step=1)
@@ -232,8 +232,8 @@ shortZoneSetup = shortZone and (((rsiBottomed and macdBottomed and lowerMacd2) o
 addLongZoneSetup = longZone and longCount <= maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addLongZoneRsi))))
 addShortZoneSetup = shortZone and longCount <= maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addShortZoneRsi))))
 
-closeLongZoneSetup = (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone) or (low < longStopPrice)
-closeShortZoneSetup = (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone) or (low < longStopPrice)
+closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone) or (low < longStopPrice)
+closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone) or (low < longStopPrice)
 
 // shortSetup = shortZone and ((rsiTopped and ((macdTopped and (higherMacd2)) or (macdSlowingDown and rsiDecreasing))))
 // addShortZoneSetup = shortZone and ((rsiTopped and (macdTopped or (macdSlowingDown and rsiDecreasing)) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
