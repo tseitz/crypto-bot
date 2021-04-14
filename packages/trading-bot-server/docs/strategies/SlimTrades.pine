@@ -41,24 +41,24 @@ addShortZoneRsi = input(defval=29, title="Add Short Zone RSI", minval=0, step=1)
 rsiCloseLongZone = input(defval=73, title="Close Long Zone RSI", minval=0, step=1)
 rsiCloseShortZone = input(defval=72, title="Close Short Zone RSI", minval=0, step=1)
 
-shortShortZoneRsi = input(defval=69, title="Short Short Zone RSI", minval=0, step=1)
-rsiCloseShortShortZone = input(defval=16, title="Close Short Zone RSI", minval=0, step=1)
+// shortShortZoneRsi = input(defval=69, title="Short Short Zone RSI", minval=0, step=1)
+// rsiCloseShortShortZone = input(defval=16, title="Close Short Zone RSI", minval=0, step=1)
 
-maxAdds = input(defval=3, title="Max Adds", minval=0, step=1)
+maxAdds = 3 // input(defval=3, title="Max Adds", minval=0, step=1)
 
-macdLength = input(defval=30, title="MACD Bars", minval=0, step=5)
+macdLength = 30 // input(defval=30, title="MACD Bars", minval=0, step=5)
 
+closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.4) * 0.01
 longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=8) * 0.01
-shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
+// shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
 
 addPercDiff = input(title="Add % Diff", type=input.float, minval=0.0, step=0.1, defval=0.13) * 0.01
 
 // closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0, step=0.1, defval=0.4) * 0.01
-closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.4) * 0.01
 
 showSlow = input(defval=true, title="Show Slow", type=input.bool)
-addOnLows = input(defval=false, title="Add On Lows", type=input.bool)
-reopenOnHighs = input(defval=false, title="Reopen on new highs", type=input.bool)
+// addOnLows = input(defval=false, title="Add On Lows", type=input.bool)
+// reopenOnHighs = input(defval=false, title="Reopen on new highs", type=input.bool)
 allowFastMacdLongs = input(defval=true, title="Fast Macd Longs", type=input.bool)
 // dramaticRsis = input(defval=true, title="Dramatic RSIs", type=input.bool)
 
@@ -81,13 +81,13 @@ longStopPrice := if (strategy.position_size > 0)
 else
     0
 
-shortStopPrice = 0.0
+// shortStopPrice = 0.0
 
-shortStopPrice := if (strategy.position_size < 0)
-    stopValue = strategy.position_avg_price * (1 + shortTrailPerc)
-    min(stopValue, shortStopPrice[1])
-else
-    999999
+// shortStopPrice := if (strategy.position_size < 0)
+//     stopValue = strategy.position_avg_price * (1 + shortTrailPerc)
+//     min(stopValue, shortStopPrice[1])
+// else
+//     999999
 
 
 closeLongAfter = strategy.position_avg_price * (1 + (1 * closeLongPerc))
@@ -223,8 +223,8 @@ highestPrevMacd = higherMacd2 and macd < highestMacd
 
 // addLow = (addOnLows and newLow)
 // addHigh = (addOnLows and newHigh)
-reopenHigh = reopenOnHighs and high > highestSlow2
-reopenLow = reopenOnHighs and low < lowestSlow2
+// reopenHigh = reopenOnHighs and high > highestSlow2
+// reopenLow = reopenOnHighs and low < lowestSlow2
 
 // if addHigh
 //     addHighCount := addHighCount + 1
@@ -316,8 +316,8 @@ strategy.close("long", when=closeLong and isWithinTimeBounds)
 if (strategy.position_size > 0)
     strategy.exit("stop close", "long", stop=longStopPrice)
 
-if (strategy.position_size < 0)
-    strategy.exit("stop close", "short", stop=shortStopPrice)
+// if (strategy.position_size < 0)
+//     strategy.exit("stop close", "short", stop=shortStopPrice)
 
 if (strategy.position_size == 0)
     isLong := false

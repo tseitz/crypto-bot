@@ -49,13 +49,13 @@
     "percentProfitable": 44.39,
     "avgTrade": 9.17
   },
-  "XRPUSDT": {
-    "leverage": 5,
-    "entrySize": 25,
-    "addSize": 20,
-    "latestResult": 436.15,
-    "totalTrades": 217,
-    "percentProfitable": 76.96,
-    "avgTrade": 2.01
+  "XTZUSDT": {
+    "leverage": 3,
+    "entrySize": 20,
+    "addSize": 18,
+    "latestResult": 245.2,
+    "totalTrades": 288,
+    "percentProfitable": 76.39,
+    "avgTrade": 0.85
   }
 }
