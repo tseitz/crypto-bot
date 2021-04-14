@@ -214,10 +214,13 @@ class KrakenService {
     // }
 
     if (add) {
-      // const addCount =
-      //   parseInt(
-      //     ((Math.floor(positionMargin) - order.entrySize) / order.originalAdd).toFixed(0)
-      //   ) + 1;
+      const addCount =
+        parseInt(
+          (
+            (Math.floor(positionMargin) - order.entrySize) /
+            order.originalAdd
+          ).toFixed(0)
+        ) + 1;
       // const minAdds = positionMargin >= order.maxInitialPositionSizeInDollar;
       // const tooMuch = positionMargin >= order.maxPositionSizeInDollar;
 
@@ -236,9 +239,6 @@ class KrakenService {
 
       // if ahead of average price (aka bid price > average), lower add value, otherwise, raise add value
       // this attempts to bring the average down when behind and add smaller when ahead
-      console.log(percentDiff);
-      console.log(order.action);
-      console.log(order.action === "sell" ? percentDiff * -1 : percentDiff);
       percentDiff = order.action === "sell" ? percentDiff * -1 : percentDiff;
       const boostPercentDiff = percentDiff * -4.2;
       const boost = parseFloat((1 + boostPercentDiff / 100).toFixed(4));
@@ -264,7 +264,9 @@ class KrakenService {
           2
         )} | ${boost}x | ${incrementalAddDollar}`
       );
-      console.log(`Position: ${myPositionAfter} | ${marginPositionAfter}`);
+      console.log(
+        `Position: ${myPositionAfter} | ${marginPositionAfter} | ${addCount}`
+      );
 
       const krakenOrder = new KrakenOrder({
         pair: order.krakenizedTicker,

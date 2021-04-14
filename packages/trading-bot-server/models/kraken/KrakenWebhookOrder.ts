@@ -85,14 +85,14 @@ export class KrakenWebhookOrder {
           result = await kraken.handleLeveragedOrder(order);
         }, 5000);
 
-        // just wait this one out for now
-        setTimeout(async () => {
-          // Reset order details based on above order. Mostly margin free...
-          // TODO: this needs improved
-          const newOrderInfo = await this.initOrder();
-          const order = new KrakenOrderDetails(newOrderInfo);
-          result = await kraken.handleBags(order);
-        }, 105000);
+        // // just wait this one out for now
+        // setTimeout(async () => {
+        //   // Reset order details based on above order. Mostly margin free...
+        //   // TODO: this needs improved
+        //   const newOrderInfo = await this.initOrder();
+        //   const order = new KrakenOrderDetails(newOrderInfo);
+        //   result = await kraken.handleBags(order);
+        // }, 105000);
       } else {
         result = await kraken.handleBags(order);
       }
