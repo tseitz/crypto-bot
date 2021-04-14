@@ -11,10 +11,11 @@
     "leverage": 5,
     "entrySize": 8,
     "addSize": 8,
-    "latestResult": 63.26,
-    "totalTrades": 166,
-    "percentProfitable": 72.29,
-    "avgTrade": 0.38
+    "maxAdds": 5,
+    "latestResult": 99.81,
+    "totalTrades": 201,
+    "percentProfitable": 79.1,
+    "avgTrade": 0.5
   },
   "DOTUSDT": {
     "leverage": 3,
@@ -28,10 +29,11 @@
     "leverage": 5,
     "entrySize": 22,
     "addSize": 20,
-    "latestResult": 137.01,
-    "totalTrades": 155,
-    "percentProfitable": 77.42,
-    "avgTrade": 0.88
+    "maxAdds": 4,
+    "latestResult": 181.37,
+    "totalTrades": 160,
+    "percentProfitable": 82.5,
+    "avgTrade": 1.13
   },
   "LINKUSDT": {
     "leverage": 3,
@@ -51,11 +53,12 @@
   },
   "XTZUSDT": {
     "leverage": 3,
-    "entrySize": 15,
-    "addSize": 15,
-    "latestResult": 267.69,
-    "totalTrades": 196,
-    "percentProfitable": 80.1,
-    "avgTrade": 1.37
+    "entrySize": 12,
+    "addSize": 12,
+    "maxAdds": 1,
+    "latestResult": 140.78,
+    "totalTrades": 119,
+    "percentProfitable": 77.31,
+    "avgTrade": 1.18
   }
 }

@@ -24,7 +24,7 @@ var lastRsi = 0.0
 
 
 // INPUTS
-daysBackMax = input(defval=60, title="Max Days Back to Test", minval=0)
+daysBackMax = input(defval=18, title="Max Days Back to Test", minval=0)
 daysBackMin = 0
 msBackMax = 1000 * 60 * 60 * 24 * daysBackMax
 msBackMin = 1000 * 60 * 60 * 24 * daysBackMin
@@ -35,24 +35,24 @@ hiLowSlow = input(defval=420, title="Hi Low Long", minval=0, step=10)
 // hiLowSuperSlow = input(defval=650, title="Hi Low Super Long", minval=0, step=50)
 
 openLongZoneRsi = input(defval=52, title="Open Long Zone RSI", minval=0, step=1)
-openShortZoneRsi = input(defval=39, title="Open Short Zone RSI", minval=0, step=1)
-addLongZoneRsi = input(defval=46, title="Add Long Zone RSI", minval=0, step=1)
-addShortZoneRsi = input(defval=29, title="Add Short Zone RSI", minval=0, step=1)
-rsiCloseLongZone = input(defval=73, title="Close Long Zone RSI", minval=0, step=1)
+openShortZoneRsi = input(defval=29, title="Open Short Zone RSI", minval=0, step=1)
+addLongZoneRsi = input(defval=42, title="Add Long Zone RSI", minval=0, step=1)
+addShortZoneRsi = input(defval=33, title="Add Short Zone RSI", minval=0, step=1)
+rsiCloseLongZone = input(defval=72, title="Close Long Zone RSI", minval=0, step=1)
 rsiCloseShortZone = input(defval=72, title="Close Short Zone RSI", minval=0, step=1)
 
 // shortShortZoneRsi = input(defval=69, title="Short Short Zone RSI", minval=0, step=1)
 // rsiCloseShortShortZone = input(defval=16, title="Close Short Zone RSI", minval=0, step=1)
 
-maxAdds = 3 // input(defval=3, title="Max Adds", minval=0, step=1)
+maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
 
 macdLength = 30 // input(defval=30, title="MACD Bars", minval=0, step=5)
 
-closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.1, defval=1.4) * 0.01
-longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=8) * 0.01
+closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.05, defval=1.35) * 0.01
+longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.5, defval=8) * 0.01
 // shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
 
-addPercDiff = input(title="Add % Diff", type=input.float, minval=0.0, step=0.01, defval=0.13) * 0.01
+addPercDiff = input(title="Add % Diff", type=input.float, minval=0.0, step=0.01, defval=0.12) * 0.01
 
 // closeShortPerc = input(title="Close Short Min (%)", type=input.float, minval=0.0, step=0.1, defval=0.4) * 0.01
 
@@ -167,10 +167,10 @@ plot(series=showSlow ? highestSlow1 : na, color=color.green, linewidth=2)
 plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=2)
 
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
-oneSlowLow = low < lowestSlow1 and low < lowestSlow2
-oneSlowHigh = high > highestSlow1 and high > highestSlow2
-twoSlowLows = low[1] < lowestSlow2 and oneSlowLow
-twoSlowHighs = high[1] > highestSlow2 and oneSlowHigh
+oneSlowLow = close < lowestSlow1 and close < lowestSlow2
+oneSlowHigh = close > highestSlow1 and close > highestSlow2
+// twoSlowLows = oneSlowLow[1] and oneSlowLow
+// twoSlowHighs = oneSlowHigh[1] and oneSlowHigh
 // oneFastLow = longZone and low < lowestFast2
 // oneFastHigh = shortZone and high > highestFast2
 
@@ -182,7 +182,7 @@ if oneSlowLow
 if oneSlowHigh
     highSlowCount := highSlowCount + 1
 
-if lowSlowCount == 3
+if lowSlowCount == 2
     firstAction := longZone or firstAction
     shortZone := true
     longZone := false
@@ -191,7 +191,7 @@ if lowSlowCount == 3
     highFastCount := 0
     lowFastCount := 0
 
-if highSlowCount == 3
+if highSlowCount == 2
     firstAction := shortZone or firstAction
     longZone := true
     shortZone := false
@@ -204,6 +204,7 @@ bgColor2 = shortZone ? color.red : longZone ? color.green : na
 bgcolor(color=bgColor2, transp=85)
 plotshape(shortZone, title="shortzone", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.red, textcolor=color.white, transp=0, display=display.none)
 
+// bgcolor(color=close < prevPriceLow ? color.blue : na)
 
 // HELPER VARIABLES
 macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
@@ -235,8 +236,8 @@ highestPrevMacd = higherMacd2 and macd < highestMacd
 longZoneSetup = longZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openLongZoneRsi))
 shortZoneSetup = shortZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openShortZoneRsi))
 
-addLongZoneSetup = longZone and longCount < maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addLongZoneRsi))))
-addShortZoneSetup = shortZone and longCount < maxAdds and open < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and ((lowerMacd2) and (rsi1 < addShortZoneRsi))))
+addLongZoneSetup = longZone and longCount < maxAdds and close < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and (rsi1 < addLongZoneRsi)))
+addShortZoneSetup = shortZone and longCount < maxAdds and close < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and (rsi1 < addShortZoneRsi)))
 
 closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (low < longStopPrice)
 closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone) or (low < longStopPrice)
