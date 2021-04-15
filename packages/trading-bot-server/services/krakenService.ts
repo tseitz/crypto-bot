@@ -137,7 +137,7 @@ class KrakenService {
     if (checkOrder) {
       setTimeout(async () => {
         this.checkOrder(krakenOrder, 1);
-      }, 90000);
+      }, 75000);
     }
 
     logOrderResult(desc, result, krakenOrder.pair);
@@ -265,7 +265,9 @@ class KrakenService {
         )} | ${boost}x | ${incrementalAddDollar}`
       );
       console.log(
-        `Position: ${myPositionAfter} | ${marginPositionAfter} | ${addCount}`
+        `Position: ${
+          addCount + 1
+        } | ${myPositionAfter} | ${marginPositionAfter}`
       );
 
       const krakenOrder = new KrakenOrder({
