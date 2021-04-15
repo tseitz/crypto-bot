@@ -585,8 +585,9 @@ class KrakenService {
       closedOrder?.reason?.toLowerCase() == "insufficient margin" &&
       count < 9
     ) {
-      console.log("Order closed due to insufficient margin. Trying again");
-      console.log(`Try ${count}`);
+      console.log(
+        `Trying again... Order closed due to insufficient margin. Try ${count}`
+      );
 
       // Try again with original limit order
       const result = await this.placeOrder(krakenOrder, `ORDER`);
