@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
 });
 
 const queue: OrderQueue[] = [];
+let krakenLocked = false;
 let locked = {
   kraken: false,
   binance: false,
@@ -45,10 +46,10 @@ app.post("/webhook/kraken", jsonParser, async (req, res) => {
 
   // queue it
   queue.push({ body, res });
-  if (locked.kraken === true) return;
+  if (krakenLocked === true) return;
 
   while (queue.length > 0) {
-    locked.kraken = true;
+    krakenLocked = true;
     const request = queue.shift();
     if (request) {
       console.log(
@@ -62,11 +63,11 @@ app.post("/webhook/kraken", jsonParser, async (req, res) => {
         request.res.send(await order.placeOrder());
       } catch (error) {
         console.log(error);
-        locked.kraken = false;
+        krakenLocked = false;
       }
     }
     logBreak();
-    locked.kraken = false;
+    krakenLocked = false;
   }
   return;
 });
