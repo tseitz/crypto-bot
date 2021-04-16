@@ -9,9 +9,9 @@
   },
   "BTCUSDT": {
     "leverage": 5,
-    "entrySize": 8,
-    "addSize": 8,
-    "maxAdds": 5,
+    "entrySize": 9,
+    "addSize": 9,
+    "maxAdds": 4,
     "latestResult": 99.81,
     "totalTrades": 201,
     "percentProfitable": 79.1,
@@ -27,8 +27,8 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 24,
-    "addSize": 22,
+    "entrySize": 23,
+    "addSize": 21,
     "maxAdds": 4,
     "latestResult": 181.37,
     "totalTrades": 160,
@@ -37,11 +37,13 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 160,
-    "latestResult": 1504.49,
-    "totalTrades": 333,
-    "percentProfitable": 45.95,
-    "avgTrade": 4.52
+    "entrySize": 12,
+    "addSize": 12,
+    "maxAdds": 3,
+    "latestResult": 176.95,
+    "totalTrades": 144,
+    "percentProfitable": 78.47,
+    "avgTrade": 1.23
   },
   "UNIWETH": {
     "leverage": 1,
@@ -53,8 +55,8 @@
   },
   "XTZUSDT": {
     "leverage": 3,
-    "entrySize": 15,
-    "addSize": 15,
+    "entrySize": 14,
+    "addSize": 14,
     "maxAdds": 1,
     "latestResult": 140.78,
     "totalTrades": 119,
