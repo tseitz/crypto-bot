@@ -53,8 +53,8 @@
   },
   "XTZUSDT": {
     "leverage": 3,
-    "entrySize": 12,
-    "addSize": 12,
+    "entrySize": 15,
+    "addSize": 15,
     "maxAdds": 1,
     "latestResult": 140.78,
     "totalTrades": 119,
