@@ -27,23 +27,23 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 26,
-    "addSize": 20,
+    "entrySize": 22,
+    "addSize": 23,
     "maxAdds": 4,
-    "latestResult": 181.37,
-    "totalTrades": 160,
-    "percentProfitable": 82.5,
-    "avgTrade": 1.13
+    "latestResult": 146.29,
+    "totalTrades": 172,
+    "percentProfitable": 72.67,
+    "avgTrade": 0.85
   },
   "LINKUSDT": {
     "leverage": 3,
     "entrySize": 14,
     "addSize": 14,
     "maxAdds": 3,
-    "latestResult": 176.95,
-    "totalTrades": 144,
-    "percentProfitable": 78.47,
-    "avgTrade": 1.23
+    "latestResult": 108.93,
+    "totalTrades": 155,
+    "percentProfitable": 70.32,
+    "avgTrade": 0.7
   },
   "UNIWETH": {
     "leverage": 1,
