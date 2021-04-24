@@ -38,7 +38,7 @@ openLongZoneRsi = input(defval=52, title="Open Long Zone RSI", minval=0, step=1)
 openShortZoneRsi = input(defval=29, title="Open Short Zone RSI", minval=0, step=1)
 addLongZoneRsi = input(defval=45, title="Add Long Zone RSI", minval=0, step=1)
 addShortZoneRsi = input(defval=33, title="Add Short Zone RSI", minval=0, step=1)
-rsiCloseLongZone = input(defval=73, title="Close Long Zone RSI", minval=0, step=1)
+rsiCloseLongZone = input(defval=72, title="Close Long Zone RSI", minval=0, step=1)
 rsiCloseShortZone = input(defval=71, title="Close Short Zone RSI", minval=0, step=1)
 
 // shortShortZoneRsi = input(defval=69, title="Short Short Zone RSI", minval=0, step=1)

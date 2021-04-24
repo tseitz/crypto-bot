@@ -30,15 +30,15 @@
     "entrySize": 20,
     "addSize": 20,
     "maxAdds": 4,
-    "latestResult": 146.29,
-    "totalTrades": 172,
-    "percentProfitable": 72.67,
-    "avgTrade": 0.85
+    "latestResult": 147.68,
+    "totalTrades": 219,
+    "percentProfitable": 72.6,
+    "avgTrade": 0.67
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 12,
-    "addSize": 12,
+    "entrySize": 10,
+    "addSize": 10,
     "maxAdds": 3,
     "latestResult": 108.93,
     "totalTrades": 155,
