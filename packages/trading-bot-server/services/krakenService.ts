@@ -182,7 +182,7 @@ class KrakenService {
       console.log("Flipping");
       if (positionMargin > order.marginFree) {
         console.log("Margin level too low. Settling first");
-        await this.settleLeveragedOrder(order);
+        latestResult = await this.settleLeveragedOrder(order);
         orderVolume = order.tradeVolume; // reset back to just order volume
       }
 
@@ -196,7 +196,7 @@ class KrakenService {
         leverage: order.leverageAmount,
       });
 
-      await this.placeOrder(krakenOrder, `ORDER Flipped`);
+      latestResult = await this.placeOrder(krakenOrder, `ORDER Flipped`);
 
       return;
     }
@@ -280,7 +280,7 @@ class KrakenService {
         leverage: order.leverageAmount,
       });
 
-      await this.placeOrder(krakenOrder);
+      latestResult = await this.placeOrder(krakenOrder);
     } else if (!add) {
       console.log(
         `New Entry: ${order.entrySize} | ${
@@ -298,7 +298,7 @@ class KrakenService {
         leverage: order.leverageAmount,
       });
 
-      await this.placeOrder(krakenOrder);
+      latestResult = await this.placeOrder(krakenOrder);
     }
 
     return latestResult;
