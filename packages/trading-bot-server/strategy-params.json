@@ -27,8 +27,8 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 20,
-    "addSize": 20,
+    "entrySize": 22,
+    "addSize": 21,
     "maxAdds": 4,
     "latestResult": 147.68,
     "totalTrades": 219,
@@ -37,8 +37,8 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 10,
-    "addSize": 10,
+    "entrySize": 12,
+    "addSize": 12,
     "maxAdds": 3,
     "latestResult": 108.93,
     "totalTrades": 155,
