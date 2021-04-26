@@ -171,35 +171,36 @@ class KrakenService {
         order.action !== position.type
       ) {
         flip = true;
+        console.log(position);
         positionMargin += parseFloat(position.margin);
         positionVolume += parseFloat(position.vol);
       }
     }
 
-    if (flip) {
-      let orderVolume = positionVolume + order.tradeVolume; // to flip
+    // if (flip) {
+    //   let orderVolume = positionVolume + order.tradeVolume; // to flip
 
-      console.log("Flipping");
-      if (positionMargin > order.marginFree) {
-        console.log("Margin level too low. Settling first");
-        latestResult = await this.settleLeveragedOrder(order);
-        orderVolume = order.tradeVolume; // reset back to just order volume
-      }
+    //   console.log("Flipping");
+    //   if (positionMargin > order.marginFree) {
+    //     console.log("Margin level too low. Settling first");
+    //     latestResult = await this.settleLeveragedOrder(order);
+    //     orderVolume = order.tradeVolume; // reset back to just order volume
+    //   }
 
-      const krakenOrder = new KrakenOrder({
-        pair: order.krakenTicker,
-        krakenizedPair: order.krakenizedTradingViewTicker,
-        type: order.action,
-        ordertype: "limit",
-        price: order.bidPrice,
-        volume: orderVolume,
-        leverage: order.leverageAmount,
-      });
+    //   const krakenOrder = new KrakenOrder({
+    //     pair: order.krakenTicker,
+    //     krakenizedPair: order.krakenizedTradingViewTicker,
+    //     type: order.action,
+    //     ordertype: "limit",
+    //     price: order.bidPrice,
+    //     volume: orderVolume,
+    //     leverage: order.leverageAmount,
+    //   });
 
-      latestResult = await this.placeOrder(krakenOrder, `ORDER Flipped`);
+    //   latestResult = await this.placeOrder(krakenOrder, `ORDER Flipped`);
 
-      return;
-    }
+    //   return;
+    // }
 
     // if (order.marginFree < order.lowestLeverageMargin) {
     //   console.log("Margin level too low, selling some.");
