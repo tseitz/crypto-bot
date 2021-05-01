@@ -137,7 +137,7 @@ class KrakenService {
     if (checkOrder) {
       setTimeout(async () => {
         this.checkOrder(krakenOrder, 1);
-      }, 90000);
+      }, 100000);
     }
 
     logOrderResult(desc, result, krakenOrder.pair);
@@ -153,9 +153,9 @@ class KrakenService {
     let { openPositions } = await this.getOpenPositions();
 
     let add = false;
-    let flip = false;
+    // let flip = false;
     let positionMargin = 0;
-    let positionVolume = 0;
+    // let positionVolume = 0;
     let prices: number[] = [];
     for (const key in openPositions) {
       const position = openPositions[key];
@@ -170,10 +170,10 @@ class KrakenService {
         order.krakenTicker === position.pair &&
         order.action !== position.type
       ) {
-        flip = true;
-        console.log(position);
+        // flip = true;
+        // console.log(position);
         positionMargin += parseFloat(position.margin);
-        positionVolume += parseFloat(position.vol);
+        // positionVolume += parseFloat(position.vol);
       }
     }
 
