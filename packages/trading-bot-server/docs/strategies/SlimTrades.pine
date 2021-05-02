@@ -1,5 +1,5 @@
 //@version=4
-strategy("SlimTrades", overlay=true, calc_on_every_tick=false, initial_capital=100, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
+strategy("SlimTrades", overlay=true, calc_on_every_tick=false, initial_capital=100, default_qty_value=75, default_qty_type=strategy.cash, currency=currency.USD)
 
 // THIS STRAT WORKS IN SUPER LONG TIMES. GETS WRECKED BY SHORTS AND HEAVY DIPS
 
