@@ -28,7 +28,7 @@
   "ETHUSDT": {
     "leverage": 5,
     "entrySize": 88,
-    "addSize": 60,
+    "addSize": 62,
     "maxAdds": 4,
     "latestResult": 147.68,
     "totalTrades": 219,
