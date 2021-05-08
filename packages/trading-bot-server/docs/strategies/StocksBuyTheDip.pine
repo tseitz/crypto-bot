@@ -3,7 +3,7 @@ study("Stocks Buy The Dip", overlay=true)
 
 
 // VARIABLES
-buyRsi = input(defval=35, title="Buy RSI", minval=0, step=1)
+buyRsi = input(defval=52, title="Buy RSI", minval=0, step=1)
 
 // MACD and RSI
 fast = 12, slow = 26
@@ -60,8 +60,8 @@ rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
 rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
 rsiIncreasing = rsiClose > rsi2 and rsi1 < rsi2 - 1
 
-alert = rsiBottomed and rsi1 < buyRsi
+alert = crossover(macd, signal) and rsiClose < buyRsi and macd <= 0
 
-bgcolor(color=alert ? color.green : na, transp=85)
+bgcolor(color=alert ? color.green : na, transp=65)
 
 alertcondition(alert, 'Buy!', 'Buy!')
