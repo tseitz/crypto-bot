@@ -3,6 +3,7 @@ study("Crypto Buy The Dip", overlay=true)
 
 // VARIABLES
 buyRsi = input(defval=55, title="Buy RSI", minval=0, step=1)
+sellRsi = input(defval=71, title="Buy RSI", minval=0, step=1)
 
 // MACD and RSI
 fast = 12, slow = 26
@@ -59,8 +60,10 @@ rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
 rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
 rsiIncreasing = rsiClose > rsi2 - 1
 
-alert = crossover(macd, signal) and rsiClose < buyRsi and macd <= 0
+alertBuy = crossover(macd, signal) and rsiClose < buyRsi and macd <= 0
+alertSell = rsi1 > sellRsi and rsiDecreasing
 
-bgcolor(color=alert ? color.green : na, transp=60)
+bgcolor(color=alertBuy ? color.green : alertSell ? color.red : na, transp=60)
 
-alertcondition(alert, 'Buy!', 'Buy!')
+alertcondition(alertBuy, 'Buy', 'Buy')
+alertcondition(alertSell, 'Sell', 'Sell')
