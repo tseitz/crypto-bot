@@ -22,7 +22,7 @@
   "LINKUSDT": {
     "leverage": 3,
     "entrySize": 44,
-    "addSize": 36,
+    "addSize": 40,
     "maxAdds": 2,
     "latestResult": 152.68,
     "totalTrades": 76,
