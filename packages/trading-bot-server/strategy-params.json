@@ -1,8 +1,8 @@
 {
   "ADAUSDT": {
     "leverage": 3,
-    "entrySize": 50,
-    "addSize": 50,
+    "entrySize": 56,
+    "addSize": 56,
     "maxAdds": 1,
     "latestResult": 100.23,
     "totalTrades": 76,
@@ -21,8 +21,8 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 44,
-    "addSize": 40,
+    "entrySize": 50,
+    "addSize": 44,
     "maxAdds": 2,
     "latestResult": 152.68,
     "totalTrades": 76,
