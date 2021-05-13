@@ -566,7 +566,7 @@ class KrakenService {
       // market price for comparison
       const price = await this.getPrice(krakenMarketOrder.krakenizedPair)
       const currentPrice = superParseFloat(
-        price[krakenMarketOrder.krakenizedPair]['c'][0],
+        price[krakenMarketOrder.pair]['c'][0],
         2
       )
       console.log(`Current Market Price: ${currentPrice}`)
