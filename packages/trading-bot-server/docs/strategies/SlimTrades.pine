@@ -36,11 +36,11 @@ hiLowSlow = input(defval=420, title="Hi Low Long", minval=0, step=10)
 // hiLowSuperSlow = input(defval=650, title="Hi Low Super Long", minval=0, step=50)
 
 openLongZoneRsi = input(defval=54, title="Open Long Zone RSI", minval=0, step=1)
-openShortZoneRsi = input(defval=32, title="Open Short Zone RSI", minval=0, step=1)
+openShortZoneRsi = input(defval=30, title="Open Short Zone RSI", minval=0, step=1)
 addLongZoneRsi = input(defval=46, title="Add Long Zone RSI", minval=0, step=1)
-addShortZoneRsi = input(defval=46, title="Add Short Zone RSI", minval=0, step=1)
+addShortZoneRsi = input(defval=45, title="Add Short Zone RSI", minval=0, step=1)
 rsiCloseLongZone = input(defval=72, title="Close Long Zone RSI", minval=0, step=1) // 72
-rsiCloseShortZone = input(defval=80, title="Close Short Zone RSI", minval=0, step=1) // 73
+rsiCloseShortZone = input(defval=75, title="Close Short Zone RSI", minval=0, step=1) // 73
 
 // shortShortZoneRsi = input(defval=69, title="Short Short Zone RSI", minval=0, step=1)
 // rsiCloseShortShortZone = input(defval=16, title="Close Short Zone RSI", minval=0, step=1)
@@ -49,7 +49,7 @@ maxAdds = input(defval=4, title="Max Adds", minval=0, step=1)
 
 macdLength = 30 // input(defval=30, title="MACD Bars", minval=0, step=5)
 
-closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.05, defval=1.25) * 0.01
+closeLongPerc = input(title="Close Long Min (%)", type=input.float, minval=0.0, step=0.05, defval=1.6) * 0.01
 longTrailPerc = input(title="Long Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=6.3) * 0.01
 // shortTrailPerc = input(title="Short Trail Stop (%)", type=input.float, minval=0.0, step=0.1, defval=3.5) * 0.01
 
