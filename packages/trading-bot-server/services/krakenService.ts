@@ -567,9 +567,9 @@ class KrakenService {
       const price = await this.getPrice(krakenMarketOrder.krakenizedPair)
       const currentPrice = superParseFloat(
         price[krakenMarketOrder.pair]['c'][0],
-        2
+        4
       )
-      console.log(`Current Market Price: ${currentPrice}`)
+      console.log(`My Bid: ${krakenOrder.price}, Market Price: ${currentPrice}`)
 
       krakenMarketOrder.orderId = result.result?.txid
         ? result.result.txid[0]
