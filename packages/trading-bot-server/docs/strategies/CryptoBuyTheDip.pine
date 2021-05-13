@@ -1,9 +1,9 @@
 //@version=4
-study("Crypto Buy The Dip", overlay=true)
+strategy("Crypto Buy The Dip", overlay=true, initial_capital=100, default_qty_value=100, default_qty_type=strategy.cash, currency=currency.USD)
 
 // VARIABLES
-buyRsi = input(defval=55, title="Buy RSI", minval=0, step=1)
-sellRsi = input(defval=71, title="Buy RSI", minval=0, step=1)
+buyRsi = input(defval=46, title="Buy RSI", minval=0, step=1)
+sellRsi = input(defval=75, title="Buy RSI", minval=0, step=1)
 
 // MACD and RSI
 fast = 12, slow = 26
@@ -60,10 +60,15 @@ rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
 rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
 rsiIncreasing = rsiClose > rsi2 - 1
 
-alertBuy = crossover(macd, signal) and rsiClose < buyRsi and macd <= 0
-alertSell = rsi1 > sellRsi and rsiDecreasing
+// alertBuy = crossover(macd, signal) and rsiClose < buyRsi and macd <= 0
+alertBuy = macdBottomed and macd <= 0 and rsiClose < buyRsi
+alertSell = rsiTopped and rsi1 > sellRsi
 
-bgcolor(color=alertBuy ? color.green : alertSell ? color.red : na, transp=60)
+// bgcolor(color=alertBuy ? color.green : alertSell ? color.red : na, transp=60)
+bgcolor(color=alertBuy ? color.green : alertSell ? color.red : na, transp=50)
 
-alertcondition(alertBuy, 'Buy', 'Buy')
-alertcondition(alertSell, 'Sell', 'Sell')
+// alertcondition(alertBuy, 'Buy', 'Buy')
+// alertcondition(alertSell, 'Sell', 'Sell')
+// strategy.entry("long", long=true, when=alertBuy)
+strategy.order("long", long=true, when=alertBuy, comment="add")
+strategy.close("long", when=alertSell)

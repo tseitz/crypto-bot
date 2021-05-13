@@ -38,7 +38,7 @@ hiLowSlow = input(defval=420, title="Hi Low Long", minval=0, step=10)
 openLongZoneRsi = input(defval=54, title="Open Long Zone RSI", minval=0, step=1)
 openShortZoneRsi = input(defval=30, title="Open Short Zone RSI", minval=0, step=1)
 addLongZoneRsi = input(defval=46, title="Add Long Zone RSI", minval=0, step=1)
-addShortZoneRsi = input(defval=45, title="Add Short Zone RSI", minval=0, step=1)
+addShortZoneRsi = input(defval=44, title="Add Short Zone RSI", minval=0, step=1)
 rsiCloseLongZone = input(defval=72, title="Close Long Zone RSI", minval=0, step=1) // 72
 rsiCloseShortZone = input(defval=75, title="Close Short Zone RSI", minval=0, step=1) // 73
 
@@ -268,7 +268,7 @@ if closeLong
     prevPriceLow := 0
     longCount := 0
     
-bgcolor(color=isLong ? color.blue : na)
+// bgcolor(color=isLong ? color.blue : na)
 
 // STRAT ENTRIES/EXITS
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
