@@ -227,7 +227,7 @@ addLongZoneSetup = longZone and longCount < maxAdds and close < prevPriceLow and
 addShortZoneSetup = shortZone and longCount < maxAdds and ((rsiBottomed and (macdBottomed or (rsiIncreasing)) and (rsi1 < addShortZoneRsi)))
 
 closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (low < longStopPrice)
-closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone) or (low < longStopPrice)
+closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone and close > closeLongAfter) or (low < longStopPrice)
 
 // shortSetup = shortZone and ((rsiTopped and ((macdTopped and (higherMacd2)) or (macdSlowingDown and rsiDecreasing))))
 // addShortZoneSetup = shortZone and ((rsiTopped and (macdTopped or (macdSlowingDown and rsiDecreasing)) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
