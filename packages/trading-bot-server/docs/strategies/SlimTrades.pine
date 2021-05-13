@@ -21,7 +21,7 @@ var entryPrice = 0.0
 var prevPriceLow = 0.0
 var lastMacd = 0.0
 var lastRsi = 0.0
-var stopped = false
+var stoppedOut = false
 
 
 // INPUTS
@@ -38,7 +38,7 @@ hiLowSlow = input(defval=420, title="Hi Low Long", minval=0, step=10)
 openLongZoneRsi = input(defval=54, title="Open Long Zone RSI", minval=0, step=1)
 openShortZoneRsi = input(defval=32, title="Open Short Zone RSI", minval=0, step=1)
 addLongZoneRsi = input(defval=46, title="Add Long Zone RSI", minval=0, step=1)
-addShortZoneRsi = input(defval=44, title="Add Short Zone RSI", minval=0, step=1)
+addShortZoneRsi = input(defval=46, title="Add Short Zone RSI", minval=0, step=1)
 rsiCloseLongZone = input(defval=72, title="Close Long Zone RSI", minval=0, step=1) // 72
 rsiCloseShortZone = input(defval=80, title="Close Short Zone RSI", minval=0, step=1) // 73
 
@@ -224,7 +224,7 @@ longZoneSetup = longZone and (((rsiBottomed and macdBottomed and lowerMacd2) or 
 shortZoneSetup = shortZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openShortZoneRsi))
 
 addLongZoneSetup = longZone and longCount < maxAdds and close < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and (rsi1 < addLongZoneRsi)))
-addShortZoneSetup = shortZone and longCount < maxAdds and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and (rsi1 < addShortZoneRsi)))
+addShortZoneSetup = shortZone and longCount < maxAdds and ((rsiBottomed and (macdBottomed or (rsiIncreasing)) and (rsi1 < addShortZoneRsi)))
 
 closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (low < longStopPrice)
 closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone) or (low < longStopPrice)
@@ -242,15 +242,16 @@ closeLong = isLong and (closeLongZoneSetup or closeShortZoneSetup)
 // addShort = isShort and addShortSetup
 // closeShort = isShort and closeShortSetup
 
-// if (low < longStopPrice)
-//     stopped := true
+stopped = low < longStopPrice
+if stopped
+    stoppedOut := true
 
-bgcolor(color=stopped ? color.blue : na)
+// bgcolor(color=stoppedOut ? color.blue : na)
 
 // STRAT ENTRIES/EXITS
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
 strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
-strategy.close("long", when=closeLong and isWithinTimeBounds)
+strategy.close("long", when=(closeLong or stopped) and isWithinTimeBounds)
 // strategy.entry("short", long=false, when=short and isWithinTimeBounds)
 // strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
 // strategy.close("short", when=closeShort and isWithinTimeBounds)
@@ -258,7 +259,7 @@ strategy.close("long", when=closeLong and isWithinTimeBounds)
 if long
     isLong := true
     isShort := false
-    stopped := false
+    stoppedOut := false
     entryPrice := open
     prevPriceLow := open * (1 - addPercDiff)
     longCount := 0
@@ -266,11 +267,11 @@ if long
 if addLong
     longCount := longCount + 1
     prevPriceLow := open * (1 - addPercDiff)
-    stopped := false
+    stoppedOut := false
 
 if closeLong
     isLong := false
-    stopped := false
+    stoppedOut := false
     addHighCount := 0
     addLowCount := 0
     prevPriceLow := 0
@@ -287,8 +288,8 @@ if firstAction and longZone and long
     firstAction := false
 
 
-if (strategy.position_size > 0)
-    strategy.exit("stop close", "long", stop=longStopPrice)
+// if (strategy.position_size > 0)
+//     strategy.exit("stop close", "long", stop=longStopPrice)
 
 // if (strategy.position_size < 0)
 //     strategy.exit("stop close", "short", stop=shortStopPrice)
