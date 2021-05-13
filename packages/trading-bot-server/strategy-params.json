@@ -1,8 +1,8 @@
 {
   "ADAUSDT": {
     "leverage": 3,
-    "entrySize": 46,
-    "addSize": 46,
+    "entrySize": 40,
+    "addSize": 40,
     "maxAdds": 1,
     "latestResult": 100.23,
     "totalTrades": 76,
@@ -11,9 +11,9 @@
   },
   "ETHUSDT": {
     "leverage": 5,
-    "entrySize": 120,
-    "addSize": 112,
-    "maxAdds": 3,
+    "entrySize": 94,
+    "addSize": 90,
+    "maxAdds": 4,
     "latestResult": 190.21,
     "totalTrades": 144,
     "percentProfitable": 92.36,
@@ -21,8 +21,8 @@
   },
   "LINKUSDT": {
     "leverage": 3,
-    "entrySize": 46,
-    "addSize": 42,
+    "entrySize": 40,
+    "addSize": 38,
     "maxAdds": 2,
     "latestResult": 152.68,
     "totalTrades": 76,
