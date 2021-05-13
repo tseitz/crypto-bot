@@ -223,8 +223,8 @@ highestPrevMacd = higherMacd2 and macd < highestMacd
 longZoneSetup = longZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openLongZoneRsi))
 shortZoneSetup = shortZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openShortZoneRsi))
 
-addLongZoneSetup = longZone and longCount < maxAdds and close < prevPriceLow and ((rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)) and (rsi1 < addLongZoneRsi)))
-addShortZoneSetup = shortZone and longCount < maxAdds and ((rsiBottomed and (macdBottomed or (rsiIncreasing)) and (rsi1 < addShortZoneRsi)))
+addLongZoneSetup = longZone and longCount < maxAdds and close < prevPriceLow and rsi1 < addLongZoneRsi and (rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)))
+addShortZoneSetup = shortZone and longCount < maxAdds and rsi1 < addShortZoneRsi and (rsiBottomed and (macdBottomed or rsiIncreasing))
 
 closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (low < longStopPrice)
 closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone and close > closeLongAfter) or (low < longStopPrice)
@@ -245,16 +245,7 @@ closeLong = isLong and (closeLongZoneSetup or closeShortZoneSetup)
 stopped = low < longStopPrice
 if stopped
     stoppedOut := true
-
-// bgcolor(color=stoppedOut ? color.blue : na)
-
-// STRAT ENTRIES/EXITS
-strategy.entry("long", long=true, when=long and isWithinTimeBounds)
-strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
-strategy.close("long", when=(closeLong or stopped) and isWithinTimeBounds)
-// strategy.entry("short", long=false, when=short and isWithinTimeBounds)
-// strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
-// strategy.close("short", when=closeShort and isWithinTimeBounds)
+    prevPriceLow := 0
 
 if long
     isLong := true
@@ -276,6 +267,16 @@ if closeLong
     addLowCount := 0
     prevPriceLow := 0
     longCount := 0
+    
+bgcolor(color=isLong ? color.blue : na)
+
+// STRAT ENTRIES/EXITS
+strategy.entry("long", long=true, when=long and isWithinTimeBounds)
+strategy.order("long", long=true, when=addLong and isWithinTimeBounds, comment="add")
+strategy.close("long", when=(closeLong or stopped) and isWithinTimeBounds)
+// strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// strategy.order("short", long=false, when=addShort and isWithinTimeBounds, comment="add")
+// strategy.close("short", when=closeShort and isWithinTimeBounds)
 
 
 plotshape(firstAction and longZone and long, title="buybags", style=shape.cross, location=location.abovebar, size=size.tiny, color=color.green, textcolor=color.white, transp=0)
@@ -294,7 +295,7 @@ if firstAction and longZone and long
 // if (strategy.position_size < 0)
 //     strategy.exit("stop close", "short", stop=shortStopPrice)
 
-if (strategy.position_size == 0)
+if (strategy.position_size == 0) // and (longZone or (shortZone and not long[0])))
     isLong := false
     isShort := false
     longCount := 0
