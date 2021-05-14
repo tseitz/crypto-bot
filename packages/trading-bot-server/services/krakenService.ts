@@ -569,7 +569,7 @@ class KrakenService {
         price[krakenMarketOrder.pair]['c'][0],
         4
       )
-      console.log(`Bid|Market: ${krakenOrder.price} | ${currentPrice}`)
+      console.log(`${krakenOrder.price} | ${currentPrice}`)
 
       krakenMarketOrder.orderId = result.result?.txid
         ? result.result.txid[0]
