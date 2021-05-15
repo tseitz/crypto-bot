@@ -223,7 +223,7 @@ highestPrevMacd = higherMacd2 and macd < highestMacd
 longZoneSetup = longZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openLongZoneRsi))
 shortZoneSetup = shortZone and (((rsiBottomed and macdBottomed and lowerMacd2) or (macdSlowingDown and rsiIncreasing)) and (rsi1 < openShortZoneRsi))
 
-addLongZoneSetup = longZone and longCount < maxAdds and close < prevPriceLow and rsi1 < addLongZoneRsi and (rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing)))
+addLongZoneSetup = longZone and longCount < maxAdds and close < prevPriceLow and rsi1 < addLongZoneRsi and (rsiBottomed and (macdBottomed or (macdSlowingDown and rsiIncreasing) or (rsi1 < 33)))
 addShortZoneSetup = shortZone and longCount < maxAdds and rsi1 < addShortZoneRsi and (rsiBottomed and (macdBottomed or rsiIncreasing))
 
 closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (low < longStopPrice)
@@ -268,7 +268,7 @@ if closeLong
     prevPriceLow := 0
     longCount := 0
     
-// bgcolor(color=isLong ? color.blue : na)
+bgcolor(color=isLong ? color.blue : na, transp=92)
 
 // STRAT ENTRIES/EXITS
 strategy.entry("long", long=true, when=long and isWithinTimeBounds)
