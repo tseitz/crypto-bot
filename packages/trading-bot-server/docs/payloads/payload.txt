@@ -8,7 +8,6 @@
       "action": "{{strategy.order.action}}",
       "description": "{{strategy.order.id}}",
       "price": {{strategy.order.price}},
-      "buyBags": {{plot("buybags")}},
-      "sellBags": {{plot("sellbags")}}
+      "shortzone": {{plot("shortzone")}}
   }
 }
