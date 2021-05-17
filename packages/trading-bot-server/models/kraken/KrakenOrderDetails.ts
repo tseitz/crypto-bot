@@ -268,13 +268,13 @@ export default class KrakenOrderDetails {
       if (this.positionSize) {
         return this.positionSize * this.shortZoneDeleverage
       } else {
-        return this.originalEntry * this.shortZoneDeleverage
+        return this.originalAdd * this.shortZoneDeleverage
       }
     } else {
       if (this.positionSize) {
         return this.positionSize
       } else {
-        return this.originalEntry * this.longZoneDeleverage
+        return this.originalAdd * this.longZoneDeleverage
       }
     }
   }
