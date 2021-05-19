@@ -264,9 +264,7 @@ class KrakenService {
         )} | ${boost}x | ${incrementalAddDollar}`
       )
       console.log(
-        `Position: ${
-          addCount + 1
-        } | ${myPositionAfter} | ${marginPositionAfter}`
+        `Position: ${addCount} | ${myPositionAfter} | ${marginPositionAfter}`
       )
 
       const krakenOrder = new KrakenOrder({
