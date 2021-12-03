@@ -1,5 +1,15 @@
-study('Supertrend', overlay=true)
+strategy('Supertrend Buy the Dip', overlay=true)
 
+buysOn = input(defval=true, title="Buys On?", type=bool)
+
+// MA
+twentyMA = sma(close, 20)
+twohundredMA = sma(close, 200)
+
+plot(twentyMA, color=white, style=line, linewidth=2, title="20 MA")
+plot(twohundredMA, color=blue, style=line, linewidth=1, title="200 MA")
+
+// Super Trend
 factor = input(4, minval=1, maxval=100)
 pd = input(10, minval=1, maxval=100)
 
@@ -15,3 +25,83 @@ tsi = trend == 1 ? trendUp : trendDown
 linecolor = trend == 1 ? green : red
 
 plot(tsi, color=linecolor, style=line, linewidth=2, title="Super Trend")
+
+newTrendUp = trend == 1 and trend[1] != 1
+newTrendDown = trend != 1 and trend[1] == 1
+
+// bgcolor(color=newTrendUp ? green : newTrendDown ? red : na, transp=65)
+
+// Buy the Dip
+buyRsi = input(defval=36, title="Buy RSI", minval=0, step=1)
+sellRsi = input(defval=84, title="Sell RSI", minval=0, step=1)
+
+// MACD and RSI
+fast = 12, slow = 26
+fastMA = ema(close, fast)
+slowMA = ema(close, slow)
+macd = fastMA - slowMA
+signal = ema(macd, 9)
+rsiClose = rsi(close, 14)
+
+getMACD(index) =>
+    thisFastMA = ema(close[index], fast)
+    thisSlowMA = ema(close[index], slow)
+    thisMacd = thisFastMA - thisSlowMA
+
+getRsi(index) =>
+    thisRsi = rsi(close[index], 14)
+
+getHighest(index, speed) =>
+    thisHighest = highest(high, speed)[index]
+
+getLowest(index, speed) =>
+    thisLowest = lowest(low, speed)[index]
+
+getVolume(index) =>
+    thisVolume = volume[index]
+
+macd0 = getMACD(0)
+macd1 = getMACD(1)
+macd2 = getMACD(2)
+// macd3 = getMACD(3)
+
+rsi0 = getRsi(0)
+rsi1 = getRsi(1)
+rsi2 = getRsi(2)
+// rsi3 = getRsi(3)
+// rsi4 = getRsi(4)
+
+volume0 = getVolume(0)
+volume1 = getVolume(1)
+volume2 = getVolume(2)
+volume3 = getVolume(3)
+
+// HELPER VARIABLES
+macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
+macdSlowingDown = abs(macd - macd1) < abs(macd1 - macd2)
+macdTopped = macd < macd1 and macd1 > macd2 and macd1 > signal
+rsiBottomed = rsiClose > rsi1 and rsi1 < rsi2 // and rsiClose > rsi1 + 1
+rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
+rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
+rsiIncreasing = rsiClose > rsi2 - 1
+
+alertBuy = macd[1] <= 0 and rsi1 < buyRsi and rsiBottomed
+alertSell = rsiTopped and rsi1 > sellRsi
+alert = alertBuy or alertSell
+
+closeTwentyMA = crossunder(close, twentyMA)
+openTwentyMA = crossover(open, twentyMA)
+
+bgcolor(color=alertBuy ? green : alertSell ? red : na, transp=60)
+
+// long = not isLong and (newTrendUp or alertBuy)
+
+// isLong = not isLong and (newTrendUp or alertBuy)
+// closeLong = isLong and newTrendDown
+
+
+strategy.entry("long", comment="New Trend Up", long=true, when=buysOn and (openTwentyMA or alertBuy))
+strategy.order("long", comment="Add", long=true, when=buysOn and alertBuy)
+strategy.close("long", when=buysOn and (newTrendDown or closeTwentyMA))
+// strategy.entry("short", long=false, when=short and isWithinTimeBounds)
+// strategy.close("short", when=long and isWithinTimeBounds)

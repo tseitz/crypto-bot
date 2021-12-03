@@ -1,34 +1,49 @@
-//@version=4
-study("Crypto Buy The Dip", overlay=true)
+//@version=5
+indicator('Slimdicator', overlay=true)
 
 // VARIABLES
-buyRsi = input(defval=46, title="Buy RSI", minval=0, step=1)
-sellRsi = input(defval=77, title="Buy RSI", minval=0, step=1)
+buyRsi = input.int(defval=46, title='Buy RSI', minval=0, step=1)
+sellRsi = input.int(defval=77, title='Sell RSI', minval=0, step=1)
 
 // MACD and RSI
-fast = 12, slow = 26
-fastMA = ema(close, fast)
-slowMA = ema(close, slow)
+fast = 12
+slow = 26
+fastMA = ta.ema(close, fast)
+slowMA = ta.ema(close, slow)
 macd = fastMA - slowMA
-signal = ema(macd, 9)
-rsiClose = rsi(close, 14)
+signal = ta.ema(macd, 9)
+rsiClose = ta.rsi(close, 14)
+
+
+// Plot MAs
+fastSMA = ta.sma(close, 21)
+medSMA = ta.sma(close, 100)
+slowSMA = ta.sma(close, 200)
+plot(series=fastMA, color=color.white, linewidth=2, transp=50)
+plot(series=medSMA, color=color.orange, linewidth=2, transp=50)
+plot(series=slowSMA, color=color.red, linewidth=2, transp=50)
 
 getMACD(index) =>
-    thisFastMA = ema(close[index], fast)
-    thisSlowMA = ema(close[index], slow)
+    thisFastMA = ta.ema(close[index], fast)
+    thisSlowMA = ta.ema(close[index], slow)
     thisMacd = thisFastMA - thisSlowMA
+    thisMacd
 
 getRsi(index) =>
-    thisRsi = rsi(close[index], 14)
+    thisRsi = ta.rsi(close[index], 14)
+    thisRsi
 
 getHighest(index, speed) =>
-    thisHighest = highest(high, speed)[index]
+    thisHighest = ta.highest(high, speed)[index]
+    thisHighest
 
 getLowest(index, speed) =>
-    thisLowest = lowest(low, speed)[index]
+    thisLowest = ta.lowest(low, speed)[index]
+    thisLowest
 
 getVolume(index) =>
     thisVolume = volume[index]
+    thisVolume
 
 macd0 = getMACD(0)
 macd1 = getMACD(1)
@@ -47,17 +62,17 @@ volume2 = getVolume(2)
 volume3 = getVolume(3)
 
 // HELPER VARIABLES
-greenCandle = (close > open)
-redCandle = (close < open)
-crazyVolume = volume0 / 2 > ((volume1 + volume2 + volume3) / 3)
+greenCandle = close > open
+redCandle = close < open
+crazyVolume = volume0 / 2 > (volume1 + volume2 + volume3) / 3
 macdBottomed = macd > macd1 and macd1 < macd2 and macd1 < signal
-macdSlowingDown = abs(macd - macd1) < abs(macd1 - macd2)
+macdSlowingDown = math.abs(macd - macd1) < math.abs(macd1 - macd2)
 macdTopped = macd < macd1 and macd1 > macd2 and macd1 > signal
 macdBelow0 = macd1 < 0
 macdAbove0 = macd1 < 0
 rsiBottomed = rsiClose > rsi1 and rsi1 < rsi2 and rsiClose > rsi1 + 1
 rsiTopped = rsiClose < rsi1 and rsi1 > rsi2 and rsiClose < rsi1 - 1
-rsiDecreasing = rsiClose < rsi2 and (rsiClose < rsi2 - 1) and rsi1 > rsi2 + 1
+rsiDecreasing = rsiClose < rsi2 and rsiClose < rsi2 - 1 and rsi1 > rsi2 + 1
 rsiIncreasing = rsiClose > rsi2 - 1
 
 alertBuy = macdBottomed and macd <= 0 and rsiClose < buyRsi

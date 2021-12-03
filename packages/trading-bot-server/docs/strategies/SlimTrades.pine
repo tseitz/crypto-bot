@@ -33,7 +33,7 @@ isWithinTimeBounds = (msBackMax == 0 or (time > (timenow - msBackMax))) and (msB
 
 // hiLowFast = input(defval=210, title="Hi Low Short", minval=0, step=5)
 hiLowSlow = input(defval=420, title="Hi Low Long", minval=0, step=10)
-// hiLowSuperSlow = input(defval=650, title="Hi Low Super Long", minval=0, step=50)
+hiLowSuperSlow = input(defval=7200, title="Hi Low Super Long", minval=0, step=50)
 
 openLongZoneRsi = input(defval=54, title="Open Long Zone RSI", minval=0, step=1)
 openShortZoneRsi = input(defval=30, title="Open Short Zone RSI", minval=0, step=1)
@@ -170,6 +170,7 @@ plot(series=showSlow ? lowestSlow1 : na, color=color.red, linewidth=2)
 // lowestSlow2 because I want to make sure it's not coming up to meet it. it needs to be a true low
 oneSlowLow = close < lowestSlow1 and close < lowestSlow2
 oneSlowHigh = close > highestSlow1 and close > highestSlow2
+// oneSuperSlowLow = close < hiLowSuperSlow
 // twoSlowLows = oneSlowLow[1] and oneSlowLow
 // twoSlowHighs = oneSlowHigh[1] and oneSlowHigh
 // oneFastLow = longZone and low < lowestFast2
@@ -182,6 +183,8 @@ if oneSlowLow
 
 if oneSlowHigh
     highSlowCount := highSlowCount + 1
+
+if 
 
 if lowSlowCount == 2
     firstAction := longZone or firstAction
@@ -229,9 +232,10 @@ addShortZoneSetup = shortZone and longCount < maxAdds and rsi1 < addShortZoneRsi
 closeLongZoneSetup = longZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseLongZone and close > closeLongAfter) or (low < longStopPrice)
 closeShortZoneSetup = shortZone and (rsiTopped and rsiDecreasing and rsi1 > rsiCloseShortZone and close > closeLongAfter) or (low < longStopPrice)
 
-// shortSetup = shortZone and ((rsiTopped and ((macdTopped and (higherMacd2)) or (macdSlowingDown and rsiDecreasing))))
-// addShortZoneSetup = shortZone and ((rsiTopped and (macdTopped or (macdSlowingDown and rsiDecreasing)) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
-// closeShortSetup = (rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShortZone) or (high > shortStopPrice)
+
+shortSetup = shortZone and ((rsiTopped and ((macdTopped and (higherMacd2)) or (macdSlowingDown and rsiDecreasing))))
+addShortZoneSetup = shortZone and ((rsiTopped and (macdTopped or (macdSlowingDown and rsiDecreasing)) and ((higherMacd2) and (rsi1 > shortShortZoneRsi))))
+closeShortSetup = (rsiBottomed and rsiIncreasing and rsi1 < rsiCloseShortZone) or (high > shortStopPrice)
 
 
 // STRAT SETUP

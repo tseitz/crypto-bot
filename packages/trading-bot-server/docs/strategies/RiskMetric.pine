@@ -1,0 +1,102 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Skywalking2874
+
+//@version=5
+indicator("Risk", overlay = false, max_bars_back=5000)
+
+find_ath(_src) => 
+    // Returns a series of the ATH value
+    var ath = 0.0
+    if _src > ath
+        ath := _src
+    ath
+
+find_atl(_src) =>
+    // Returns a series of the ATL value
+    var atl = 2.5
+    if _src < atl
+        atl := _src
+    atl
+
+threesixtyfive = ta.sma(close, 365)
+
+average = (math.log(close) - math.log(threesixtyfive)) * math.pow(bar_index, 0.475)
+
+highest_value = find_ath(average)
+lowest_value = find_atl(average)
+
+average_normalized = (average - lowest_value) / (highest_value - lowest_value)
+
+colored_bars = input.bool(true, "Display the risk metric as colored bars", "The symbols bars and the risk metric will be displayed on a color gradient when this is set to true")
+
+fill0 = color.new(color.green, 61)
+fill1 = color.new(color.green, 69)
+fill2 = color.new(color.green, 76)
+fill3 = color.new(color.green, 83)
+fill4 = color.new(color.green, 90)
+fill5 = color.new(color.red, 90)
+fill6 = color.new(color.red, 83)
+fill7 = color.new(color.red, 76)
+fill8 = color.new(color.red, 69)
+fill9 = color.new(color.red, 61)
+
+transparant = color.rgb(0, 0, 0, 100)
+bar_color = color.rgb(0, 128, 255)
+
+gradient0 = color.from_gradient(average_normalized, 0, 0.1, #0000ff, #000bff)
+gradient1 = color.from_gradient(average_normalized, 0.1, 0.2, #000bff, #0090ff)
+gradient2 = color.from_gradient(average_normalized, 0.2, 0.3, #0090ff, #00fbff)
+gradient3 = color.from_gradient(average_normalized, 0.3, 0.4, #00fbff, #00ff7e)
+gradient4 = color.from_gradient(average_normalized, 0.4, 0.5, #00ff7e, #00ff37)
+gradient5 = color.from_gradient(average_normalized, 0.5, 0.6, #00ff37, #94ff00)
+gradient6 = color.from_gradient(average_normalized, 0.6, 0.7, #94ff00, #ffff00)
+gradient7 = color.from_gradient(average_normalized, 0.7, 0.8, #ffff00, #ffb200)
+gradient8 = color.from_gradient(average_normalized, 0.8, 0.9, #ffb200, #ff8900)
+gradient9 = color.from_gradient(average_normalized, 0.9, 1.0, #ff8900, #ff0017)
+
+if colored_bars
+    fill0 := color.new(#005555, 61)
+    fill1 := color.new(#005555, 69)
+    fill2 := color.new(#005555, 76)
+    fill3 := color.new(#005555, 83)
+    fill4 := color.new(#005555, 90)
+    fill5 := color.new(#8b0000, 90)
+    fill6 := color.new(#8b0000, 83)
+    fill7 := color.new(#8b0000, 76)
+    fill8 := color.new(#8b0000, 69)
+    fill9 := color.new(#8b0000, 61)
+    bar_color := average_normalized < 0.1 ? gradient0 : 
+      average_normalized < 0.2 ? gradient1 : 
+      average_normalized < 0.3 ? gradient2 : 
+      average_normalized < 0.4 ? gradient3 : 
+      average_normalized < 0.5 ? gradient4 : 
+      average_normalized < 0.6 ? gradient5 :
+      average_normalized < 0.7 ? gradient6 : 
+      average_normalized < 0.8 ? gradient7 :
+      average_normalized < 0.9 ? gradient8 : gradient9
+
+buy0 = hline(0.0, color=transparant, linestyle=hline.style_solid)
+buy1 = hline(0.1, color=transparant, linestyle=hline.style_solid)
+buy2 = hline(0.2, color=transparant, linestyle=hline.style_solid)
+buy3 = hline(0.3, color=transparant, linestyle=hline.style_solid)
+buy4 = hline(0.4, color=transparant, linestyle=hline.style_solid)
+buy5 = hline(0.5, color=transparant, linestyle=hline.style_solid)
+
+sell0 = hline(0.6, color=transparant, linestyle=hline.style_solid)
+sell1 = hline(0.7, color=transparant, linestyle=hline.style_solid)
+sell2 = hline(0.8, color=transparant, linestyle=hline.style_solid)
+sell3 = hline(0.9, color=transparant, linestyle=hline.style_solid)
+sell4 = hline(1.0, color=transparant, linestyle=hline.style_solid)
+
+fill(buy0, buy1, fill0, "DCA 5x")
+fill(buy1, buy2, fill1, "DCA 4x")
+fill(buy2, buy3, fill2, "DCA 3x")
+fill(buy3, buy4, fill3, "DCA 2x")
+fill(buy4, buy5, fill4, "DCA 1x")
+fill(sell0, sell1, fill5, "DCA 1y")
+fill(sell1, sell2, fill6, "DCA 2y")
+fill(sell2, sell3, fill7, "DCA 3y")
+fill(sell3, sell4, fill8, "DCA 4y")
+
+plot(average_normalized, color=bar_color, title = "Risk")
+
